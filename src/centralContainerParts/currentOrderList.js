@@ -1,12 +1,17 @@
 import React from 'react';
 
 
-function currentOrderList() {
+function currentOrderList({chosen, orders}) {
   return (        
-    <div className = "currentOrderList">      
-      <input type="text" id="item" name="item"></input>
-      <label for="item">Baguette</label>
-      <br />
+    <div className = "currentOrderList"> 
+      {orders.map(order => order.cust === chosen ?
+          <React.Fragment>
+          <label>{order.item}</label>
+          <input type="text" id={order.cust} name={order.cust} value={order.qty}></input>
+          <br /> 
+          </React.Fragment> : ''
+          )}     
+      
     </div>   
   );
 }

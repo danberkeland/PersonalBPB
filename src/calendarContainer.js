@@ -1,17 +1,12 @@
 import React from 'react';
-import FullCalendar from '@fullcalendar/react'
-import dayGridPlugin from '@fullcalendar/daygrid'
+import CalendarApp from './calendarApp'
+
 
 function calendarContainer() {
   
   return (   
     <div className = "calendarContainer">
-      <div className = "calendar">
-      <FullCalendar
-        plugins={[ dayGridPlugin ]}
-        initialView="dayGridMonth"
-      />
-      </div>
+      <CalendarApp />
     </div>   
   )
 }

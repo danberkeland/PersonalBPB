@@ -1,6 +1,7 @@
 import React from 'react';
 
 
+
 function currentOrderList({chosen, orders}) {
   return (        
     <div className = "currentOrderList"> 
@@ -8,7 +9,6 @@ function currentOrderList({chosen, orders}) {
           <React.Fragment>
           <label>{order.item}</label>
           <input type="text" id={order.cust} name={order.cust} value={order.qty}></input>
-          <br /> 
           </React.Fragment> : ''
           )}     
       

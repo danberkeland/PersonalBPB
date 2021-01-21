@@ -1,5 +1,6 @@
 import React from 'react';
 
+
 function orderEntryButtons() {
   return (         
     <div className = "orderEntryButtons">

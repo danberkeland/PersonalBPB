@@ -1,5 +1,5 @@
 import React from 'react';
-import './centralContainer.css'
+
 import CurrentOrderInfo from './centralContainerParts/currentOrderInfo'
 import CurrentOrderList from './centralContainerParts/currentOrderList'
 import OrderCommandLine from './centralContainerParts/orderCommandLine'

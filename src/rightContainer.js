@@ -1,10 +1,10 @@
 import React from 'react';
-import './rightContainer.css';
+
 
 function rightContainer() {
   return (   
     <div className = "rightContainer">
-      <h1>Recent Orders</h1>
+      <h2>Recent Orders</h2>
       <div className = "recentOrdersList">      
         <p>1/20/2020 Novo</p>
         <p>1/20/2020 Coastal Peaks</p>
@@ -12,8 +12,8 @@ function rightContainer() {
         <p>1/20/2020 Kreuzberg</p>
         <p>1/20/2020 Kraken Avila</p>
       </div>
-      <button>Upload</button>
-      <button>Reomve Selected</button>
+      <button>Upload</button><br />
+      <button>Remove Selected</button>
     </div>   
   );
 }

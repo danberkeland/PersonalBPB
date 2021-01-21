@@ -1,37 +1,45 @@
-import React, { useState } from 'react';
-import CalendarContainer from './calendarContainer';
-import CentralContainer from './centralContainer';
-import RightContainer from './rightContainer';
+import React from 'react';
+
+
+import CalendarApp from './components/calendarApp'
+import CurrentOrderInfo from './components/currentOrderInfo'
+import CurrentOrderList from './components/currentOrderList'
+import OrderCommandLine from './components/orderCommandLine'
+import OrderEntryButtons from './components/orderEntryButtons'
+import RecentOrderList from './components/recentOrderList';
+
+import { CustomerProvider } from './dataContexts/CustomerContext';
+import { RouteProvider } from './dataContexts/RouteContext';
+import { OrdersProvider } from './dataContexts/OrdersContext';
+
 import './App.css';
 
-import getCustomerList from './dataCollectors/getCustomerList';
-import getRouteList from './dataCollectors/getRouteList';
-import getOrders from './dataCollectors/getOrders';
 
 
 function App() {
 
-  const [customers, setCustomers] = useState (getCustomerList());
-  const [routes, setRoutes] = useState (getRouteList());
-  const [orders, setOrders] = useState (getOrders());
-  const [chosen, setChosen] = useState();
-
-  const handleCustChoice = (e) => {
-    console.log(e.target.value);
-    setChosen(e.target.value)
-  }
-
   return (
+    <CustomerProvider>
+    <RouteProvider>
+    <OrdersProvider>
     <div className = "mainContainer">
-      <CalendarContainer />
-      <CentralContainer 
-        onSelect={handleCustChoice} 
-        chosen={chosen} 
-        orders={orders} 
-        customers={customers} 
-        routes={routes} />
-      <RightContainer />
+      <div className = "calendarContainer">
+        <CalendarApp />
+      </div>
+      <div className = "centralContainer">
+        <CurrentOrderInfo />   
+        <CurrentOrderList />    
+        <OrderCommandLine />
+        <OrderEntryButtons />
+      </div>   
+
+      <div className = "rightContainer">
+        <RecentOrderList />
+      </div>   
     </div>
+    </OrdersProvider>
+    </RouteProvider>
+    </CustomerProvider>
   );
 }
 

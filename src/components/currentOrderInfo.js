@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { CustomerContext } from '../dataContexts/CustomerContext';
 import { RouteContext } from '../dataContexts/RouteContext';
 import { OrdersContext } from '../dataContexts/OrdersContext';
+import { convertDatetoBPBDate } from "../helpers/convertDatetoBPBDate";
 
 const CurrentOrderInfo = () => {
 
@@ -26,7 +27,7 @@ const CurrentOrderInfo = () => {
       </select>
       
       <label>Delivery Date:</label>
-      <input type="text" id="deliveryDate" name="deliveryDate" value={orderDate}></input>
+      <input type="text" id="deliveryDate" name="deliveryDate" value={convertDatetoBPBDate(orderDate)}></input>
       
       <label>Routes:</label>
       <select id="routes" name="routes">

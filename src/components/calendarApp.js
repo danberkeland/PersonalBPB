@@ -11,11 +11,7 @@ const CalendarApp = (props) => {
     const [orders, setOrder, orderDate, setOrderDate] = useContext(OrdersContext);
 
     const handleDateSelect = (selectInfo) => {
-        let mo = selectInfo.dateStr.split('-')[1];
-        let day = selectInfo.dateStr.split('-')[2];
-        let year = selectInfo.dateStr.split('-')[0];
-        let newDate = mo+"/"+day+"/"+year;
-        setOrderDate(newDate)
+        setOrderDate(selectInfo.dateStr)
     }
 
 
@@ -41,7 +37,7 @@ const CalendarApp = (props) => {
                         display: 'background'},
 
                         {title: '',
-                        date: '2021-01-01',
+                        date: orderDate,
                         display: 'background'},
                     ]}        
                 />

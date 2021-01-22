@@ -1,11 +1,13 @@
 import React, { useContext } from 'react';
 import { CustomerContext } from '../dataContexts/CustomerContext';
 import { RouteContext } from '../dataContexts/RouteContext';
+import { OrdersContext } from '../dataContexts/OrdersContext';
 
 const CurrentOrderInfo = () => {
 
   const [customers, setCustomer, chosen, setChosen] = useContext(CustomerContext);
   const [routes, setRoutes] = useContext(RouteContext);
+  const [orders, setOrder, orderDate, setOrderDate] = useContext(OrdersContext);
 
 
   const handleChange = e => {
@@ -14,17 +16,17 @@ const CurrentOrderInfo = () => {
 
   return (   
     <React.Fragment>
-    <h2>Current Order for {chosen}</h2>  
+    <h2>Cart Order for {chosen}</h2>  
     <div className = "currentOrderInfo">
       <label>Customer:</label>
       <select id="customers" name="customers" onChange={handleChange}>
         {customers.map(customer =>
-          <option key={customer} value={customer}>{customer}</option> 
+          <option key={customer[2]} value={customer[2]}>{customer[2]}</option> 
         )}
       </select>
       
       <label>Delivery Date:</label>
-      <input type="text" id="deliveryDate" name="deliveryDate"></input>
+      <input type="text" id="deliveryDate" name="deliveryDate" value={orderDate}></input>
       
       <label>Routes:</label>
       <select id="routes" name="routes">

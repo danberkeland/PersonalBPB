@@ -10,7 +10,7 @@ export const convertDatetoBPBDate = (ISODate) => {
 
 export const convertDatetoStandingDate = (entry) => {
     let jsDate= new Date(entry)
-    return ((jsDate.getDay()+1)%7).toString()
+    return (((jsDate.getDay()+1)%7)+1).toString()
 }
 
 export const tomorrow = () => {

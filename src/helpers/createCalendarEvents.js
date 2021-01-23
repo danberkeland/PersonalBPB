@@ -42,7 +42,7 @@ export const CreateCalendarEvents = () => {
     obj2 = obj2.map(ob4 => ob4[0])
     
 
-    console.log(obj2)
+
 
     
     let standingEvents = {title: '',

@@ -21,9 +21,9 @@ const CurrentOrderInfo = () => {
     <div className = "currentOrderInfo">
       <label>Customer:</label>
       <select id="customers" name="customers" onChange={handleChange}>
-        {customers.map(customer =>
+        {customers ? customers.map(customer => 
           <option key={customer[2]} value={customer[2]}>{customer[2]}</option> 
-        )}
+        ) : ''}
       </select>
       
       <label>Delivery Date:</label>

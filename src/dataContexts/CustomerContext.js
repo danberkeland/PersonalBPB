@@ -8,7 +8,7 @@ export const CustomerContext = createContext();
 export const CustomerProvider = (props) => {
 
     const [customers, setCustomer] = useState([]);
-    const [chosen, setChosen] = useState();
+    const [chosen, setChosen] = useState('');
 
     useEffect(() => {
         const apiUrl = "https://y3uhetle25.execute-api.us-east-2.amazonaws.com/test";

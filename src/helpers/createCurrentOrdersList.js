@@ -16,10 +16,10 @@ export const CreateCurrentOrdersList = () => {
     let standingDate = convertDatetoStandingDate(orderDate);
 
     let orderList
-    let cartList = orders.filter(order => order[0] === BPBDate && order[8] === chosen)
-      .map(order => [order[2],order[7],order[8]])
-    let standingList = standing.filter(standing => standing[0] === standingDate && standing[8] === chosen)
-      .map(order => [order[2],order[7],order[8]])
+    let cartList = orders ? orders.filter(order => order[0] === BPBDate && order[8] === chosen)
+      .map(order => [order[2],order[7],order[8]]) : []
+    let standingList = standing ? standing.filter(standing => standing[0] === standingDate && standing[8] === chosen)
+      .map(order => [order[2],order[7],order[8]]) : []
 
 
     if (cartList.length>0){

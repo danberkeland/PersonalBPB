@@ -1,24 +1,19 @@
-import React, { useContext } from 'react';
-import { OrdersContext } from '../dataContexts/OrdersContext';
-import { CustomerContext } from '../dataContexts/CustomerContext';
+import React from 'react';
 
-import { convertDatetoBPBDate } from '../helpers/convertDatetoBPBDate'
+import { CreateCurrentOrdersList } from '../helpers/createCurrentOrdersList';
 
 
 const CurrentOrderList = () => {
 
-  const [orders, setOrder, orderDate, setOrderDate] = useContext(OrdersContext);
-  const [customers, setCustomer, chosen, setChosen] = useContext(CustomerContext);
+  let orderList = CreateCurrentOrdersList();
 
   return (        
     <div className = "currentOrderList"> 
-       {orders.map(order => order[8] === chosen && order[0] === convertDatetoBPBDate(orderDate) && parseInt(order[2]) > 0 ?
+       {orderList.map(order => 
           <React.Fragment>
-          <label>{order[7]}</label>
-          <input type="text" id={order[8]} name={order[8]} placeholder={order[2]}></input>
-          </React.Fragment> : ''
-       )}   
-      
+          <label>{order[1]}</label>
+          <input type="text" id={order[2]} name={order[2]} placeholder={order[0]}></input>
+          </React.Fragment>)}     
     </div>   
   );
 }

@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { CustomerContext } from '../dataContexts/CustomerContext';
 import { RouteContext } from '../dataContexts/RouteContext';
 import { OrdersContext } from '../dataContexts/OrdersContext';
-import { convertDatetoBPBDate } from "../helpers/convertDatetoBPBDate";
+import { convertDatetoBPBDate } from "../helpers/dateTimeHelpers";
 
 const CurrentOrderInfo = () => {
 

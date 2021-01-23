@@ -8,10 +8,15 @@ export const convertDatetoBPBDate = (ISODate) => {
     
 }
 
+export const convertDatetoStandingDate = (entry) => {
+    let jsDate= new Date(entry)
+    return jsDate.getDay().toString();
+}
+
 export const tomorrow = () => {
     const today = new Date()
     const tomorrow = new Date(today)
     tomorrow.setDate(tomorrow.getDate()+1)
-    return tomorrow.toISOString().split('T')[0];
+    return toString(tomorrow.toISOString().split('T')[0]);
 }
 

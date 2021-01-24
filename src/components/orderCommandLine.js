@@ -1,13 +1,25 @@
-import React from 'react';
+import React,{ useContext } from 'react';
+import { CustomerContext } from '../dataContexts/CustomerContext';
 
+function OrderCommandLine() {
 
-function orderCommandLine() {
+  const [customers, setCustomer, chosen, setChosen] = useContext(CustomerContext);
+
+  const checkForCustomerName = (entry) => {
+    for (let cust of customers) {
+      console.log(cust[2])
+      if (entry.includes(cust[2]) || entry.includes(cust[0])) {
+        setChosen(cust[2]);
+        document.getElementById("customers").value = cust[2];
+      };
+    };
+  };
 
   const handleInput =(e) => {
       if (e.key === "Enter") {
-        console.log("Oh yeah!")
-      }
-      
+        checkForCustomerName(e.target.value)
+        document.getElementById("orderCommand").value = '';
+      }      
   }
 
   return (        
@@ -18,4 +30,4 @@ function orderCommandLine() {
   );
 }
 
-export default orderCommandLine;
+export default OrderCommandLine;

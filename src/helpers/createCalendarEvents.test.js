@@ -28,7 +28,7 @@ describe('Create Standing Array', () => {
         expect(CreateStandingArray(StandingInput, 'Novo')).toEqual(expect.arrayContaining([]))
     });
     test('deals with the error when to standing order array is loaded', () => {
-        expect(CreateStandingArray(null, StandingChosen)).toThrow()
+        expect(CreateStandingArray(null, StandingChosen)).toEqual("No Standing Order Loaded ...")
     });
 });
 
@@ -54,6 +54,6 @@ describe('Create Cart Date Array', () => {
     });
     
     test('deals with the error when to standing order array is loaded', () => {
-        expect(CreateCartDateArray(null, CartChosen)).toThrow()
+        expect(CreateCartDateArray(null, CartChosen)).toEqual("No Orders Loaded ...")
     });
 });

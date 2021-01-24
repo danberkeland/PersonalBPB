@@ -13,13 +13,26 @@ export const ChangeBPBDatetoJSDate = (date) => {
 
 export const CreateStandingArray = (standing, chosen) => {
 
+    if (!standing) {
+        alert("No Standing Order Loaded ...")
+        return "No Standing Order Loaded ..."
+    }
+
     let standingArray = standing ? standing.filter(order => order[8] === chosen) : [];
     standingArray = standingArray.map(order => Number(order[0])-1)
     let uniqueStanding = new Set(standingArray);
     return [...uniqueStanding]
+
+    
 }
 
 export const CreateCartDateArray = (orders, chosen) => {
+
+    if (!orders) {
+        alert("No Orders Loaded ...")
+        return "No Orders Loaded ..."
+    }
+
     let cartDateArray = orders ? orders.filter(order => order[8] === chosen) : [];
     cartDateArray = cartDateArray.map(order => ChangeBPBDatetoJSDate(order[0]))
     let uniqueCart = new Set(cartDateArray);

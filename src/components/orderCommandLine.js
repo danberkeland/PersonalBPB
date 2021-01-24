@@ -7,7 +7,6 @@ function OrderCommandLine() {
 
   const checkForCustomerName = (entry) => {
     for (let cust of customers) {
-      console.log(cust[2])
       if (entry.includes(cust[2]) || entry.includes(cust[0])) {
         setChosen(cust[2]);
         document.getElementById("customers").value = cust[2];

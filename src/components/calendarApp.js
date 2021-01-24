@@ -15,13 +15,10 @@ const CalendarApp = (props) => {
     const calendarEvents = CreateCalendarEvents();
 
     const handleDateSelect = (selectInfo) => {
-
         setOrderDate(selectInfo.dateStr)
     }
 
-
-    return(
-        
+    return(      
             <div className="calendarApp">
                 <FullCalendar
                     plugins={[ dayGridPlugin, interactionPlugin ]}

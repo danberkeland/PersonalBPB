@@ -5,12 +5,25 @@ import { CustomerContext } from '../dataContexts/CustomerContext';
 import { StandingContext } from '../dataContexts/StandingContext';
 
 
-export const CreateStandingArray =(standing, chosen) => {
+export const ChangeBPBDatetoJSDate = (date) => {
+    let BPBDateParts = date.split('/')
+    let JSDate = BPBDateParts[2]+"-"+BPBDateParts[0]+"-"+BPBDateParts[1]
+    return JSDate;
+}
+
+export const CreateStandingArray = (standing, chosen) => {
 
     let standingArray = standing ? standing.filter(order => order[8] === chosen) : [];
     standingArray = standingArray.map(order => Number(order[0])-1)
     let uniqueStanding = new Set(standingArray);
     return [...uniqueStanding]
+}
+
+export const CreateCartDateArray = (orders, chosen) => {
+    let cartDateArray = orders ? orders.filter(order => order[8] === chosen) : [];
+    cartDateArray = cartDateArray.map(order => ChangeBPBDatetoJSDate(order[0]))
+    let uniqueCart = new Set(cartDateArray);
+    return [...uniqueCart]
 }
 
 
@@ -21,12 +34,7 @@ export const CreateCalendarEvents = () => {
     const [standing, setStanding] = useContext(StandingContext)
 
     let backToStandingArray = CreateStandingArray(standing, chosen);
-
-    let cartDateArray = orders ? orders.filter(order => order[8] === chosen) : [];
-    cartDateArray = cartDateArray.map(order => order[0])
-    let uniqueCart = new Set(cartDateArray);
-    let backToCartArray = [...uniqueCart]
-    console.log(orderDate)
+    let cartDateArray = CreateCartDateArray(orders, chosen);
 
     
     let cartDateBlankArray = orders ? orders.filter(order => order[8] === chosen) : [];
@@ -62,9 +70,9 @@ export const CreateCalendarEvents = () => {
                         display: 'background'}]
 
     calendarEvents.push(standingEvents)
-    for (let order of backToCartArray) {
+    for (let order of cartDateArray) {
         let newEvent = {title: '',
-                    date: order[0],
+                    date: order,
                     display: 'background'}
         calendarEvents.push(newEvent)
     }

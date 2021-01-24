@@ -16,7 +16,8 @@ export const CustomerProvider = (props) => {
         .then(res => res.json())
         .then(data => setCustomer(data.body.sort(function(a,b){return a[2]>b[2] ? 1 : -1;})));
         
-    })
+    },[])
+
     return (
         <CustomerContext.Provider value={[customers, setCustomer, chosen, setChosen]}>
             {props.children}

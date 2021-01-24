@@ -6,6 +6,33 @@ import { StandingContext } from '../dataContexts/StandingContext';
 
 import { convertDatetoBPBDate, convertDatetoStandingDate } from '../helpers/dateTimeHelpers';
 
+
+
+export const CreateCartList = (orders, BPBDate, chosen) => {
+  let cartList = orders ? orders.filter(order => order[0] === BPBDate && order[8] === chosen)
+                                .map(order => [order[2],order[7],order[8]]) : [];
+  return cartList;
+}
+
+export const CreateStandingList = (standing, standingDate, chosen) => {
+  let standingList = standing ? standing.filter(standing => standing[0] === standingDate && standing[8] === chosen)
+                                .map(order => [order[2],order[7],order[8]]) : [];
+  return standingList;
+}
+
+export const CreateOrderList = (cartList, standingList) => {
+  let orderList;
+  if (cartList.length>0){
+    orderList = cartList;
+  } else if (standingList.length>0){
+    orderList = standingList;
+  } else {
+    orderList = []
+  }
+  return orderList
+}
+
+
 export const CreateCurrentOrdersList = () => {
 
     const [orders, setOrder, orderDate, setOrderDate] = useContext(OrdersContext);
@@ -15,20 +42,10 @@ export const CreateCurrentOrdersList = () => {
     let BPBDate = convertDatetoBPBDate(orderDate)
     let standingDate = convertDatetoStandingDate(orderDate);
 
-    let orderList
-    let cartList = orders ? orders.filter(order => order[0] === BPBDate && order[8] === chosen)
-      .map(order => [order[2],order[7],order[8]]) : []
-    let standingList = standing ? standing.filter(standing => standing[0] === standingDate && standing[8] === chosen)
-      .map(order => [order[2],order[7],order[8]]) : []
+    let cartList = CreateCartList(orders, BPBDate, chosen);
+    let standingList = CreateStandingList(standing, standingDate, chosen);
 
-
-    if (cartList.length>0){
-      orderList = cartList;
-    } else if (standingList.length>0){
-      orderList = standingList;
-    } else {
-      orderList = []
-    }
+    let orderList = CreateOrderList (cartList, standingList);
 
     return orderList
     

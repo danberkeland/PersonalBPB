@@ -63,9 +63,9 @@ export const CreateCalendarEvents = () => {
         let i = prop.split('/')
         let prop2 = i[2]+"-"+i[0]+"-"+i[1]
         obj2.push([prop2,holder[prop]])
-
-    obj2 = obj2.filter(ob3 => ob3[1] === 0)
     }
+    obj2 = obj2.filter(ob3 => ob3[1] === 0)
+    
 
     obj2 = obj2.map(ob4 => ob4[0])
     

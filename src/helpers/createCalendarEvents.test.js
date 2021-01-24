@@ -7,6 +7,8 @@ describe('Change BPB Date to JS Date', () => {
 })
 
 
+window.alert = jest.fn();
+
 // Create Standing Array
 
 let StandingInput = [
@@ -44,9 +46,11 @@ let CartInput = [["01/23/2021","CR006","1","170","na","na","AM North","Morning B
 let CartChosen = "Ascendo Cafe";
 let expectedCartArray = ["2021-01-23","2021-01-24"];
 
+
+
 describe('Create Cart Date Array', () => {
-    test('returns array in proper format', () => {   
-        expect(CreateCartDateArray(CartInput, CartChosen)).toEqual(expect.arrayContaining(expectedCartArray))
+    test('returns array in proper format', () => {  
+        expect(CreateCartDateArray(CartInput, CartChosen)).toEqual(expect.arrayContaining(expectedCartArray));
     });
     
     test('returns a blank array if no standing order for customer is available', () => {
@@ -54,6 +58,7 @@ describe('Create Cart Date Array', () => {
     });
     
     test('deals with the error when to standing order array is loaded', () => {
-        expect(CreateCartDateArray(null, CartChosen)).toEqual("No Orders Loaded ...")
+        expect(CreateCartDateArray(null, CartChosen)).toEqual("No Orders Loaded ...");
+        window.alert.mockClear();
     });
 });

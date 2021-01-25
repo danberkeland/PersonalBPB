@@ -19,7 +19,7 @@ const CalendarApp = (props) => {
     }
 
     return(      
-            <div className="calendarApp">
+            <div className="calendarApp" id="test">
                 <FullCalendar
                     plugins={[ dayGridPlugin, interactionPlugin ]}
                     defaultView="dayGridMonth"

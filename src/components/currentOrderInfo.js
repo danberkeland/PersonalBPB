@@ -21,7 +21,7 @@ const CurrentOrderInfo = () => {
     <React.Fragment>
     <h2>Cart Order for {chosen}</h2>  
     <div className = "currentOrderInfo">
-      <label>Customer:</label>
+      <label id="test">Customer:</label>
       <select id="customers" name="customers" onChange={handleChange}>
         {customers ? customers.map(customer => 
           <option key={customer[2]} value={customer[2]}>{customer[2]}</option> 

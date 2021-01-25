@@ -1,29 +1,24 @@
 import { CreateStandingArray, CreateCartDateArray, ChangeBPBDatetoJSDate } from './createCalendarEvents'
 
+import { mockCartInput, mockStandingInput } from './mockAPIdata/mockAPIdata';
+
 describe('Change BPB Date to JS Date', () => {
-    test('converts date format from BPB to JS', () => {
+    test('converts date format from presentational ("01/20/2020") to functional ("2020-01-20")', () => {
         expect(ChangeBPBDatetoJSDate("01/20/2020")).toEqual(expect.stringContaining("2020-01-20"))
     })
 })
 
 
-window.alert = jest.fn();
-
-// Create Standing Array
-
-let StandingInput = [
-    ["Day","ItemCode","Quantity","CustNum","PO","routeOverride","route","ItemName","CustomerName"],
-    ["2","CR001","5","178","na","na","AM Pastry","Plain Croissant (Baked)","French Hospital"],
-    ["3","CR002","5","178","na","na","AM Pastry","Chocolate Croissant (Baked)","French Hospital"],
-    ["1","FR004","30","87","na","na","Pick up SLO","Dutch Torpedo","Sando's Deli"],
-    ["3","FR004","30","87","na","na","Pick up SLO","Dutch Torpedo","Sando's Deli"]];
+window.alert = jest.fn(); // Eliminates an irrelevant message that kept showing up in test report
 
 
+let StandingInput = mockStandingInput();
 let StandingChosen = "French Hospital";
 let expectedStandingArray = [1,2];
 
+
 describe('Create Standing Array', () => {
-    test('returns array in proper format', () => {   
+    test('returns array in proper format (i.e. "[1,2]")', () => {   
         expect(CreateStandingArray(StandingInput, StandingChosen)).toEqual(expect.arrayContaining(expectedStandingArray))
     });
     test('returns a blank array if no standing order for customer is available', () => {
@@ -35,21 +30,13 @@ describe('Create Standing Array', () => {
 });
 
 
-
-// Create Cart Date Array
-
-let CartInput = [["01/23/2021","CR006","1","170","na","na","AM North","Morning Bun (Baked)","15 degree C"],
-    ["01/23/2021","CR001","1","170","na","na","AM North","Plain Croissant (Baked)","15 degree C"],
-    ["01/23/2021","CR005","4","52","na","na","AM Pastry","Almond Croissant (Baked)","Ascendo Cafe"],
-    ["01/24/2021","CR001","4","52","na","na","AM Pastry","Plain Croissant (Baked)","Ascendo Cafe"]];
-
+let CartInput = mockCartInput()
 let CartChosen = "Ascendo Cafe";
 let expectedCartArray = ["2021-01-23","2021-01-24"];
 
 
-
 describe('Create Cart Date Array', () => {
-    test('returns array in proper format', () => {  
+    test('returns array in proper format (i.e. "["2021-01-23","2021-01-24"]")', () => {  
         expect(CreateCartDateArray(CartInput, CartChosen)).toEqual(expect.arrayContaining(expectedCartArray));
     });
     
@@ -59,6 +46,6 @@ describe('Create Cart Date Array', () => {
     
     test('deals with the error when to standing order array is loaded', () => {
         expect(CreateCartDateArray(null, CartChosen)).toEqual("No Orders Loaded ...");
-        window.alert.mockClear();
+        window.alert.mockClear();  // Eliminates an irrelevant message that kept showing up in test report
     });
 });

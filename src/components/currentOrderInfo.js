@@ -5,8 +5,6 @@ import { OrdersContext } from '../dataContexts/OrdersContext';
 import { convertDatetoBPBDate } from "../helpers/dateTimeHelpers";
 
 
-
-
 const CurrentOrderInfo = () => {
 
   const [customers, setCustomer, chosen, setChosen] = useContext(CustomerContext);

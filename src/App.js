@@ -13,6 +13,8 @@ import { CustomerProvider } from './dataContexts/CustomerContext';
 import { RouteProvider } from './dataContexts/RouteContext';
 import { OrdersProvider } from './dataContexts/OrdersContext';
 import { StandingProvider } from './dataContexts/StandingContext';
+import { ProductProvider } from './dataContexts/ProductsContext';
+
 
 import './App.css';
 
@@ -21,29 +23,33 @@ import './App.css';
 function App() {
 
   return (
+    
     <CustomerProvider>
       <RouteProvider>
         <OrdersProvider>
           <StandingProvider>
-            <div className = "mainContainer">
-              <div className = "calendarContainer">
-                <CalendarApp />
+            <ProductProvider>
+              <div className = "mainContainer">
+                <div className = "calendarContainer">
+                  <CalendarApp />
+                </div>
+                <div className = "centralContainer">
+                  <CurrentOrderInfo />   
+                  <CurrentOrderList />    
+                  <OrderCommandLine />
+                  <OrderEntryButtons />
+                </div>   
+    
+                <div className = "rightContainer">
+                  <RecentOrderList />
+                </div>   
               </div>
-              <div className = "centralContainer">
-                <CurrentOrderInfo />   
-                <CurrentOrderList />    
-                <OrderCommandLine />
-                <OrderEntryButtons />
-              </div>   
-
-              <div className = "rightContainer">
-                <RecentOrderList />
-              </div>   
-            </div>
+            </ProductProvider>
           </StandingProvider>
         </OrdersProvider>
       </RouteProvider>
     </CustomerProvider>
+    
   );
 }
 

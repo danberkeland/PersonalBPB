@@ -1,25 +1,36 @@
 import React,{ useContext } from 'react';
 import { CustomerContext } from '../dataContexts/CustomerContext';
+import { OrdersContext } from '../dataContexts/OrdersContext';
+import { ProductsContext } from '../dataContexts/ProductsContext';
+
+import { interpretEntry } from '../helpers/entryBarInterpreter'
 
 function OrderCommandLine() {
 
   const [customers, setCustomer, chosen, setChosen] = useContext(CustomerContext);
+  const [orders, setOrder, orderDate, setOrderDate] = useContext(OrdersContext);
+  const [products, setProduct] = useContext(ProductsContext);
 
-  const checkForCustomerName = (entry) => {
-    for (let cust of customers) {
-      if (entry.includes(cust[2]) || entry.includes(cust[0])) {
-        setChosen(cust[2]);
-        document.getElementById("customers").value = cust[2];
-      };
-    };
+  const setCurrentOrder = () => [];
+
+
+  const handleInput = (entry) => {
+      if (entry.key === "Enter") {
+        let [cust, JSdate, prodArray] = interpretEntry(entry.target.value, customers, products)
+        processEntry(cust, JSdate, prodArray)
+        document.getElementById("orderCommand").value = ''; //clear the command line
+      }      
   };
 
-  const handleInput =(e) => {
-      if (e.key === "Enter") {
-        checkForCustomerName(e.target.value)
-        document.getElementById("orderCommand").value = '';
-      }      
-  }
+  const processEntry = (cust, JSdate, prodArray) => {
+    if (cust) {setChosen(cust)};
+    if (JSdate) {setOrderDate(JSdate)};
+    if (prodArray) {
+      for (let prod of prodArray) {
+        setCurrentOrder(...orders,prod)
+      }
+    }
+  };
 
   return (        
     <div className = "orderCommandLine">

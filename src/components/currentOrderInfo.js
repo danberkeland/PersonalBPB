@@ -7,9 +7,9 @@ import { convertDatetoBPBDate } from "../helpers/dateTimeHelpers";
 
 const CurrentOrderInfo = () => {
 
-  const [customers, setCustomer, chosen, setChosen] = useContext(CustomerContext);
-  const [routes, setRoutes] = useContext(RouteContext);
-  const [orders, setOrder, orderDate, setOrderDate] = useContext(OrdersContext);
+  const { customers, chosen, setChosen } = useContext(CustomerContext);
+  const { routes } = useContext(RouteContext);
+  const { orderDate } = useContext(OrdersContext);
 
   const handleChange = e => {
     setChosen(e.target.value);
@@ -27,7 +27,7 @@ const CurrentOrderInfo = () => {
       </select>
       
       <label>Delivery Date:</label>
-      <input type="text" id="deliveryDate" name="deliveryDate" value={convertDatetoBPBDate(orderDate)}></input>
+      <input type="text" id="deliveryDate" name="deliveryDate" placeholder={convertDatetoBPBDate(orderDate)}></input>
       
       <label>Routes:</label>
       <select id="routes" name="routes">

@@ -1,6 +1,4 @@
 import React, { useState, createContext, useEffect } from 'react';
-import { tomorrow } from '../helpers/dateTimeHelpers';
-
 
 export const StandingContext = createContext();
 
@@ -20,7 +18,7 @@ export const StandingProvider = (props) => {
 
 
     return (
-        <StandingContext.Provider value={[standing, setStanding]}>
+        <StandingContext.Provider value={{standing, setStanding}}>
             {props.children}
         </StandingContext.Provider>
     );

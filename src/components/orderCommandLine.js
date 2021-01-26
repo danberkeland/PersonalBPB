@@ -7,9 +7,9 @@ import { interpretEntry } from '../helpers/entryBarInterpreter'
 
 function OrderCommandLine() {
 
-  const [customers, setCustomer, chosen, setChosen] = useContext(CustomerContext);
-  const [orders, setOrder, orderDate, setOrderDate] = useContext(OrdersContext);
-  const [products, setProduct] = useContext(ProductsContext);
+  const { customers, setChosen } = useContext(CustomerContext);
+  const { orders, setOrderDate } = useContext(OrdersContext);
+  const { products } = useContext(ProductsContext);
 
   const setCurrentOrder = () => [];
 

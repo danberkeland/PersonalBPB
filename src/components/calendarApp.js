@@ -1,4 +1,4 @@
-import React,{ useState, useContext } from "react";
+import React,{ useContext } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -8,9 +8,9 @@ import { OrdersContext } from '../dataContexts/OrdersContext';
 import { CreateCalendarEvents } from '../helpers/createCalendarEvents';
 
 
-const CalendarApp = (props) => {
+const CalendarApp = () => {
   
-    const [orders, setOrder, orderDate, setOrderDate] = useContext(OrdersContext);
+    const { setOrderDate } = useContext(OrdersContext);
 
     const calendarEvents = CreateCalendarEvents();
 
@@ -22,7 +22,6 @@ const CalendarApp = (props) => {
             <div className="calendarApp" id="test">
                 <FullCalendar
                     plugins={[ dayGridPlugin, interactionPlugin ]}
-                    defaultView="dayGridMonth"
                     aspectRatio={1}
                     contentHeight="auto"
                     eventBackgroundColor = "blue"

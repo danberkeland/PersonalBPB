@@ -19,7 +19,7 @@ export const CustomerProvider = (props) => {
     },[])
 
     return (
-        <CustomerContext.Provider value={[customers, setCustomer, chosen, setChosen]}>
+        <CustomerContext.Provider value={{customers, setCustomer, chosen, setChosen}}>
             {props.children}
         </CustomerContext.Provider>
     );   

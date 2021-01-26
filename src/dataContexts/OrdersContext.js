@@ -20,7 +20,7 @@ export const OrdersProvider = (props) => {
 
 
     return (
-        <OrdersContext.Provider value={[orders, setOrder, orderDate, setOrderDate]}>
+        <OrdersContext.Provider value={{orders, setOrder, orderDate, setOrderDate}}>
             {props.children}
         </OrdersContext.Provider>
     );

@@ -42,9 +42,9 @@ export const CreateCartDateArray = (orders, chosen) => {
 
 export const CreateCalendarEvents = () => {
 
-    const [orders, setOrder, orderDate, setOrderDate] = useContext(OrdersContext);
-    const [customers, setCustomer, chosen, setChosen] = useContext(CustomerContext);
-    const [standing, setStanding] = useContext(StandingContext)
+    const { orders, orderDate } = useContext(OrdersContext);
+    const { chosen } = useContext(CustomerContext);
+    const { standing } = useContext(StandingContext)
 
     let backToStandingArray = CreateStandingArray(standing, chosen);
     let cartDateArray = CreateCartDateArray(orders, chosen);

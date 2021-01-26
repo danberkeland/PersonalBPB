@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 
 import { OrdersContext } from '../dataContexts/OrdersContext';
 import { CustomerContext } from '../dataContexts/CustomerContext';
@@ -35,9 +35,9 @@ export const CreateOrderList = (cartList, standingList) => {
 
 export const CreateCurrentOrdersList = () => {
 
-    const [orders, setOrder, orderDate, setOrderDate] = useContext(OrdersContext);
-    const [customers, setCustomer, chosen, setChosen] = useContext(CustomerContext);
-    const [standing, setStanding] = useContext(StandingContext)
+    const { orders, orderDate } = useContext(OrdersContext);
+    const { chosen } = useContext(CustomerContext);
+    const { standing } = useContext(StandingContext)
    
     let BPBDate = convertDatetoBPBDate(orderDate)
     let standingDate = convertDatetoStandingDate(orderDate);

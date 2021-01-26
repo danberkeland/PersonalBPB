@@ -1,3 +1,4 @@
+/*
 import React, { useState, createContext, useEffect } from 'react';
 
 export const StandingContext = createContext();
@@ -26,7 +27,7 @@ export const StandingProvider = (props) => {
 
 
 
-
+*/
 
 
 

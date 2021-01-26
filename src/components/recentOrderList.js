@@ -2,7 +2,7 @@ import React from 'react';
 
 
 
-function recentOrderList({chosen, orders}) {
+function recentOrderList() {
   return (
       <React.Fragment>      
         <h2>Recent Orders</h2>

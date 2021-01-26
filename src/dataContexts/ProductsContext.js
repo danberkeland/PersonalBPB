@@ -1,3 +1,4 @@
+/*
 import React, { useState, createContext, useEffect } from 'react';
 
 
@@ -23,3 +24,5 @@ export const ProductProvider = (props) => {
     );   
     
 };
+
+*/

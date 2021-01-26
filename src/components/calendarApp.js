@@ -1,22 +1,11 @@
-import React,{ useContext } from "react";
+import React from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 
-import { OrdersContext } from '../dataContexts/OrdersContext';
-
-import { CreateCalendarEvents } from '../helpers/createCalendarEvents';
 
 
 const CalendarApp = () => {
-  
-    const { setOrderDate } = useContext(OrdersContext);
-
-    const calendarEvents = CreateCalendarEvents();
-
-    const handleDateSelect = (selectInfo) => {
-        setOrderDate(selectInfo.dateStr)
-    }
 
     return(      
             <div className="calendarApp" id="test">
@@ -25,13 +14,13 @@ const CalendarApp = () => {
                     aspectRatio={1}
                     contentHeight="auto"
                     eventBackgroundColor = "blue"
-                    dateClick = {handleDateSelect}
+                    // dateClick = {handleDateSelect}
                     headerToolbar ={{
                         start: 'title',
                         center: '',
                         end: 'prev,next'
                     }}
-                    events = {calendarEvents}        
+                    // events = {calendarEvents}        
                 />
             </div>
     );

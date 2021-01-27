@@ -1,3 +1,25 @@
+import React, { useState, createContext } from 'react';
+
+
+export const OrdersContext = createContext();
+
+
+export const OrdersProvider = (props) => {
+
+    const [orders, setOrder] = useState([]);
+
+    return (
+        <OrdersContext.Provider value={{ orders, setOrder }}>
+            {props.children}
+        </OrdersContext.Provider>
+    );   
+    
+};
+
+
+
+
+
 /*
 import React, { useState, createContext, useEffect } from 'react';
 import { tomorrow } from '../helpers/dateTimeHelpers';

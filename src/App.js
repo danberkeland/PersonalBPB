@@ -10,6 +10,8 @@ import RecentOrderList from './components/recentOrderList';
 
 
 import './App.css';
+import { CustomerProvider } from './dataContexts/CustomerContext';
+import { OrdersProvider } from './dataContexts/OrdersContext';
 
 
 
@@ -17,7 +19,8 @@ function App() {
 
   return (
     
-    
+    <CustomerProvider>
+    <OrdersProvider>
     <div className = "mainContainer">
       <div className = "calendarContainer">
         <CalendarApp />
@@ -32,6 +35,8 @@ function App() {
         <RecentOrderList />
       </div>   
     </div>
+    </OrdersProvider>
+    </CustomerProvider>
            
   );
 }

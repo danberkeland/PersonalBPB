@@ -1,3 +1,23 @@
+import React, { useState, createContext } from 'react';
+
+
+export const StandingContext = createContext();
+
+
+export const StandingProvider = (props) => {
+
+    const [standing, setStanding] = useState([]);
+
+    return (
+        <StandingContext.Provider value={{ standing, setStanding }}>
+            {props.children}
+        </StandingContext.Provider>
+    );   
+    
+};
+
+
+
 /*
 import React, { useState, createContext, useEffect } from 'react';
 

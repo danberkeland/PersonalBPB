@@ -1,7 +1,10 @@
 import React from 'react';
 
-import { CustomerLoad } from './dataContexts/CustomerContext'
+import { CustomerLoad, CustomerProvider } from './dataContexts/CustomerContext'
 import { OrdersLoad, OrdersProvider } from './dataContexts/OrdersContext'
+import { ProductsLoad, ProductsProvider } from './dataContexts/ProductsContext'
+import { StandingLoad, StandingProvider } from './dataContexts/StandingContext'
+import { CustDateRecentProvider } from './dataContexts/CustDateRecentContext'
 
 import CalendarApp from './components/calendarApp'
 import CurrentOrderInfo from './components/currentOrderInfo'
@@ -12,7 +15,7 @@ import RecentOrderList from './components/recentOrderList';
 
 
 import './App.css';
-import { CustomerProvider } from './dataContexts/CustomerContext';
+
 
 
 
@@ -23,24 +26,31 @@ function App() {
     
     <CustomerProvider>
       <OrdersProvider>
+        <ProductsProvider>
+          <StandingProvider>
+            <CustDateRecentProvider>
       
-      <CustomerLoad />
-      <OrdersLoad />
-      <div className = "mainContainer">
-        <div className = "calendarContainer">
-          <CalendarApp />
-        </div>
-        <div className = "centralContainer">
-          <CurrentOrderInfo />   
-          <CurrentOrderList />    
-          <OrderCommandLine />
-          <OrderEntryButtons />
-        </div> 
-        <div className = "rightContainer">
-          <RecentOrderList />
-        </div>   
-      </div>
-      
+              <StandingLoad />
+              <ProductsLoad />
+              <CustomerLoad />
+              <OrdersLoad />
+              <div className = "mainContainer">
+                <div className = "calendarContainer">
+                  <CalendarApp />
+                </div>
+                <div className = "centralContainer">
+                  <CurrentOrderInfo />   
+                  <CurrentOrderList />    
+                  <OrderCommandLine />
+                  <OrderEntryButtons />
+                </div> 
+                <div className = "rightContainer">
+                  <RecentOrderList />
+                </div>   
+              </div>
+            </CustDateRecentProvider>
+          </StandingProvider>
+        </ProductsProvider>
       </OrdersProvider>
     </CustomerProvider>
            

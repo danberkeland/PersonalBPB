@@ -44,17 +44,41 @@ export const CreateCartDateArray = (orders, chosen) => {
 }
 
 
+
+export const CreateBlankCartDateArray = (orders, chosen)=> {
+
+    let cartDateBlankArray = orders ? orders.filter(order => order[8] === chosen) : [];
+    cartDateBlankArray = cartDateBlankArray.map(order => ({'ddate':order[0], 'qqty': Number(order[2])}));
+    let holder = {}
+    cartDateBlankArray.forEach(d => holder.hasOwnProperty(d.ddate) ? holder[d.ddate] = holder[d.ddate] + d.qqty :
+        holder[d.ddate] = d.qqty);
+
+    let BlankDateArray = [];
+    for (var prop in holder) {
+        let i = prop.split('/')
+        let prop2 = i[2]+"-"+i[0]+"-"+i[1]
+        BlankDateArray.push([prop2,holder[prop]])
+    }
+
+    BlankDateArray = BlankDateArray.filter(ob3 => ob3[1] === 0)
+    BlankDateArray = BlankDateArray.map(ob4 => ob4[0])
+
+    return BlankDateArray
+
+}
+
+
 const CalendarApp = (props) => {
 
     const { delivDate, setDelivDate } = useContext(CustDateRecentContext);
     const { standing } = useContext(StandingContext);
     const { chosen } = useContext(CustDateRecentContext);
-    const { orders } = useContext(OrdersContext)
+    const { orders } = useContext(OrdersContext);
     
     
     let backToStandingArray = CreateStandingArray(standing,chosen);
-    let cartDateArray = CreateCartDateArray(orders,chosen)
-    let cartBlankDateArray = [];
+    let cartDateArray = CreateCartDateArray(orders,chosen);
+    let cartBlankDateArray = CreateBlankCartDateArray(orders,chosen);
     
 
     let standingEvents = {title: '',

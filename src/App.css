@@ -90,7 +90,7 @@ h2 {
   margin: 10px 0;
   padding: 20px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   column-gap: 10px;
   row-gap: 10px;
   background-color: rgb(174, 215, 218);

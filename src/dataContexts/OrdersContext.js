@@ -1,15 +1,16 @@
-import React, { useState, createContext } from 'react';
+import React, { useState, createContext, useContext, useEffect } from 'react';
 
+require('dotenv').config()
 
 export const OrdersContext = createContext();
 
 
 export const OrdersProvider = (props) => {
 
-    const [orders, setOrder] = useState([]);
+    const [orders, setOrders] = useState([]);
 
     return (
-        <OrdersContext.Provider value={{ orders, setOrder }}>
+        <OrdersContext.Provider value={{ orders, setOrders }}>
             {props.children}
         </OrdersContext.Provider>
     );   
@@ -17,41 +18,48 @@ export const OrdersProvider = (props) => {
 };
 
 
-
-
-
-/*
-import React, { useState, createContext, useEffect } from 'react';
-import { tomorrow } from '../helpers/dateTimeHelpers';
-
-
-export const OrdersContext = createContext();
-
-
-export const OrdersProvider = (props) => {
-
-    const [orders, setOrder] = useState([]);
-    const [orderDate, setOrderDate] =useState(tomorrow());
-
+const useFetch = url => {
+    const [state, setState] = useState({
+        loading: true,
+        error: false,
+        data: [],
+    });
 
     useEffect(() => {
-        const apiUrl = "https://3rhpf3rkcg.execute-api.us-east-2.amazonaws.com/done";
-        fetch(apiUrl)
-        .then(res => res.json())
-        .then(data => setOrder(data.body))
-    },[]);
+        fetch(url)
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(res.status);
+                }
+                return res.json();
+            })
+            .then(data => setState({loading: false, error: false, data: data.body }))
+            .catch(error => setState({ loading: false, error, data: [] }));
+    }, [url]);
 
+    return state;
+};
+
+
+
+
+export const OrdersLoad = () => {
+
+    const { loading, error, data } = useFetch(process.env.REACT_APP_API_ORDERS);
+
+    const { setOrders } = useContext(OrdersContext)
+
+    useEffect(() => {
+        data.sort(function(a,b){return a[2]>b[2] ? 1 : -1;})
+        setOrders(data);
+    });
 
     return (
-        <OrdersContext.Provider value={{orders, setOrder, orderDate, setOrderDate}}>
-            {props.children}
-        </OrdersContext.Provider>
-    );
-}
-
-
-*/
-
-
-
+        <React.Fragment>
+            { loading && <p>Loading Orders ...</p>}
+            { error && <p> error while Loading Orders!</p>}
+        </React.Fragment>
+    )
+    
+};
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { CurrentOrderInfoCustomer } from './currentOrderInfo/Customers'
+import { Customers } from './currentOrderInfo/Customers'
 
 const CurrentOrderInfo = () => {
 
@@ -7,7 +7,7 @@ const CurrentOrderInfo = () => {
     <React.Fragment>
     <h2>Cart Order for</h2>  
     <div className = "currentOrderInfo">
-      <CurrentOrderInfoCustomer />
+      <Customers />
       
       <label>Delivery Date:</label>
       <input type="text" id="deliveryDate" name="deliveryDate" placeholder="nothing"></input>

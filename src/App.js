@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { CustomerLoad } from './dataContexts/CustomerContext'
+import { OrdersLoad, OrdersProvider } from './dataContexts/OrdersContext'
 
 import CalendarApp from './components/calendarApp'
 import CurrentOrderInfo from './components/currentOrderInfo'
@@ -11,7 +13,7 @@ import RecentOrderList from './components/recentOrderList';
 
 import './App.css';
 import { CustomerProvider } from './dataContexts/CustomerContext';
-import { OrdersProvider } from './dataContexts/OrdersContext';
+
 
 
 
@@ -20,22 +22,26 @@ function App() {
   return (
     
     <CustomerProvider>
-    <OrdersProvider>
-    <div className = "mainContainer">
-      <div className = "calendarContainer">
-        <CalendarApp />
+      <OrdersProvider>
+      
+      <CustomerLoad />
+      <OrdersLoad />
+      <div className = "mainContainer">
+        <div className = "calendarContainer">
+          <CalendarApp />
+        </div>
+        <div className = "centralContainer">
+          <CurrentOrderInfo />   
+          <CurrentOrderList />    
+          <OrderCommandLine />
+          <OrderEntryButtons />
+        </div> 
+        <div className = "rightContainer">
+          <RecentOrderList />
+        </div>   
       </div>
-      <div className = "centralContainer">
-        <CurrentOrderInfo />   
-        <CurrentOrderList />    
-        <OrderCommandLine />
-        <OrderEntryButtons />
-      </div> 
-      <div className = "rightContainer">
-        <RecentOrderList />
-      </div>   
-    </div>
-    </OrdersProvider>
+      
+      </OrdersProvider>
     </CustomerProvider>
            
   );

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Customers } from './currentOrderInfo/Customers'
+import { DeliveryDate } from './currentOrderInfo/DeliveryDate'
 
 const CurrentOrderInfo = () => {
 
@@ -7,10 +8,8 @@ const CurrentOrderInfo = () => {
     <React.Fragment>
     <h2>Cart Order for</h2>  
     <div className = "currentOrderInfo">
-      <Customers />
-      
-      <label>Delivery Date:</label>
-      <input type="text" id="deliveryDate" name="deliveryDate" placeholder="nothing"></input>
+      <Customers /> 
+      <DeliveryDate />
       
       <label>Routes:</label>
       <select id="routes" name="routes">

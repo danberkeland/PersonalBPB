@@ -50,7 +50,7 @@ export const OrdersLoad = () => {
     const { setOrders } = useContext(OrdersContext)
 
     useEffect(() => {
-        data.sort(function(a,b){return a[2]>b[2] ? 1 : -1;})
+        data.sort(function(a,b){return a[0]>b[0] ? 1 : -1;})
         setOrders(data);
     });
 

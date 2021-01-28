@@ -9,7 +9,7 @@ export const CustDateRecentContext = createContext();
 
 export const CustDateRecentProvider = (props) => {
 
-    const [chosen, setChosen] = useState('Novo');
+    const [chosen, setChosen] = useState('');
     const [delivDate, setDelivDate] = useState(tomorrow());
     const [recent, setRecent] = useState([]);
     const [orderType, setOrderType] = useState(true)

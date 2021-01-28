@@ -50,7 +50,7 @@ export const ProductsLoad = () => {
     const { setProducts } = useContext(ProductsContext)
 
     useEffect(() => {
-        data.sort(function(a,b){return a[2]>b[2] ? 1 : -1;})
+        data.sort(function(a,b){return a[1]>b[1] ? 1 : -1;})
         setProducts(data);
     });
 

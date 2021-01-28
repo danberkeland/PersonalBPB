@@ -37,22 +37,22 @@ const CartEntryItem = () => {
         } else {
             orderList = []
         }
-
+        
         setThisOrder(orderList)
     }, [chosen, delivDate, orders, standing]);
 
     return (
-        <div className = "currentOrderList"> 
+        <React.Fragment> 
             <label>PRODUCT</label>
             <label>QTY</label>
             <label></label>
             {thisOrder.map(order => 
-                <React.Fragment>
+                <React.Fragment key={uuidv4()}>
                     <label key={uuidv4()}>{order[1]}</label>
                     <input type="text" key={uuidv4()} id={order[1]} name={order[2]} placeholder={order[0]}></input>
                     <button key={uuidv4()}>REMOVE</button>
                 </React.Fragment>)}     
-        </div>   
+        </React.Fragment>   
     );
 };
 

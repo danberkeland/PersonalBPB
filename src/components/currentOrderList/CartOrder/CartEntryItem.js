@@ -43,6 +43,9 @@ const CartEntryItem = () => {
 
     return (
         <div className = "currentOrderList"> 
+            <label>PRODUCT</label>
+            <label>QTY</label>
+            <label></label>
             {thisOrder.map(order => 
                 <React.Fragment>
                     <label key={uuidv4()}>{order[1]}</label>

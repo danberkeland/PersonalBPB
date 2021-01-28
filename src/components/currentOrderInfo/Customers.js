@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { CustDateRecentContext } from '../../dataContexts/CustDateRecentContext';
@@ -10,27 +10,49 @@ import { tomorrow } from '../../helpers/dateTimeHelpers'
 export const Customers = () => {
 
     const { customers } = useContext(CustomerContext);
-    const { setChosen, setDelivDate, orderType } = useContext(CustDateRecentContext)
+    const { chosen, setChosen, setDelivDate, orderType } = useContext(CustDateRecentContext)
     const { orders } = useContext(OrdersContext)
+
+    const [wholeCustomers, setWholeCustomers] = useState();
+    const [specialCustomers, setSpecialCustomers] = useState();
+
+
+    useEffect(() => {
+            let special = orders.filter(order => order[3] === "9999")
+            special = special.map(order => ["","9999",order[8],order[6]])
+            let unique = special.map(ar => JSON.stringify(ar))
+                .filter((itm, idx, arr) => arr.indexOf(itm) === idx)
+                .map(str => JSON.parse(str))
+            if (unique[0] !== ['','','','']){
+                unique.unshift(['','','',''])
+            }
+            setSpecialCustomers(unique)
+        }, [orders]);
+    
+
+    useEffect(() => {
+            customers.sort(function(a,b){return a[2]>b[2] ? 1 : -1;})
+            if (customers[0] !== ['','','','']){
+                customers.unshift(['','','',''])
+            }
+            setWholeCustomers(customers)  
+        },[customers]);
+    
 
     const handleChange = e => {
         setChosen(e.target.value);
         setDelivDate(tomorrow())
-      }
-    
-    customers.sort(function(a,b){return a[2]>b[2] ? 1 : -1;})
-
-    let special = orders.filter(order => order[3] === "9999")
-    special = special.map(order => ["","9999",order[8],order[6]])
+        }
+   
 
     return (
         <React.Fragment>
         <label>Customers:</label>
-        <select id = "customers" name="customers" onChange={handleChange}>
+        <select id = "customers" name="customers" value={chosen} onChange={handleChange}>
             {orderType ? 
-                customers.map((customer) => 
+                wholeCustomers ? wholeCustomers.map((customer) => 
                     <option key = {uuidv4()} value={customer[2]}>{customer[2]}</option>
-                ) : special.map((customer) => 
+                ) : '' : specialCustomers.map((customer) => 
                     <option key = {uuidv4()} value={customer[2]}>{customer[2]}</option>
                 )}
         </select>

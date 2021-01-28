@@ -45,7 +45,7 @@ const useFetch = url => {
 
 export const CustomerLoad = () => {
 
-    const { loading, error, data } = useFetch(process.env.REACT_APP_API_CUSTOMERS);
+    const { loading, error, data } = useFetch(process.env.REACT_APP_API_CUSTOMERS,[]);
 
     const { setCustomer } = useContext(CustomerContext)
 

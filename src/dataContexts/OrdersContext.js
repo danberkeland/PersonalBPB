@@ -45,14 +45,15 @@ const useFetch = url => {
 
 export const OrdersLoad = () => {
 
-    const { loading, error, data } = useFetch(process.env.REACT_APP_API_ORDERS);
+    console.log("rendering again")
+    const { loading, error, data } = useFetch(process.env.REACT_APP_API_ORDERS, []);
 
     const { setOrders } = useContext(OrdersContext)
 
     useEffect(() => {
         data.sort(function(a,b){return a[0]>b[0] ? 1 : -1;})
         setOrders(data);
-    });
+    },[data, setOrders]);
 
     return (
         <React.Fragment>

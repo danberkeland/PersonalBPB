@@ -37,7 +37,7 @@ const CartEntryItem = () => {
         } else {
             orderList = []
         }
-        
+
         setThisOrder(orderList)
     }, [chosen, delivDate, orders, standing]);
 

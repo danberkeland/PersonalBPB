@@ -45,7 +45,7 @@ const useFetch = url => {
 
 export const ProductsLoad = () => {
 
-    const { loading, error, data } = useFetch(process.env.REACT_APP_API_PRODUCTS);
+    const { loading, error, data } = useFetch(process.env.REACT_APP_API_PRODUCTS,[]);
 
     const { setProducts } = useContext(ProductsContext)
 

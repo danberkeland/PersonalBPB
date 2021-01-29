@@ -17,18 +17,22 @@ const PONotes = () => {
         } else {
             po = "na"
         }
+        document.getElementById('PONotes').value = '';
         setPonotes(po)
 
     },[chosen, delivDate, orders, setPonotes, thisOrder])
 
-    const handleNewPonote = () => {
-        return
+    const handleNewPonote = (e) => {
+        if (e.keyCode === 13) {
+            setPonotes(e.target.value)
+            document.getElementById('orderCommand').focus()
+        }
     };
 
     return (
         <React.Fragment>
             <label>PO/Notes:</label>
-            <input type="text" id="PONotes" name="PONotes" placeholder={ponotes} onChange={handleNewPonote}></input>
+            <input type="text" id="PONotes" name="PONotes" placeholder={ponotes} onKeyUp={handleNewPonote}></input>
         </React.Fragment>
     );
 };

@@ -114,7 +114,8 @@ const CalendarApp = (props) => {
         setDelivDate(selectInfo.dateStr)
     }
 
-    return(      
+    return(  
+        <React.Fragment> 
             <div className="calendarApp" id="test">
                 <FullCalendar
                     plugins={[ dayGridPlugin, interactionPlugin ]}
@@ -131,6 +132,7 @@ const CalendarApp = (props) => {
                     events = {calendarEvents}    
                 />
             </div>
+        </React.Fragment>
     );
   }
 

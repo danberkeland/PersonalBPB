@@ -28,14 +28,16 @@ const Routes = () => {
             ro = newRoute
         }
         setRoute(ro)
-
     },[chosen, delivDate, customers, setPonotes, setRoute, thisOrder])
 
+    const handleChange = e => {
+        setRoute(e.target.value);
+        }
 
     return (
         <React.Fragment>
             <label>Routes:</label>
-            <select id="routes" name="routes" value={route}>
+            <select id="routes" name="routes" value={route} onChange={handleChange}>
             {routes.map(ro =>  <option id="routes" name={ro}>{ro}</option>)}
             </select>
         </React.Fragment>

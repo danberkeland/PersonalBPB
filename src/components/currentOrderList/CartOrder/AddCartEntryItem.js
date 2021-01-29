@@ -44,7 +44,6 @@ const AddCartEntryItem = () => {
         } else {
             newOrderList = [newOrder, ...thisOrder]
         }
-        console.log(newOrderList)
         
         setThisOrder(newOrderList)
         document.getElementById("addedProdQty").value = '';

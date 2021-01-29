@@ -9,9 +9,10 @@ export const OrdersProvider = (props) => {
 
     const [orders, setOrders] = useState([]);
     const [ thisOrder, setThisOrder ] = useState([]);
-
+    const [ ponotes, setPonotes ] = useState('na')
+ 
     return (
-        <OrdersContext.Provider value={{ orders, setOrders, thisOrder, setThisOrder }}>
+        <OrdersContext.Provider value={{ orders, setOrders, thisOrder, setThisOrder, ponotes, setPonotes }}>
             {props.children}
         </OrdersContext.Provider>
     );   

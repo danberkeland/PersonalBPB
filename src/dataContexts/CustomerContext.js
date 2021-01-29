@@ -8,9 +8,11 @@ export const CustomerContext = createContext();
 export const CustomerProvider = (props) => {
 
     const [customers, setCustomer] = useState([]);
+    const [routes, setRoutes ] = useState(['Pick Up SLO','Pick up Carlton']);
+    const [route, setRoute ] = useState()
 
     return (
-        <CustomerContext.Provider value={{ customers, setCustomer }}>
+        <CustomerContext.Provider value={{ customers, setCustomer, routes, setRoutes, route, setRoute }}>
             {props.children}
         </CustomerContext.Provider>
     );   

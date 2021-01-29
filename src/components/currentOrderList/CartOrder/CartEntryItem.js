@@ -1,12 +1,11 @@
 import React, { useEffect, useContext, useCallback } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 
 import { OrdersContext } from '../../../dataContexts/OrdersContext';
 import { StandingContext } from '../../../dataContexts/StandingContext';
 
 import { convertDatetoBPBDate, convertDatetoStandingDate } from '../../../helpers/dateTimeHelpers';
 import { CustDateRecentContext } from '../../../dataContexts/CustDateRecentContext';
-import { ProductsContext } from '../../../dataContexts/ProductsContext';
+
 
 
 const CartEntryItem = () => {
@@ -14,7 +13,7 @@ const CartEntryItem = () => {
     const{ chosen, delivDate } = useContext(CustDateRecentContext)
     const { orders, thisOrder, setThisOrder } = useContext(OrdersContext)
     const { standing } = useContext(StandingContext)
-    const { setPickedProduct } = useContext(ProductsContext)
+    
 
 
     useEffect(() => {
@@ -23,10 +22,10 @@ const CartEntryItem = () => {
         let standingDate = convertDatetoStandingDate(delivDate);
 
         let cartList = orders ? orders.filter(order => order[0] === BPBDate && order[8] === chosen)
-                                .map(order => [order[2],order[7],order[8]]) : [];
+                                .map(order => [order[2],order[7],order[8],order[4],order[6]]) : [];
 
         let standingList = standing ? standing.filter(standing => standing[0] === standingDate && standing[8] === chosen)
-                                .map(order => [order[2],order[7],order[8]]) : [];
+                                .map(order => [order[2],order[7],order[8],order[4],order[6]]) : [];
 
 
         let orderList;
@@ -39,7 +38,7 @@ const CartEntryItem = () => {
         }
 
         setThisOrder(orderList)
-    }, [chosen, delivDate, orders, standing]);
+    }, [chosen, delivDate, orders, standing, setThisOrder]);
 
 
 
@@ -50,7 +49,6 @@ const CartEntryItem = () => {
         let index = newArray.findIndex(order => order[1] === item)
         newArray[index][0] = "0"
         setThisOrder(newArray)
-        console.log(newArray)
     }, [thisOrder, setThisOrder ])
 
 

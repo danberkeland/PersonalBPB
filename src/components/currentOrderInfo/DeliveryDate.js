@@ -9,7 +9,7 @@ export const DeliveryDate = () => {
     return (
         <React.Fragment>
             <label>Delivery Date:</label>
-            <input type="text" id="deliveryDate" name="deliveryDate" placeholder={delivDate}></input>
+            <input type="text" id="deliveryDate" name="deliveryDate" value={delivDate}></input>
         </React.Fragment>
     );
 };

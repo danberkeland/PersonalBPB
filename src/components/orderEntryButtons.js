@@ -18,8 +18,7 @@ function OrderEntryButtons() {
 
   const handleClear = () => {
     let newThisOrder = [...thisOrder]
-    newThisOrder = newThisOrder.map(order => ["0",order[1],order[2]])
-    console.log(newThisOrder)
+    newThisOrder = newThisOrder.map(order => ["0",order[1],order[2],order[3],order[4]])
     setThisOrder(newThisOrder);
 
   }

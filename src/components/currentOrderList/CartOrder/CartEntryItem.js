@@ -1,10 +1,12 @@
 import React, { useEffect, useContext, useCallback } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 import { OrdersContext } from '../../../dataContexts/OrdersContext';
 import { StandingContext } from '../../../dataContexts/StandingContext';
 
 import { convertDatetoBPBDate, convertDatetoStandingDate } from '../../../helpers/dateTimeHelpers';
 import { CustDateRecentContext } from '../../../dataContexts/CustDateRecentContext';
+import { ProductsContext } from '../../../dataContexts/ProductsContext';
 
 
 const CartEntryItem = () => {
@@ -12,6 +14,7 @@ const CartEntryItem = () => {
     const{ chosen, delivDate } = useContext(CustDateRecentContext)
     const { orders, thisOrder, setThisOrder } = useContext(OrdersContext)
     const { standing } = useContext(StandingContext)
+    const { setPickedProduct } = useContext(ProductsContext)
 
 
     useEffect(() => {
@@ -46,9 +49,9 @@ const CartEntryItem = () => {
         const newArray = [...thisOrder];
         let index = newArray.findIndex(order => order[1] === item)
         newArray[index][0] = "0"
-        console.log(thisOrder)
         setThisOrder(newArray)
-    }, [thisOrder, setThisOrder])
+        console.log(newArray)
+    }, [thisOrder, setThisOrder ])
 
 
     return (

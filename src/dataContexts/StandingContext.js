@@ -45,14 +45,14 @@ const useFetch = url => {
 
 export const StandingLoad = () => {
 
-    const { loading, error, data } = useFetch(process.env.REACT_APP_API_STANDING);
+    const { loading, error, data } = useFetch(process.env.REACT_APP_API_STANDING,[]);
 
     const { setStanding } = useContext(StandingContext)
 
     useEffect(() => {
         data.sort(function(a,b){return a[2]>b[2] ? 1 : -1;})
         setStanding(data);
-    });
+    },[data, setStanding]);
 
     return (
         <React.Fragment>

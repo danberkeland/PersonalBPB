@@ -1,5 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import React, { useEffect, useContext, useCallback } from 'react';
 
 import { OrdersContext } from '../../../dataContexts/OrdersContext';
 import { StandingContext } from '../../../dataContexts/StandingContext';
@@ -11,11 +10,9 @@ import { CustDateRecentContext } from '../../../dataContexts/CustDateRecentConte
 const CartEntryItem = () => {
 
     const{ chosen, delivDate } = useContext(CustDateRecentContext)
-    const { orders } = useContext(OrdersContext)
+    const { orders, thisOrder, setThisOrder } = useContext(OrdersContext)
     const { standing } = useContext(StandingContext)
 
-    const [thisOrder, setThisOrder] = useState([]);
-   
 
     useEffect(() => {
 
@@ -41,19 +38,38 @@ const CartEntryItem = () => {
         setThisOrder(orderList)
     }, [chosen, delivDate, orders, standing]);
 
+
+
+    const handleRemove = useCallback((e) => {
+        let itemSearch = e.target.id + "item";
+        let item = document.getElementById(itemSearch).name;
+        const newArray = [...thisOrder];
+        let index = newArray.findIndex(order => order[1] === item)
+        newArray[index][0] = "0"
+        console.log(thisOrder)
+        setThisOrder(newArray)
+    }, [thisOrder, setThisOrder])
+
+
     return (
         <React.Fragment> 
             <label>PRODUCT</label>
             <label>QTY</label>
             <label></label>
             {thisOrder.map(order => 
-                <React.Fragment key={uuidv4()}>
-                    <label key={uuidv4()}>{order[1]}</label>
-                    <input type="text" key={uuidv4()} id={order[1]} name={order[2]} placeholder={order[0]}></input>
-                    <button key={uuidv4()}>REMOVE</button>
-                </React.Fragment>)}     
-        </React.Fragment>   
-    );
+
+                order[0] === "0" ? <React.Fragment key={order[1]+"blank"}>
+                    </React.Fragment> :
+
+                <React.Fragment key={order[1]+"frag"}>
+                    <label key={order[1]+"label"}>{order[1]}</label>
+                    <input type="text" key={order[1]+"item"} id={order[1]+"item"} name={order[1]} placeholder={order[0]}></input>
+                    <button onClick={handleRemove} key={order[1]+"button"} id={order[1]}>REMOVE</button>
+                </React.Fragment> 
+            )}  
+        </React.Fragment>
+        
+    )
 };
 
 export default CartEntryItem

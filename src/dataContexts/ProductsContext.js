@@ -51,8 +51,9 @@ export const ProductsLoad = () => {
 
     useEffect(() => {
         data.sort(function(a,b){return a[1]>b[1] ? 1 : -1;})
+        data.unshift(['','','','','','','','','','','','','','','','','','','']);
         setProducts(data);
-    });
+    },[data, setProducts]);
 
     return (
         <React.Fragment>

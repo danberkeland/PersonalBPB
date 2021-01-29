@@ -8,9 +8,10 @@ export const OrdersContext = createContext();
 export const OrdersProvider = (props) => {
 
     const [orders, setOrders] = useState([]);
+    const [ thisOrder, setThisOrder ] = useState([]);
 
     return (
-        <OrdersContext.Provider value={{ orders, setOrders }}>
+        <OrdersContext.Provider value={{ orders, setOrders, thisOrder, setThisOrder }}>
             {props.children}
         </OrdersContext.Provider>
     );   
@@ -45,7 +46,6 @@ const useFetch = url => {
 
 export const OrdersLoad = () => {
 
-    console.log("rendering again")
     const { loading, error, data } = useFetch(process.env.REACT_APP_API_ORDERS, []);
 
     const { setOrders } = useContext(OrdersContext)

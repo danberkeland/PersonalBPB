@@ -52,7 +52,7 @@ export const CustomerLoad = () => {
     useEffect(() => {
         data.sort(function(a,b){return a[2]>b[2] ? 1 : -1;})
         setCustomer(data);
-    });
+    },[data, setCustomer]);
 
     return (
         <React.Fragment>

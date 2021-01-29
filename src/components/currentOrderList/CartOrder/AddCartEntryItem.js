@@ -5,13 +5,12 @@ import { CustDateRecentContext } from '../../../dataContexts/CustDateRecentConte
 import { OrdersContext } from '../../../dataContexts/OrdersContext';
 import { ProductsContext } from '../../../dataContexts/ProductsContext'
 
-import { convertDatetoBPBDate } from '../../../helpers/dateTimeHelpers'
 
 const AddCartEntryItem = () => {
 
     const { products } = useContext(ProductsContext)
-    const { orders, setOrders } = useContext(OrdersContext)
-    const { delivDate, chosen } = useContext(CustDateRecentContext)
+    const { thisOrder, setThisOrder } = useContext(OrdersContext)
+    const { chosen } = useContext(CustDateRecentContext)
 
     const [ pickedProduct, setPickedProduct ] = useState();
     const [ productList, setProductList ] = useState();
@@ -19,8 +18,8 @@ const AddCartEntryItem = () => {
 
     useEffect(() => {
         setProductList(products)
+        },[products]);
 
-    },[products]);
 
     const handleChange = e => {
         setPickedProduct(e.target.value)
@@ -30,10 +29,11 @@ const AddCartEntryItem = () => {
     // THIS IS NOT FINISHED!!!  NEED TO FILL IN THE NAS ON NEW ORDER!!!
     const handleAdd = () => {
         let qty = document.getElementById("addedProdQty").value
-        let BPBDate = convertDatetoBPBDate(delivDate)
-        let newOrder = [BPBDate, "na", qty, "na", "na", "na", "na", pickedProduct, chosen]
-        let newOrderList = [newOrder, ...orders]
-        setOrders(newOrderList)
+        let newOrder = [qty, pickedProduct, chosen]
+        let newOrderList = [newOrder, ...thisOrder]
+        setThisOrder(newOrderList)
+        document.getElementById("addedProdQty").value = '';
+        setPickedProduct('');
     }
 
     return (
@@ -45,7 +45,7 @@ const AddCartEntryItem = () => {
                 ) : ''
                 };
             </select>
-            <input type="text" id="addedProdQty" placeholder="0"></input>
+            <input type="text" id="addedProdQty"></input>
             <button onClick={handleAdd}>ADD</button>
         </div>
     );

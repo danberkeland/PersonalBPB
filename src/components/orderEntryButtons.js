@@ -6,8 +6,8 @@ import { OrdersContext } from '../dataContexts/OrdersContext';
 function OrderEntryButtons() {
 
   const { orderType, setOrderType } = useContext(CustDateRecentContext)
-  const { setChosen } = useContext(CustDateRecentContext)
-  const { thisOrder, setThisOrder } = useContext(OrdersContext)
+  const { setChosen, delivDate, chosen } = useContext(CustDateRecentContext)
+  const { thisOrder, setThisOrder, recentOrders, setRecentOrders } = useContext(OrdersContext)
 
   let type = orderType ? "Special" : "Whole";
 
@@ -20,12 +20,18 @@ function OrderEntryButtons() {
     let newThisOrder = [...thisOrder]
     newThisOrder = newThisOrder.map(order => ["0",order[1],order[2],order[3],order[4]])
     setThisOrder(newThisOrder);
+  }
 
+  const handleAddUpdate = () => {
+    let newRecentOrder = [delivDate,chosen]
+    const currentRecentOrders = [...recentOrders]
+    currentRecentOrders.push(newRecentOrder)
+    setRecentOrders(currentRecentOrders)
   }
 
   return (         
     <div className = "orderEntryButtons">
-      <button>Add/Update</button>
+      <button onClick={handleAddUpdate}>Add/Update</button>
       <button onClick={handleClear}>Clear Order</button>
       <button>Standing</button>
       <button onClick={handleChangeOrderType}>{type} Order</button>

@@ -5,12 +5,14 @@ import swal from '@sweetalert/with-react';
 import { CustDateRecentContext } from '../dataContexts/CustDateRecentContext';
 import { OrdersContext } from '../dataContexts/OrdersContext';
 
+import { convertDatetoBPBDate } from '../helpers/dateTimeHelpers'
+
 
 function OrderEntryButtons() {
 
   const { orderType, setOrderType } = useContext(CustDateRecentContext)
   const { setChosen, delivDate, chosen } = useContext(CustDateRecentContext)
-  const { thisOrder, setThisOrder, recentOrders, setRecentOrders } = useContext(OrdersContext)
+  const { orders, setOrders, thisOrder, setThisOrder, recentOrders, setRecentOrders } = useContext(OrdersContext)
 
   let type = orderType ? "Special" : "Whole";
 
@@ -26,11 +28,20 @@ function OrderEntryButtons() {
   }
 
   const handleAddUpdate = () => {
+
+    let getOrdersArray = [...orders]
+    let filteredOrders = getOrdersArray.filter(order => order[8]+order[0] !== chosen+convertDatetoBPBDate(delivDate))
+    let convertedThisOrder = thisOrder.map(order => [convertDatetoBPBDate(delivDate),'na,',order[0],'custNum','na',order[3],order[4],order[1],chosen])
+    for (let ord of convertedThisOrder){
+     filteredOrders.push(ord)
+    }
+    console.log(filteredOrders)
+    setOrders(filteredOrders)
+
     let newRecentOrder = [delivDate,chosen]
     let stringRecentOrder = JSON.stringify(newRecentOrder)
     const currentRecentOrders = [...recentOrders]
     let stringCurrentRecentOrders = JSON.stringify(currentRecentOrders)
-
     if (stringCurrentRecentOrders.indexOf(stringRecentOrder) !== -1){
       swal ({
         text: "Order Updated",

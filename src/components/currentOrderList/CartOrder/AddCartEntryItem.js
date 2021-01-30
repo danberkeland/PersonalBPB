@@ -3,6 +3,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { CustDateRecentContext } from '../../../dataContexts/CustDateRecentContext';
+import { CustomerContext } from '../../../dataContexts/CustomerContext';
 import { OrdersContext } from '../../../dataContexts/OrdersContext';
 import { ProductsContext } from '../../../dataContexts/ProductsContext'
 
@@ -10,8 +11,9 @@ import { ProductsContext } from '../../../dataContexts/ProductsContext'
 const AddCartEntryItem = () => {
 
     const { products, pickedProduct, setPickedProduct } = useContext(ProductsContext)
-    const { thisOrder, setThisOrder } = useContext(OrdersContext)
+    const { thisOrder, setThisOrder, ponotes } = useContext(OrdersContext)
     const { chosen } = useContext(CustDateRecentContext)
+    const { route } = useContext(CustomerContext)
 
     
     const [ productList, setProductList ] = useState();
@@ -35,7 +37,7 @@ const AddCartEntryItem = () => {
 
     const handleAdd = () => {
         let qty = document.getElementById("addedProdQty").value
-        let newOrder =[qty, pickedProduct, chosen]
+        let newOrder =[qty, pickedProduct, chosen, ponotes, route]
         let newOrderList = [...thisOrder]
         let prodToAdd = pickedProduct
         let prodIndex = thisOrder.findIndex(order => order[1] === prodToAdd)

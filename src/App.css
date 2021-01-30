@@ -81,15 +81,13 @@ h2 {
 
 .orderCommandLine {
   width: 100%;
-  border-radius: 10px;
-  padding: 20px;
+  border: 1px solid lightgrey;
+  padding: 3px;
   display: grid;
   grid-template-columns: 1fr;
-  column-gap: 10px;
-  row-gap: 10px;
-  background-color: rgb(220, 238, 240);
   flex-shrink: 1;
-  box-shadow: 10px 10px 5px grey;
+  background-color: none;
+
 }
 
 
@@ -98,8 +96,8 @@ h2 {
 .orderEntryButtons {
   width: 100%;
   border-radius: 10px;
-  margin: 10px 0;
-  padding: 20px;
+  margin: 5px 0;
+  padding: 10px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   column-gap: 10px;
@@ -110,7 +108,7 @@ h2 {
 }
 
 .orderEntryButtons button {
-  height: 50px;
+  height: 30px;
   font-size: 1.1em;
   border: none;
   border-radius: 5px;
@@ -166,7 +164,7 @@ h2 {
 
 .recentOrderListButton {
   box-sizing: border-box;
-  height: 50px;
+  height: 30px;
   width: 100%;
   margin: 10px 0;
   font-size: 1.2em;

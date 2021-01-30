@@ -39,9 +39,9 @@ function App() {
                   <CalendarApp />
                 </div>
                 <div className = "centralContainer">
-                  <CurrentOrderInfo />   
+                  <OrderCommandLine /> 
+                  <CurrentOrderInfo />  
                   <CurrentOrderList />    
-                  <OrderCommandLine />
                   <OrderEntryButtons />
                 </div> 
                 <div className = "rightContainer">

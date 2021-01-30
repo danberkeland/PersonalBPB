@@ -56,9 +56,10 @@ export const CustomerLoad = () => {
     },[data, setCustomer]);
 
 
+
     return (
         <React.Fragment>
-            { loading && <p> Loading Customer Data ...</p>}
+            { loading && <p> Updating Customer Info ...</p>}
             { error && <p> error while loading customers!</p>}
         </React.Fragment>
     )

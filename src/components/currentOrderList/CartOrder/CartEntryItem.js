@@ -51,6 +51,15 @@ const CartEntryItem = () => {
         setThisOrder(newArray)
     }, [thisOrder, setThisOrder ])
 
+    const handleChange = (e) => {
+        let newQty = e.target.value;
+        const arrayToManipulate = [...thisOrder];
+        console.log(e.target.name)
+        let productIndex = arrayToManipulate.findIndex(order => order[1] === e.target.name)
+        arrayToManipulate[productIndex][0] = newQty
+        setThisOrder(arrayToManipulate)
+    }
+
 
     return (
         <React.Fragment> 
@@ -64,8 +73,20 @@ const CartEntryItem = () => {
 
                 <React.Fragment key={order[1]+"frag"}>
                     <label key={order[1]+"label"}>{order[1]}</label>
-                    <input type="text" key={order[1]+"item"} id={order[1]+"item"} name={order[1]} placeholder={order[0]}></input>
-                    <button onClick={handleRemove} key={order[1]+"button"} id={order[1]}>REMOVE</button>
+                    <input  type="text" 
+                            key={order[1]+"item"} 
+                            id={order[1]+"item"} 
+                            name={order[1]} 
+                            placeholder={order[0]} 
+                            onChange = {handleChange}>
+                    </input>
+                    <button onClick={handleRemove} 
+                            key={order[1]+"button"} 
+                            id={order[1]}>
+                                
+                                REMOVE
+                                
+                    </button>
                 </React.Fragment> 
             )}  
         </React.Fragment>

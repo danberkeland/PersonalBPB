@@ -1,4 +1,7 @@
 import React, { useContext, useEffect } from 'react';
+
+import { v4 as uuidv4 } from 'uuid';
+
 import { CustDateRecentContext } from '../../dataContexts/CustDateRecentContext';
 import { CustomerContext } from '../../dataContexts/CustomerContext';
 import { OrdersContext } from '../../dataContexts/OrdersContext';
@@ -38,7 +41,7 @@ const Routes = () => {
         <React.Fragment>
             <label>Routes:</label>
             <select id="routes" name="routes" value={route} onChange={handleChange}>
-            {routes.map(ro =>  <option id="routes" name={ro}>{ro}</option>)}
+            {routes.map(ro =>  <option id="routes" key={uuidv4()} name={ro}>{ro}</option>)}
             </select>
         </React.Fragment>
     );

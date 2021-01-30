@@ -1,22 +1,21 @@
-import React, { useContext } from 'react';
-import { OrdersContext } from '../dataContexts/OrdersContext';
+import React from 'react';
+
+import RecentOrderList from './recentOrderList/RecentOrderList';
+import RecentOrderListButtons from './recentOrderList/RecentOrderListButtons';
 
 
 
-const RecentOrderList = () => {
-
-  const { recentOrders } = useContext(OrdersContext)
+const RecentOrders = () => {
 
   return (
-      <React.Fragment>      
-        <h2>Recent Orders</h2>
-        <div className = "recentOrdersList">
-          {recentOrders.map(order => <p>{order[0]+" "+order[1]}</p>)}      
+      <React.Fragment>  
+        <div className = "recentOrdersList">   
+        <RecentOrderList />
         </div>
-        <button>Upload</button><br />
-        <button>Remove Selected</button>
+        <RecentOrderListButtons />
+        
     </React.Fragment>  
   );
 }
 
-export default RecentOrderList;
+export default RecentOrders;

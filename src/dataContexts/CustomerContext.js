@@ -1,5 +1,6 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 
+
 require('dotenv').config()
 
 export const CustomerContext = createContext();
@@ -43,8 +44,6 @@ const useFetch = url => {
 };
 
 
-
-
 export const CustomerLoad = () => {
 
     const { loading, error, data } = useFetch(process.env.REACT_APP_API_CUSTOMERS,[]);
@@ -56,9 +55,10 @@ export const CustomerLoad = () => {
         setCustomer(data);
     },[data, setCustomer]);
 
+
     return (
         <React.Fragment>
-            { loading && <p>Loading Customers ...</p>}
+            { loading && <p> Loading Customer Data ...</p>}
             { error && <p> error while loading customers!</p>}
         </React.Fragment>
     )

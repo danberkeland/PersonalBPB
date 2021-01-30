@@ -1,4 +1,7 @@
 import React, { useContext } from 'react';
+
+import swal from '@sweetalert/with-react';
+
 import { CustDateRecentContext } from '../dataContexts/CustDateRecentContext';
 import { OrdersContext } from '../dataContexts/OrdersContext';
 
@@ -24,8 +27,20 @@ function OrderEntryButtons() {
 
   const handleAddUpdate = () => {
     let newRecentOrder = [delivDate,chosen]
+    let stringRecentOrder = JSON.stringify(newRecentOrder)
     const currentRecentOrders = [...recentOrders]
-    currentRecentOrders.push(newRecentOrder)
+    let stringCurrentRecentOrders = JSON.stringify(currentRecentOrders)
+
+    if (stringCurrentRecentOrders.indexOf(stringRecentOrder) !== -1){
+      swal ({
+        text: "Order Updated",
+        icon: "success",
+        buttons: false,
+        timer: 2000
+      })
+      } else {
+        currentRecentOrders.push(newRecentOrder)
+      }
     setRecentOrders(currentRecentOrders)
   }
 

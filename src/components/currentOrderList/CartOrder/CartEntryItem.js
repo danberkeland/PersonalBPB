@@ -51,10 +51,12 @@ const CartEntryItem = () => {
         setThisOrder(newArray)
     }, [thisOrder, setThisOrder ])
 
-    const handleChange = (e) => {
+    const handleInput = (e) => {
+        if(e.keyCode === 13){
+            document.getElementById("orderCommand").focus()
+        }
         let newQty = e.target.value;
         const arrayToManipulate = [...thisOrder];
-        console.log(e.target.name)
         let productIndex = arrayToManipulate.findIndex(order => order[1] === e.target.name)
         arrayToManipulate[productIndex][0] = newQty
         setThisOrder(arrayToManipulate)
@@ -78,7 +80,7 @@ const CartEntryItem = () => {
                             id={order[1]+"item"} 
                             name={order[1]} 
                             placeholder={order[0]} 
-                            onChange = {handleChange}>
+                            onKeyUp={e => handleInput(e)}>
                     </input>
                     <button onClick={handleRemove} 
                             key={order[1]+"button"} 

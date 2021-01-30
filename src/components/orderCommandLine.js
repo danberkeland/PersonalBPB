@@ -27,8 +27,22 @@ export const checkForDateOrDay = (entry) => {
 
 
 export const checkForProducts = (entry, products) => {
+  // test for regex match in string
+  let isThereAProduct = /\d+\s\w+/g.test(entry)
+  // if true, build array of matches
+  if (isThereAProduct){
+    const array = [...entry.matchAll(/\d+\s\w+/g)];
+    let splitArray = array.map(item => item[0].split(" "))
+    console.log(splitArray)
+  
+  // split array items into qty and other
+  // test other for product match
+  // map array for qty and prod
+  // map array of new order items
+  // return array
   return false
-}
+}}
+
 
 const interpretEntry = (entry, customers, products) => {
   const newCust = checkForCustomer(entry, customers);
@@ -46,7 +60,7 @@ const OrderCommandLine = () => {
   const { customers } = useContext(CustomerContext)
   const { products } = useContext(ProductsContext)
   const { setChosen, setDelivDate } = useContext(CustDateRecentContext)
-  const { orders, setThisOrder } = useContext(OrdersContext)
+  const { thisOrder, setThisOrder } = useContext(OrdersContext)
 
   const handleInput = (entry) => {
     if (entry.key === "Enter") {
@@ -61,7 +75,7 @@ const OrderCommandLine = () => {
     if (JSdate) {setDelivDate(JSdate)};
     if (prodArray) {
       for (let prod of prodArray) {
-        setThisOrder(...orders,prod)
+        setThisOrder(...thisOrder,prod)
       }
     }
     };

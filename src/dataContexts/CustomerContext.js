@@ -11,9 +11,17 @@ export const CustomerProvider = (props) => {
     const [customers, setCustomer] = useState([]);
     const [routes, setRoutes ] = useState(['Pick Up SLO','Pick up Carlton']);
     const [route, setRoute ] = useState()
+    const [wholeCustomers, setWholeCustomers] = useState();
+    const [specialCustomers, setSpecialCustomers] = useState();
 
     return (
-        <CustomerContext.Provider value={{ customers, setCustomer, routes, setRoutes, route, setRoute }}>
+        <CustomerContext.Provider value={{ 
+            customers, setCustomer, 
+            wholeCustomers, setWholeCustomers,
+            specialCustomers, setSpecialCustomers,
+            routes, setRoutes, 
+            route, setRoute 
+            }}>
             {props.children}
         </CustomerContext.Provider>
     );   

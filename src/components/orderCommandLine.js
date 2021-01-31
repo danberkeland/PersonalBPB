@@ -19,13 +19,11 @@ const OrderCommandLine = () => {
   const checkForCustomer = (entry, customers) => {
     let nextCustomer = chosen;
 
-    // MAKE CHECK FOR SPECIAL OR WHOLE
-    // If "retail" is in entry
-    if (entry.includes("retail")){
-      //    add everything after "retail" as new retail customer
+    if (entry.includes("retail ")){
       setorderTypeWhole(false)
-      //    return nextCustomer
-    }
+      let newRetailCustName = entry.replace("retail ","")
+      return(newRetailCustName)
+    } 
     
     for (let cust of customers) {
       if (entry.includes(cust[2]) /*Full name*/ || entry.includes(cust[0]) /* Nickname */) {
@@ -79,7 +77,6 @@ const OrderCommandLine = () => {
           if (prod[2] === item[1]){
             let newOrder = [item[0],prod[1], chosen, newPonote, newRoute] //ADD WHOLE OR RETAIL ATTRIBUTE
             ordersToUpdate.push(newOrder)
-            console.log(ordersToUpdate)
           }
   
         }
@@ -93,12 +90,10 @@ const OrderCommandLine = () => {
     let newCust = chosen
     let custEntry = await checkForCustomer(entry, customers)
     custEntry === '' ? newCust = chosen : newCust = custEntry
-    console.log(newCust)
 
     let newDelivDate = delivDate
     let delivDateEntry = await checkForDelivDate(entry)
     delivDateEntry === '' ? newDelivDate = delivDate : newDelivDate = delivDateEntry
-    console.log(newDelivDate)
 
     let newRoute = await checkForRoute()
 
@@ -138,7 +133,14 @@ const OrderCommandLine = () => {
   
   return (        
     <div className = "orderCommandLine">
-      <input type="text" id="orderCommand" name="orderCommand" onKeyUp={e => handleInput(e)}></input>
+      <input  type="text" 
+              id="orderCommand" 
+              className="orderCommand"
+              name="orderCommand" 
+              placeholder="Enter Customers, Orders, Dates ..."
+              onKeyUp={e => handleInput(e)}>
+
+      </input>
     </div>     
   );
 }

@@ -87,7 +87,10 @@ h2 {
   grid-template-columns: 1fr;
   flex-shrink: 1;
   background-color: none;
+}
 
+.orderCommand::placeholder  {
+  color: #cccccc
 }
 
 

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { CustDateRecentContext } from '../../dataContexts/CustDateRecentContext';
@@ -9,12 +9,15 @@ import { tomorrow } from '../../helpers/dateTimeHelpers'
 
 export const Customers = () => {
 
-    const { customers } = useContext(CustomerContext);
+    const { customers, 
+            wholeCustomers, 
+            setWholeCustomers, 
+            specialCustomers, 
+            setSpecialCustomers,
+         } = useContext(CustomerContext);
+
     const { chosen, setChosen, setDelivDate, orderTypeWhole } = useContext(CustDateRecentContext)
     const { orders } = useContext(OrdersContext)
-
-    const [wholeCustomers, setWholeCustomers] = useState();
-    const [specialCustomers, setSpecialCustomers] = useState();
 
 
     useEffect(() => {
@@ -27,7 +30,7 @@ export const Customers = () => {
                 unique.unshift(['','','',''])
             }
             setSpecialCustomers(unique)
-        }, [orders]);
+        }, [orders, setSpecialCustomers]);
     
 
     useEffect(() => {
@@ -36,7 +39,7 @@ export const Customers = () => {
                 customers.unshift(['','','',''])
             }
             setWholeCustomers(customers)  
-        },[customers]);
+        },[customers, setWholeCustomers]);
     
 
     const handleChange = e => {

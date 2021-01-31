@@ -7,76 +7,131 @@ import { ProductsContext } from '../dataContexts/ProductsContext';
 
 
 
-export const checkForCustomer = (entry, customers) => {
-  let nextCustomer = '';
-  for (let cust of customers) {
-    if (entry.includes(cust[2]) /*Full name*/ || entry.includes(cust[0]) /* Nickname */) {
-      nextCustomer = cust[2]; /*Full name*/
-      document.getElementById("customers").value = cust[2]; /*Full name*/
-    };
-  };
-  return nextCustomer;
-};
-
-
-
-export const checkForDateOrDay = (entry) => {
-  return false
-};
-
-
-
-export const checkForProducts = (entry, products) => {
-  // test for regex match in string
-  let isThereAProduct = /\d+\s\w+/g.test(entry)
-  // if true, build array of matches
-  if (isThereAProduct){
-    const array = [...entry.matchAll(/\d+\s\w+/g)];
-    let splitArray = array.map(item => item[0].split(" "))
-    console.log(splitArray)
-  
-  // split array items into qty and other
-  // test other for product match
-  // map array for qty and prod
-  // map array of new order items
-  // return array
-  return false
-}}
-
-
-const interpretEntry = (entry, customers, products) => {
-  const newCust = checkForCustomer(entry, customers);
-  const newJSDate = checkForDateOrDay(entry);
-  const newProductsArray = checkForProducts(entry, products);
-  return [newCust, newJSDate, newProductsArray];
-};
-
-
-
-
 
 const OrderCommandLine = () => {
 
-  const { customers } = useContext(CustomerContext)
+  const { customers, route } = useContext(CustomerContext)
   const { products } = useContext(ProductsContext)
-  const { setChosen, setDelivDate } = useContext(CustDateRecentContext)
-  const { thisOrder, setThisOrder } = useContext(OrdersContext)
+  const { chosen, setChosen, delivDate, setDelivDate, setorderTypeWhole } = useContext(CustDateRecentContext)
+  const { thisOrder, setThisOrder, ponotes } = useContext(OrdersContext)
 
-  const handleInput = (entry) => {
+
+  const checkForCustomer = (entry, customers) => {
+    let nextCustomer = chosen;
+
+    // MAKE CHECK FOR SPECIAL OR WHOLE
+    // If "retail" is in entry
+    if (entry.includes("retail")){
+      //    add everything after "retail" as new retail customer
+      setorderTypeWhole(false)
+      //    return nextCustomer
+    }
+    
+    for (let cust of customers) {
+      if (entry.includes(cust[2]) /*Full name*/ || entry.includes(cust[0]) /* Nickname */) {
+        nextCustomer = cust[2]; /*Full name*/
+        // make sure ui is on whole setting
+        document.getElementById("customers").value = cust[2]; /*Full name*/
+      };
+    };
+    return nextCustomer;
+  };
+  
+  
+  const checkForDelivDate = (entry) => {
+    //  check for Sun - Sat
+    //  check for today, tomorrow, 2day
+    //  check for date format mm/dd/yyyy
+    return ''
+  };
+
+
+  const checkForRoute = (entry) => {
+    // construct a list based on entry find for chosen and deliv date
+    // if no list
+    //    retrieve default route from customer profile
+    // else
+    //    retrieve route from list
+    return ''
+  };
+
+  const checkForPonotes = (entry) => {
+    // construct a list based on entry find for chosen and deliv date
+    // if no list
+    //    ponotes = ''
+    // else
+    //    retrieve ponotes from list
+    return ''
+  };
+  
+  
+  
+  const checkForProducts = (entry, newRoute, newPonote) => {
+    // test for regex match in string
+    let isThereAProduct = /\d+\s\w+/g.test(entry)
+    // if true, build array of matches
+    if (isThereAProduct){
+      const array = [...entry.matchAll(/\d+\s\w+/g)];
+      let enteredProducts = array.map(item => item[0].split(" "))
+      let ordersToUpdate = [];
+      for (let prod of products){
+        for (let item of enteredProducts){
+          if (prod[2] === item[1]){
+            let newOrder = [item[0],prod[1], chosen, newPonote, newRoute] //ADD WHOLE OR RETAIL ATTRIBUTE
+            ordersToUpdate.push(newOrder)
+            console.log(ordersToUpdate)
+          }
+  
+        }
+      }
+    
+    return ordersToUpdate
+  }}
+  
+  
+  const interpretEntry = async (entry) => {
+    let newCust = chosen
+    let custEntry = await checkForCustomer(entry, customers)
+    custEntry === '' ? newCust = chosen : newCust = custEntry
+    console.log(newCust)
+
+    let newDelivDate = delivDate
+    let delivDateEntry = await checkForDelivDate(entry)
+    delivDateEntry === '' ? newDelivDate = delivDate : newDelivDate = delivDateEntry
+    console.log(newDelivDate)
+
+    let newRoute = await checkForRoute()
+
+    let newPonotes = await checkForPonotes()
+
+    let newProductArray = await checkForProducts(entry, newRoute, newPonotes)
+
+    return [newCust, newDelivDate, newProductArray]
+  };
+
+  
+  
+
+  const handleInput = async (entry) => {
     if (entry.key === "Enter") {
-      let [cust, JSdate, prodArray] = interpretEntry(entry.target.value, customers, products)
-      processEntry(cust, JSdate, prodArray)
+      let [ newCust, newDelivDate, newProductArray ] = await interpretEntry(entry.target.value)
       document.getElementById("orderCommand").value = ''; //clear the command line
+      processEntry(newCust, newDelivDate, newProductArray)
     }      
   };
 
   const processEntry = (cust, JSdate, prodArray) => {
     if (cust) {setChosen(cust)};
     if (JSdate) {setDelivDate(JSdate)};
+    let newThisOrder = [...thisOrder]
     if (prodArray) {
       for (let prod of prodArray) {
-        setThisOrder(...thisOrder,prod)
+        // check to see if newProd is a duplicate
+        //    if so, find index and update
+        //    if not, push new prod
+        newThisOrder.push(prod)
       }
+      setThisOrder(newThisOrder)
     }
     };
   

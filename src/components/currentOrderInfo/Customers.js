@@ -10,7 +10,7 @@ import { tomorrow } from '../../helpers/dateTimeHelpers'
 export const Customers = () => {
 
     const { customers } = useContext(CustomerContext);
-    const { chosen, setChosen, setDelivDate, orderType } = useContext(CustDateRecentContext)
+    const { chosen, setChosen, setDelivDate, orderTypeWhole } = useContext(CustDateRecentContext)
     const { orders } = useContext(OrdersContext)
 
     const [wholeCustomers, setWholeCustomers] = useState();
@@ -49,9 +49,12 @@ export const Customers = () => {
         <React.Fragment>
         <label>Customers:</label>
         <select id = "customers" name="customers" value={chosen} onChange={handleChange}>
-            {orderType ? 
+            {orderTypeWhole ? 
                 wholeCustomers ? wholeCustomers.map((customer) => 
-                    <option key = {uuidv4()} value={customer[2]}>{customer[2]}</option>
+                    <option key = {uuidv4()} 
+                            value={customer[2]}>
+                                {customer[2]}
+                    </option>
                 ) : '' : specialCustomers.map((customer) => 
                     <option key = {uuidv4()} value={customer[2]}>{customer[2]}</option>
                 )}

@@ -7,11 +7,11 @@ import Routes from './currentOrderInfo/Routes'
 
 const CurrentOrderInfo = () => {
 
-const { orderType } = useContext(CustDateRecentContext)
+const { orderTypeWhole } = useContext(CustDateRecentContext)
 
   return (   
     <React.Fragment>
-      {orderType ? <h2>Wholesale Cart Order</h2> : <h2>Retail Cart Order</h2>}
+      {orderTypeWhole ? <h2>Wholesale Cart Order</h2> : <h2>Retail Cart Order</h2>}
         <div className = "currentOrderInfo">
           <Customers /> 
           <DeliveryDate />

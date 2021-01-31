@@ -12,11 +12,11 @@ export const CustDateRecentProvider = (props) => {
     const [chosen, setChosen] = useState('');
     const [delivDate, setDelivDate] = useState(tomorrow());
     const [recent, setRecent] = useState([]);
-    const [orderType, setOrderType] = useState(true)
+    const [orderTypeWhole, setorderTypeWhole] = useState(true)
 
     return (
         <CustDateRecentContext.Provider 
-            value={{ chosen, setChosen, delivDate, setDelivDate, recent, setRecent, orderType, setOrderType }}>
+            value={{ chosen, setChosen, delivDate, setDelivDate, recent, setRecent, orderTypeWhole, setorderTypeWhole }}>
             {props.children}
         </CustDateRecentContext.Provider>
     );   

@@ -10,14 +10,14 @@ import { convertDatetoBPBDate } from '../helpers/dateTimeHelpers'
 
 function OrderEntryButtons() {
 
-  const { orderType, setOrderType } = useContext(CustDateRecentContext)
+  const { orderTypeWhole, setorderTypeWhole } = useContext(CustDateRecentContext)
   const { setChosen, delivDate, chosen } = useContext(CustDateRecentContext)
   const { orders, setOrders, thisOrder, setThisOrder, recentOrders, setRecentOrders } = useContext(OrdersContext)
 
-  let type = orderType ? "Special" : "Whole";
+  let type = orderTypeWhole ? "Special" : "Whole";
 
-  const handleChangeOrderType = () => {
-    setOrderType(!orderType)
+  const handleChangeorderTypeWhole = () => {
+    setorderTypeWhole(!orderTypeWhole)
     setChosen('')
   }
 
@@ -60,7 +60,7 @@ function OrderEntryButtons() {
       <button onClick={handleAddUpdate}>Add/Update</button>
       <button onClick={handleClear}>Clear Order</button>
       <button>Standing</button>
-      <button onClick={handleChangeOrderType}>{type} Order</button>
+      <button onClick={handleChangeorderTypeWhole}>{type} Order</button>
     </div>    
   );
 }

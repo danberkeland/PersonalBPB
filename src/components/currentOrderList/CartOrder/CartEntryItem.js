@@ -1,80 +1,38 @@
-import React, { useEffect, useContext, useCallback } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 
 import { OrdersContext } from '../../../dataContexts/OrdersContext';
 import { StandingContext } from '../../../dataContexts/StandingContext';
-
-import { convertDatetoBPBDate, convertDatetoStandingDate } from '../../../helpers/dateTimeHelpers';
 import { CurrentDataContext } from '../../../dataContexts/CurrentDataContext';
 
-
+import { convertDatetoBPBDate } from '../../../helpers/dateTimeHelpers';
+import { createCartList, createStandingList, createCurrentOrderList } from '../../../helpers/sortDataHelpers';
 
 const CartEntryItem = () => {
 
     const{ chosen, delivDate } = useContext(CurrentDataContext)
-    const { orders, thisOrder, setThisOrder } = useContext(OrdersContext)
+    const { orders } = useContext(OrdersContext)
     const { standing } = useContext(StandingContext)
     
+    const [ presentedList, setPresentedList ] = useState()
 
 
+   
     useEffect(() => {
 
-        let BPBDate = convertDatetoBPBDate(delivDate)
-        let standingDate = convertDatetoStandingDate(delivDate);
+        let cartList = createCartList(chosen, delivDate, orders)
+        let standingList = createStandingList(chosen, delivDate, standing)
+        let orderList = createCurrentOrderList(cartList,standingList)
 
-        let cartList = orders ? orders.filter(order => order[0] === BPBDate && order[8] === chosen)
-                                .map(order => [ order[2],
-                                                order[7],
-                                                order[8],
-                                                order[4],
-                                                order[6],
-                                                order[2], 
-                                                order[3] !== "9999" ? true : false]
-                                                ) : [];
-
-        let standingList = standing ? standing.filter(standing => standing[0] === standingDate && standing[8] === chosen)
-                                .map(order => [ order[2],
-                                                order[7],
-                                                order[8],
-                                                order[4],
-                                                order[6],
-                                                order[2],
-                                                order[3] !== "9999" ? true : false]
-                                            
-                                                ) : [];
+        setPresentedList(orderList)
+    }, [ chosen, delivDate, orders, standing ]);
 
 
-        let orderList;
-        if (cartList.length>0){
-            orderList = cartList;
-        } else if (standingList.length>0){
-            orderList = standingList;
-        } else {
-            orderList = []
-        }
+    const handleInput = e => {
+        return
+    }
 
-        setThisOrder(orderList)
-    }, [chosen, delivDate, orders, standing, setThisOrder]);
-
-
-
-    const handleRemove = useCallback((e) => {
-        let itemSearch = e.target.id + "item";
-        let item = document.getElementById(itemSearch).name;
-        const newArray = [...thisOrder];
-        let index = newArray.findIndex(order => order[1] === item)
-        newArray[index][0] = "0"
-        setThisOrder(newArray)
-    }, [thisOrder, setThisOrder ])
-
-    const handleInput = (e) => {
-        if(e.keyCode === 13){
-            document.getElementById("orderCommand").focus()
-        }
-        let newQty = e.target.value;
-        const arrayToManipulate = [...thisOrder];
-        let productIndex = arrayToManipulate.findIndex(order => order[1] === e.target.name)
-        arrayToManipulate[productIndex][0] = newQty
-        setThisOrder(arrayToManipulate)
+    const handleRemove = e => {
+        return
     }
 
 
@@ -84,10 +42,10 @@ const CartEntryItem = () => {
             <label>QTY</label>
             <label>PREV</label>
             <label></label>
-            {/*}
-            {thisOrder.map(order => 
+            
+            {presentedList ? presentedList.map(order => 
 
-                order[0] === "0" && order[5] === "0"? <React.Fragment key={order[1]+"blank"}>
+                order[0] === convertDatetoBPBDate(delivDate) && order[5] === "0"? <React.Fragment key={order[1]+"blank"}>
                     </React.Fragment> :
 
                 <React.Fragment key={order[1]+"frag"}>
@@ -99,9 +57,10 @@ const CartEntryItem = () => {
                             id={order[1]+"item"} 
                             name={order[1]} 
                             placeholder={order[0]} 
-                            onKeyUp={e => handleInput(e)}>
+                            onKeyUp={e => handleInput(e)}
+                            >
                     </input>
-                    <label className="previous" key={order[1]+"label2"}>{order[0] === order[5] ? '' : order[5]}</label>
+                    <label className="previous">{order[5] === order[0 ? '' : order[5]]}</label>
                     <button onClick={handleRemove} 
                             key={order[1]+"button"} 
                             id={order[1]}>
@@ -110,7 +69,7 @@ const CartEntryItem = () => {
                                 
                     </button>
                 </React.Fragment> 
-            )}  */}
+            ) : ''}  
         </React.Fragment>
         
     )

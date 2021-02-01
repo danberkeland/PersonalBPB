@@ -12,6 +12,7 @@ const Routes = () => {
     const { thisOrder } = useContext(OrdersContext)
     const { chosen, delivDate, route, setRoute } = useContext(CurrentDataContext)
     
+    /*
     useEffect(()=> {
         let custArray = [...customers]
         custArray = custArray.map(cust => cust[3])
@@ -19,7 +20,9 @@ const Routes = () => {
         const newCustArray = Array.from(uniqueCustArray)
         setRoutes(newCustArray)
     },[customers, setRoutes])
+    */
 
+    /*
     useEffect(() => {
         let ro
         let newRoute
@@ -35,6 +38,8 @@ const Routes = () => {
         }
         
     },[chosen, delivDate, customers, setRoute, thisOrder])
+    */
+
 
     const handleChange = e => {
         setRoute(e.target.value);
@@ -44,7 +49,7 @@ const Routes = () => {
         <React.Fragment>
             <label>Routes:</label>
             <select id="routes" name="routes" value={route} onChange={handleChange}>
-            {routes.map(ro =>  <option id="routes" key={uuidv4()} name={ro}>{ro}</option>)}
+            {/* {routes.map(ro =>  <option id="routes" key={uuidv4()} name={ro}>{ro}</option>)} */}
             </select>
         </React.Fragment>
     );

@@ -1,4 +1,5 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
+import { useEffect } from 'react/cjs/react.development';
 import { v4 as uuidv4 } from 'uuid';
 
 import { CurrentDataContext } from '../../dataContexts/CurrentDataContext';
@@ -7,54 +8,51 @@ import { OrdersContext } from '../../dataContexts/OrdersContext';
 
 import { tomorrow } from '../../helpers/dateTimeHelpers'
 
+const createRetailOrderCustomers = orders => {
+    let special = orders.filter(order => order[3] === "9999")
+    special = special.map(order => ["","9999",order[8],order[6]])
+    let unique = special.map(ar => JSON.stringify(ar))
+        .filter((itm, idx, arr) => arr.indexOf(itm) === idx)
+        .map(str => JSON.parse(str))
+    if (unique[0] !== ['','','','']){
+        unique.unshift(['','','',''])
+    }
+    return unique
+}
+
+
 export const Customers = () => {
 
     const { customers } = useContext(CustomerContext);
-    const { chosen, setChosen, setDelivDate, orderTypeWhole } = useContext(CurrentDataContext)
     const { orders } = useContext(OrdersContext)
+    const { chosen, setChosen, setDelivDate, orderTypeWhole } = useContext(CurrentDataContext)
 
+    const [ customerGroup, setCustomerGroup ] = useState(customers)
 
-    useEffect(() => {
-            let special = orders.filter(order => order[3] === "9999")
-            special = special.map(order => ["","9999",order[8],order[6]])
-            let unique = special.map(ar => JSON.stringify(ar))
-                .filter((itm, idx, arr) => arr.indexOf(itm) === idx)
-                .map(str => JSON.parse(str))
-            if (unique[0] !== ['','','','']){
-                unique.unshift(['','','',''])
-            }
-            setRetailCustomers(unique)
-        }, [orders, setRetailCustomers]);
     
 
     useEffect(() => {
-            customers.sort(function(a,b){return a[2]>b[2] ? 1 : -1;})
-            if (customers[0] !== ['','','','']){
-                customers.unshift(['','','',''])
-            }
-            setWholeCustomers(customers)  
-        },[customers, setWholeCustomers]);
-    
+        orderTypeWhole ? setCustomerGroup(customers) : setCustomerGroup(createRetailOrderCustomers(orders))
+    },[ customers, orderTypeWhole, orders ])
 
+    
     const handleChange = e => {
         setChosen(e.target.value);
         setDelivDate(tomorrow())
         }
    
+    console.log(orderTypeWhole)
 
     return (
         <React.Fragment>
         <label>Customers:</label>
         <select id = "customers" name="customers" value={chosen} onChange={handleChange}>
-            {orderTypeWhole ? 
-                wholeCustomers ? wholeCustomers.map((customer) => 
+            {customerGroup ? customerGroup.map((customer) => 
                     <option key = {uuidv4()} 
                             value={customer[2]}>
                                 {customer[2]}
                     </option>
-                ) : '' : retailCustomers.map((customer) => 
-                    <option key = {uuidv4()} value={customer[2]}>{customer[2]}</option>
-                )}
+            ) : ''};
         </select>
         </React.Fragment>
     );

@@ -15,7 +15,7 @@ const OrderCommandLine = () => {
   const { chosen, setChosen, delivDate, setDelivDate, orderTypeWhole, setorderTypeWhole } = useContext(CurrentDataContext)
   const { thisOrder, setThisOrder } = useContext(OrdersContext)
 
-
+  /*
   const checkForCustomer = async (entry, customers) => {
     let nextCustomer = chosen;
     
@@ -31,24 +31,25 @@ const OrderCommandLine = () => {
       return(newRetailCustName)
     } 
     for (let cust of customers) {
-      if (entry.includes(cust[2]) /*Full name*/ || entry.includes(cust[0]) /* Nickname */) {
-        nextCustomer = cust[2]; /*Full name*/
+      if (entry.includes(cust[2]) || entry.includes(cust[0])) {
+        nextCustomer = cust[2];
         // make sure ui is on whole setting
-        document.getElementById("customers").value = cust[2]; /*Full name*/
+        document.getElementById("customers").value = cust[2];
       };
     };
     return nextCustomer;
   };
   
-  
+  */
+/*
   const checkForDelivDate = (entry) => {
     //  check for Sun - Sat
     //  check for today, tomorrow, 2day
     //  check for date format mm/dd/yyyy
     return ''
   };
-
-
+*/
+/*
   const checkForRoute = (entry) => {
     // construct a list based on entry find for chosen and deliv date
     // if no list
@@ -57,7 +58,8 @@ const OrderCommandLine = () => {
     //    retrieve route from list
     return ''
   };
-
+*/
+/*
   const checkForPonotes = (entry) => {
     // construct a list based on entry find for chosen and deliv date
     // if no list
@@ -66,13 +68,13 @@ const OrderCommandLine = () => {
     //    retrieve ponote from list
     return ''
   };
+ */ 
   
-  
-  
+ /* 
   const checkForProducts = (entry, newRoute, newPonote) => {
-    // test for regex match in string
+    
     let isThereAProduct = /\d+\s\w+/g.test(entry)
-    // if true, build array of matches
+   
     if (isThereAProduct){
       const array = [...entry.matchAll(/\d+\s\w+/g)];
       let enteredProducts = array.map(item => item[0].split(" "))
@@ -89,8 +91,8 @@ const OrderCommandLine = () => {
     
     return ordersToUpdate
   }}
-  
-  
+  */
+  /*
   const interpretEntry = async (entry) => {
     let newCust = chosen
     let custEntry = await checkForCustomer(entry, customers)
@@ -108,18 +110,20 @@ const OrderCommandLine = () => {
 
     return [newCust, newDelivDate, newProductArray]
   };
-
-  
+*/
   
 
   const handleInput = async (entry) => {
-    if (entry.key === "Enter") {
-      let [ newCust, newDelivDate, newProductArray ] = await interpretEntry(entry.target.value)
-      document.getElementById("orderCommand").value = ''; //clear the command line
-      processEntry(newCust, newDelivDate, newProductArray)
-    }      
+     // eslint-disable-next-line no-lone-blocks
+     if (entry.key === "Enter") {{ /*}
+        let [ newCust, newDelivDate, newProductArray ] = await interpretEntry(entry.target.value)
+        document.getElementById("orderCommand").value = ''; //clear the command line
+        processEntry(newCust, newDelivDate, newProductArray)
+    */}}
+    return
   };
 
+  /*
   const processEntry = (cust, JSdate, prodArray) => {
     if (cust) {setChosen(cust)};
     if (JSdate) {setDelivDate(JSdate)};
@@ -135,7 +139,7 @@ const OrderCommandLine = () => {
     }
     };
   
-  
+  */
   return (        
     <div className = "orderCommandLine">
       <input  type="text" 

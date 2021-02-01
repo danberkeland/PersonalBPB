@@ -53,11 +53,11 @@ const AddCartEntryItem = () => {
     return (
         <div className="addAProductToCart">
             <select id = "products" name="products" value={pickedProduct} onChange={handleChange}>
-            {
+            {/* } {
                 productList ? productList.map((product) => 
                     <option key = {uuidv4()} value={product[1]}>{product[1]}</option>
                 ) : ''
-                };
+                }; */}
             </select>
             <input type="text" id="addedProdQty"></input>
             <button onClick={handleAdd}>ADD</button>

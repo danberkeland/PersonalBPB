@@ -1,6 +1,6 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 
-import { sortAtoZDataByIndex } from '../helpers/sortDataHelpers'
+import { sortAtoZDataByIndex, addAnEmptyRowToTop } from '../helpers/sortDataHelpers'
 import { useFetch } from '../helpers/useFetch'
 
 require('dotenv').config()
@@ -31,7 +31,8 @@ export const CustomerLoad = () => {
     useEffect(() => {
         if(data){
             sortAtoZDataByIndex(data,2)
-            setCustomer(data);
+            let newData = addAnEmptyRowToTop(data)
+            setCustomer(newData);
         }
     },[data, setCustomer]);
 

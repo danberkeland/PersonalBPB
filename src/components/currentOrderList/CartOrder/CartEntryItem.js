@@ -84,6 +84,7 @@ const CartEntryItem = () => {
             <label>QTY</label>
             <label>PREV</label>
             <label></label>
+            {/*}
             {thisOrder.map(order => 
 
                 order[0] === "0" && order[5] === "0"? <React.Fragment key={order[1]+"blank"}>
@@ -109,7 +110,7 @@ const CartEntryItem = () => {
                                 
                     </button>
                 </React.Fragment> 
-            )}  
+            )}  */}
         </React.Fragment>
         
     )

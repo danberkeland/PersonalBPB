@@ -10,7 +10,7 @@ import { ProductsContext } from '../dataContexts/ProductsContext';
 
 const OrderCommandLine = () => {
 
-  const { customers, route, setRoute, retailCustomers, setRetailCustomers, } = useContext(CustomerContext)
+  const { customers, setRoute, retailCustomers, setRetailCustomers, } = useContext(CustomerContext)
   const { products } = useContext(ProductsContext)
   const { chosen, setChosen, delivDate, setDelivDate, orderTypeWhole, setorderTypeWhole } = useContext(CustDateRecentContext)
   const { thisOrder, setThisOrder } = useContext(OrdersContext)
@@ -18,7 +18,6 @@ const OrderCommandLine = () => {
 
   const checkForCustomer = async (entry, customers) => {
     let nextCustomer = chosen;
-    let custTypeWhole = orderTypeWhole
     
 
     if (entry.includes("retail ")){

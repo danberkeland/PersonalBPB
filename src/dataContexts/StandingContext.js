@@ -1,5 +1,8 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 
+import { sortAtoZDataByIndex } from '../helpers/sortDataHelpers'
+import { useFetch } from '../helpers/useFetch'
+
 require('dotenv').config()
 
 export const StandingContext = createContext();
@@ -18,31 +21,6 @@ export const StandingProvider = (props) => {
 };
 
 
-const useFetch = url => {
-    const [state, setState] = useState({
-        loading: true,
-        error: false,
-        data: [],
-    });
-
-    useEffect(() => {
-        fetch(url)
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error(res.status);
-                }
-                return res.json();
-            })
-            .then(data => setState({loading: false, error: false, data: data.body }))
-            .catch(error => setState({ loading: false, error, data: [] }));
-    }, [url]);
-
-    return state;
-};
-
-
-
-
 export const StandingLoad = () => {
 
     const { loading, error, data } = useFetch(process.env.REACT_APP_API_STANDING,[]);
@@ -50,7 +28,7 @@ export const StandingLoad = () => {
     const { setStanding } = useContext(StandingContext)
 
     useEffect(() => {
-        data.sort(function(a,b){return a[2]>b[2] ? 1 : -1;})
+        sortAtoZDataByIndex(data,2)
         setStanding(data);
     },[data, setStanding]);
 

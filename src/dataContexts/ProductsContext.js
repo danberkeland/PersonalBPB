@@ -1,6 +1,7 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 
-import { sortAtoZDataByIndex } from '../helpers/sortDataHelpers'
+import { sortAtoZDataByIndex,addAnEmptyRowToTop } from '../helpers/sortDataHelpers'
+import { useFetch } from '../helpers/useFetch'
 
 require('dotenv').config()
 
@@ -10,40 +11,14 @@ export const ProductsContext = createContext();
 export const ProductsProvider = (props) => {
 
     const [products, setProducts] = useState([]);
-    const [ pickedProduct, setPickedProduct ] = useState();
 
     return (
-        <ProductsContext.Provider value={{ products, setProducts, pickedProduct, setPickedProduct }}>
+        <ProductsContext.Provider value={{ products, setProducts }}>
             {props.children}
         </ProductsContext.Provider>
     );   
     
 };
-
-
-const useFetch = url => {
-    const [state, setState] = useState({
-        loading: true,
-        error: false,
-        data: [],
-    });
-
-    useEffect(() => {
-        fetch(url)
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error(res.status);
-                }
-                return res.json();
-            })
-            .then(data => setState({loading: false, error: false, data: data.body }))
-            .catch(error => setState({ loading: false, error, data: [] }));
-    }, [url]);
-
-    return state;
-};
-
-
 
 
 export const ProductsLoad = () => {
@@ -53,9 +28,11 @@ export const ProductsLoad = () => {
     const { setProducts } = useContext(ProductsContext)
 
     useEffect(() => {
+        if (data){
         sortAtoZDataByIndex(data,1)
-        data.unshift(['','','','','','','','','','','','','','','','','','','']);
-        setProducts(data);
+        let newData = addAnEmptyRowToTop(data)
+        setProducts(newData);
+        }   
     },[data, setProducts]);
 
     return (

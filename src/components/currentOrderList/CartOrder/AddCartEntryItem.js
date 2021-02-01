@@ -10,12 +10,12 @@ import { ProductsContext } from '../../../dataContexts/ProductsContext'
 
 const AddCartEntryItem = () => {
 
-    const { products, pickedProduct, setPickedProduct } = useContext(ProductsContext)
+    const { products } = useContext(ProductsContext)
     const { thisOrder, setThisOrder, ponote } = useContext(OrdersContext)
     const { chosen, orderTypeWhole } = useContext(CustDateRecentContext)
     const { route } = useContext(CustomerContext)
 
-    
+    const [ pickedProduct, setPickedProduct ] = useState();
     const [ productList, setProductList ] = useState();
     
 

@@ -2,16 +2,17 @@ import React, { useContext } from 'react';
 import { useEffect } from 'react/cjs/react.development';
 import { CurrentDataContext } from '../../dataContexts/CurrentDataContext';
 import { OrdersContext } from '../../dataContexts/OrdersContext';
+import { convertDatetoBPBDate } from '../../helpers/dateTimeHelpers';
 
 
 const PONotes = () => {
 
-    const { orders, thisOrder } = useContext(OrdersContext);
+    const { thisOrder } = useContext(OrdersContext);
     const { chosen, delivDate, ponote, setPonote } = useContext(CurrentDataContext)
 
     useEffect(() => {
         let po
-        let currentOrders = thisOrder.filter(order => order[2] === chosen );
+        let currentOrders = thisOrder.filter(order => order[2] === chosen && convertDatetoBPBDate(order[0]) === delivDate );
         if (currentOrders.length>0) {
             po = currentOrders[0][3]
         } else {
@@ -20,7 +21,7 @@ const PONotes = () => {
         document.getElementById('PONotes').value = '';
         setPonote(po)
 
-    },[chosen, delivDate, orders, setPonote, thisOrder])
+    },[chosen, delivDate, setPonote, thisOrder])
 
     const handleNewPonote = (e) => {
         if (e.keyCode === 13) {

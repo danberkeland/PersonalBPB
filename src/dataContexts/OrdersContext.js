@@ -1,6 +1,7 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 
 import { sortAtoZDataByIndex } from '../helpers/sortDataHelpers'
+import { useFetch } from '../helpers/useFetch'
 
 require('dotenv').config()
 
@@ -33,30 +34,6 @@ export const OrdersProvider = (props) => {
 };
 
 
-const useFetch = url => {
-    const [state, setState] = useState({
-        loading: true,
-        error: false,
-        data: [],
-    });
-
-    useEffect(() => {
-        fetch(url)
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error(res.status);
-                }
-                return res.json();
-            })
-            .then(data => setState({loading: false, error: false, data: data.body }))
-            .catch(error => setState({ loading: false, error, data: [] }));
-    }, [url]);
-
-    return state;
-};
-
-
-
 
 export const OrdersLoad = () => {
 
@@ -65,8 +42,10 @@ export const OrdersLoad = () => {
     const { setOrders } = useContext(OrdersContext)
 
     useEffect(() => {
-        sortAtoZDataByIndex(data,0)
-        setOrders(data);
+        if(data){
+            sortAtoZDataByIndex(data,0)
+            setOrders(data);
+        }
     },[data, setOrders]);
 
     return (

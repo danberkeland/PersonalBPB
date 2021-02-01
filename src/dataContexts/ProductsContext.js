@@ -29,9 +29,9 @@ export const ProductsLoad = () => {
 
     useEffect(() => {
         if (data){
-        sortAtoZDataByIndex(data,1)
-        let newData = addAnEmptyRowToTop(data)
-        setProducts(newData);
+            sortAtoZDataByIndex(data,1)
+            let newData = addAnEmptyRowToTop(data)
+            setProducts(newData);
         }   
     },[data, setProducts]);
 

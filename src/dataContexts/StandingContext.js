@@ -28,8 +28,10 @@ export const StandingLoad = () => {
     const { setStanding } = useContext(StandingContext)
 
     useEffect(() => {
-        sortAtoZDataByIndex(data,2)
-        setStanding(data);
+        if(data){
+            sortAtoZDataByIndex(data,2)
+            setStanding(data);
+        }   
     },[data, setStanding]);
 
     return (

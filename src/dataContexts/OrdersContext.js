@@ -12,18 +12,13 @@ export const OrdersProvider = (props) => {
 
     const [orders, setOrders] = useState([]);
     const [ thisOrder, setThisOrder ] = useState([]);
-    const [ ponote, setPonote ] = useState('na')
     const [ recentOrders, setRecentOrders ] = useState([]);
-    const [ thisOrderHasBeenChanged, setThisOrderHasBeenChanged ] = useState(false);
  
     return (
         <OrdersContext.Provider value={{ 
             orders, setOrders, 
             thisOrder, setThisOrder, 
-            ponote, setPonote,
             recentOrders, setRecentOrders,
-            thisOrderHasBeenChanged, setThisOrderHasBeenChanged
-
             }}>
 
             {props.children}

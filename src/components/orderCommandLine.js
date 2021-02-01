@@ -10,21 +10,27 @@ import { ProductsContext } from '../dataContexts/ProductsContext';
 
 const OrderCommandLine = () => {
 
-  const { customers, route } = useContext(CustomerContext)
+  const { customers, route, setRoute, retailCustomers, setRetailCustomers, } = useContext(CustomerContext)
   const { products } = useContext(ProductsContext)
-  const { chosen, setChosen, delivDate, setDelivDate, setorderTypeWhole } = useContext(CustDateRecentContext)
-  const { thisOrder, setThisOrder, ponotes } = useContext(OrdersContext)
+  const { chosen, setChosen, delivDate, setDelivDate, orderTypeWhole, setorderTypeWhole } = useContext(CustDateRecentContext)
+  const { thisOrder, setThisOrder } = useContext(OrdersContext)
 
 
-  const checkForCustomer = (entry, customers) => {
+  const checkForCustomer = async (entry, customers) => {
     let nextCustomer = chosen;
+    let custTypeWhole = orderTypeWhole
+    
 
     if (entry.includes("retail ")){
       setorderTypeWhole(false)
       let newRetailCustName = entry.replace("retail ","")
+      let newRetailCustList = [...retailCustomers]
+      let newRetailCustEntry = ["","9999",newRetailCustName,"Pick up Carlton"]
+      setRoute("Pick up Carlton")
+      newRetailCustList.push(newRetailCustEntry)
+      setRetailCustomers(newRetailCustList)
       return(newRetailCustName)
     } 
-    
     for (let cust of customers) {
       if (entry.includes(cust[2]) /*Full name*/ || entry.includes(cust[0]) /* Nickname */) {
         nextCustomer = cust[2]; /*Full name*/
@@ -56,9 +62,9 @@ const OrderCommandLine = () => {
   const checkForPonotes = (entry) => {
     // construct a list based on entry find for chosen and deliv date
     // if no list
-    //    ponotes = ''
+    //    ponote = ''
     // else
-    //    retrieve ponotes from list
+    //    retrieve ponote from list
     return ''
   };
   
@@ -75,7 +81,7 @@ const OrderCommandLine = () => {
       for (let prod of products){
         for (let item of enteredProducts){
           if (prod[2] === item[1]){
-            let newOrder = [item[0],prod[1], chosen, newPonote, newRoute] //ADD WHOLE OR RETAIL ATTRIBUTE
+            let newOrder = [item[0],prod[1], chosen, newPonote, newRoute, item[0], orderTypeWhole] // [ qty, prod, cust, po, route, so, ty ]
             ordersToUpdate.push(newOrder)
           }
   
@@ -118,7 +124,7 @@ const OrderCommandLine = () => {
   const processEntry = (cust, JSdate, prodArray) => {
     if (cust) {setChosen(cust)};
     if (JSdate) {setDelivDate(JSdate)};
-    let newThisOrder = [...thisOrder]
+    let newThisOrder = [...thisOrder] // [ qty, prod, cust, po, route, so ]
     if (prodArray) {
       for (let prod of prodArray) {
         // check to see if newProd is a duplicate
@@ -126,7 +132,7 @@ const OrderCommandLine = () => {
         //    if not, push new prod
         newThisOrder.push(prod)
       }
-      setThisOrder(newThisOrder)
+      setThisOrder(newThisOrder) // [ qty, prod, cust, po, route, so ]
     }
     };
   

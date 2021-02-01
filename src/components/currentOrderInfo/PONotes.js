@@ -6,7 +6,7 @@ import { OrdersContext } from '../../dataContexts/OrdersContext';
 
 const PONotes = () => {
 
-    const { orders, ponotes, setPonotes, thisOrder } = useContext(OrdersContext);
+    const { orders, ponote, setPonote, thisOrder } = useContext(OrdersContext);
     const { chosen, delivDate } = useContext(CustDateRecentContext)
 
     useEffect(() => {
@@ -18,13 +18,13 @@ const PONotes = () => {
             po = "na"
         }
         document.getElementById('PONotes').value = '';
-        setPonotes(po)
+        setPonote(po)
 
-    },[chosen, delivDate, orders, setPonotes, thisOrder])
+    },[chosen, delivDate, orders, setPonote, thisOrder])
 
     const handleNewPonote = (e) => {
         if (e.keyCode === 13) {
-            setPonotes(e.target.value)
+            setPonote(e.target.value)
             document.getElementById('orderCommand').focus()
         }
     };
@@ -32,7 +32,7 @@ const PONotes = () => {
     return (
         <React.Fragment>
             <label>PO/Notes:</label>
-            <input type="text" id="PONotes" name="PONotes" placeholder={ponotes} onKeyUp={handleNewPonote}></input>
+            <input type="text" id="PONotes" name="PONotes" placeholder={ponote} onKeyUp={handleNewPonote}></input>
         </React.Fragment>
     );
 };

@@ -22,10 +22,25 @@ const CartEntryItem = () => {
         let standingDate = convertDatetoStandingDate(delivDate);
 
         let cartList = orders ? orders.filter(order => order[0] === BPBDate && order[8] === chosen)
-                                .map(order => [order[2],order[7],order[8],order[4],order[6]]) : [];
+                                .map(order => [ order[2],
+                                                order[7],
+                                                order[8],
+                                                order[4],
+                                                order[6],
+                                                order[2], 
+                                                order[3] !== "9999" ? true : false]
+                                                ) : [];
 
         let standingList = standing ? standing.filter(standing => standing[0] === standingDate && standing[8] === chosen)
-                                .map(order => [order[2],order[7],order[8],order[4],order[6]]) : [];
+                                .map(order => [ order[2],
+                                                order[7],
+                                                order[8],
+                                                order[4],
+                                                order[6],
+                                                order[2],
+                                                order[3] !== "9999" ? true : false]
+                                            
+                                                ) : [];
 
 
         let orderList;
@@ -67,21 +82,25 @@ const CartEntryItem = () => {
         <React.Fragment> 
             <label>PRODUCT</label>
             <label>QTY</label>
+            <label>PREV</label>
             <label></label>
             {thisOrder.map(order => 
 
-                order[0] === "0" ? <React.Fragment key={order[1]+"blank"}>
+                order[0] === "0" && order[5] === "0"? <React.Fragment key={order[1]+"blank"}>
                     </React.Fragment> :
 
                 <React.Fragment key={order[1]+"frag"}>
-                    <label key={order[1]+"label"}>{order[1]}</label>
+                    <label key={order[1]+"label"}>{order[1]}</label>   
                     <input  type="text" 
+                            size="4"
+                            maxLength="5"
                             key={order[1]+"item"} 
                             id={order[1]+"item"} 
                             name={order[1]} 
                             placeholder={order[0]} 
                             onKeyUp={e => handleInput(e)}>
                     </input>
+                    <label className="previous" key={order[1]+"label2"}>{order[0] === order[5] ? '' : order[5]}</label>
                     <button onClick={handleRemove} 
                             key={order[1]+"button"} 
                             id={order[1]}>

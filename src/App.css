@@ -53,16 +53,20 @@ h2 {
   padding: 20px;
   border: none;
   display: grid;
-  grid-template-columns: 3fr 2fr 1fr;
-  column-gap: 10px;
+  grid-template-columns: 2fr .5fr .5fr 1fr;
   row-gap: 10px;
   flex-shrink: 1; 
 }
 
 .currentOrderList input {
   border: 1px solid gray;
-  width: 20%
+  width: 80%
   
+}
+
+.previous {
+  color: red;
+  font-weight: bold;
 }
 
 .addAProductToCart {

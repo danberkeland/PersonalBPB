@@ -11,8 +11,8 @@ import { ProductsContext } from '../../../dataContexts/ProductsContext'
 const AddCartEntryItem = () => {
 
     const { products, pickedProduct, setPickedProduct } = useContext(ProductsContext)
-    const { thisOrder, setThisOrder, ponotes } = useContext(OrdersContext)
-    const { chosen } = useContext(CustDateRecentContext)
+    const { thisOrder, setThisOrder, ponote } = useContext(OrdersContext)
+    const { chosen, orderTypeWhole } = useContext(CustDateRecentContext)
     const { route } = useContext(CustomerContext)
 
     
@@ -37,7 +37,7 @@ const AddCartEntryItem = () => {
 
     const handleAdd = () => {
         let qty = document.getElementById("addedProdQty").value
-        let newOrder =[qty, pickedProduct, chosen, ponotes, route]
+        let newOrder =[qty, pickedProduct, chosen, ponote, route, qty, orderTypeWhole] // [ qty, prod, cust, po, route, so, type ]
         let newOrderList = [...thisOrder]
         let prodToAdd = pickedProduct
         let prodIndex = thisOrder.findIndex(order => order[1] === prodToAdd)

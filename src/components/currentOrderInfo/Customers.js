@@ -12,8 +12,8 @@ export const Customers = () => {
     const { customers, 
             wholeCustomers, 
             setWholeCustomers, 
-            specialCustomers, 
-            setSpecialCustomers,
+            retailCustomers, 
+            setRetailCustomers,
          } = useContext(CustomerContext);
 
     const { chosen, setChosen, setDelivDate, orderTypeWhole } = useContext(CustDateRecentContext)
@@ -29,8 +29,8 @@ export const Customers = () => {
             if (unique[0] !== ['','','','']){
                 unique.unshift(['','','',''])
             }
-            setSpecialCustomers(unique)
-        }, [orders, setSpecialCustomers]);
+            setRetailCustomers(unique)
+        }, [orders, setRetailCustomers]);
     
 
     useEffect(() => {
@@ -58,7 +58,7 @@ export const Customers = () => {
                             value={customer[2]}>
                                 {customer[2]}
                     </option>
-                ) : '' : specialCustomers.map((customer) => 
+                ) : '' : retailCustomers.map((customer) => 
                     <option key = {uuidv4()} value={customer[2]}>{customer[2]}</option>
                 )}
         </select>

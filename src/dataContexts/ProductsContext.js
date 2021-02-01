@@ -1,5 +1,7 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 
+import { sortAtoZDataByIndex } from '../helpers/sortDataHelpers'
+
 require('dotenv').config()
 
 export const ProductsContext = createContext();
@@ -51,7 +53,7 @@ export const ProductsLoad = () => {
     const { setProducts } = useContext(ProductsContext)
 
     useEffect(() => {
-        data.sort(function(a,b){return a[1]>b[1] ? 1 : -1;})
+        sortAtoZDataByIndex(data,1)
         data.unshift(['','','','','','','','','','','','','','','','','','','']);
         setProducts(data);
     },[data, setProducts]);
@@ -64,4 +66,3 @@ export const ProductsLoad = () => {
     )
     
 };
-

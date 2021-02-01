@@ -1,5 +1,7 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 
+import { sortAtoZDataByIndex } from '../helpers/sortDataHelpers'
+
 require('dotenv').config()
 
 export const OrdersContext = createContext();
@@ -9,15 +11,18 @@ export const OrdersProvider = (props) => {
 
     const [orders, setOrders] = useState([]);
     const [ thisOrder, setThisOrder ] = useState([]);
-    const [ ponotes, setPonotes ] = useState('na')
+    const [ ponote, setPonote ] = useState('na')
     const [ recentOrders, setRecentOrders ] = useState([]);
+    const [ thisOrderHasBeenChanged, setThisOrderHasBeenChanged ] = useState(false);
  
     return (
         <OrdersContext.Provider value={{ 
             orders, setOrders, 
             thisOrder, setThisOrder, 
-            ponotes, setPonotes,
-            recentOrders, setRecentOrders 
+            ponote, setPonote,
+            recentOrders, setRecentOrders,
+            thisOrderHasBeenChanged, setThisOrderHasBeenChanged
+
             }}>
 
             {props.children}
@@ -60,7 +65,7 @@ export const OrdersLoad = () => {
     const { setOrders } = useContext(OrdersContext)
 
     useEffect(() => {
-        data.sort(function(a,b){return a[0]>b[0] ? 1 : -1;})
+        sortAtoZDataByIndex(data,0)
         setOrders(data);
     },[data, setOrders]);
 

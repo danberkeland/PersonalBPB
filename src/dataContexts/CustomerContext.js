@@ -1,5 +1,7 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 
+import { sortAtoZDataByIndex } from '../helpers/sortDataHelpers'
+
 
 require('dotenv').config()
 
@@ -12,13 +14,13 @@ export const CustomerProvider = (props) => {
     const [routes, setRoutes ] = useState(['Pick Up SLO','Pick up Carlton']);
     const [route, setRoute ] = useState()
     const [wholeCustomers, setWholeCustomers] = useState();
-    const [specialCustomers, setSpecialCustomers] = useState();
+    const [retailCustomers, setRetailCustomers] = useState();
 
     return (
         <CustomerContext.Provider value={{ 
             customers, setCustomer, 
             wholeCustomers, setWholeCustomers,
-            specialCustomers, setSpecialCustomers,
+            retailCustomers, setRetailCustomers,
             routes, setRoutes, 
             route, setRoute 
             }}>
@@ -59,10 +61,9 @@ export const CustomerLoad = () => {
     const { setCustomer } = useContext(CustomerContext)
 
     useEffect(() => {
-        data.sort(function(a,b){return a[2]>b[2] ? 1 : -1;})
+        sortAtoZDataByIndex(data,2)
         setCustomer(data);
     },[data, setCustomer]);
-
 
 
     return (

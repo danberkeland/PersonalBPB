@@ -6,13 +6,15 @@ import { CustDateRecentContext } from '../dataContexts/CustDateRecentContext';
 import { OrdersContext } from '../dataContexts/OrdersContext';
 
 import { convertDatetoBPBDate } from '../helpers/dateTimeHelpers'
+import { CustomerContext } from '../dataContexts/CustomerContext';
 
 
 function OrderEntryButtons() {
 
   const { orderTypeWhole, setorderTypeWhole } = useContext(CustDateRecentContext)
   const { setChosen, delivDate, chosen } = useContext(CustDateRecentContext)
-  const { orders, setOrders, thisOrder, setThisOrder, recentOrders, setRecentOrders } = useContext(OrdersContext)
+  const { orders, setOrders, thisOrder, setThisOrder, recentOrders, setRecentOrders, ponote } = useContext(OrdersContext)
+  const { route } = useContext(CustomerContext)
 
   let type = orderTypeWhole ? "Special" : "Whole";
 
@@ -23,19 +25,20 @@ function OrderEntryButtons() {
 
   const handleClear = () => {
     let newThisOrder = [...thisOrder]
-    newThisOrder = newThisOrder.map(order => ["0",order[1],order[2],order[3],order[4]])
+    newThisOrder = newThisOrder.map(order => ["0",order[1],order[2],order[3],order[4],"0", orderTypeWhole]) // [ qty, prod, cust, po, route, so ] 
     setThisOrder(newThisOrder);
   }
 
-  const handleAddUpdate = () => {
+  const handleAddUpdate = async () => {
 
     let getOrdersArray = [...orders]
     let filteredOrders = getOrdersArray.filter(order => order[8]+order[0] !== chosen+convertDatetoBPBDate(delivDate))
-    let convertedThisOrder = thisOrder.map(order => [convertDatetoBPBDate(delivDate),'na,',order[0],'custNum','na',order[3],order[4],order[1],chosen])
+    let updateThisOrder = await thisOrder.map(order => [order[0],order[2],chosen,ponote,route,order[0],orderTypeWhole])
+    setThisOrder(updateThisOrder)
+    let convertedThisOrder = thisOrder.map(order => [convertDatetoBPBDate(delivDate),'na,',order[0],'custNum','na',order[3],route,order[1],chosen])
     for (let ord of convertedThisOrder){
      filteredOrders.push(ord)
     }
-    console.log(filteredOrders)
     setOrders(filteredOrders)
 
     let newRecentOrder = [delivDate,chosen]

@@ -9,7 +9,7 @@ import { OrdersContext } from '../../dataContexts/OrdersContext';
 const Routes = () => {
 
     const { customers, routes, setRoutes, route, setRoute } = useContext(CustomerContext)
-    const { thisOrder, setPonotes } = useContext(OrdersContext)
+    const { thisOrder } = useContext(OrdersContext)
     const { chosen, delivDate } = useContext(CustDateRecentContext)
     
     useEffect(()=> {
@@ -22,16 +22,19 @@ const Routes = () => {
 
     useEffect(() => {
         let ro
+        let newRoute
         let currentRoutes = thisOrder.filter(order => order[2] === chosen );
         let custRoute = customers.find(element => element[2] === chosen)
-        let newRoute = custRoute[3]
+        custRoute ? newRoute = custRoute[3] : newRoute = []
         if (currentRoutes.length>0) {
             ro = currentRoutes[0][4]
-        } else {
-            ro = newRoute
+            setRoute(ro)
         }
-        setRoute(ro)
-    },[chosen, delivDate, customers, setPonotes, setRoute, thisOrder])
+        if (newRoute !== []){
+            setRoute(newRoute)
+        }
+        
+    },[chosen, delivDate, customers, setRoute, thisOrder])
 
     const handleChange = e => {
         setRoute(e.target.value);

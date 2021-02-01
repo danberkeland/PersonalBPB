@@ -3,7 +3,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 
-import { CustDateRecentContext } from '../dataContexts/CustDateRecentContext';
+import { CurrentDataContext } from '../dataContexts/CurrentDataContext';
 import { StandingContext } from "../dataContexts/StandingContext";
 import { OrdersContext } from "../dataContexts/OrdersContext";
 
@@ -70,9 +70,8 @@ export const CreateBlankCartDateArray = (orders, chosen)=> {
 
 const CalendarApp = (props) => {
 
-    const { delivDate, setDelivDate } = useContext(CustDateRecentContext);
+    const { chosen, delivDate, setDelivDate } = useContext(CurrentDataContext);
     const { standing } = useContext(StandingContext);
-    const { chosen } = useContext(CustDateRecentContext);
     const { orders } = useContext(OrdersContext);
     
     

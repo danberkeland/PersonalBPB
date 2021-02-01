@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
-import { CustDateRecentContext } from '../../dataContexts/CustDateRecentContext';
+import { CurrentOrderContext } from '../../dataContexts/CurrentOrderContext';
 
 
 export const DeliveryDate = () => {
 
-    const { delivDate } = useContext(CustDateRecentContext)
+    const { delivDate } = useContext(CurrentOrderContext)
 
     return (
         <React.Fragment>

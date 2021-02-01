@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { CustDateRecentContext } from '../dataContexts/CustDateRecentContext';
+import { CurrentOrderContext } from '../dataContexts/CurrentOrderContext';
 import { Customers } from './currentOrderInfo/Customers'
 import { DeliveryDate } from './currentOrderInfo/DeliveryDate'
 import PONotes from './currentOrderInfo/PONotes'
@@ -7,7 +7,7 @@ import Routes from './currentOrderInfo/Routes'
 
 const CurrentOrderInfo = () => {
 
-const { orderTypeWhole } = useContext(CustDateRecentContext)
+const { orderTypeWhole } = useContext(CurrentOrderContext)
 
   return (   
     <React.Fragment>

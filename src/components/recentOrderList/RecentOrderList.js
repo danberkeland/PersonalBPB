@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 
 import { v4 as uuidv4 } from 'uuid';
-import { CustDateRecentContext } from '../../dataContexts/CustDateRecentContext';
+import { CurrentOrderContext } from '../../dataContexts/CurrentOrderContext';
 
 import { OrdersContext } from '../../dataContexts/OrdersContext';
 
@@ -10,7 +10,7 @@ import { OrdersContext } from '../../dataContexts/OrdersContext';
 const RecentOrderList = () => {
 
   const { recentOrders } = useContext(OrdersContext)
-  const { setChosen, setDelivDate } = useContext(CustDateRecentContext)
+  const { setChosen, setDelivDate } = useContext(CurrentOrderContext)
 
   const handleClick = (e) => {
     setChosen(e.target.dataset.cust)

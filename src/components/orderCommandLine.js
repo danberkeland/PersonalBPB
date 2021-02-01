@@ -1,6 +1,6 @@
 import React from 'react';
 import { useContext } from 'react';
-import { CustDateRecentContext } from '../dataContexts/CurrentData';
+import { CurrentOrderContext } from '../dataContexts/CurrentDataContext';
 import { CustomerContext } from '../dataContexts/CustomerContext';
 import { OrdersContext } from '../dataContexts/OrdersContext';
 import { ProductsContext } from '../dataContexts/ProductsContext';
@@ -10,9 +10,9 @@ import { ProductsContext } from '../dataContexts/ProductsContext';
 
 const OrderCommandLine = () => {
 
-  const { customers, setRoute, retailCustomers, setRetailCustomers, } = useContext(CustomerContext)
+  const { customers, setRoute } = useContext(CustomerContext)
   const { products } = useContext(ProductsContext)
-  const { chosen, setChosen, delivDate, setDelivDate, orderTypeWhole, setorderTypeWhole } = useContext(CustDateRecentContext)
+  const { chosen, setChosen, delivDate, setDelivDate, orderTypeWhole, setorderTypeWhole } = useContext(CurrentOrderContext)
   const { thisOrder, setThisOrder } = useContext(OrdersContext)
 
 

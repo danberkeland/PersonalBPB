@@ -4,10 +4,10 @@ import { tomorrow } from '../helpers/dateTimeHelpers'
 
 require('dotenv').config()
 
-export const CustDateRecentContext = createContext();
+export const CurrentDataContext = createContext();
 
 
-export const CurrentData = (props) => {
+export const CurrentDataProvider = (props) => {
 
     const [chosen, setChosen] = useState('');
     const [delivDate, setDelivDate] = useState(tomorrow());
@@ -17,7 +17,7 @@ export const CurrentData = (props) => {
     const [ thisOrderHasBeenChanged, setThisOrderHasBeenChanged ] = useState(false);
 
     return (
-        <CustDateRecentContext.Provider 
+        <CurrentDataContext.Provider 
             value={{    chosen, setChosen, 
                         delivDate, setDelivDate, 
                         ponote, setPonote,
@@ -26,7 +26,7 @@ export const CurrentData = (props) => {
                         thisOrderHasBeenChanged, setThisOrderHasBeenChanged
                         }}>
             {props.children}
-        </CustDateRecentContext.Provider>
+        </CurrentDataContext.Provider>
     );   
     
 };

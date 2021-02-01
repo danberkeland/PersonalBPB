@@ -2,19 +2,17 @@ import React, { useContext } from 'react';
 
 import swal from '@sweetalert/with-react';
 
-import { CustDateRecentContext } from '../dataContexts/CustDateRecentContext';
+import { CurrentOrderContext } from '../dataContexts/CurrentOrderContext';
 import { OrdersContext } from '../dataContexts/OrdersContext';
 
 import { convertDatetoBPBDate } from '../helpers/dateTimeHelpers'
-import { CustomerContext } from '../dataContexts/CustomerContext';
 
 
 function OrderEntryButtons() {
 
-  const { orderTypeWhole, setorderTypeWhole } = useContext(CustDateRecentContext)
-  const { setChosen, delivDate, chosen } = useContext(CustDateRecentContext)
-  const { orders, setOrders, thisOrder, setThisOrder, recentOrders, setRecentOrders, ponote } = useContext(OrdersContext)
-  const { route } = useContext(CustomerContext)
+  const { orderTypeWhole, setorderTypeWhole } = useContext(CurrentOrderContext)
+  const { setChosen, delivDate, chosen, ponote, route } = useContext(CurrentOrderContext)
+  const { orders, setOrders, thisOrder, setThisOrder, recentOrders, setRecentOrders } = useContext(OrdersContext)
 
   let type = orderTypeWhole ? "Special" : "Whole";
 

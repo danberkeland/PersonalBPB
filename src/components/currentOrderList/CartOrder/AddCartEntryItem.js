@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 
 import { v4 as uuidv4 } from 'uuid';
 
-import { CustDateRecentContext } from '../../../dataContexts/CurrentData';
+import { CurrentOrderContext } from '../../../dataContexts/CurrentDataContext';
 import { CustomerContext } from '../../../dataContexts/CustomerContext';
 import { OrdersContext } from '../../../dataContexts/OrdersContext';
 import { ProductsContext } from '../../../dataContexts/ProductsContext'
@@ -11,9 +11,8 @@ import { ProductsContext } from '../../../dataContexts/ProductsContext'
 const AddCartEntryItem = () => {
 
     const { products } = useContext(ProductsContext)
-    const { thisOrder, setThisOrder, ponote } = useContext(OrdersContext)
-    const { chosen, orderTypeWhole } = useContext(CustDateRecentContext)
-    const { route } = useContext(CustomerContext)
+    const { thisOrder, setThisOrder } = useContext(OrdersContext)
+    const { chosen, orderTypeWhole, route, ponote } = useContext(CurrentOrderContext)
 
     const [ pickedProduct, setPickedProduct ] = useState();
     const [ productList, setProductList ] = useState();

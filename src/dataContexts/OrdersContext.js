@@ -34,14 +34,15 @@ export const OrdersLoad = () => {
 
     const { loading, error, data } = useFetch(process.env.REACT_APP_API_ORDERS, []);
 
-    const { setOrders } = useContext(OrdersContext)
+    const { setOrders, setThisOrder } = useContext(OrdersContext)
 
     useEffect(() => {
         if(data){
             sortAtoZDataByIndex(data,0)
             setOrders(data);
+            setThisOrder(data)
         }
-    },[data, setOrders]);
+    },[data, setThisOrder, setOrders]);
 
     return (
         <React.Fragment>

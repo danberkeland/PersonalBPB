@@ -4,7 +4,7 @@ import { CustomerLoad, CustomerProvider } from './dataContexts/CustomerContext'
 import { OrdersLoad, OrdersProvider } from './dataContexts/OrdersContext'
 import { ProductsLoad, ProductsProvider } from './dataContexts/ProductsContext'
 import { StandingLoad, StandingProvider } from './dataContexts/StandingContext'
-import { CustDateRecentProvider } from './dataContexts/CustDateRecentContext'
+import { CurrentDataProvider } from './dataContexts/CurrentDataContext'
 
 import CalendarApp from './components/calendarApp'
 import CurrentOrderInfo from './components/currentOrderInfo'
@@ -28,7 +28,7 @@ function App() {
       <OrdersProvider>
         <ProductsProvider>
           <StandingProvider>
-            <CustDateRecentProvider>
+            <CurrentDataProvider>
       
               <StandingLoad />
               <ProductsLoad />
@@ -48,7 +48,7 @@ function App() {
                   <RecentOrderList />
                 </div>   
               </div>
-            </CustDateRecentProvider>
+            </CurrentDataProvider>
           </StandingProvider>
         </ProductsProvider>
       </OrdersProvider>

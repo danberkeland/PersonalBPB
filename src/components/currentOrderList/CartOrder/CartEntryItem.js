@@ -4,13 +4,13 @@ import { OrdersContext } from '../../../dataContexts/OrdersContext';
 import { StandingContext } from '../../../dataContexts/StandingContext';
 
 import { convertDatetoBPBDate, convertDatetoStandingDate } from '../../../helpers/dateTimeHelpers';
-import { CustDateRecentContext } from '../../../dataContexts/CustDateRecentContext';
+import { CurrentOrderContext } from '../../../dataContexts/CurrentOrderContext';
 
 
 
 const CartEntryItem = () => {
 
-    const{ chosen, delivDate } = useContext(CustDateRecentContext)
+    const{ chosen, delivDate } = useContext(CurrentOrderContext)
     const { orders, thisOrder, setThisOrder } = useContext(OrdersContext)
     const { standing } = useContext(StandingContext)
     

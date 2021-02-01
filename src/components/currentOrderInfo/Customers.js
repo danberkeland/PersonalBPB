@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-import { CustDateRecentContext } from '../../dataContexts/CustDateRecentContext';
+import { CurrentOrderContext } from '../../dataContexts/CurrentOrderContext';
 import { CustomerContext } from '../../dataContexts/CustomerContext';
 import { OrdersContext } from '../../dataContexts/OrdersContext';
 
@@ -9,14 +9,8 @@ import { tomorrow } from '../../helpers/dateTimeHelpers'
 
 export const Customers = () => {
 
-    const { customers, 
-            wholeCustomers, 
-            setWholeCustomers, 
-            retailCustomers, 
-            setRetailCustomers,
-         } = useContext(CustomerContext);
-
-    const { chosen, setChosen, setDelivDate, orderTypeWhole } = useContext(CustDateRecentContext)
+    const { customers } = useContext(CustomerContext);
+    const { chosen, setChosen, setDelivDate, orderTypeWhole } = useContext(CurrentOrderContext)
     const { orders } = useContext(OrdersContext)
 
 

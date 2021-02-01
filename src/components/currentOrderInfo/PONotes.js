@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
 import { useEffect } from 'react/cjs/react.development';
-import { CustDateRecentContext } from '../../dataContexts/CustDateRecentContext';
+import { CurrentOrderContext } from '../../dataContexts/CurrentOrderContext';
 import { OrdersContext } from '../../dataContexts/OrdersContext';
 
 
 const PONotes = () => {
 
-    const { orders, ponote, setPonote, thisOrder } = useContext(OrdersContext);
-    const { chosen, delivDate } = useContext(CustDateRecentContext)
+    const { orders, thisOrder } = useContext(OrdersContext);
+    const { chosen, delivDate, ponote, setPonote } = useContext(CurrentOrderContext)
 
     useEffect(() => {
         let po

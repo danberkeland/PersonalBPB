@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from 'react';
 
 import { v4 as uuidv4 } from 'uuid';
 
-import { CurrentOrderContext } from '../../dataContexts/CurrentOrderContext';
+import { CurrentDataContext } from '../../dataContexts/CurrentDataContext';
 import { CustomerContext } from '../../dataContexts/CustomerContext';
 import { OrdersContext } from '../../dataContexts/OrdersContext';
 
@@ -10,7 +10,7 @@ const Routes = () => {
 
     const { customers } = useContext(CustomerContext)
     const { thisOrder } = useContext(OrdersContext)
-    const { chosen, delivDate, route, setRoute } = useContext(CurrentOrderContext)
+    const { chosen, delivDate, route, setRoute } = useContext(CurrentDataContext)
     
     useEffect(()=> {
         let custArray = [...customers]

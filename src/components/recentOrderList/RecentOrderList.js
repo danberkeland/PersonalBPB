@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { CurrentDataContext } from '../../dataContexts/CurrentDataContext';
 
 import { OrdersContext } from '../../dataContexts/OrdersContext';
+import { convertDatetoBPBDate } from '../../helpers/dateTimeHelpers';
 
 
 
@@ -28,7 +29,7 @@ const RecentOrderList = () => {
                                         data-cust={order[1]}
                                         onClick = {handleClick}>
                                             
-                                            {order[0]+" "+order[1]}
+                                            {convertDatetoBPBDate(order[0])+" "+order[1]}
                                             
                                         </button>)}      
         </div>

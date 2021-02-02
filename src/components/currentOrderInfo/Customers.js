@@ -29,8 +29,6 @@ export const Customers = () => {
         setChosen(e.target.value);
         setDelivDate(tomorrow())
         }
-   
-    console.log(orderTypeWhole)
 
     return (
         <React.Fragment>

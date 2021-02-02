@@ -50,17 +50,19 @@ function OrderEntryButtons() {
 
   const handleAddUpdate =  () => {
     let orderList = buildOrderList()
+    console.log(orderList)
     orderList.map(order => order[5] = order[0])
-    let orderUpdates = createCurrentOrderList(orderList, orders)
-    setOrders(orderUpdates)
-    let toAddToRecent = [convertDatetoBPBDate(delivDate),chosen]
-    console.log(toAddToRecent)
-    let grabRecent = [...recentOrders]
-    console.log(grabRecent)
-    grabRecent.push(toAddToRecent)
-    console.log(grabRecent)
-    setRecentOrders(grabRecent)
-
+    let currentOrderList = orderList.concat(orders)
+    for (let i=0; i<currentOrderList.length; ++i ){
+        for (let j=i+1; j<currentOrderList.length; ++j){
+            if (currentOrderList[i][1] === currentOrderList[j][1] &&
+              currentOrderList[i][2] === currentOrderList[j][2] &&
+              currentOrderList[i][7] === currentOrderList[j][7]){
+                currentOrderList.splice(j,1);
+            }
+        }
+    }
+    setOrders(currentOrderList)
 
     let newRecentOrder = [delivDate,chosen]
     let stringRecentOrder = JSON.stringify(newRecentOrder)

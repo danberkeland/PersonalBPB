@@ -1,19 +1,8 @@
 import React from 'react';
-import { useContext } from 'react';
-import { CurrentDataContext } from '../dataContexts/CurrentDataContext';
-import { CustomerContext } from '../dataContexts/CustomerContext';
-import { OrdersContext } from '../dataContexts/OrdersContext';
-import { ProductsContext } from '../dataContexts/ProductsContext';
-
-
 
 
 const OrderCommandLine = () => {
 
-  const { customers, setRoute } = useContext(CustomerContext)
-  const { products } = useContext(ProductsContext)
-  const { chosen, setChosen, delivDate, setDelivDate, orderTypeWhole, setorderTypeWhole } = useContext(CurrentDataContext)
-  const { thisOrder, setThisOrder } = useContext(OrdersContext)
 
   /*
   const checkForCustomer = async (entry, customers) => {
@@ -127,7 +116,7 @@ const OrderCommandLine = () => {
   const processEntry = (cust, JSdate, prodArray) => {
     if (cust) {setChosen(cust)};
     if (JSdate) {setDelivDate(JSdate)};
-    let newThisOrder = [...thisOrder] // [ qty, prod, cust, po, route, so ]
+    let newThisOrder = [...orders] // [ qty, prod, cust, po, route, so ]
     if (prodArray) {
       for (let prod of prodArray) {
         // check to see if newProd is a duplicate
@@ -135,7 +124,7 @@ const OrderCommandLine = () => {
         //    if not, push new prod
         newThisOrder.push(prod)
       }
-      setThisOrder(newThisOrder) // [ qty, prod, cust, po, route, so ]
+      setOrders(newThisOrder) // [ qty, prod, cust, po, route, so ]
     }
     };
   

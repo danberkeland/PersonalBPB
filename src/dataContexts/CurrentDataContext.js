@@ -14,7 +14,7 @@ export const CurrentDataProvider = (props) => {
     const [ ponote, setPonote ] = useState('na')
     const [route, setRoute ] = useState()
     const [orderTypeWhole, setorderTypeWhole] = useState(true)
-    const [ thisOrderHasBeenChanged, setThisOrderHasBeenChanged ] = useState(false);
+    const [ ordersHasBeenChanged, setOrdersHasBeenChanged ] = useState(false);
 
     return (
         <CurrentDataContext.Provider 
@@ -23,7 +23,7 @@ export const CurrentDataProvider = (props) => {
                         ponote, setPonote,
                         route, setRoute,
                         orderTypeWhole, setorderTypeWhole,
-                        thisOrderHasBeenChanged, setThisOrderHasBeenChanged
+                        ordersHasBeenChanged, setOrdersHasBeenChanged
                         }}>
             {props.children}
         </CurrentDataContext.Provider>

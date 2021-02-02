@@ -5,26 +5,20 @@ import { useEffect } from 'react/cjs/react.development';
 import { CurrentDataContext } from '../../dataContexts/CurrentDataContext';
 import { OrdersContext } from '../../dataContexts/OrdersContext';
 
-import { convertDatetoBPBDate } from '../../helpers/dateTimeHelpers';
+import { findCurrentPonote } from '../../helpers/sortDataHelpers';
 
 
 const PONotes = () => {
 
-    const { thisOrder } = useContext(OrdersContext);
+    const { orders } = useContext(OrdersContext);
     const { chosen, delivDate, ponote, setPonote } = useContext(CurrentDataContext)
 
     useEffect(() => {
-        let po
-        let currentOrders = thisOrder.filter(order => order[2] === chosen && convertDatetoBPBDate(order[0]) === delivDate );
-        if (currentOrders.length>0) {
-            po = currentOrders[0][3]
-        } else {
-            po = "na"
-        }
+        let po = findCurrentPonote(chosen, delivDate, orders)
         document.getElementById('PONotes').value = '';
         setPonote(po)
 
-    },[chosen, delivDate, setPonote, thisOrder])
+    },[chosen, delivDate, setPonote, orders])
 
     const handleNewPonote = (e) => {
         if (e.keyCode === 13) {

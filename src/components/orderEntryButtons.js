@@ -12,7 +12,7 @@ function OrderEntryButtons() {
 
   const { orderTypeWhole, setorderTypeWhole } = useContext(CurrentDataContext)
   const { setChosen, delivDate, chosen, ponote, route } = useContext(CurrentDataContext)
-  const { orders, setOrders, thisOrder, setThisOrder, recentOrders, setRecentOrders } = useContext(OrdersContext)
+  const { orders, setOrders, recentOrders, setRecentOrders } = useContext(OrdersContext)
 
   let type = orderTypeWhole ? "Special" : "Whole";
 
@@ -22,18 +22,18 @@ function OrderEntryButtons() {
   }
 
   const handleClear = () => {
-    let newThisOrder = [...thisOrder]
+    let newThisOrder = [...orders]
     newThisOrder = newThisOrder.map(order => ["0",order[1],order[2],order[3],order[4],"0", orderTypeWhole]) // [ qty, prod, cust, po, route, so ] 
-    setThisOrder(newThisOrder);
+    setOrders(newThisOrder);
   }
 
   const handleAddUpdate = async () => {
 
     let getOrdersArray = [...orders]
     let filteredOrders = getOrdersArray.filter(order => order[8]+order[0] !== chosen+convertDatetoBPBDate(delivDate))
-    let updateThisOrder = await thisOrder.map(order => [order[0],order[2],chosen,ponote,route,order[0],orderTypeWhole])
-    setThisOrder(updateThisOrder)
-    let convertedThisOrder = thisOrder.map(order => [convertDatetoBPBDate(delivDate),'na,',order[0],'custNum','na',order[3],route,order[1],chosen])
+    let updateThisOrder = await orders.map(order => [order[0],order[2],chosen,ponote,route,order[0],orderTypeWhole])
+    setOrders(updateThisOrder)
+    let convertedThisOrder = orders.map(order => [convertDatetoBPBDate(delivDate),'na,',order[0],'custNum','na',order[3],route,order[1],chosen])
     for (let ord of convertedThisOrder){
      filteredOrders.push(ord)
     }

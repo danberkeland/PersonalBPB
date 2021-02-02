@@ -28,11 +28,24 @@ const CartEntryItem = () => {
 
 
     const handleInput = e => {
-        return
+        if (e.key === "Enter"){
+            document.getElementById("orderCommand").focus()
+        }
+        let newQty = e.target.value
+        let indexToFind = e.target.name
+        let foundIndex = presentedList.findIndex(line => line[1] === indexToFind)
+        let presentedListToModify = [...presentedList]
+        presentedListToModify[foundIndex][0] = newQty
+        setPresentedList(presentedListToModify)   
     }
 
     const handleRemove = e => {
-        return
+        let newQty = 0
+        let indexToFind = e.target.id
+        let foundIndex = presentedList.findIndex(line => line[1] === indexToFind)
+        let presentedListToModify = [...presentedList]
+        presentedListToModify[foundIndex][0] = newQty
+        setPresentedList(presentedListToModify)
     }
 
 
@@ -45,8 +58,9 @@ const CartEntryItem = () => {
             
             {presentedList ? presentedList.map(order => 
 
-                order[0] === convertDatetoBPBDate(delivDate) && order[5] === "0"? <React.Fragment key={order[1]+"blank"}>
-                    </React.Fragment> :
+                order[0] === convertDatetoBPBDate(delivDate) && order[0] === "0" && order[5] === "0" ? 
+                
+                <React.Fragment key={order[1]+"blank"}></React.Fragment> :
 
                 <React.Fragment key={order[1]+"frag"}>
                     <label key={order[1]+"label"}>{order[1]}</label>   
@@ -60,7 +74,7 @@ const CartEntryItem = () => {
                             onKeyUp={e => handleInput(e)}
                             >
                     </input>
-                    <label className="previous">{order[5] === order[0 ? '' : order[5]]}</label>
+                    <label className="previous">{order[5] === order[0] ? '' : order[5]}</label>
                     <button onClick={handleRemove} 
                             key={order[1]+"button"} 
                             id={order[1]}>

@@ -13,7 +13,7 @@ import { createRouteList, FindNewRoute } from '../../helpers/sortDataHelpers'
 const Routes = () => {
 
     const { customers } = useContext(CustomerContext)
-    const { thisOrder } = useContext(OrdersContext)
+    const { orders } = useContext(OrdersContext)
     const { chosen, delivDate, route, setRoute } = useContext(CurrentDataContext)
 
     const [ routes, setRoutes ] = useState()
@@ -27,9 +27,9 @@ const Routes = () => {
 
     
     useEffect(() => {
-        let newRoute = FindNewRoute(chosen, delivDate, thisOrder, customers)
+        let newRoute = FindNewRoute(chosen, delivDate, orders, customers)
         setRoute(newRoute)      
-    },[chosen, delivDate, customers, setRoute, thisOrder])
+    },[chosen, delivDate, customers, setRoute, orders])
     
 
 

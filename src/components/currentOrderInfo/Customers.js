@@ -7,18 +7,7 @@ import { CustomerContext } from '../../dataContexts/CustomerContext';
 import { OrdersContext } from '../../dataContexts/OrdersContext';
 
 import { tomorrow } from '../../helpers/dateTimeHelpers'
-
-const createRetailOrderCustomers = orders => {
-    let special = orders.filter(order => order[3] === "9999")
-    special = special.map(order => ["","9999",order[8],order[6]])
-    let unique = special.map(ar => JSON.stringify(ar))
-        .filter((itm, idx, arr) => arr.indexOf(itm) === idx)
-        .map(str => JSON.parse(str))
-    if (unique[0] !== ['','','','']){
-        unique.unshift(['','','',''])
-    }
-    return unique
-}
+import { createRetailOrderCustomers } from '../../helpers/sortDataHelpers'
 
 
 export const Customers = () => {

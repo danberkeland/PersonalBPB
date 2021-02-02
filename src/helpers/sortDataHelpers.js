@@ -52,7 +52,7 @@ export const createRouteList = customers => {
 
 export const FindNewRoute = (chosen, delivDate, orders, customers) => {
     let newRoute
-    let currentRoutes = orders.filter(order => order[2] === chosen && convertDatetoBPBDate(order[7]) === delivDate );
+    let currentRoutes = orders.filter(order => order[2] === chosen && order[7] === convertDatetoBPBDate(delivDate) );
     let custRoute = customers.find(element => element[2] === chosen)
     custRoute ? newRoute = custRoute[3] : newRoute = "Pick up Carlton"
     if (currentRoutes.length>0) {
@@ -64,7 +64,7 @@ export const FindNewRoute = (chosen, delivDate, orders, customers) => {
 
 export const findCurrentPonote =(chosen, delivDate, orders) => {
     let po
-    let currentOrders = orders.filter(order => order[2] === chosen && convertDatetoBPBDate(order[7]) === delivDate );
+    let currentOrders = orders.filter(order => order[2] === chosen && order[7] === convertDatetoBPBDate(delivDate) );
     if (currentOrders.length>0) {
         po = currentOrders[0][3]
     } else {
@@ -83,20 +83,71 @@ export const createCartList = (chosen, delivDate, orders) => {
 
 export const createStandingList = (chosen, delivDate, standing) => {
     let standingDate = convertDatetoStandingDate(delivDate);   
-    let standingList = standing ? standing.filter(standing => standing[7] === standingDate && standing[2] === chosen) : [];
-    return standingList
+    let standingList = standing ? standing.filter(standing => standing[0] === standingDate && standing[8] === chosen) : [];
+    let convertedOrderList = standingList.map(order => [ order[2],
+        order[7],
+        order[8],
+        'na',
+        order[6],
+        order[2], 
+        order[3] !== "9999" ? true : false,
+        standingDate
+])
+    return convertedOrderList
 
 }
 
 
 export const createCurrentOrderList = (cartList, standingList) => {
-    let orderList;
+
+    let orderList = cartList.concat(standingList)
+    for (let i=0; i<orderList.length; ++i ){
+        for (let j=i+1; j<orderList.length; ++j){
+            if (orderList[i][1] === orderList[j][1]){
+                orderList.splice(j,1);
+            }
+        }
+    }
+
+
+    /*
+    let orderList 
     if (cartList.length>0){
-        orderList = cartList;
+        let modifiedStanding =[]
+        orderList = cartList.push(modifiedStanding);
     } else if (standingList.length>0){
         orderList = standingList;
     } else {
         orderList = []
-    }
+    }*/
     return orderList
+}
+
+export const findAvailableProducts = (products, orders, chosen, delivDate) => {
+    let availableProducts = [...products]
+    for (let prod of orders) {
+        let prodPull = prod[0]==="0" && prod[2] === chosen && 
+        prod[7] === convertDatetoBPBDate(delivDate) ? prod[1] : ''
+        availableProducts = availableProducts.filter(availProd => availProd[1] !== prodPull)
+    }
+    availableProducts.unshift(['','','','','','','','','','','','','','','','','','','']);
+    return availableProducts
+}
+
+export const decideWhetherToAddOrModify = (orders, newOrder, delivDate) => {
+    let newOrderList = [...orders]
+    let chosen = newOrder[2]
+    let prodToAdd = newOrder[1]
+    let qty = newOrder[0]
+    let prodIndex = orders.findIndex(order => 
+        order[1] === prodToAdd && 
+        order[2] === chosen && 
+        order[7] === convertDatetoBPBDate(delivDate))
+    if(prodIndex >= 0){
+        newOrderList[prodIndex][0] = qty
+    } else {
+
+        newOrderList.push(newOrder)
+    }
+    return newOrderList
 }

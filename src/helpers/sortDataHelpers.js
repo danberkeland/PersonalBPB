@@ -6,6 +6,19 @@ export const sortAtoZDataByIndex = (data,index) => {
     data.sort(function(a,b){return a[index]>b[index] ? 1 : -1;})
 }
 
+
+export const convertSheetsOrdersToAppOrders = (data) => {
+    let convertedOrderList = data.map(order => [ order[2],
+                                            order[7],
+                                            order[8],
+                                            order[4],
+                                            order[6],
+                                            order[2], 
+                                            order[3] !== "9999" ? true : false,
+                                            order[0]
+    ])
+    return convertedOrderList
+}
 export const addAnEmptyRowToTop = (data) => {
     let len = data.length;
     let newArray = [];
@@ -17,7 +30,7 @@ export const addAnEmptyRowToTop = (data) => {
 }
 
 export const createRetailOrderCustomers = orders => {
-    let special = orders.filter(order => order[3] === "9999")
+    let special = orders.filter(order => order[6] === false)
     special = special.map(order => ["","9999",order[8],order[6]])
     let unique = special.map(ar => JSON.stringify(ar))
         .filter((itm, idx, arr) => arr.indexOf(itm) === idx)
@@ -39,7 +52,7 @@ export const createRouteList = customers => {
 
 export const FindNewRoute = (chosen, delivDate, orders, customers) => {
     let newRoute
-    let currentRoutes = orders.filter(order => order[2] === chosen && convertDatetoBPBDate(order[0]) === delivDate );
+    let currentRoutes = orders.filter(order => order[2] === chosen && convertDatetoBPBDate(order[7]) === delivDate );
     let custRoute = customers.find(element => element[2] === chosen)
     custRoute ? newRoute = custRoute[3] : newRoute = "Pick up Carlton"
     if (currentRoutes.length>0) {
@@ -51,7 +64,7 @@ export const FindNewRoute = (chosen, delivDate, orders, customers) => {
 
 export const findCurrentPonote =(chosen, delivDate, orders) => {
     let po
-    let currentOrders = orders.filter(order => order[2] === chosen && convertDatetoBPBDate(order[0]) === delivDate );
+    let currentOrders = orders.filter(order => order[2] === chosen && convertDatetoBPBDate(order[7]) === delivDate );
     if (currentOrders.length>0) {
         po = currentOrders[0][3]
     } else {
@@ -63,31 +76,14 @@ export const findCurrentPonote =(chosen, delivDate, orders) => {
 
 export const createCartList = (chosen, delivDate, orders) => {
     let BPBDate = convertDatetoBPBDate(delivDate)
-    let cartList = orders ? orders.filter(order => order[0] === BPBDate && order[8] === chosen)
-                            .map(order => [ order[2],
-                                            order[7],
-                                            order[8],
-                                            order[4],
-                                            order[6],
-                                            order[2], 
-                                            order[3] !== "9999" ? true : false]
-                                            ) : [];
+    let cartList = orders ? orders.filter(order => order[7] === BPBDate && order[2] === chosen) : [];
     return cartList
 }
 
 
 export const createStandingList = (chosen, delivDate, standing) => {
     let standingDate = convertDatetoStandingDate(delivDate);   
-    let standingList = standing ? standing.filter(standing => standing[0] === standingDate && standing[8] === chosen)
-    .map(order => [ order[2],
-                    order[7],
-                    order[8],
-                    order[4],
-                    order[6],
-                    order[2],
-                    order[3] !== "9999" ? true : false]
-                
-                    ) : [];
+    let standingList = standing ? standing.filter(standing => standing[7] === standingDate && standing[2] === chosen) : [];
     return standingList
 
 }

@@ -1,6 +1,6 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 
-import { sortAtoZDataByIndex } from '../helpers/sortDataHelpers'
+import { sortAtoZDataByIndex, convertSheetsOrdersToAppOrders } from '../helpers/sortDataHelpers'
 import { useFetch } from '../helpers/useFetch'
 
 require('dotenv').config()
@@ -37,10 +37,10 @@ export const OrdersLoad = () => {
     useEffect(() => {
         if(data){
             sortAtoZDataByIndex(data,0)
-            setOrders(data);
-            setOrders(data)
+            let appOrders = convertSheetsOrdersToAppOrders(data)
+            setOrders(appOrders);
         }
-    },[data, setOrders, setOrders]);
+    },[data, setOrders]);
 
     return (
         <React.Fragment>

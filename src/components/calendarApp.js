@@ -37,8 +37,8 @@ export const CreateCartDateArray = (orders, chosen) => {
         return "No Orders Loaded ..."
     }
 
-    let cartDateArray = orders ? orders.filter(order => order[8] === chosen) : [];
-    cartDateArray = cartDateArray.map(order => ChangeBPBDatetoJSDate(order[0]))
+    let cartDateArray = orders ? orders.filter(order => order[2] === chosen) : [];
+    cartDateArray = cartDateArray.map(order => ChangeBPBDatetoJSDate(order[7]))
     let uniqueCart = new Set(cartDateArray);
     return [...uniqueCart]
 }
@@ -47,8 +47,8 @@ export const CreateCartDateArray = (orders, chosen) => {
 
 export const CreateBlankCartDateArray = (orders, chosen)=> {
 
-    let cartDateBlankArray = orders ? orders.filter(order => order[8] === chosen) : [];
-    cartDateBlankArray = cartDateBlankArray.map(order => ({'ddate':order[0], 'qqty': Number(order[2])}));
+    let cartDateBlankArray = orders ? orders.filter(order => order[2] === chosen) : [];
+    cartDateBlankArray = cartDateBlankArray.map(order => ({'ddate':order[7], 'qqty': Number(order[0])}));
     let holder = {}
     cartDateBlankArray.forEach(d => holder.hasOwnProperty(d.ddate) ? holder[d.ddate] = holder[d.ddate] + d.qqty :
         holder[d.ddate] = d.qqty);

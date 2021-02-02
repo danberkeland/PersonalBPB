@@ -6,6 +6,8 @@ import { CurrentDataContext } from '../../../dataContexts/CurrentDataContext';
 
 import { convertDatetoBPBDate } from '../../../helpers/dateTimeHelpers';
 import { createCartList, createStandingList, createCurrentOrderList } from '../../../helpers/sortDataHelpers';
+import { createModifiedQtyPresentList, createRemovalPresentList } from '../../../helpers/handleInteractions';
+
 
 const CartEntryItem = () => {
 
@@ -27,25 +29,15 @@ const CartEntryItem = () => {
     }, [ chosen, delivDate, orders, standing ]);
 
 
-    const handleInput = e => {
-        if (e.key === "Enter"){
-            document.getElementById("orderCommand").focus()
-        }
-        let newQty = e.target.value
-        let indexToFind = e.target.name
-        let foundIndex = presentedList.findIndex(line => line[1] === indexToFind)
-        let presentedListToModify = [...presentedList]
-        presentedListToModify[foundIndex][0] = newQty
-        setPresentedList(presentedListToModify)   
+    const handleQtyModify = e => {
+
+        let modifiedQtyPresentedList = createModifiedQtyPresentList(e, presentedList)
+        setPresentedList(modifiedQtyPresentedList)   
     }
 
     const handleRemove = e => {
-        let newQty = 0
-        let indexToFind = e.target.id
-        let foundIndex = presentedList.findIndex(line => line[1] === indexToFind)
-        let presentedListToModify = [...presentedList]
-        presentedListToModify[foundIndex][0] = newQty
-        setPresentedList(presentedListToModify)
+        let removalPresentedList = createRemovalPresentList(e, presentedList)
+        setPresentedList(removalPresentedList)
     }
 
 
@@ -59,7 +51,7 @@ const CartEntryItem = () => {
             {presentedList ? presentedList.map(order => 
 
                 order[0] === convertDatetoBPBDate(delivDate) && order[0] === "0" && order[5] === "0" ? 
-                
+
                 <React.Fragment key={order[1]+"blank"}></React.Fragment> :
 
                 <React.Fragment key={order[1]+"frag"}>
@@ -71,7 +63,7 @@ const CartEntryItem = () => {
                             id={order[1]+"item"} 
                             name={order[1]} 
                             placeholder={order[0]} 
-                            onKeyUp={e => handleInput(e)}
+                            onKeyUp={e => handleQtyModify(e)}
                             >
                     </input>
                     <label className="previous">{order[5] === order[0] ? '' : order[5]}</label>

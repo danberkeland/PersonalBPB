@@ -109,17 +109,6 @@ export const createCurrentOrderList = (cartList, standingList) => {
         }
     }
 
-
-    /*
-    let orderList 
-    if (cartList.length>0){
-        let modifiedStanding =[]
-        orderList = cartList.push(modifiedStanding);
-    } else if (standingList.length>0){
-        orderList = standingList;
-    } else {
-        orderList = []
-    }*/
     return orderList
 }
 

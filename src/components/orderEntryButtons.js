@@ -4,17 +4,28 @@ import swal from '@sweetalert/with-react';
 
 import { CurrentDataContext } from '../dataContexts/CurrentDataContext';
 import { OrdersContext } from '../dataContexts/OrdersContext';
+import { StandingContext } from '../dataContexts/StandingContext';
 
-import { convertDatetoBPBDate } from '../helpers/dateTimeHelpers'
+import { createCartList, createStandingList,createCurrentOrderList } from '../helpers/sortDataHelpers'
+import { convertDatetoBPBDate } from '../helpers/dateTimeHelpers';
 
 
 function OrderEntryButtons() {
 
   const { orderTypeWhole, setorderTypeWhole } = useContext(CurrentDataContext)
-  const { setChosen, delivDate, chosen, ponote, route } = useContext(CurrentDataContext)
+  const { setChosen, delivDate, chosen } = useContext(CurrentDataContext)
   const { orders, setOrders, recentOrders, setRecentOrders } = useContext(OrdersContext)
+  const { standing } = useContext(StandingContext)
 
   let type = orderTypeWhole ? "Special" : "Whole";
+
+
+  const buildOrderList = () => {
+    let cartList = createCartList(chosen, delivDate, orders)
+    let standingList = createStandingList(chosen, delivDate, standing)
+    let orderList = createCurrentOrderList(cartList,standingList)
+    return orderList
+  }
 
   const handleChangeorderTypeWhole = () => {
     setorderTypeWhole(!orderTypeWhole)
@@ -22,22 +33,34 @@ function OrderEntryButtons() {
   }
 
   const handleClear = () => {
-    let newThisOrder = [...orders]
-    newThisOrder = newThisOrder.map(order => ["0",order[1],order[2],order[3],order[4],"0", orderTypeWhole]) // [ qty, prod, cust, po, route, so ] 
-    setOrders(newThisOrder);
+    let orderList = buildOrderList()
+    orderList = orderList.map(order => ["0",order[1],order[2],order[3],order[4],order[0], orderTypeWhole,convertDatetoBPBDate(delivDate)]) 
+    let currentOrderList = orderList.concat(orders)
+    for (let i=0; i<currentOrderList.length; ++i ){
+        for (let j=i+1; j<currentOrderList.length; ++j){
+            if (currentOrderList[i][1] === currentOrderList[j][1] &&
+              currentOrderList[i][2] === currentOrderList[j][2] &&
+              currentOrderList[i][7] === currentOrderList[j][7]){
+                currentOrderList.splice(j,1);
+            }
+        }
+    }
+    setOrders(currentOrderList);
   }
 
-  const handleAddUpdate = async () => {
+  const handleAddUpdate =  () => {
+    let orderList = buildOrderList()
+    orderList.map(order => order[5] = order[0])
+    let orderUpdates = createCurrentOrderList(orderList, orders)
+    setOrders(orderUpdates)
+    let toAddToRecent = [convertDatetoBPBDate(delivDate),chosen]
+    console.log(toAddToRecent)
+    let grabRecent = [...recentOrders]
+    console.log(grabRecent)
+    grabRecent.push(toAddToRecent)
+    console.log(grabRecent)
+    setRecentOrders(grabRecent)
 
-    let getOrdersArray = [...orders]
-    let filteredOrders = getOrdersArray.filter(order => order[8]+order[0] !== chosen+convertDatetoBPBDate(delivDate))
-    let updateThisOrder = await orders.map(order => [order[0],order[2],chosen,ponote,route,order[0],orderTypeWhole])
-    setOrders(updateThisOrder)
-    let convertedThisOrder = orders.map(order => [convertDatetoBPBDate(delivDate),'na,',order[0],'custNum','na',order[3],route,order[1],chosen])
-    for (let ord of convertedThisOrder){
-     filteredOrders.push(ord)
-    }
-    setOrders(filteredOrders)
 
     let newRecentOrder = [delivDate,chosen]
     let stringRecentOrder = JSON.stringify(newRecentOrder)
@@ -54,7 +77,10 @@ function OrderEntryButtons() {
         currentRecentOrders.push(newRecentOrder)
       }
     setRecentOrders(currentRecentOrders)
+    
   }
+
+  
 
   return (         
     <div className = "orderEntryButtons">
@@ -64,6 +90,11 @@ function OrderEntryButtons() {
       <button onClick={handleChangeorderTypeWhole}>{type} Order</button>
     </div>    
   );
+
+
 }
+
+
+
 
 export default OrderEntryButtons;

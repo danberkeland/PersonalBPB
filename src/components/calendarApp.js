@@ -110,6 +110,7 @@ const CalendarApp = (props) => {
     
 
     const handleDateSelect = (selectInfo) => {
+        document.getElementById("orderCommand").focus()
         setDelivDate(selectInfo.dateStr)
     }
 

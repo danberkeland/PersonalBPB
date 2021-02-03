@@ -15,7 +15,6 @@ const RecentOrderList = () => {
 
   const handleClick = async (e) => {
     let str = e.target.dataset.whole.toString()
-    console.log(str)
     if (str === 'true'){
       setorderTypeWhole(true)
     } else {

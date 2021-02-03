@@ -50,7 +50,6 @@ function OrderEntryButtons() {
 
   const handleAddUpdate =  () => {
     let orderList = buildOrderList()
-    console.log(orderList)
     orderList.map(order => order[5] = order[0])
     let currentOrderList = orderList.concat(orders)
     for (let i=0; i<currentOrderList.length; ++i ){

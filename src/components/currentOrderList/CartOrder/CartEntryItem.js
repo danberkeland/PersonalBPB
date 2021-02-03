@@ -24,7 +24,6 @@ const CartEntryItem = () => {
         let cartList = createCartList(chosen, delivDate, orders)
         let standingList = createStandingList(chosen, delivDate, standing)
         let orderList = createCurrentOrderList(cartList,standingList)
-
         setPresentedList(orderList)
     }, [ chosen, delivDate, orders, standing ]);
 
@@ -63,7 +62,12 @@ const CartEntryItem = () => {
                             id={order[1]+"item"} 
                             name={order[1]} 
                             placeholder={order[0]} 
-                            onKeyUp={e => handleQtyModify(e)}
+                            onKeyUp={e => {handleQtyModify(e)}}
+                            onBlur={(e) => {
+                                console.log("Triggered lost focus "+e.target.value)
+                                e.target.value = ''
+                                console.log(e.target.value+" is new value")
+                            }}
                             >
                     </input>
                     <label className="previous">{order[5] === order[0] ? '' : order[5]}</label>

@@ -1,4 +1,5 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useEffect, useContext, useState, useRef } from 'react';
+
 
 import { OrdersContext } from '../../../dataContexts/OrdersContext';
 import { StandingContext } from '../../../dataContexts/StandingContext';
@@ -17,20 +18,20 @@ const CartEntryItem = () => {
     
     const [ presentedList, setPresentedList ] = useState()
 
-
+    let ord = useRef(orders)
    
     useEffect(() => {
-
-        let cartList = createCartList(chosen, delivDate, orders)
-        let standingList = createStandingList(chosen, delivDate, standing)
-        let orderList = createCurrentOrderList(cartList,standingList)
+        const cartList = createCartList(chosen, delivDate, ord.current)
+        const standingList = createStandingList(chosen, delivDate, standing)
+        const orderList = createCurrentOrderList(cartList,standingList)
         setPresentedList(orderList)
-    }, [ chosen, delivDate, orders, standing ]);
+    }, [ chosen, delivDate, standing ]);
 
 
     const handleQtyModify = e => {
-
         let modifiedQtyPresentedList = createModifiedQtyPresentList(e, presentedList)
+        console.log(orders)
+        console.log(presentedList)
         setPresentedList(modifiedQtyPresentedList)   
     }
 
@@ -51,14 +52,14 @@ const CartEntryItem = () => {
 
                 order[0] === convertDatetoBPBDate(delivDate) && order[0] === "0" && order[5] === "0" ? 
 
-                <React.Fragment key={order[1]+"blank"}></React.Fragment> :
+                <React.Fragment key={order[1]+"a"}></React.Fragment> :
 
-                <React.Fragment key={order[1]+"frag"}>
-                    <label key={order[1]+"label"}>{order[1]}</label>   
+                <React.Fragment key={order[1]+"b"}>
+                    <label key={order[1]}>{order[1]}</label>   
                     <input  type="text" 
                             size="4"
                             maxLength="5"
-                            key={order[1]+"item"} 
+                            key={order[1]+"c"} 
                             id={order[1]+"item"} 
                             name={order[1]} 
                             placeholder={order[0]} 
@@ -70,9 +71,9 @@ const CartEntryItem = () => {
                             }}
                             >
                     </input>
-                    <label className="previous">{order[5] === order[0] ? '' : order[5]}</label>
+                    <label key={order[1]+"d"} className="previous">{order[5] === order[0] ? '' : order[5]}</label>
                     <button onClick={handleRemove} 
-                            key={order[1]+"button"} 
+                            key={order[1]+"e"} 
                             id={order[1]}>
                                 
                                 REMOVE

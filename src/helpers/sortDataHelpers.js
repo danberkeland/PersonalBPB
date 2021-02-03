@@ -77,14 +77,16 @@ export const findCurrentPonote =(chosen, delivDate, orders) => {
 
 export const createCartList = (chosen, delivDate, orders) => {
     let BPBDate = convertDatetoBPBDate(delivDate)
-    let cartList = orders ? orders.filter(order => order[7] === BPBDate && order[2] === chosen) : [];
+    let filteredOrders = [...orders]
+    let cartList = filteredOrders ? filteredOrders.filter(order => order[7] === BPBDate && order[2] === chosen) : [];
     return cartList
 }
 
 
 export const createStandingList = (chosen, delivDate, standing) => {
-    let standingDate = convertDatetoStandingDate(delivDate);   
-    let standingList = standing ? standing.filter(standing => standing[0] === standingDate && standing[8] === chosen) : [];
+    let standingDate = convertDatetoStandingDate(delivDate);  
+    let filteredStanding = [...standing] 
+    let standingList = filteredStanding ? filteredStanding.filter(standing => standing[0] === standingDate && standing[8] === chosen) : [];
     let convertedOrderList = standingList.map(order => [ order[2],
         order[7],
         order[8],

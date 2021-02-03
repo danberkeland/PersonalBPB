@@ -15,7 +15,8 @@ export const convertSheetsOrdersToAppOrders = (data) => {
                                             order[6],
                                             order[2], 
                                             order[3] !== "9999" ? true : false,
-                                            order[0]
+                                            order[0],
+                                            
     ])
     return convertedOrderList
 }
@@ -31,7 +32,7 @@ export const addAnEmptyRowToTop = (data) => {
 
 export const createRetailOrderCustomers = orders => {
     let special = orders.filter(order => order[6] === false)
-    special = special.map(order => ["","9999",order[8],order[6]])
+    special = special.map(order => ["","9999",order[2],order[4]])
     let unique = special.map(ar => JSON.stringify(ar))
         .filter((itm, idx, arr) => arr.indexOf(itm) === idx)
         .map(str => JSON.parse(str))

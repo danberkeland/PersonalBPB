@@ -64,7 +64,7 @@ function OrderEntryButtons() {
     }
     setOrders(currentOrderList)
 
-    let newRecentOrder = [delivDate,chosen]
+    let newRecentOrder = [delivDate,chosen,orderTypeWhole]
     let stringRecentOrder = JSON.stringify(newRecentOrder)
     const currentRecentOrders = [...recentOrders]
     let stringCurrentRecentOrders = JSON.stringify(currentRecentOrders)

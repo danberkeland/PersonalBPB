@@ -39,7 +39,7 @@ const RecentOrderList = () => {
                                         data-whole={order[2]}
                                         onClick = {handleClick}>
                                             
-                                            {convertDatetoBPBDate(order[0])+" "+order[1]}
+                                            {convertDatetoBPBDate(order[0])+" "+order[1]}   {order[2] ? "": "RETAIL"}
                                             
                                         </button>)}      
         </div>

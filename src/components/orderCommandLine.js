@@ -1,44 +1,73 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { CurrentDataContext } from '../dataContexts/CurrentDataContext';
+import { OrdersContext } from '../dataContexts/OrdersContext';
+import { CustomerContext } from '../dataContexts/CustomerContext';
+
+import swal from '@sweetalert/with-react';
 
 
 const OrderCommandLine = () => {
 
+  const { chosen, setChosen, delivDate, setDelivDate, setorderTypeWhole } = useContext(CurrentDataContext)
+  const { orders, setOrders } = useContext(OrdersContext)
+  const { customers } = useContext(CustomerContext)
+  
+  const checkForCustomer = (entry, customers) => {
 
-  /*
-  const checkForCustomer = async (entry, customers) => {
-    let nextCustomer = chosen;
-    
+    let nextCustomer = chosen
 
     if (entry.includes("retail ")){
       setorderTypeWhole(false)
       let newRetailCustName = entry.replace("retail ","")
-      let newRetailCustList = [...retailCustomers]
-      let newRetailCustEntry = ["","9999",newRetailCustName,"Pick up Carlton"]
-      setRoute("Pick up Carlton")
+      let newRetailCustList = [...orders]
+      let newRetailCustEntry = ["","",newRetailCustName,"","","",false,""]
       newRetailCustList.push(newRetailCustEntry)
-      setRetailCustomers(newRetailCustList)
-      return(newRetailCustName)
+      setOrders(newRetailCustList)
+      setChosen(newRetailCustName);
+      return
     } 
+
     for (let cust of customers) {
       if (entry.includes(cust[2]) || entry.includes(cust[0])) {
         nextCustomer = cust[2];
-        // make sure ui is on whole setting
-        document.getElementById("customers").value = cust[2];
+        if (nextCustomer !== ''){
+          setChosen(nextCustomer)
+          setorderTypeWhole(true)
+          return
+        }
       };
     };
-    return nextCustomer;
+
+
+    if (nextCustomer === '' && chosen === ''){
+      swal ({
+        text: "Need to choose a customer",
+        icon: "error",
+        buttons: false,
+        timer: 2000
+      })
+      return
+    }
+
+    swal ({
+      text: "Say What??",
+      icon: "error",
+      buttons: false,
+      timer: 2000
+    })
+  return
   };
   
-  */
-/*
+  
+
   const checkForDelivDate = (entry) => {
     //  check for Sun - Sat
     //  check for today, tomorrow, 2day
     //  check for date format mm/dd/yyyy
     return ''
   };
-*/
-/*
+
+
   const checkForRoute = (entry) => {
     // construct a list based on entry find for chosen and deliv date
     // if no list
@@ -47,8 +76,8 @@ const OrderCommandLine = () => {
     //    retrieve route from list
     return ''
   };
-*/
-/*
+
+
   const checkForPonotes = (entry) => {
     // construct a list based on entry find for chosen and deliv date
     // if no list
@@ -57,11 +86,12 @@ const OrderCommandLine = () => {
     //    retrieve ponote from list
     return ''
   };
- */ 
+ 
   
- /* 
+  
   const checkForProducts = (entry, newRoute, newPonote) => {
     
+    /*}
     let isThereAProduct = /\d+\s\w+/g.test(entry)
    
     if (isThereAProduct){
@@ -77,58 +107,32 @@ const OrderCommandLine = () => {
   
         }
       }
-    
-    return ordersToUpdate
-  }}
-  */
-  /*
+    */
+    return []
+  }
+  
+  
   const interpretEntry = async (entry) => {
-    let newCust = chosen
-    let custEntry = await checkForCustomer(entry, customers)
-    custEntry === '' ? newCust = chosen : newCust = custEntry
-
-    let newDelivDate = delivDate
-    let delivDateEntry = await checkForDelivDate(entry)
-    delivDateEntry === '' ? newDelivDate = delivDate : newDelivDate = delivDateEntry
-
-    let newRoute = await checkForRoute()
-
-    let newPonotes = await checkForPonotes()
-
-    let newProductArray = await checkForProducts(entry, newRoute, newPonotes)
-
-    return [newCust, newDelivDate, newProductArray]
+    checkForCustomer(entry, customers)
+    
+    
   };
-*/
+
   
 
-  const handleInput = async (entry) => {
-     // eslint-disable-next-line no-lone-blocks
-     if (entry.key === "Enter") {{ /*}
-        let [ newCust, newDelivDate, newProductArray ] = await interpretEntry(entry.target.value)
-        document.getElementById("orderCommand").value = ''; //clear the command line
-        processEntry(newCust, newDelivDate, newProductArray)
-    */}}
+  const handleInput = (entry) => {
+     if (entry.key === "Enter") {
+        interpretEntry(entry.target.value)
+        document.getElementById("orderCommand").value = ''; 
+        
+    }
     return
   };
 
-  /*
-  const processEntry = (cust, JSdate, prodArray) => {
-    if (cust) {setChosen(cust)};
-    if (JSdate) {setDelivDate(JSdate)};
-    let newThisOrder = [...orders] // [ qty, prod, cust, po, route, so ]
-    if (prodArray) {
-      for (let prod of prodArray) {
-        // check to see if newProd is a duplicate
-        //    if so, find index and update
-        //    if not, push new prod
-        newThisOrder.push(prod)
-      }
-      setOrders(newThisOrder) // [ qty, prod, cust, po, route, so ]
-    }
-    };
   
-  */
+
+  
+  
   return (        
     <div className = "orderCommandLine">
       <input  type="text" 

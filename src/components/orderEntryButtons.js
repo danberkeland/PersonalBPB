@@ -26,9 +26,39 @@ function OrderEntryButtons() {
     setChosen('')
   }
 
-  /*
+  
   const handleClear = () => {
-    let orderList = buildOrderList()
+
+     // BUILD PRESENT LIST
+    // Build Orders List based on delivDate and Chosen
+    let BPBDate = convertDatetoBPBDate(delivDate)
+    let filteredOrders = clonedeep(orders)
+    let cartList = filteredOrders ? filteredOrders.filter(order => order[7] === BPBDate && order[2] === chosen) : [];
+    
+    // Build Standing List based on delivDate and Chosen
+    let standingDate = convertDatetoStandingDate(delivDate);  
+    let filteredStanding = clonedeep(standing)
+    let standingList = filteredStanding ? filteredStanding.filter(standing => standing[0] === standingDate && standing[8] === chosen) : [];
+    let convertedOrderList = standingList.map(order => [    order[2],
+                                                            order[7],
+                                                            order[8],
+                                                            'na',
+                                                            order[6],
+                                                            order[2], 
+                                                            order[3] !== "9999" ? true : false,
+                                                            standingDate])
+    
+    // Compare Order List to Stand List and give Order List precedence in final list                                                        
+    let orderList = cartList.concat(convertedOrderList)
+    for (let i=0; i<orderList.length; ++i ){
+        for (let j=i+1; j<orderList.length; ++j){
+            if (orderList[i][1] === orderList[j][1]){
+                orderList.splice(j,1);
+            }
+        }
+    }
+
+    console.log(orderList)
     orderList = orderList.map(order => ["0",order[1],order[2],order[3],order[4],order[0], orderTypeWhole,convertDatetoBPBDate(delivDate)]) 
     let currentOrderList = orderList.concat(orders)
     for (let i=0; i<currentOrderList.length; ++i ){
@@ -42,7 +72,7 @@ function OrderEntryButtons() {
     }
     setOrders(currentOrderList);
   }
-  */
+
 
   
   const handleAddUpdate =  () => {
@@ -134,7 +164,7 @@ function OrderEntryButtons() {
         onClick={handleAddUpdate}
         >Add/Update</button>
       <button 
-        //onClick={handleClear}
+        onClick={handleClear}
         >Clear Order</button>
       <button>Standing</button>
       <button onClick={handleChangeorderTypeWhole}>{type} Order</button>

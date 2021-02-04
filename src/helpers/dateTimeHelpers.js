@@ -14,9 +14,12 @@ export const convertDatetoStandingDate = (entry) => {
 }
 
 export const tomorrow = () => {
-    const today = new Date()
-    const tomorrow = new Date(today)
-    tomorrow.setDate(tomorrow.getDate()+1)
+    let today = new Date()
+    let utc_offset = today.getTimezoneOffset()
+    today.setMinutes(today.getMinutes()-utc_offset)
+    let tomorrow = new Date()
+    tomorrow.setDate(today.getDate()+1)
+
     return tomorrow.toISOString().split('T')[0]
 }
 

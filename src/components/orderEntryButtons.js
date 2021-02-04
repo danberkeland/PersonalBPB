@@ -12,7 +12,7 @@ const clonedeep = require('lodash.clonedeep')
 
 function OrderEntryButtons() {
 
-  const { orderTypeWhole, setorderTypeWhole } = useContext(CurrentDataContext)
+  const { orderTypeWhole, setorderTypeWhole, route, ponote } = useContext(CurrentDataContext)
   const { setChosen, delivDate, chosen } = useContext(CurrentDataContext)
   const { orders, setOrders, recentOrders, setRecentOrders } = useContext(OrdersContext)
   const { standing } = useContext(StandingContext)
@@ -75,6 +75,15 @@ function OrderEntryButtons() {
             }
         }
     }
+    // set route if route has changed
+    if (orderList) {
+      if (orderList[0][4]!==route){
+        orderList.map(item => item[4] = route)
+      }
+      if (orderList[0][3]!==ponote){
+        orderList.map(item => item[3] = ponote)
+      } 
+    }    
     // Set SO to equal QTY 
     orderList.map(item => item[5] = item[0])
     // Add present List to Orders

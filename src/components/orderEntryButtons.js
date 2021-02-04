@@ -76,7 +76,7 @@ function OrderEntryButtons() {
         }
     }
     // set route if route has changed
-    if (orderList) {
+    if (orderList.length>0) {
       if (orderList[0][4]!==route){
         orderList.map(item => item[4] = route)
       }

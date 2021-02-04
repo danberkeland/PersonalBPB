@@ -92,7 +92,7 @@ const PONotes = () => {
     return (
         <React.Fragment>
             <label>PO/Notes:</label>
-            <input type="text" id="PONotes" name="PONotes" placeholder={ponote} onKeyUp={handleNewPonote}></input>
+            <input type="text" id="PONotes" name="PONotes" placeholder={ponote} onKeyUp={handleNewPonote} disabled={chosen ? false : true}></input>
         </React.Fragment>
     );
 };

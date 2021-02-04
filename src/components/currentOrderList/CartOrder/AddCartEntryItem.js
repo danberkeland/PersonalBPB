@@ -44,14 +44,14 @@ const AddCartEntryItem = () => {
 
     return (
         <div className="addAProductToCart">
-            <select id = "products" name="products" value={pickedProduct} onChange={handleChange}>
+            <select id = "products" name="products" value={pickedProduct} onChange={handleChange} disabled={chosen ? false : true}>
             {
                 productList ? productList.map((product) => 
                     <option key = {uuidv4()} value={product[1]}>{product[1]}</option>
                 ) : ''
                 }; 
             </select>
-            <input type="text" id="addedProdQty"></input>
+            <input type="text" id="addedProdQty" disabled={chosen ? false : true}></input>
             <button onClick={handleAdd}>ADD</button>
         </div>
     );

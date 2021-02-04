@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 
 import { v4 as uuidv4 } from 'uuid';
+import swal from '@sweetalert/with-react';
 
 import { CurrentDataContext } from '../../dataContexts/CurrentDataContext';
 import { CustomerContext } from '../../dataContexts/CustomerContext';
@@ -17,7 +18,7 @@ const Routes = () => {
     const { customers } = useContext(CustomerContext)
     const { orders, setOrders } = useContext(OrdersContext)
     const { standing } = useContext(StandingContext)
-    const { chosen, delivDate, route, setRoute } = useContext(CurrentDataContext)
+    const { chosen, delivDate, route, setRoute, orderTypeWhole, ponote } = useContext(CurrentDataContext)
 
     const [ routes, setRoutes ] = useState()
     
@@ -70,9 +71,17 @@ const Routes = () => {
 
 
         // set route if route has changed
-        if (orderList) {
+        if (orderList.length>0) {
             orderList.map(item => item[4] = newRoute)
-        }   
+        } else {
+            swal ({
+                text: "Need to enter a product first",
+                icon: "warning",
+                buttons: false,
+                timer: 2000
+              })
+            return
+        }
 
         let recent = clonedeep(orders)
         let newOrderList = orderList.concat(recent)
@@ -96,7 +105,7 @@ const Routes = () => {
     return (
         <React.Fragment>
             <label>Routes:</label>
-            <select id="routes" name="routes" value={route} onChange={handleChange}>
+            <select id="routes" name="routes" value={route} onChange={handleChange} disabled={chosen ? false : true}>
             {routes ? routes.map(ro =>  <option id="routes" key={uuidv4()} name={ro}>{ro}</option>) : ''}
             </select>
         </React.Fragment>

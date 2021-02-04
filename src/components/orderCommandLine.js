@@ -3,6 +3,8 @@ import { CurrentDataContext } from '../dataContexts/CurrentDataContext';
 import { OrdersContext } from '../dataContexts/OrdersContext';
 import { CustomerContext } from '../dataContexts/CustomerContext';
 
+import { todayPlus, daysOfTheWeek } from '../helpers/dateTimeHelpers'
+
 import swal from '@sweetalert/with-react';
 
 
@@ -41,7 +43,7 @@ const OrderCommandLine = () => {
 
     if (nextCustomer === '' && chosen === ''){
       swal ({
-        text: "Need to choose a customer",
+        text: "Please choose a customer",
         icon: "error",
         buttons: false,
         timer: 2000
@@ -49,22 +51,24 @@ const OrderCommandLine = () => {
       return
     }
 
-    swal ({
-      text: "Say What??",
-      icon: "error",
-      buttons: false,
-      timer: 2000
-    })
-  return
+    
+    return false
   };
   
   
 
   const checkForDelivDate = (entry) => {
-    //  check for Sun - Sat
-    //  check for today, tomorrow, 2day
-    //  check for date format mm/dd/yyyy
-    return ''
+    let [ today, tomorrow, twoDay ] = todayPlus()
+    let [ Sun, Mon, Tues, Wed, Thurs, Fri, Sat ] = daysOfTheWeek()
+    let dateWords = [ ['today',today],['tomorrow',tomorrow],['twoday',twoDay],
+                      ['sun',Sun],['mon',Mon],['tue',Tues],['tues',Tues],['wed',Wed],['thu',Thurs],
+                      ['thur',Thurs],['thurs',Thurs],['fri',Fri],['sat',Sat]]
+    for (let wordSet of dateWords){
+      if(entry.includes(wordSet[0])){
+        setDelivDate(wordSet[1])
+      }
+      
+    }
   };
 
 
@@ -79,6 +83,8 @@ const OrderCommandLine = () => {
 
 
   const checkForPonotes = (entry) => {
+    
+
     // construct a list based on entry find for chosen and deliv date
     // if no list
     //    ponote = ''
@@ -113,9 +119,11 @@ const OrderCommandLine = () => {
   
   
   const interpretEntry = async (entry) => {
-    checkForCustomer(entry, customers)
-    
-    
+    let isCust = checkForCustomer(entry, customers)
+    checkForDelivDate(entry)
+    if (!isCust){
+      return
+    }   
   };
 
   

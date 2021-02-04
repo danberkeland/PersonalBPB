@@ -6,9 +6,9 @@ import { CurrentDataContext } from '../dataContexts/CurrentDataContext';
 import { OrdersContext } from '../dataContexts/OrdersContext';
 import { StandingContext } from '../dataContexts/StandingContext';
 
-import { createCartList, createStandingList,createCurrentOrderList } from '../helpers/sortDataHelpers'
-import { convertDatetoBPBDate } from '../helpers/dateTimeHelpers';
+import { convertDatetoBPBDate, convertDatetoStandingDate } from '../helpers/dateTimeHelpers';
 
+const clonedeep = require('lodash.clonedeep')
 
 function OrderEntryButtons() {
 
@@ -20,12 +20,6 @@ function OrderEntryButtons() {
   let type = orderTypeWhole ? "Special" : "Whole";
 
 
-  const buildOrderList = () => {
-    let cartList = createCartList(chosen, delivDate, orders)
-    let standingList = createStandingList(chosen, delivDate, standing)
-    let orderList = createCurrentOrderList(cartList,standingList)
-    return orderList
-  }
 
   const handleChangeorderTypeWhole = () => {
     setorderTypeWhole(!orderTypeWhole)
@@ -50,27 +44,64 @@ function OrderEntryButtons() {
   }
   */
 
-  /*
+  
   const handleAddUpdate =  () => {
-    let orderList = buildOrderList()
-    console.log(orderList)
-    orderList.map(order => order[5] = order[0])
-    let currentOrderList = orderList.concat(orders)
-    for (let i=0; i<currentOrderList.length; ++i ){
-        for (let j=i+1; j<currentOrderList.length; ++j){
-            if (currentOrderList[i][1] === currentOrderList[j][1] &&
-              currentOrderList[i][2] === currentOrderList[j][2] &&
-              currentOrderList[i][7] === currentOrderList[j][7]){
-                currentOrderList.splice(j,1);
+
+    // BUILD PRESENT LIST
+    // Build Orders List based on delivDate and Chosen
+    let BPBDate = convertDatetoBPBDate(delivDate)
+    let filteredOrders = clonedeep(orders)
+    let cartList = filteredOrders ? filteredOrders.filter(order => order[7] === BPBDate && order[2] === chosen) : [];
+    
+    // Build Standing LIst based on delivDate and Chosen
+    let standingDate = convertDatetoStandingDate(delivDate);  
+    let filteredStanding = clonedeep(standing)
+    let standingList = filteredStanding ? filteredStanding.filter(standing => standing[0] === standingDate && standing[8] === chosen) : [];
+    let convertedOrderList = standingList.map(order => [    order[2],
+                                                            order[7],
+                                                            order[8],
+                                                            'na',
+                                                            order[6],
+                                                            order[2], 
+                                                            order[3] !== "9999" ? true : false,
+                                                            standingDate])
+    
+    // Compare Order List to Stand List and give Order List precedence in final list                                                        
+    let orderList = cartList.concat(convertedOrderList)
+    for (let i=0; i<orderList.length; ++i ){
+        for (let j=i+1; j<orderList.length; ++j){
+            if (orderList[i][1] === orderList[j][1]){
+                orderList.splice(j,1);
             }
         }
     }
-    setOrders(currentOrderList)
 
+    // Set SO to equal QTY 
+    orderList.map(item => item[5] = item[0])
+    console.log(orderList)
+
+    // Add present List to Orders
+    let recent = clonedeep(orders)
+    let newOrderList = orderList.concat(recent)
+        for (let i=0; i<newOrderList.length; ++i ){
+            for (let j=i+1; j<newOrderList.length; ++j){
+                if (newOrderList[i][1] === newOrderList[j][1]){
+                    newOrderList.splice(j,1);
+                }
+            }
+          }
+    if (newOrderList){
+      setOrders(newOrderList)
+    }
+
+
+    // Create item (date, name, whole) to add to recent list
     let newRecentOrder = [delivDate,chosen,orderTypeWhole]
     let stringRecentOrder = JSON.stringify(newRecentOrder)
     const currentRecentOrders = [...recentOrders]
     let stringCurrentRecentOrders = JSON.stringify(currentRecentOrders)
+
+    // If item already exists, send update message
     if (stringCurrentRecentOrders.indexOf(stringRecentOrder) !== -1){
       swal ({
         text: "Order Updated",
@@ -82,16 +113,15 @@ function OrderEntryButtons() {
         currentRecentOrders.push(newRecentOrder)
       }
     setRecentOrders(currentRecentOrders)
-    
   }
-  */
+  
 
   
 
   return (         
     <div className = "orderEntryButtons">
       <button 
-        //onClick={handleAddUpdate}
+        onClick={handleAddUpdate}
         >Add/Update</button>
       <button 
         //onClick={handleClear}

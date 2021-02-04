@@ -53,7 +53,7 @@ function OrderEntryButtons() {
     let filteredOrders = clonedeep(orders)
     let cartList = filteredOrders ? filteredOrders.filter(order => order[7] === BPBDate && order[2] === chosen) : [];
     
-    // Build Standing LIst based on delivDate and Chosen
+    // Build Standing List based on delivDate and Chosen
     let standingDate = convertDatetoStandingDate(delivDate);  
     let filteredStanding = clonedeep(standing)
     let standingList = filteredStanding ? filteredStanding.filter(standing => standing[0] === standingDate && standing[8] === chosen) : [];
@@ -75,22 +75,23 @@ function OrderEntryButtons() {
             }
         }
     }
-
     // Set SO to equal QTY 
     orderList.map(item => item[5] = item[0])
-    console.log(orderList)
-
     // Add present List to Orders
     let recent = clonedeep(orders)
     let newOrderList = orderList.concat(recent)
         for (let i=0; i<newOrderList.length; ++i ){
             for (let j=i+1; j<newOrderList.length; ++j){
-                if (newOrderList[i][1] === newOrderList[j][1]){
+                if (  newOrderList[i][1] === newOrderList[j][1] &&
+                      newOrderList[i][2] === newOrderList[j][2] &&
+                      newOrderList[i][7] === newOrderList[j][7]){
                     newOrderList.splice(j,1);
                 }
             }
           }
+  
     if (newOrderList){
+      console.log(newOrderList)
       setOrders(newOrderList)
     }
 

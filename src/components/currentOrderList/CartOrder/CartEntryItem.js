@@ -152,9 +152,9 @@ const CartEntryItem = () => {
                             placeholder={order[0]} 
                             onKeyUp={e => {handleQtyModify(e)}}
                             onBlur={(e) => {
-                                console.log("Triggered lost focus "+e.target.value)
+                                
                                 e.target.value = ''
-                                console.log(e.target.value+" is new value")
+                                
                             }}
                             >
                     </input>

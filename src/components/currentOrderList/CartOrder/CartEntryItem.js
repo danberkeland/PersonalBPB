@@ -1,5 +1,6 @@
 import React, { useEffect, useContext, useState } from 'react';
 
+import swal from '@sweetalert/with-react';
 
 import { OrdersContext } from '../../../dataContexts/OrdersContext';
 import { StandingContext } from '../../../dataContexts/StandingContext';
@@ -53,10 +54,16 @@ const CartEntryItem = () => {
 
     
     const handleQtyModify = e => {
-
-        if (e.key === "Enter"){
-            document.getElementById("orderCommand").focus()
+        if(isNaN(e.target.value)){
+            e.target.value = ''
+            swal ({
+                text: "Only Numbers Please",
+                icon: "warning",
+                buttons: false,
+                timer: 2000
+              })
         }
+
         let newQty = e.target.value
         let indexToFind = e.target.name
         let foundPresentedIndex = presentedList.findIndex(line => line[1] === indexToFind)

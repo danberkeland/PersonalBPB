@@ -32,6 +32,7 @@ function OrderEntryButtons() {
     setChosen('')
   }
 
+  /*
   const handleClear = () => {
     let orderList = buildOrderList()
     orderList = orderList.map(order => ["0",order[1],order[2],order[3],order[4],order[0], orderTypeWhole,convertDatetoBPBDate(delivDate)]) 
@@ -47,9 +48,12 @@ function OrderEntryButtons() {
     }
     setOrders(currentOrderList);
   }
+  */
 
+  /*
   const handleAddUpdate =  () => {
     let orderList = buildOrderList()
+    console.log(orderList)
     orderList.map(order => order[5] = order[0])
     let currentOrderList = orderList.concat(orders)
     for (let i=0; i<currentOrderList.length; ++i ){
@@ -80,13 +84,18 @@ function OrderEntryButtons() {
     setRecentOrders(currentRecentOrders)
     
   }
+  */
 
   
 
   return (         
     <div className = "orderEntryButtons">
-      <button onClick={handleAddUpdate}>Add/Update</button>
-      <button onClick={handleClear}>Clear Order</button>
+      <button 
+        //onClick={handleAddUpdate}
+        >Add/Update</button>
+      <button 
+        //onClick={handleClear}
+        >Clear Order</button>
       <button>Standing</button>
       <button onClick={handleChangeorderTypeWhole}>{type} Order</button>
     </div>    

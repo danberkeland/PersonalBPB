@@ -12,9 +12,12 @@
     "@testing-library/user-event": "^12.1.10",
     "calendarpickerjs": "^1.4.0",
     "dotenv": "^8.2.0",
+    "lodash": "^4.17.20",
+    "lodash.clonedeep": "^4.5.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-scripts": "4.0.1",
+    "save": "^2.4.0",
     "sweetalert": "^2.1.2",
     "uuid": "^8.3.2",
     "web-vitals": "^0.2.4"

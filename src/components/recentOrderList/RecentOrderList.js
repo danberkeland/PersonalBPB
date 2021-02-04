@@ -10,9 +10,11 @@ import { convertDatetoBPBDate } from '../../helpers/dateTimeHelpers';
 
 const RecentOrderList = () => {
 
-  const { recentOrders } = useContext(OrdersContext)
+  const { orders, recentOrders } = useContext(OrdersContext)
   const { setChosen, setDelivDate,setorderTypeWhole } = useContext(CurrentDataContext)
 
+
+  /*
   const handleClick = async (e) => {
     let str = e.target.dataset.whole.toString()
     if (str === 'true'){
@@ -22,9 +24,9 @@ const RecentOrderList = () => {
     }
     
     setChosen(e.target.dataset.cust)
-    setDelivDate(e.target.dataset.date)
-    
+    setDelivDate(e.target.dataset.date)   
   }
+  */
 
   return (
       <React.Fragment>      
@@ -36,7 +38,8 @@ const RecentOrderList = () => {
                                         data-date={order[0]}
                                         data-cust={order[1]}
                                         data-whole={order[2]}
-                                        onClick = {handleClick}>
+                                        // onClick = {handleClick}
+                                        >
                                             
                                             {convertDatetoBPBDate(order[0])+" "+order[1]}   {order[2] ? "": "RETAIL"}
                                             

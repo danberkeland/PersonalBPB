@@ -1,45 +1,106 @@
-import React, { useEffect, useContext, useState, useRef } from 'react';
+import React, { useEffect, useContext, useState, useCallback, useRef } from 'react';
 
 
 import { OrdersContext } from '../../../dataContexts/OrdersContext';
 import { StandingContext } from '../../../dataContexts/StandingContext';
 import { CurrentDataContext } from '../../../dataContexts/CurrentDataContext';
 
-import { convertDatetoBPBDate } from '../../../helpers/dateTimeHelpers';
-import { createCartList, createStandingList, createCurrentOrderList } from '../../../helpers/sortDataHelpers';
-import { createModifiedQtyPresentList, createRemovalPresentList } from '../../../helpers/handleInteractions';
+import { convertDatetoBPBDate, convertDatetoStandingDate } from '../../../helpers/dateTimeHelpers';
 
+const clonedeep = require('lodash.clonedeep')
 
 const CartEntryItem = () => {
 
     const{ chosen, delivDate } = useContext(CurrentDataContext)
-    const { orders } = useContext(OrdersContext)
+    const { orders, setOrders } = useContext(OrdersContext)
     const { standing } = useContext(StandingContext)
     
     const [ presentedList, setPresentedList ] = useState()
 
-    let ord = useRef(orders)
    
     useEffect(() => {
-        const cartList = createCartList(chosen, delivDate, ord.current)
-        const standingList = createStandingList(chosen, delivDate, standing)
-        const orderList = createCurrentOrderList(cartList,standingList)
+    
+        // Build Orders List based on delivDate and Chosen
+        let BPBDate = convertDatetoBPBDate(delivDate)
+        let filteredOrders = clonedeep(orders)
+        let cartList = filteredOrders ? filteredOrders.filter(order => order[7] === BPBDate && order[2] === chosen) : [];
+        
+        // Build Standing LIst based on delivDate and Chosen
+        let standingDate = convertDatetoStandingDate(delivDate);  
+        let filteredStanding = clonedeep(standing)
+        let standingList = filteredStanding ? filteredStanding.filter(standing => standing[0] === standingDate && standing[8] === chosen) : [];
+        let convertedOrderList = standingList.map(order => [    order[2],
+                                                                order[7],
+                                                                order[8],
+                                                                'na',
+                                                                order[6],
+                                                                order[2], 
+                                                                order[3] !== "9999" ? true : false,
+                                                                standingDate])
+        
+        // Compare Order List to Stand List and give Order List precedence in final list                                                        
+        let orderList = cartList.concat(convertedOrderList)
+        for (let i=0; i<orderList.length; ++i ){
+            for (let j=i+1; j<orderList.length; ++j){
+                if (orderList[i][1] === orderList[j][1]){
+                    orderList.splice(j,1);
+                }
+            }
+        }
+
         setPresentedList(orderList)
-    }, [ chosen, delivDate, standing ]);
+    }, [ chosen, delivDate, standing, orders ]);
 
-
+    
     const handleQtyModify = e => {
-        let modifiedQtyPresentedList = createModifiedQtyPresentList(e, presentedList)
-        console.log(orders)
-        console.log(presentedList)
-        setPresentedList(modifiedQtyPresentedList)   
+
+        if (e.key === "Enter"){
+            document.getElementById("orderCommand").focus()
+        }
+        let newQty = e.target.value
+        let indexToFind = e.target.name
+        let foundPresentedIndex = presentedList.findIndex(line => line[1] === indexToFind)
+        let presentedListToModify = [...presentedList]
+        presentedListToModify[foundPresentedIndex][0] = newQty
+
+        // create deepcopy of orders
+        let updatedOrders = clonedeep(orders)
+        // find index of prduct, date, chosen in deep copy
+        let foundOrdersIndex = updatedOrders.findIndex(line => line[1] === indexToFind && 
+            line[2] === chosen && line[7] === convertDatetoBPBDate(delivDate))
+        // change qty to newQty
+        if(foundOrdersIndex>=0){
+            updatedOrders[foundOrdersIndex][0] = newQty
+            setOrders(updatedOrders)
+        }
+        // set orders(updatedOrders)
+        setPresentedList(presentedListToModify)  
     }
+    
+
 
     const handleRemove = e => {
-        let removalPresentedList = createRemovalPresentList(e, presentedList)
-        setPresentedList(removalPresentedList)
-    }
+        let newQty = "0"
+        let indexToFind = e.target.name
+        let foundPresentedIndex = presentedList.findIndex(line => line[1] === indexToFind)
+        let presentedListToModify = [...presentedList]
+        presentedListToModify[foundPresentedIndex][0] = newQty
 
+        // create deepcopy of orders
+        let updatedOrders = clonedeep(orders)
+        // find index of prduct, date, chosen in deep copy
+        let foundOrdersIndex = updatedOrders.findIndex(line => line[1] === indexToFind && 
+            line[2] === chosen && line[7] === convertDatetoBPBDate(delivDate))
+        // change qty to newQty
+        if(foundOrdersIndex>=0){
+            updatedOrders[foundOrdersIndex][0] = newQty
+            setOrders(updatedOrders)
+        }
+        // set orders(updatedOrders)
+        setPresentedList(presentedListToModify)  
+    }
+    
+    
 
     return (
         <React.Fragment> 
@@ -72,8 +133,9 @@ const CartEntryItem = () => {
                             >
                     </input>
                     <label key={order[1]+"d"} className="previous">{order[5] === order[0] ? '' : order[5]}</label>
-                    <button onClick={handleRemove} 
+                    <button onClick={e => {handleRemove(e)}} 
                             key={order[1]+"e"} 
+                            name={order[1]}
                             id={order[1]}>
                                 
                                 REMOVE

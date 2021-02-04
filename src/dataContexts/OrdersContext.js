@@ -12,11 +12,13 @@ export const OrdersProvider = (props) => {
 
     const [orders, setOrders] = useState([]);
     const [ recentOrders, setRecentOrders ] = useState([]);
+    const [ originalOrders, setOriginalOrders ] = useState([]);
  
     return (
         <OrdersContext.Provider value={{ 
             orders, setOrders, 
-            recentOrders, setRecentOrders
+            recentOrders, setRecentOrders,
+            originalOrders, setOriginalOrders
             }}>
 
             {props.children}
@@ -32,15 +34,16 @@ export const OrdersLoad = () => {
 
     const { loading, error, data } = useFetch(process.env.REACT_APP_API_ORDERS, []);
 
-    const { setOrders } = useContext(OrdersContext)
+    const { setOrders, setOriginalOrders } = useContext(OrdersContext)
 
     useEffect(() => {
         if(data){
             sortAtoZDataByIndex(data,0)
             let appOrders = convertSheetsOrdersToAppOrders(data)
             setOrders(appOrders);
+            setOriginalOrders(appOrders);
         }
-    },[data, setOrders]);
+    },[data, setOrders, setOriginalOrders]);
 
     return (
         <React.Fragment>

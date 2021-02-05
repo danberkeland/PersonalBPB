@@ -13,7 +13,7 @@ export const CurrentDataProvider = (props) => {
     const [delivDate, setDelivDate] = useState(tomorrow());
     const [ ponote, setPonote ] = useState('na')
     const [route, setRoute ] = useState()
-    const [orderTypeWhole, setorderTypeWhole] = useState(true)
+    const [orderTypeWhole, setOrderTypeWhole] = useState(true)
     const [ ordersHasBeenChanged, setOrdersHasBeenChanged ] = useState(false);
 
     return (
@@ -22,7 +22,7 @@ export const CurrentDataProvider = (props) => {
                         delivDate, setDelivDate, 
                         ponote, setPonote,
                         route, setRoute,
-                        orderTypeWhole, setorderTypeWhole,
+                        orderTypeWhole, setOrderTypeWhole,
                         ordersHasBeenChanged, setOrdersHasBeenChanged
                         }}>
             {props.children}

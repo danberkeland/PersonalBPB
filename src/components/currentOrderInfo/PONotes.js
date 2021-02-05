@@ -1,6 +1,4 @@
-import React, { useContext } from 'react';
-
-import { useEffect } from 'react/cjs/react.development';
+import React, { useContext, useEffect } from 'react';
 
 import { CurrentDataContext } from '../../dataContexts/CurrentDataContext';
 import { OrdersContext } from '../../dataContexts/OrdersContext';

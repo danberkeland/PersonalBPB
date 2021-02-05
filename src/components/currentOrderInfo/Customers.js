@@ -1,5 +1,4 @@
-import React, { useContext, useState } from 'react';
-import { useEffect } from 'react/cjs/react.development';
+import React, { useContext, useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { CurrentDataContext } from '../../dataContexts/CurrentDataContext';

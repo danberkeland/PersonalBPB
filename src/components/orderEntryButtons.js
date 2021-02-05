@@ -12,7 +12,7 @@ const clonedeep = require('lodash.clonedeep')
 
 function OrderEntryButtons() {
 
-  const { orderTypeWhole, setorderTypeWhole, route, ponote } = useContext(CurrentDataContext)
+  const { orderTypeWhole, setOrderTypeWhole, route, ponote } = useContext(CurrentDataContext)
   const { setChosen, delivDate, chosen } = useContext(CurrentDataContext)
   const { orders, setOrders, recentOrders, setRecentOrders } = useContext(OrdersContext)
   const { standing } = useContext(StandingContext)
@@ -22,7 +22,7 @@ function OrderEntryButtons() {
 
 
   const handleChangeorderTypeWhole = () => {
-    setorderTypeWhole(!orderTypeWhole)
+    setOrderTypeWhole(!orderTypeWhole)
     setChosen('')
   }
 

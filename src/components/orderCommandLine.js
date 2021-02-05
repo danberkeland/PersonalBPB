@@ -11,7 +11,7 @@ import swal from '@sweetalert/with-react';
 
 const OrderCommandLine = () => {
 
-  const { chosen, setChosen, delivDate, setDelivDate, orderTypeWhole, setorderTypeWhole, route, ponote } = useContext(CurrentDataContext)
+  const { chosen, setChosen, delivDate, setDelivDate, orderTypeWhole, setOrderTypeWhole, route, ponote } = useContext(CurrentDataContext)
   const { orders, setOrders } = useContext(OrdersContext)
   const { customers } = useContext(CustomerContext)
   const { products } = useContext(ProductsContext)
@@ -21,7 +21,7 @@ const OrderCommandLine = () => {
     let nextCustomer = chosen
 
     if (entry.includes("retail ")){
-      setorderTypeWhole(false)
+      setOrderTypeWhole(false)
       let newRetailCustName = entry.replace("retail ","")
       let newRetailCustList = [...orders]
       let newRetailCustEntry = ["","",newRetailCustName,"","","",false,""]
@@ -36,7 +36,7 @@ const OrderCommandLine = () => {
         nextCustomer = cust[2];
         if (nextCustomer !== ''){
           setChosen(nextCustomer)
-          setorderTypeWhole(true)
+          setOrderTypeWhole(true)
           return
         }
       };

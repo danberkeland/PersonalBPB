@@ -11,16 +11,16 @@ import { convertDatetoBPBDate } from '../../helpers/dateTimeHelpers';
 const RecentOrderList = () => {
 
   const { recentOrders } = useContext(OrdersContext)
-  const { setChosen, setDelivDate,setorderTypeWhole } = useContext(CurrentDataContext)
+  const { setChosen, setDelivDate,setOrderTypeWhole } = useContext(CurrentDataContext)
 
 
   
   const handleClick = async (e) => {
     let str = e.target.dataset.whole.toString()
     if (str === 'true'){
-      setorderTypeWhole(true)
+      setOrderTypeWhole(true)
     } else {
-      setorderTypeWhole(false)
+      setOrderTypeWhole(false)
     }
     
     setChosen(e.target.dataset.cust)

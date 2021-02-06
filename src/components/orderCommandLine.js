@@ -136,41 +136,43 @@ const OrderCommandLine = () => {
 
       console.log(custOrderList)
       // new product by new product, check if it exists
-      let ord
-      if (custOrderList.length<=0){
-        console.log("OrderList Does not exist")
-        let ordersToModify = [...orders]
-        for (ord of ordersToUpdate){
-          ordersToModify.push(ord)
-        }
-        setOrders(ordersToModify)
-        return
-      } else {
-        console.log("OrderList exists")
+      let ordersToModify = [...orders]
+      if (custOrderList.length>0){
         for (let ord of ordersToUpdate){
           for (let custOrd of custOrderList){
             if (ord[1] === custOrd[1]){
-              console.log("order item exists")
-              //      if exists, modify qty
-              return
-            }    
-        }
-        console.log("order items do not exist")
-        let ordersToModify = [...orders]
-        for (ord of ordersToUpdate){
-          ordersToModify.push(ord)
-        }
-        setOrders(ordersToModify)
-
             
-          }
+              let index = ordersToModify.findIndex(order => order[1] === custOrd[1] &&
+                    order[2] === chosen && order[7] === convertDatetoBPBDate(delivDate));
+              if (index>=0){
+                ordersToModify[index][0] = ord[0] 
+                     
+              } else{
+                ord[5] = custOrd[5]
+                ordersToModify.push(ord)
+                
+              }
+            }
+          }    
+        }
       }
-
-
+      for (let ord of ordersToUpdate){
+        for (let mod in ordersToModify){
+          let index = ordersToModify.findIndex(order => order[1] === ord[1] &&
+            order[2] === chosen && order[7] === convertDatetoBPBDate(delivDate));
+          if (index<0){
+            ordersToModify.push(ord)
+          }
+        }
+      }
+      // for order in ordersToModify
+      //      if index not in orders - push order into ordersToModify
+      setOrders(ordersToModify)
       
     }
   }
-  
+
+
   const interpretEntry = async (entry) => {
     checkForCustomer(entry, customers)
 

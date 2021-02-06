@@ -2,10 +2,24 @@
   box-sizing: border-box;
 }
 
+body {
+  background-image: url("./images/bpbpandemicbg.JPG");
+    
+  background-size: cover;
+
+}
+
 .mainContainer {
   font-family: 'Montserrat', sans-serif;
-  width: 95%;
   margin: 20px auto;
+  min-height: 80vh;
+  width: 80%;
+  background: linear-gradient(
+    to right bottom,
+    rgba(255,255,255,.7),
+    rgba(255,255,255,.3)
+  );
+  backdrop-filter: blur(.5rem);
   display: grid;
   grid-template-columns: .8fr 1.2fr .8fr;  
 }

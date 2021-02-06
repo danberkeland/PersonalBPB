@@ -4,7 +4,11 @@
 
 body {
   background-image: url("./images/croixprod.JPG");
-    
+  background: linear-gradient(
+    to right bottom,
+    rgba(64, 63, 70),
+    rgba(82, 42, 134)
+  );  
   background-size: cover;
 
 }

@@ -29,7 +29,6 @@ function OrderEntryButtons() {
 
   const handleCartStandToggle = () => {
     setCartList(!cartList)
-    setChosen('')
   }
   
   const handleClear = () => {

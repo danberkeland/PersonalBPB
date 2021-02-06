@@ -10,12 +10,13 @@ body {
     rgba(82, 42, 134)
   );  
   min-height: 100vh;
-
+  display: flex;
+  align-items: center;
 }
 
 .mainContainer {
   font-family: 'Montserrat', sans-serif;
-  margin: 20px auto;
+  margin: auto;
   min-height: 80vh;
   width: 80%;
   border-radius: 20px;

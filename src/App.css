@@ -40,7 +40,7 @@ input {
 }
 
 h2 {
-  color: rgb(72, 72, 185)
+  color: rgb(66, 97, 201)
 }
 
 
@@ -131,7 +131,7 @@ h2 {
   margin: 5px 0;
   padding: 10px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   column-gap: 10px;
   row-gap: 10px;
   background: linear-gradient(

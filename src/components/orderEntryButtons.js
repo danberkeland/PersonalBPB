@@ -151,6 +151,12 @@ function OrderEntryButtons() {
       })
       } else {
         currentRecentOrders.push(newRecentOrder)
+        swal ({
+          text: "Order Updated",
+          icon: "success",
+          buttons: false,
+          timer: 2000
+        })
       }
     setRecentOrders(currentRecentOrders)
   }

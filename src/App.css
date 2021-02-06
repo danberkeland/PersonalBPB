@@ -182,6 +182,7 @@ h2 {
 
 /* Right Container */
 .rightContainer {
+  padding: 0px 20px;
   border-radius: 10px;
   background: linear-gradient(
     to right bottom,

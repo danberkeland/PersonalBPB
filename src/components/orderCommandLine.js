@@ -2,11 +2,14 @@ import React, { useContext } from 'react';
 import { CurrentDataContext } from '../dataContexts/CurrentDataContext';
 import { OrdersContext } from '../dataContexts/OrdersContext';
 import { CustomerContext } from '../dataContexts/CustomerContext';
+import { StandingContext } from '../dataContexts/StandingContext';
 import { ProductsContext } from '../dataContexts/ProductsContext';
 
-import { todayPlus, daysOfTheWeek, convertDatetoBPBDate } from '../helpers/dateTimeHelpers'
+import { todayPlus, daysOfTheWeek, convertDatetoBPBDate, convertDatetoStandingDate } from '../helpers/dateTimeHelpers'
 
 import swal from '@sweetalert/with-react';
+
+const clonedeep = require('lodash.clonedeep')
 
 
 const OrderCommandLine = () => {
@@ -14,6 +17,7 @@ const OrderCommandLine = () => {
   const { chosen, setChosen, delivDate, setDelivDate, orderTypeWhole, setOrderTypeWhole, route, ponote } = useContext(CurrentDataContext)
   const { orders, setOrders } = useContext(OrdersContext)
   const { customers } = useContext(CustomerContext)
+  const { standing } = useContext(StandingContext)
   const { products } = useContext(ProductsContext)
   
   const checkForCustomer = (entry, customers) => {
@@ -87,7 +91,7 @@ const OrderCommandLine = () => {
       for (let prod of products){
         for (let item of enteredProducts){
           if (prod[2] === item[1]){
-            newOrder = [item[0],prod[1], chosen, ponote, route, item[0], orderTypeWhole, convertDatetoBPBDate(delivDate)] // [ qty, prod, cust, po, route, so, ty ]
+            newOrder = [item[0],prod[1], chosen, ponote, route, "0", orderTypeWhole, convertDatetoBPBDate(delivDate)] // [ qty, prod, cust, po, route, so, ty ]
             ordersToUpdate.push(newOrder)
           }
   
@@ -96,33 +100,70 @@ const OrderCommandLine = () => {
     
       console.log(ordersToUpdate)
 
-      // create map of orders for cust, delivdate
+      // create map of orders for cust, delivdate #1
 
-      let custOrderList = orders.filter(order => order[7] === convertDatetoBPBDate(delivDate) && order[2] === chosen)
+      // Build Orders List based on delivDate and Chosen
+      let BPBDate = convertDatetoBPBDate(delivDate)
+      let filteredOrders = clonedeep(orders)
+      let cartList = filteredOrders ? filteredOrders.filter(order => order[7] === BPBDate && order[2] === chosen) : [];
+      
+      // Build Standing LIst based on delivDate and Chosen
+      let standingDate = convertDatetoStandingDate(delivDate);  
+      let filteredStanding = clonedeep(standing)
+      let standingList = filteredStanding ? filteredStanding.filter(standing => standing[0] === standingDate && standing[8] === chosen) : [];
+      let convertedOrderList = standingList.map(order => [    order[2],
+                                                              order[7],
+                                                              order[8],
+                                                              'na',
+                                                              order[6],
+                                                              order[2], 
+                                                              order[3] !== "9999" ? true : false,
+                                                              convertDatetoBPBDate(delivDate)])
+      
+      // Compare Order List to Stand List and give Order List precedence in final list                                                        
+      let custOrderList = cartList.concat(convertedOrderList)
+      for (let i=0; i<custOrderList.length; ++i ){
+          for (let j=i+1; j<custOrderList.length; ++j){
+              if (custOrderList[i][1] === custOrderList[j][1]){
+                  custOrderList.splice(j,1);
+              }
+          }
+      }
+
       console.log(custOrderList)
-
       // new product by new product, check if it exists
       let ord
       if (custOrderList.length<=0){
-        console.log("order Does not exist")
+        console.log("OrderList Does not exist")
         let ordersToModify = [...orders]
         for (ord of ordersToUpdate){
           ordersToModify.push(ord)
         }
         setOrders(ordersToModify)
         return
-      }
-
-
-      for (let ord of ordersToUpdate){
-        for (let custOrd of custOrderList){
-          if (ord[1] === custOrd[1]){
-            console.log("order Exists")
-            //      if exists, modify qty
-            return
-          } 
+      } else {
+        console.log("OrderList exists")
+        for (let ord of ordersToUpdate){
+          for (let custOrd of custOrderList){
+            if (ord[1] === custOrd[1]){
+              console.log("order item exists")
+              //      if exists, modify qty
+              return
+            }    
         }
+        console.log("order items do not exist")
+        let ordersToModify = [...orders]
+        for (ord of ordersToUpdate){
+          ordersToModify.push(ord)
+        }
+        setOrders(ordersToModify)
+
+            
+          }
       }
+
+
+      
     }
   }
   

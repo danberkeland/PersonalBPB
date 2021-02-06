@@ -37,7 +37,7 @@ const CartEntryItem = () => {
                                                                 order[6],
                                                                 order[2], 
                                                                 order[3] !== "9999" ? true : false,
-                                                                standingDate])
+                                                                convertDatetoBPBDate(delivDate)])
         
         // Compare Order List to Stand List and give Order List precedence in final list                                                        
         let orderList = cartList.concat(convertedOrderList)
@@ -48,7 +48,7 @@ const CartEntryItem = () => {
                 }
             }
         }
-
+        console.log(orderList)
         setPresentedList(orderList)
     }, [ chosen, delivDate, standing, orders ]);
 

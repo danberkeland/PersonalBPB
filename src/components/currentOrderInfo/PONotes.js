@@ -24,8 +24,8 @@ const PONotes = () => {
     },[chosen, delivDate, setPonote, orders])
 
     const handleNewPonote = (e) => {
+        setPonote(e.target.value)
         if (e.keyCode === 13) {
-            setPonote(e.target.value)
             document.getElementById('orderCommand').focus()
         
 
@@ -47,7 +47,7 @@ const PONotes = () => {
                                                                     order[6],
                                                                     order[2], 
                                                                     order[3] !== "9999" ? true : false,
-                                                                    standingDate])
+                                                                    convertDatetoBPBDate(delivDate)])
             
             // Compare Order List to Stand List and give Order List precedence in final list                                                        
             let orderList = cartList.concat(convertedOrderList)

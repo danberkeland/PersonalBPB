@@ -13,6 +13,13 @@ export const convertDatetoStandingDate = (entry) => {
     return (((jsDate.getDay()+1)%7)+1).toString()
 }
 
+
+export const convertStandingtoBPBDate = (entry) => {
+    // assign delivDate a number
+    // one by one through days of week
+    //      if day of week equals entry number, return date
+}
+
 export const todayPlus = () => {
     let today = new Date()
     let todaySend = today.toISOString().split('T')[0]

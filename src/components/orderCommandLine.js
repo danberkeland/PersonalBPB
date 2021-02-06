@@ -20,6 +20,8 @@ const OrderCommandLine = () => {
   const { standing } = useContext(StandingContext)
   const { products } = useContext(ProductsContext)
   
+  let [ today, tomorrow, twoDay ] = todayPlus()
+
   const checkForCustomer = (entry, customers) => {
 
     let nextCustomer = chosen
@@ -31,6 +33,7 @@ const OrderCommandLine = () => {
       let newRetailCustEntry = ["","",newRetailCustName,"","","",false,""]
       newRetailCustList.push(newRetailCustEntry)
       setOrders(newRetailCustList)
+      setDelivDate(tomorrow)
       setChosen(newRetailCustName);
       return
     } 
@@ -40,6 +43,7 @@ const OrderCommandLine = () => {
         nextCustomer = cust[2];
         if (nextCustomer !== ''){
           setChosen(nextCustomer)
+          setDelivDate(tomorrow)
           setOrderTypeWhole(true)
           return
         }

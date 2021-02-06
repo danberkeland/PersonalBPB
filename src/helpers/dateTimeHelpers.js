@@ -73,21 +73,11 @@ export const daysOfTheWeek = () => {
 
 export const tomorrow = () => {
     let today = new Date()
-    let utc_offset = today.getTimezoneOffset()
-    today.setMinutes(today.getMinutes()-utc_offset)
     let tomorrow = new Date()
     tomorrow.setDate(today.getDate()+1)
 
     return tomorrow.toISOString().split('T')[0]
 }
 
-export const twoDay = () => {
-    let today = new Date()
-    let utc_offset = today.getTimezoneOffset()
-    today.setMinutes(today.getMinutes()-utc_offset)
-    let twoDay = new Date()
-    twoDay.setDate(today.getDate()+1)
 
-    return twoDay.toISOString().split('T')[0]
-}
 

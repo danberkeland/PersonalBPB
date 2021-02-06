@@ -14,10 +14,11 @@ function OrderEntryButtons() {
 
   const { orderTypeWhole, setOrderTypeWhole, route, ponote } = useContext(CurrentDataContext)
   const { setChosen, delivDate, chosen } = useContext(CurrentDataContext)
-  const { orders, setOrders, recentOrders, setRecentOrders } = useContext(OrdersContext)
+  const { orders, setOrders, recentOrders, setRecentOrders, cartList, setCartList } = useContext(OrdersContext)
   const { standing } = useContext(StandingContext)
 
   let type = orderTypeWhole ? "Special" : "Whole";
+  let cartStand = cartList ? "Standing" : "Cart"
 
 
 
@@ -26,6 +27,10 @@ function OrderEntryButtons() {
     setChosen('')
   }
 
+  const handleCartStandToggle = () => {
+    setCartList(!cartList)
+    setChosen('')
+  }
   
   const handleClear = () => {
 
@@ -172,7 +177,7 @@ function OrderEntryButtons() {
       <button 
         onClick={handleClear}
         >Clear Order</button>
-      <button>Standing</button>
+      <button onClick={handleCartStandToggle}>{cartStand}</button>
       <button onClick={handleChangeorderTypeWhole}>{type} Order</button>
     </div>    
   );

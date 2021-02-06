@@ -9,7 +9,7 @@ body {
     rgba(64, 63, 70),
     rgba(82, 42, 134)
   );  
-  background-size: cover;
+  min-height: 100vh;
 
 }
 

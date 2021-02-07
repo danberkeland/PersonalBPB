@@ -16,8 +16,8 @@ const StandingOrderEntry = () => {
 
     const [ standArray, setStandArray ] = useState()
 
-    const { standing } = useContext(StandingContext);
-    const { chosen } = useContext(CurrentDataContext);
+    const { standing, setStanding } = useContext(StandingContext);
+    const { chosen, delivDate } = useContext(CurrentDataContext);
 
     useEffect(() => {
         let buildStandArray = []
@@ -40,6 +40,66 @@ const StandingOrderEntry = () => {
         setStandArray(buildStandArray)
     },[chosen, standing])
 
+
+    const handleRemove = e => {
+        let newQty = "0"
+        let indexToFind = e.target.name
+        let foundStandIndex = standArray.findIndex(line => line[0] === indexToFind)
+        let StandListToModify = clonedeep(standArray)
+        for (let i = 1; i<8; ++i){
+            StandListToModify[foundStandIndex][i] = "0";
+        }
+
+        // create deepcopy of orders
+        let updatedStanding = clonedeep(standing)
+        
+        for (let i = 1; i<8; ++i){
+            let ind = updatedStanding.findIndex(stand => stand[0] === i.toString() && stand[7] === indexToFind && stand[8] === chosen)
+            if (ind>=0){
+                updatedStanding[ind][2] = 0;
+            }
+        }
+        console.log(updatedStanding)
+        setStanding(updatedStanding)
+
+
+        
+    }
+
+    const handleQtyModify = e => {
+        if(isNaN(e.target.value)){
+            e.target.value = ''
+            swal ({
+                text: "Only Numbers Please",
+                icon: "warning",
+                buttons: false,
+                timer: 2000
+              })
+        }
+
+        let newQty = e.target.value
+        let indexToFind = e.target.name
+        let foundStandIndex = standArray.findIndex(line => line[0] === indexToFind)
+        let StandListToModify = clonedeep(standArray)
+        let intTarg = e.target.id
+        intTarg = intTarg.split('_')
+        StandListToModify[foundStandIndex][intTarg[1]] = newQty;
+
+        let updatedStanding = clonedeep(standing)
+        let ind = updatedStanding.findIndex(stand => stand[0] === intTarg[1] 
+            && stand[7] === indexToFind && stand[8] === chosen)
+        console.log(ind)
+        console.log(updatedStanding[ind])
+        updatedStanding[ind][2] = newQty
+
+        
+        setStanding(updatedStanding)
+      
+          
+    }
+    
+
+
     return (
         <React.Fragment> 
             <label>PRODUCT</label>
@@ -56,15 +116,22 @@ const StandingOrderEntry = () => {
                 (<React.Fragment key={order[0]+"frag"}>
                     <label key={order[0]+"prod"}>{order[0]}</label>
 
-                    <input type="text" key={order[0]+"sun"} size="3" maxLength="3" placeholder={order[1]} ></input>
-                    <input type="text" key={order[0]+"mon"} size="3" maxLength="3" placeholder={order[2]} ></input>
-                    <input type="text" key={order[0]+"tues"} size="3" maxLength="3" placeholder={order[3]} ></input>
-                    <input type="text" key={order[0]+"wed"} size="3" maxLength="3" placeholder={order[4]} ></input>
-                    <input type="text" key={order[0]+"thurs"} size="3" maxLength="3" placeholder={order[5]} ></input>
-                    <input type="text" key={order[0]+"fri"} size="3" maxLength="3" placeholder={order[6]} ></input>
-                    <input type="text" key={order[0]+"sat"} size="3" maxLength="3" placeholder={order[7]} ></input>
+                    <input type="text" key={order[0]+"sun"} size="3" maxLength="3" id={order[0]+"_1"} name={order[0]}
+                        placeholder={order[1]} onKeyUp={e => {handleQtyModify(e)}} onBlur={(e) => {e.target.value = ''}}></input>
+                    <input type="text" key={order[0]+"mon"} size="3" maxLength="3" id={order[0]+"_2"} name={order[0]}
+                        placeholder={order[2]} onKeyUp={e => {handleQtyModify(e)}} onBlur={(e) => {e.target.value = ''}}></input>
+                    <input type="text" key={order[0]+"tues"} size="3" maxLength="3" id={order[0]+"_3"} name={order[0]}
+                        placeholder={order[3]} onKeyUp={e => {handleQtyModify(e)}} onBlur={(e) => {e.target.value = ''}}></input>
+                    <input type="text" key={order[0]+"wed"} size="3" maxLength="3" id={order[0]+"_4"} name={order[0]}
+                        placeholder={order[4]} onKeyUp={e => {handleQtyModify(e)}} onBlur={(e) => {e.target.value = ''}}></input>
+                    <input type="text" key={order[0]+"thurs"} size="3" maxLength="3" id={order[0]+"_5"} name={order[0]}
+                        placeholder={order[5]} onKeyUp={e => {handleQtyModify(e)}} onBlur={(e) => {e.target.value = ''}}></input>
+                    <input type="text" key={order[0]+"fri"} size="3" maxLength="3" id={order[0]+"_6"} name={order[0]}
+                        placeholder={order[6]} onKeyUp={e => {handleQtyModify(e)}} onBlur={(e) => {e.target.value = ''}}></input>
+                    <input type="text" key={order[0]+"sat"} size="3" maxLength="3" id={order[0]+"_7"} name={order[0]}
+                        placeholder={order[7]} onKeyUp={e => {handleQtyModify(e)}} onBlur={(e) => {e.target.value = ''}}></input>
     
-                    <button>X</button>
+                    <button key={order[0]+"rem"} name={order[0]} onClick={e => handleRemove(e)}>X</button>
                 </React.Fragment>)) : ''}
            
            

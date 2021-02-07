@@ -12,13 +12,49 @@ import { findAvailableProducts,decideWhetherToAddOrModify } from '../../../helpe
 
 
 
-const AddStandingOrderEntry = () => {
+const AddCartEntryItem = () => {
+
+    const { products } = useContext(ProductsContext)
+    const { orders, setOrders } = useContext(OrdersContext)
+    const { chosen, delivDate, orderTypeWhole, route, ponote } = useContext(CurrentDataContext)
+
+    const [ pickedProduct, setPickedProduct ] = useState();
+    const [ productList, setProductList ] = useState();
+    
+
+    useEffect(() => {
+        let availableProducts = findAvailableProducts(products, orders, chosen, delivDate)
+        setProductList(availableProducts)
+        },[products, orders, chosen, delivDate ]);
+
+
+    const handleChange = e => {
+        setPickedProduct(e.target.value)
+
+    } 
+
+    const handleAdd = () => {
+        let qty = document.getElementById("addedProdQty").value
+        let newOrder =[qty, pickedProduct, chosen, ponote, route, qty, orderTypeWhole, convertDatetoBPBDate(delivDate)] 
+        let newOrderList = decideWhetherToAddOrModify(orders, newOrder, delivDate)
+        setOrders(newOrderList)
+        document.getElementById("addedProdQty").value = '';
+        setPickedProduct('');
+    }
 
     return (
-        <div className="addAProductToCart">
-           <h1>What up</h1>
+        <div className="addAProductToStanding">
+            <select id = "products" name="products" value={pickedProduct} onChange={handleChange} disabled={chosen ? false : true}>
+            {
+                productList ? productList.map((product) => 
+                    <option key = {uuidv4()} value={product[1]}>{product[1]}</option>
+                ) : ''
+                }; 
+            </select>
+           
+            <button onClick={handleAdd}>ADD</button>
         </div>
     );
 };
 
-export default AddStandingOrderEntry
+export default AddCartEntryItem

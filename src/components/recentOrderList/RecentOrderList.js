@@ -50,7 +50,8 @@ const RecentOrderList = () => {
                                           onClick = {handleClick}
                                           >
 
-                                              {convertDatetoBPBDateMinusYear(order[0])+" "+order[1]}   
+                                              {order[3] ? convertDatetoBPBDateMinusYear(order[0])+" ": ""}  
+                                              {order[1]} 
                                               {order[2] ? "": "RETAIL"}
                                               {order[3] ? "": " (SO)"}
 

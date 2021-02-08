@@ -35,7 +35,7 @@ const AddCartEntryItem = () => {
 
     const handleAdd = () => {
         let qty = document.getElementById("addedProdQty").value
-        let newOrder =[qty, pickedProduct, chosen, ponote, route, qty, orderTypeWhole, convertDatetoBPBDate(delivDate)] 
+        let newOrder =[qty, pickedProduct, chosen, ponote, route, "0", orderTypeWhole, convertDatetoBPBDate(delivDate)] 
         let newOrderList = decideWhetherToAddOrModify(orders, newOrder, delivDate)
         setOrders(newOrderList)
         document.getElementById("addedProdQty").value = '';

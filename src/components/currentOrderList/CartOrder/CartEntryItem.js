@@ -137,10 +137,11 @@ const CartEntryItem = () => {
 
     return (
         <React.Fragment> 
+            <label></label>
             <label>PRODUCT</label>
             <label>QTY</label>
             <label>PREV</label>
-            <label></label>
+            
             
             {presentedList ? presentedList.map(order => 
 
@@ -149,6 +150,11 @@ const CartEntryItem = () => {
                 <React.Fragment key={order[1]+"a"}></React.Fragment> :
 
                 <React.Fragment key={order[1]+"b"}>
+                    <button className="trashButton"
+                            onClick={e => {handleRemove(e)}} 
+                            key={order[1]+"e"} 
+                            name={order[1]}
+                            id={order[1]}>🗑️</button>
                     <label key={order[1]}>{order[1]}</label>   
                     <input  type="text" 
                             size="4"
@@ -166,14 +172,7 @@ const CartEntryItem = () => {
                             >
                     </input>
                     <label key={order[1]+"d"} className="previous">{order[5] === order[0] ? '' : order[5]}</label>
-                    <button onClick={e => {handleRemove(e)}} 
-                            key={order[1]+"e"} 
-                            name={order[1]}
-                            id={order[1]}>
-                                
-                                REMOVE
-                                
-                    </button>
+                    
                 </React.Fragment> 
             ) : ''}  
         </React.Fragment>

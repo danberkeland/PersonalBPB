@@ -26,24 +26,34 @@ const RecentOrderList = () => {
     setChosen(e.target.dataset.cust)
     setDelivDate(e.target.dataset.date)   
   }
+
+  const handleRemove = (e) => {
+    
+  }
   
 
   return (
       <React.Fragment>      
-        <h2>Recent Orders</h2>
-        <div>
-          {recentOrders.map(order => <button 
-                                        key={uuidv4()} 
-                                        className = "recentOrderList"
-                                        data-date={order[0]}
-                                        data-cust={order[1]}
-                                        data-whole={order[2]}
-                                        onClick = {handleClick}
-                                        >
-                                            
-                                            {convertDatetoBPBDate(order[0])+" "+order[1]}   {order[2] ? "": "RETAIL"}
-                                            
-                                        </button>)}      
+        <div className="recentOrderListGrid">
+          {recentOrders.map(order => <React.Fragment>
+                                        <button className="trashButton"
+                                          onClick={e => {handleRemove(e)}} 
+                                          key={order[0]+"_"+order[1]+"_"+order[2]} 
+                                          name={order[0]+"_"+order[1]+"_"+order[2]}
+                                          id={order[0]+"_"+order[1]+"_"+order[2]}>🗑️</button>
+                                        <button 
+                                          key={order[0]+"_"+order[1]+"_"+order[2]} 
+                                          className = "recentOrderList"
+                                          data-date={order[0]}
+                                          data-cust={order[1]}
+                                          data-whole={order[2]}
+                                          onClick = {handleClick}
+                                          >
+
+                                              {convertDatetoBPBDate(order[0])+" "+order[1]}   {order[2] ? "": "RETAIL"}
+
+                                        </button>
+                                        </React.Fragment>)}      
         </div>
     </React.Fragment>  
   );

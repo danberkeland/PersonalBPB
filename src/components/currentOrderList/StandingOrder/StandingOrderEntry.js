@@ -131,7 +131,7 @@ const StandingOrderEntry = () => {
                     <input type="text" key={order[0]+"sat"} size="3" maxLength="3" id={order[0]+"_7"} name={order[0]}
                         placeholder={order[7]} onKeyUp={e => {handleQtyModify(e)}} onBlur={(e) => {e.target.value = ''}}></input>
     
-                    <button key={order[0]+"rem"} name={order[0]} onClick={e => handleRemove(e)}>X</button>
+                    <button className="trashButton" key={order[0]+"rem"} name={order[0]} onClick={e => handleRemove(e)}>🗑️</button>
                 </React.Fragment>)) : ''}
            
            

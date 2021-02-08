@@ -9,6 +9,7 @@ const RecentOrders = () => {
 
   return (
       <React.Fragment>  
+        <h2>Recent Orders</h2>
         <div className = "recentOrdersList">   
         <RecentOrderList />
         </div>

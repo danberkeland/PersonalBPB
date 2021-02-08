@@ -2,6 +2,11 @@
   box-sizing: border-box;
 }
 
+.trashButton {
+  background-color: transparent;
+  border: none
+}
+
 body {
   background: linear-gradient(
     to right bottom,
@@ -26,7 +31,7 @@ body {
   );
   backdrop-filter: blur(1rem);
   display: grid;
-  grid-template-columns: .8fr 1.2fr .6fr;  
+  grid-template-columns: .8fr 1.2fr .8fr;  
 }
 
 select {
@@ -78,7 +83,7 @@ h2 {
   padding: 20px;
   border: none;
   display: grid;
-  grid-template-columns: 2fr .5fr .5fr 1fr;
+  grid-template-columns: .5fr 3fr .5fr .5fr;
   row-gap: 10px;
   flex-shrink: 1; 
 }
@@ -91,6 +96,7 @@ h2 {
   border: none;
   display: grid;
   grid-template-columns: 5fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr .5fr;
+  align-self: center;
   row-gap: 10px;
 }
 
@@ -239,6 +245,14 @@ h2 {
   color: white;
   background-color: transparent
   
+}
+
+.recentOrderListGrid {
+  display: grid;
+  grid-template-columns: 1fr 5fr;
+  column-gap: 10px;
+  row-gap: 10px;
+
 }
 
 

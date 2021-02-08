@@ -8,6 +8,15 @@ export const convertDatetoBPBDate = (ISODate) => {
     
 }
 
+export const convertDatetoBPBDateMinusYear = (ISODate) => {
+   
+    let splitDate = ISODate.split('-');
+    let day = splitDate[1];
+    let mo = splitDate[2];
+    return day+"/"+mo;
+    
+}
+
 export const convertDatetoStandingDate = (entry) => {
     let jsDate= new Date(entry)
     return (((jsDate.getDay()+1)%7)+1).toString()

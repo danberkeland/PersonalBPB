@@ -23,11 +23,13 @@ function OrderEntryButtons() {
 
 
   const handleChangeorderTypeWhole = () => {
+    document.getElementById('orderCommand').focus()
     setOrderTypeWhole(!orderTypeWhole)
     setChosen('')
   }
 
   const handleCartStandToggle = () => {
+    document.getElementById('orderCommand').focus()
     setCartList(!cartList)
   }
   
@@ -135,7 +137,7 @@ function OrderEntryButtons() {
           }
   
     if (newOrderList){
-      console.log(newOrderList)
+      document.getElementById('orderCommand').focus()
       setOrders(newOrderList)
     }
 

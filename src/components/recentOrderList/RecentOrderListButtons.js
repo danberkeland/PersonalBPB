@@ -3,14 +3,17 @@ import React,{ useContext } from 'react';
 import swal from '@sweetalert/with-react';
 
 import { OrdersContext } from '../../dataContexts/OrdersContext';
+import { StandingContext } from '../../dataContexts/StandingContext';
 
 import { cloneDeep } from 'lodash';
+
 require('dotenv').config()
 
 
 const RecentOrderListButtons = () => {
 
   const { orders, setOrders, setRecentOrders } = useContext(OrdersContext)
+  const { standing } = useContext(StandingContext)
 
   const handleUpload = () => {
     //turn orders into json object - data
@@ -18,16 +21,29 @@ const RecentOrderListButtons = () => {
     orderData = orderData.map(order => [order[5],order[1],order[2],order[3],order[4],order[5],order[6],order[7]])
     setOrders(orderData)
 
-    const requestOptions = {
+    const uploadOrders = {
       method: 'POST',
       headers: { 'Content-Type':'application/json'},
       body: JSON.stringify(orderData)
     };
 
-    fetch(process.env.REACT_APP_API_SENDORDERS, requestOptions)
+    const uploadStanding = {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json'},
+      body: JSON.stringify(standing)
+    };
+
+
+
+    fetch(process.env.REACT_APP_API_SENDORDERS, uploadOrders)
       .then(response => response.json())
       .then(data => console.log(data))
 
+    fetch(process.env.REACT_APP_API_SENDSTANDING, uploadStanding)
+      .then(response => response.json())
+      .then(data => console.log(data))
+
+    
     setRecentOrders([])
     swal ({
       text: "Recent Orders are now live!",

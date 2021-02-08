@@ -243,9 +243,17 @@ h2 {
   border: none;
   border-radius: 5px;
   color: white;
-  background-color: transparent
-  
+  background-color: transparent  
 }
+
+.recentOrderList:hover {
+  color: orangered
+}
+
+.recentOrderList:active {
+  color: yellow
+}
+
 
 .recentOrderListGrid {
   display: grid;
@@ -267,6 +275,10 @@ h2 {
   border-radius: 5px;
   background-color: rgba(0,0,0,.2);
   color: white;
+}
+
+.recentOrderListButton:active {
+ color: yellow
 }
 
 .recentOrderListButton:hover {

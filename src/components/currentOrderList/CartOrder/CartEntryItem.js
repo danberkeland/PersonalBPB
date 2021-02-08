@@ -12,7 +12,7 @@ const clonedeep = require('lodash.clonedeep')
 
 const CartEntryItem = () => {
 
-    const{ chosen, delivDate, ponote, route, orderTypeWhole } = useContext(CurrentDataContext)
+    const{ chosen, delivDate, ponote, route, orderTypeWhole, setModifications } = useContext(CurrentDataContext)
     const { orders, setOrders } = useContext(OrdersContext)
     const { standing } = useContext(StandingContext)
     
@@ -48,9 +48,15 @@ const CartEntryItem = () => {
                 }
             }
         }
-        console.log(orderList)
+
+        setModifications(false)
+        for (let ord in orderList){            
+            if (orderList[ord][0] !== orderList[ord][5]){
+                setModifications(true)
+            }
+        }
         setPresentedList(orderList)
-    }, [ chosen, delivDate, standing, orders ]);
+    }, [ chosen, delivDate, standing, orders, setModifications ]);
 
     
     const handleQtyModify = e => {

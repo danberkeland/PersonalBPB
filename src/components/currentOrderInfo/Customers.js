@@ -13,7 +13,7 @@ export const Customers = () => {
 
     const { customers } = useContext(CustomerContext);
     const { orders } = useContext(OrdersContext)
-    const { chosen, setChosen, setDelivDate, orderTypeWhole } = useContext(CurrentDataContext)
+    const { chosen, setChosen, setDelivDate, orderTypeWhole, setModifications } = useContext(CurrentDataContext)
 
     const [ customerGroup, setCustomerGroup ] = useState(customers)
 

@@ -17,7 +17,7 @@ const StandingOrderEntry = () => {
     const [ standArray, setStandArray ] = useState()
 
     const { standing, setStanding } = useContext(StandingContext);
-    const { chosen, delivDate } = useContext(CurrentDataContext);
+    const { chosen, delivDate, setModifications } = useContext(CurrentDataContext);
 
     useEffect(() => {
         let buildStandArray = []
@@ -42,6 +42,7 @@ const StandingOrderEntry = () => {
 
 
     const handleRemove = e => {
+        setModifications(true)
         let newQty = "0"
         let indexToFind = e.target.name
         let foundStandIndex = standArray.findIndex(line => line[0] === indexToFind)
@@ -77,6 +78,7 @@ const StandingOrderEntry = () => {
               })
         }
 
+        setModifications(true)
         let newQty = e.target.value
         let indexToFind = e.target.name
         let foundStandIndex = standArray.findIndex(line => line[0] === indexToFind)

@@ -11,9 +11,10 @@ export const StandingContext = createContext();
 export const StandingProvider = (props) => {
 
     const [standing, setStanding] = useState([]);
+    const [ originalStanding, setOriginalStanding ] = useState([]);
 
     return (
-        <StandingContext.Provider value={{ standing, setStanding }}>
+        <StandingContext.Provider value={{ standing, setStanding,originalStanding, setOriginalStanding }}>
             {props.children}
         </StandingContext.Provider>
     );   
@@ -25,11 +26,13 @@ export const StandingLoad = () => {
 
     const { loading, error, data } = useFetch(process.env.REACT_APP_API_STANDING,[]);
 
-    const { setStanding } = useContext(StandingContext)
+    const { setStanding, setOriginalStanding } = useContext(StandingContext)
+    
 
     useEffect(() => {
         if(data){
             sortAtoZDataByIndex(data,2)
+            setOriginalStanding(data);
             setStanding(data);
         }   
     },[data, setStanding]);

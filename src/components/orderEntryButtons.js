@@ -13,7 +13,7 @@ const clonedeep = require('lodash.clonedeep')
 function OrderEntryButtons() {
 
   const { orderTypeWhole, setOrderTypeWhole, route, ponote } = useContext(CurrentDataContext)
-  const { setChosen, delivDate, chosen } = useContext(CurrentDataContext)
+  const { setChosen, delivDate, chosen, modifications, setModifications } = useContext(CurrentDataContext)
   const { orders, setOrders, recentOrders, setRecentOrders, cartList, setCartList } = useContext(OrdersContext)
   const { standing } = useContext(StandingContext)
 
@@ -81,6 +81,7 @@ function OrderEntryButtons() {
   
   const handleAddUpdate =  () => {
 
+    setModifications(false)
     // BUILD PRESENT LIST
     // Build Orders List based on delivDate and Chosen
     let BPBDate = convertDatetoBPBDate(delivDate)
@@ -165,12 +166,17 @@ function OrderEntryButtons() {
     setRecentOrders(currentRecentOrders)
   }
   
-
+  const noMods = {
+    backgroundColor: "green"
+  }
   
+  const mods = {
+    backgroundColor: "red"
+  }
 
   return (         
     <div className = "orderEntryButtons">
-      <button 
+      <button style={modifications ? mods : noMods}
         onClick={handleAddUpdate}
         >Add/Update</button>
       <button 

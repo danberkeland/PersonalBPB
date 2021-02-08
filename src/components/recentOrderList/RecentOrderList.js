@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { CurrentDataContext } from '../../dataContexts/CurrentDataContext';
 
 import { OrdersContext } from '../../dataContexts/OrdersContext';
-import { convertDatetoBPBDate, convertDatetoBPBDateMinusYear } from '../../helpers/dateTimeHelpers';
+import { convertDatetoBPBDateMinusYear } from '../../helpers/dateTimeHelpers';
 
 
 
@@ -50,7 +50,9 @@ const RecentOrderList = () => {
                                           onClick = {handleClick}
                                           >
 
-                                              {convertDatetoBPBDateMinusYear(order[0])+" "+order[1]}   {order[2] ? "": "RETAIL"}
+                                              {convertDatetoBPBDateMinusYear(order[0])+" "+order[1]}   
+                                              {order[2] ? "": "RETAIL"}
+                                              {order[3] ? "": " (SO)"}
 
                                         </button>
                                         </React.Fragment>)}      

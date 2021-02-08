@@ -85,7 +85,7 @@ function OrderEntryButtons() {
     // Build Orders List based on delivDate and Chosen
     let BPBDate = convertDatetoBPBDate(delivDate)
     let filteredOrders = clonedeep(orders)
-    let cartList = filteredOrders ? filteredOrders.filter(order => order[7] === BPBDate && order[2] === chosen) : [];
+    let buildCartList = filteredOrders ? filteredOrders.filter(order => order[7] === BPBDate && order[2] === chosen) : [];
     
     // Build Standing List based on delivDate and Chosen
     let standingDate = convertDatetoStandingDate(delivDate);  
@@ -101,7 +101,7 @@ function OrderEntryButtons() {
                                                             standingDate])
     
     // Compare Order List to Stand List and give Order List precedence in final list                                                        
-    let orderList = cartList.concat(convertedOrderList)
+    let orderList = buildCartList.concat(convertedOrderList)
     for (let i=0; i<orderList.length; ++i ){
         for (let j=i+1; j<orderList.length; ++j){
             if (orderList[i][1] === orderList[j][1]){
@@ -140,7 +140,7 @@ function OrderEntryButtons() {
 
 
     // Create item (date, name, whole) to add to recent list
-    let newRecentOrder = [delivDate,chosen,orderTypeWhole]
+    let newRecentOrder = [delivDate,chosen,orderTypeWhole,cartList]
     let stringRecentOrder = JSON.stringify(newRecentOrder)
     const currentRecentOrders = [...recentOrders]
     let stringCurrentRecentOrders = JSON.stringify(currentRecentOrders)

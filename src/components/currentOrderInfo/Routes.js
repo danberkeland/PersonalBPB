@@ -16,12 +16,24 @@ const clonedeep = require('lodash.clonedeep')
 const Routes = () => {
 
     const { customers } = useContext(CustomerContext)
-    const { orders, setOrders } = useContext(OrdersContext)
+    const { orders, setOrders, cartList } = useContext(OrdersContext)
     const { standing } = useContext(StandingContext)
     const { chosen, delivDate, route, setRoute, orderTypeWhole, ponote } = useContext(CurrentDataContext)
 
     const [ routes, setRoutes ] = useState()
-    
+    const [ routeIsOn, setRouteIsOn ] =useState(false)
+
+    useEffect(() => {
+        if(chosen){
+            if(!cartList){
+                setRouteIsOn(false)
+            } else {
+                setRouteIsOn(true)
+            }
+        } else {
+            setRouteIsOn(false)
+        }
+    })
     
     useEffect(()=> {
         let routeList = createRouteList(customers)
@@ -44,7 +56,7 @@ const Routes = () => {
         // Build Orders List based on delivDate and Chosen
         let BPBDate = convertDatetoBPBDate(delivDate)
         let filteredOrders = clonedeep(orders)
-        let cartList = filteredOrders ? filteredOrders.filter(order => order[7] === BPBDate && order[2] === chosen) : [];
+        let buildCartList = filteredOrders ? filteredOrders.filter(order => order[7] === BPBDate && order[2] === chosen) : [];
         
         // Build Standing List based on delivDate and Chosen
         let standingDate = convertDatetoStandingDate(delivDate);  
@@ -60,7 +72,7 @@ const Routes = () => {
                                                                 convertDatetoBPBDate(delivDate)])
         
         // Compare Order List to Stand List and give Order List precedence in final list                                                        
-        let orderList = cartList.concat(convertedOrderList)
+        let orderList = buildCartList.concat(convertedOrderList)
         for (let i=0; i<orderList.length; ++i ){
             for (let j=i+1; j<orderList.length; ++j){
                 if (orderList[i][1] === orderList[j][1]){
@@ -105,7 +117,8 @@ const Routes = () => {
     return (
         <React.Fragment>
             <label>Routes:</label>
-            <select id="routes" name="routes" value={route} onChange={handleChange} disabled={chosen ? false : true}>
+            <select id="routes" name="routes" value={route} onChange={handleChange} 
+            disabled={routeIsOn ? false : true}>
             {routes ? routes.map(ro =>  <option id="routes" key={uuidv4()} name={ro}>{ro}</option>) : ''}
             </select>
         </React.Fragment>

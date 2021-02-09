@@ -4,6 +4,7 @@ import swal from '@sweetalert/with-react';
 
 import { OrdersContext } from '../../dataContexts/OrdersContext';
 import { StandingContext } from '../../dataContexts/StandingContext';
+import { HoldingContext } from '../../dataContexts/HoldingContext';
 
 import { cloneDeep } from 'lodash';
 
@@ -14,6 +15,7 @@ const RecentOrderListButtons = () => {
 
   const { orders, setOrders, setRecentOrders } = useContext(OrdersContext)
   const { standing } = useContext(StandingContext)
+  const { holding } = useContext(HoldingContext)
 
   const handleUpload = () => {
     //turn orders into json object - data
@@ -33,6 +35,11 @@ const RecentOrderListButtons = () => {
       body: JSON.stringify(standing)
     };
 
+    const uploadHolding = {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json'},
+      body: JSON.stringify(holding)
+    };
 
 
     fetch(process.env.REACT_APP_API_SENDORDERS, uploadOrders)
@@ -42,6 +49,11 @@ const RecentOrderListButtons = () => {
     fetch(process.env.REACT_APP_API_SENDSTANDING, uploadStanding)
       .then(response => response.json())
       .then(data => console.log(data))
+
+    fetch(process.env.REACT_APP_API_SENDHOLDING, uploadHolding)
+      .then(response => response.json())
+      .then(data => console.log(data))
+
 
     
     setRecentOrders([])

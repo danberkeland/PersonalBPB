@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { OrdersContext } from '../../../dataContexts/OrdersContext';
 import { StandingContext } from '../../../dataContexts/StandingContext';
+import { HoldingContext } from '../../../dataContexts/HoldingContext';
 import { CurrentDataContext } from '../../../dataContexts/CurrentDataContext';
 
 import { convertDatetoBPBDate, convertDatetoStandingDate } from '../../../helpers/dateTimeHelpers';
@@ -17,31 +18,70 @@ const StandingOrderEntry = () => {
     const [ standArray, setStandArray ] = useState()
 
     const { standing, setStanding } = useContext(StandingContext);
+    const { holding, setHolding } = useContext(HoldingContext);
+    const { standList, setStandList } = useContext(OrdersContext)
     const { chosen, delivDate, setModifications } = useContext(CurrentDataContext);
 
     useEffect(() => {
         let buildStandArray = []
-
+        let Stand = false
+        let Hold = false
+        let standingToCheck = clonedeep(standing)
+        let holdingToCheck = clonedeep(holding)
         // check for standing, if no, check for holding, if no return
-
-        // item for item in standing
-        let pullStand = clonedeep(standing)
-        for (let pull of pullStand){
-            // search index of item in buildArray
-            if (pull[8] === chosen){
-                let ind = buildStandArray.findIndex(stand => stand[0] === pull[7])
-                if (ind>=0){
-                    buildStandArray[ind][Number(pull[0])] = pull[2]
-                } else {
-                    let newStand = [pull[7],"0","0","0","0","0","0","0"]
-                    newStand[Number(pull[0])] = pull[2]
-                    buildStandArray.push(newStand)
-                    
-                }
+        
+        for (let stand in standingToCheck){
+            if (standingToCheck[stand][8] === chosen){
+                setStandList(true)
+                Stand = true
             }
-        }    
+        }
+        for (let hold in holdingToCheck){
+            if (holdingToCheck[hold][8] === chosen){
+                setStandList(false)
+                Hold = true
+            }
+        }
+        
+        
+        if (Stand){
+            let pullStand = clonedeep(standing)
+            for (let pull of pullStand){
+                // search index of item in buildArray
+                if (pull[8] === chosen){
+                    let ind = buildStandArray.findIndex(stand => stand[0] === pull[7])
+                    if (ind>=0){
+                        buildStandArray[ind][Number(pull[0])] = pull[2]
+                    } else {
+                        let newStand = [pull[7],"0","0","0","0","0","0","0"]
+                        newStand[Number(pull[0])] = pull[2]
+                        buildStandArray.push(newStand)
+
+                    }
+                }
+            } 
+        }   
+
+        if (Hold){
+            let pullHold = clonedeep(holding)
+            for (let pull of pullHold){
+                // search index of item in buildArray
+                if (pull[8] === chosen){
+                    let ind = buildStandArray.findIndex(stand => stand[0] === pull[7])
+                    if (ind>=0){
+                        buildStandArray[ind][Number(pull[0])] = pull[2]
+                    } else {
+                        let newStand = [pull[7],"0","0","0","0","0","0","0"]
+                        newStand[Number(pull[0])] = pull[2]
+                        buildStandArray.push(newStand)
+
+                    }
+                }
+            } 
+        }   
+
         setStandArray(buildStandArray)
-    },[chosen, standing])
+    },[chosen, holding, standing])
 
 
     const handleRemove = e => {

@@ -42,10 +42,8 @@ export const OrdersLoad = () => {
 
     useEffect(() => {
         if(data){
-            sortAtoZDataByIndex(data,0)
-            let appOrders = convertSheetsOrdersToAppOrders(data)
-            setOrders(appOrders);
-            setOriginalOrders(appOrders);
+            setOrders(data);
+            setOriginalOrders(data);
         }
     },[data, setOrders, setOriginalOrders]);
 

@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { CurrentDataContext } from '../../../dataContexts/CurrentDataContext';
 import { OrdersContext } from '../../../dataContexts/OrdersContext';
 import { StandingContext } from '../../../dataContexts/StandingContext';
+import { HoldingContext } from '../../../dataContexts/HoldingContext';
 import { ProductsContext } from '../../../dataContexts/ProductsContext'
 
 import { convertDatetoBPBDate } from '../../../helpers/dateTimeHelpers';
@@ -17,6 +18,7 @@ const AddCartEntryItem = () => {
 
     const { products } = useContext(ProductsContext)
     const { standing, setStanding } = useContext(StandingContext)
+    const { holding, setHolding } = useContext(HoldingContext)
     const { orders, setOrders, standList, setStandList } = useContext(OrdersContext)
     const { chosen, delivDate, orderTypeWhole, route, ponote } = useContext(CurrentDataContext)
 
@@ -49,7 +51,21 @@ const AddCartEntryItem = () => {
     }
 
     const handleStandHold = () => {
-        setStandList(!standList)
+        let currentStandList = clonedeep(standing)
+        let currentHoldList = clonedeep(holding)
+
+        if(standList){
+            let currentStandListClip = currentStandList.filter(stand => stand[8] === chosen)
+            let reducedStandList = currentStandList.filter(stand => stand[8] !== chosen)
+            setStanding(reducedStandList)
+            setHolding(currentStandListClip, ...currentHoldList)
+        } else {
+            let currentHoldListClip = currentHoldList.filter(hold => hold[8] === chosen)
+            let reducedHoldList = currentHoldList.filter(hold => hold[8] !== chosen)
+            setHolding(reducedHoldList)
+            setStanding(currentHoldListClip, ...currentStandList)
+            
+        }
         // create current List
         // delete from one list
         // add to other list

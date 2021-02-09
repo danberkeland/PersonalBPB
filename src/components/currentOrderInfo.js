@@ -25,7 +25,7 @@ cartList ? orderType = "Cart" : standList ? orderType = "Standing" : orderType =
 
   return (   
     <React.Fragment>
-      {orderTypeWhole ? <h2 style={standList ? so : ho }>Wholesale {orderType} Order</h2> : <h2 style={standList ? so : ho }>Retail {orderType} Order</h2>}
+      {orderTypeWhole ? <h2 style={cartList ? so : standList ? so : ho }>Wholesale {orderType} Order</h2> : <h2 style={standList ? so : ho }>Retail {orderType} Order</h2>}
         <div className = "currentOrderInfo">
           <Customers /> 
           <DeliveryDate />

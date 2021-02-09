@@ -109,7 +109,7 @@ const RecentOrderList = () => {
                                               {order[3] ? convertDatetoBPBDateMinusYear(order[0])+" ": ""}  
                                               {order[1]} 
                                               {order[2] ? "": "RETAIL"}
-                                              {order[3] ? "": " (SO)"}
+                                              {order[3] ? "": order[4] ? " (SO)" : " (HO)"}
 
                                         </button>
                                         </React.Fragment>)}      

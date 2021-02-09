@@ -14,7 +14,7 @@ function OrderEntryButtons() {
 
   const { orderTypeWhole, setOrderTypeWhole, route, ponote } = useContext(CurrentDataContext)
   const { setChosen, delivDate, chosen, modifications, setModifications } = useContext(CurrentDataContext)
-  const { orders, setOrders, recentOrders, setRecentOrders, cartList, setCartList } = useContext(OrdersContext)
+  const { orders, setOrders, recentOrders, setRecentOrders, cartList, setCartList, standList } = useContext(OrdersContext)
   const { standing } = useContext(StandingContext)
 
   let type = orderTypeWhole ? "Special" : "Whole";
@@ -143,7 +143,7 @@ function OrderEntryButtons() {
 
 
     // Create item (date, name, whole) to add to recent list
-    let newRecentOrder = [delivDate,chosen,orderTypeWhole,cartList]
+    let newRecentOrder = [delivDate,chosen,orderTypeWhole,cartList,standList]
     let stringRecentOrder = JSON.stringify(newRecentOrder)
     const currentRecentOrders = [...recentOrders]
     let stringCurrentRecentOrders = JSON.stringify(currentRecentOrders)

@@ -42,6 +42,8 @@ const AddCartEntryItem = () => {
         setPickedProduct('');
     }
 
+    
+
     return (
         <div className="addAProductToCart">
             <select id = "products" name="products" value={pickedProduct} onChange={handleChange} disabled={chosen ? false : true}>

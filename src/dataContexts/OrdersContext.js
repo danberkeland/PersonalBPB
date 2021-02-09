@@ -14,13 +14,15 @@ export const OrdersProvider = (props) => {
     const [ recentOrders, setRecentOrders ] = useState([]);
     const [ originalOrders, setOriginalOrders ] = useState([]);
     const [ cartList, setCartList ] = useState(true)
+    const [ standList, setStandList ] = useState(true)
  
     return (
         <OrdersContext.Provider value={{ 
             orders, setOrders, 
             recentOrders, setRecentOrders,
             originalOrders, setOriginalOrders,
-            cartList, setCartList
+            cartList, setCartList,
+            standList, setStandList
             }}>
 
             {props.children}

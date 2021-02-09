@@ -17,12 +17,14 @@ const AddCartEntryItem = () => {
 
     const { products } = useContext(ProductsContext)
     const { standing, setStanding } = useContext(StandingContext)
-    const { orders, setOrders } = useContext(OrdersContext)
+    const { orders, setOrders, standList, setStandList } = useContext(OrdersContext)
     const { chosen, delivDate, orderTypeWhole, route, ponote } = useContext(CurrentDataContext)
 
     const [ pickedProduct, setPickedProduct ] = useState();
     const [ productList, setProductList ] = useState();
     
+    let standHold 
+    standList ? standHold = "MAKE H.O." : standHold = "MAKE S.O."
 
     useEffect(() => {
         let availableProducts = findAvailableProducts(products, orders, chosen, delivDate)
@@ -46,6 +48,22 @@ const AddCartEntryItem = () => {
         setPickedProduct('');
     }
 
+    const handleStandHold = () => {
+        setStandList(!standList)
+        // create current List
+        // delete from one list
+        // add to other list
+    }
+
+    const ho = {
+        backgroundColor: "red"
+      }
+
+      const so = {
+        backgroundColor: "green"
+      }
+
+
     return (
         <div className="addAProductToStanding">
             <select id = "products" name="products" value={pickedProduct} onChange={handleChange} disabled={chosen ? false : true}>
@@ -57,6 +75,7 @@ const AddCartEntryItem = () => {
             </select>
            
             <button onClick={handleAdd}>ADD</button>
+            <button style={standList ? so : ho } onClick={handleStandHold}>{standHold}</button>
         </div>
     );
 };

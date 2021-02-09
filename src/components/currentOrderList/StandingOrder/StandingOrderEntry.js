@@ -21,6 +21,9 @@ const StandingOrderEntry = () => {
 
     useEffect(() => {
         let buildStandArray = []
+
+        // check for standing, if no, check for holding, if no return
+
         // item for item in standing
         let pullStand = clonedeep(standing)
         for (let pull of pullStand){

@@ -1,6 +1,5 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 
-import { sortAtoZDataByIndex } from '../helpers/sortDataHelpers'
 import { useFetch } from '../helpers/useFetch'
 
 require('dotenv').config()
@@ -31,11 +30,10 @@ export const StandingLoad = () => {
 
     useEffect(() => {
         if(data){
-            sortAtoZDataByIndex(data,2)
             setOriginalStanding(data);
             setStanding(data);
         }   
-    },[data, setStanding]);
+    },[data, setOriginalStanding, setStanding]);
 
     return (
         <React.Fragment>

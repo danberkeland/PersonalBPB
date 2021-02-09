@@ -50,25 +50,24 @@ const AddCartEntryItem = () => {
         setPickedProduct('');
     }
 
-    const handleStandHold = () => {
-        let currentStandList = clonedeep(standing)
-        let currentHoldList = clonedeep(holding)
+    const handleStandHold = async () => {
+        let currentStandList = await clonedeep(standing)
+        let currentHoldList = await clonedeep(holding)
 
         if(standList){
-            let currentStandListClip = currentStandList.filter(stand => stand[8] === chosen)
-            let reducedStandList = currentStandList.filter(stand => stand[8] !== chosen)
-            setStanding(reducedStandList)
-            setHolding(currentStandListClip, ...currentHoldList)
+            let currentStandListClip = await currentStandList.filter(stand => stand[8] === chosen)
+            let reducedStandList = await currentStandList.filter(stand => stand[8] !== chosen)
+            let send = currentHoldList.concat(currentStandListClip)
+            setStanding(await reducedStandList)
+            setHolding(send)
         } else {
             let currentHoldListClip = currentHoldList.filter(hold => hold[8] === chosen)
             let reducedHoldList = currentHoldList.filter(hold => hold[8] !== chosen)
+            let send = currentStandList.concat(currentHoldListClip)
             setHolding(reducedHoldList)
-            setStanding(currentHoldListClip, ...currentStandList)
+            setStanding(send)
             
         }
-        // create current List
-        // delete from one list
-        // add to other list
     }
 
     const ho = {

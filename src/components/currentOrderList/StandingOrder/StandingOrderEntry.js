@@ -95,17 +95,20 @@ const StandingOrderEntry = () => {
         }
 
         // create deepcopy of orders
-        let updatedStanding = clonedeep(standing)
+        
+        let updatedStandorHold = clonedeep(standList ? standing : holding)
         
         for (let i = 1; i<8; ++i){
-            let ind = updatedStanding.findIndex(stand => stand[0] === i.toString() && stand[7] === indexToFind && stand[8] === chosen)
+            let ind = updatedStandorHold.findIndex(stand => stand[0] === i.toString() && stand[7] === indexToFind && stand[8] === chosen)
             if (ind>=0){
-                updatedStanding[ind][2] = 0;
+                updatedStandorHold[ind][2] = 0;
             }
         }
-        console.log(updatedStanding)
-        setStanding(updatedStanding)
-
+        if(standList){
+            setStanding(updatedStandorHold)
+        } else {
+            setHolding(updatedStandorHold)
+        }
 
         
     }

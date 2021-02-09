@@ -7,18 +7,11 @@ import { StandingLoad, StandingProvider } from './dataContexts/StandingContext'
 import { HoldingLoad, HoldingProvider } from './dataContexts/HoldingContext'
 import { CurrentDataProvider } from './dataContexts/CurrentDataContext'
 
-import CalendarApp from './components/calendarApp'
-import CurrentOrderInfo from './components/currentOrderInfo'
-import CurrentOrderList from './components/currentOrderList'
-import OrderCommandLine from './components/orderCommandLine'
-import OrderEntryButtons from './components/orderEntryButtons'
-import RecentOrderList from './components/recentOrderList';
+
+import AppRoutes from './AppRoutes'
 
 
 import './App.css';
-
-
-
 
 
 function App() {
@@ -37,20 +30,9 @@ function App() {
                 <CustomerLoad />
                 <OrdersLoad />
                 <HoldingLoad />
-                <div className = "mainContainer">
-                  <div className = "calendarContainer">
-                    <CalendarApp />
-                  </div>
-                  <div className = "centralContainer">
-                    <OrderCommandLine /> 
-                    <CurrentOrderInfo />  
-                    <CurrentOrderList />    
-                    <OrderEntryButtons />
-                  </div> 
-                  <div className = "rightContainer">
-                    <RecentOrderList />
-                  </div>   
-                </div>
+
+                <AppRoutes />
+
               </CurrentDataProvider>
             </HoldingProvider>
           </StandingProvider>

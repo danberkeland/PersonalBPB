@@ -8,13 +8,15 @@ import { OrdersContext } from '../../dataContexts/OrdersContext';
 import { FindNewRoute } from '../../helpers/sortDataHelpers'
 import { tomorrow } from '../../helpers/dateTimeHelpers'
 import { createRetailOrderCustomers } from '../../helpers/sortDataHelpers'
+import { ToggleContext } from '../../dataContexts/ToggleContext';
 
 
 export const Customers = () => {
 
     const { customers, setRouteIsOn } = useContext(CustomerContext);
     const { orders } = useContext(OrdersContext)
-    const { chosen, setRoute, setChosen, delivDate, setDelivDate, orderTypeWhole } = useContext(CurrentDataContext)
+    const { chosen, setRoute, setChosen, delivDate, setDelivDate } = useContext(CurrentDataContext)
+    const { orderTypeWhole } = useContext(ToggleContext)
 
     const [ customerGroup, setCustomerGroup ] = useState(customers)
 

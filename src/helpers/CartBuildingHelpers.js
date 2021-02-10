@@ -1,5 +1,5 @@
 
-import { convertDatetoBPBDate, convertDatetoStandingDate } from '../../../helpers/dateTimeHelpers'
+import { convertDatetoBPBDate, convertDatetoStandingDate } from '../helpers/dateTimeHelpers'
 
 const clonedeep = require('lodash.clonedeep')
 

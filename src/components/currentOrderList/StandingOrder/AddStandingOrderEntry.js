@@ -7,9 +7,10 @@ import { OrdersContext } from '../../../dataContexts/OrdersContext';
 import { StandingContext } from '../../../dataContexts/StandingContext';
 import { HoldingContext } from '../../../dataContexts/HoldingContext';
 import { ProductsContext } from '../../../dataContexts/ProductsContext'
+import { ToggleContext } from '../../../dataContexts/ToggleContext';
 
-import { convertDatetoBPBDate } from '../../../helpers/dateTimeHelpers';
 import { findAvailableProducts,decideWhetherToAddOrModify } from '../../../helpers/sortDataHelpers';
+
 
 const clonedeep = require('lodash.clonedeep')
 
@@ -19,8 +20,9 @@ const AddCartEntryItem = () => {
     const { products } = useContext(ProductsContext)
     const { standing, setStanding } = useContext(StandingContext)
     const { holding, setHolding } = useContext(HoldingContext)
-    const { orders, setOrders, standList, setStandList } = useContext(OrdersContext)
-    const { chosen, delivDate, orderTypeWhole, route, ponote } = useContext(CurrentDataContext)
+    const { orders } = useContext(OrdersContext)
+    const { chosen, delivDate } = useContext(CurrentDataContext)
+    const { standList } = useContext(ToggleContext)
 
     const [ pickedProduct, setPickedProduct ] = useState();
     const [ productList, setProductList ] = useState();

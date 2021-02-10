@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import { CurrentDataContext } from '../dataContexts/CurrentDataContext';
-import { OrdersContext } from '../dataContexts/OrdersContext';
+
+import { ToggleContext } from '../dataContexts/ToggleContext';
 import { Customers } from './currentOrderInfo/Customers'
 import { DeliveryDate } from './currentOrderInfo/DeliveryDate'
 import PONotes from './currentOrderInfo/PONotes'
@@ -8,8 +8,7 @@ import Routes from './currentOrderInfo/Routes'
 
 const CurrentOrderInfo = () => {
 
-const { orderTypeWhole } = useContext(CurrentDataContext)
-const {cartList, standList } = useContext(OrdersContext)
+const {cartList, standList, orderTypeWhole } = useContext(ToggleContext)
 
 
 const ho = {

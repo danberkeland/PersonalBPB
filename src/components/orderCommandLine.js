@@ -1,24 +1,28 @@
 import React, { useContext } from 'react';
+
 import { CurrentDataContext } from '../dataContexts/CurrentDataContext';
 import { OrdersContext } from '../dataContexts/OrdersContext';
 import { CustomerContext } from '../dataContexts/CustomerContext';
 import { StandingContext } from '../dataContexts/StandingContext';
 import { ProductsContext } from '../dataContexts/ProductsContext';
+import { ToggleContext } from '../dataContexts/ToggleContext';
 
 import { todayPlus, daysOfTheWeek, convertDatetoBPBDate, convertDatetoStandingDate } from '../helpers/dateTimeHelpers'
 
 import swal from '@sweetalert/with-react';
+
 
 const clonedeep = require('lodash.clonedeep')
 
 
 const OrderCommandLine = () => {
 
-  const { chosen, setChosen, delivDate, setDelivDate, orderTypeWhole, setOrderTypeWhole, route, ponote } = useContext(CurrentDataContext)
+  const { chosen, setChosen, delivDate, setDelivDate, route, ponote } = useContext(CurrentDataContext)
   const { orders, setOrders } = useContext(OrdersContext)
-  const { customers, setRouteIsOn } = useContext(CustomerContext)
+  const { customers } = useContext(CustomerContext)
   const { standing } = useContext(StandingContext)
   const { products } = useContext(ProductsContext)
+  const { orderTypeWhole, setOrderTypeWhole, setRouteIsOn } = useContext(ToggleContext)
   
   let [ today, tomorrow, twoDay ] = todayPlus()
 

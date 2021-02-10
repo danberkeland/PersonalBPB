@@ -5,19 +5,21 @@ import swal from '@sweetalert/with-react';
 import { CurrentDataContext } from '../dataContexts/CurrentDataContext';
 import { OrdersContext } from '../dataContexts/OrdersContext';
 import { StandingContext } from '../dataContexts/StandingContext';
+import { ToggleContext } from '../dataContexts/ToggleContext';
 
 import { convertDatetoBPBDate, convertDatetoStandingDate } from '../helpers/dateTimeHelpers';
-import { CustomerContext } from '../dataContexts/CustomerContext';
+
 
 const clonedeep = require('lodash.clonedeep')
 
 function OrderEntryButtons() {
 
-  const { orderTypeWhole, setOrderTypeWhole, route, ponote } = useContext(CurrentDataContext)
-  const { setChosen, delivDate, chosen, modifications, setModifications } = useContext(CurrentDataContext)
-  const { orders, setOrders, recentOrders, setRecentOrders, cartList, setCartList, standList } = useContext(OrdersContext)
+  const { route, ponote } = useContext(CurrentDataContext)
+  const { setChosen, delivDate, chosen } = useContext(CurrentDataContext)
+  const { orders, setOrders, recentOrders, setRecentOrders } = useContext(OrdersContext)
   const { standing } = useContext(StandingContext)
-  const { setRouteIsOn } = useContext(CustomerContext)
+  const { orderTypeWhole, setOrderTypeWhole,modifications, setModifications, 
+          cartList, setCartList, standList, setRouteIsOn } = useContext(ToggleContext)
 
   let type = orderTypeWhole ? "Special" : "Whole";
   let cartStand = cartList ? "Standing" : "Cart"

@@ -1,6 +1,5 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 
-import { sortAtoZDataByIndex, convertSheetsOrdersToAppOrders } from '../helpers/sortDataHelpers'
 import { useFetch } from '../helpers/useFetch'
 
 require('dotenv').config()
@@ -13,16 +12,12 @@ export const OrdersProvider = (props) => {
     const [orders, setOrders] = useState([]);
     const [ recentOrders, setRecentOrders ] = useState([]);
     const [ originalOrders, setOriginalOrders ] = useState([]);
-    const [ cartList, setCartList ] = useState(true)
-    const [ standList, setStandList ] = useState(true)
  
     return (
         <OrdersContext.Provider value={{ 
             orders, setOrders, 
             recentOrders, setRecentOrders,
-            originalOrders, setOriginalOrders,
-            cartList, setCartList,
-            standList, setStandList
+            originalOrders, setOriginalOrders
             }}>
 
             {props.children}

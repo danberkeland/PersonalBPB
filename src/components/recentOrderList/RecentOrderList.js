@@ -1,12 +1,12 @@
 import { cloneDeep } from 'lodash';
 import React, { useContext } from 'react';
 
-import { v4 as uuidv4 } from 'uuid';
 import { CurrentDataContext } from '../../dataContexts/CurrentDataContext';
 import { OrdersContext } from '../../dataContexts/OrdersContext';
 import { StandingContext } from '../../dataContexts/StandingContext';
+import { ToggleContext } from '../../dataContexts/ToggleContext';
 
-import { convertDatetoBPBDate, convertDatetoBPBDateMinusYear, convertDatetoStandingDate } from '../../helpers/dateTimeHelpers';
+import { convertDatetoBPBDate, convertDatetoBPBDateMinusYear } from '../../helpers/dateTimeHelpers';
 
 
 
@@ -14,7 +14,8 @@ const RecentOrderList = () => {
 
   const { orders, setOrders, recentOrders, setRecentOrders, originalOrders } = useContext(OrdersContext)
   const { standing, setStanding, originalStanding } = useContext(StandingContext)
-  const { setChosen, setDelivDate,setOrderTypeWhole } = useContext(CurrentDataContext)
+  const { setChosen, setDelivDate } = useContext(CurrentDataContext)
+  const { setOrderTypeWhole } = useContext(ToggleContext)
 
 
   

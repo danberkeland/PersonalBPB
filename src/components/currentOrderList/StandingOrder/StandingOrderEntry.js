@@ -2,14 +2,10 @@ import React, { useEffect, useContext, useState } from 'react';
 
 import swal from '@sweetalert/with-react';
 
-import { v4 as uuidv4 } from 'uuid';
-
-import { OrdersContext } from '../../../dataContexts/OrdersContext';
+import { ToggleContext } from '../../../dataContexts/ToggleContext';
 import { StandingContext } from '../../../dataContexts/StandingContext';
 import { HoldingContext } from '../../../dataContexts/HoldingContext';
 import { CurrentDataContext } from '../../../dataContexts/CurrentDataContext';
-
-import { convertDatetoBPBDate, convertDatetoStandingDate } from '../../../helpers/dateTimeHelpers';
 
 const clonedeep = require('lodash.clonedeep')
 
@@ -19,8 +15,9 @@ const StandingOrderEntry = () => {
 
     const { standing, setStanding } = useContext(StandingContext);
     const { holding, setHolding } = useContext(HoldingContext);
-    const { standList, setStandList } = useContext(OrdersContext)
-    const { chosen, delivDate, setModifications } = useContext(CurrentDataContext);
+    const { standList, setStandList, setModifications } = useContext(ToggleContext)
+    const { chosen } = useContext(CurrentDataContext);
+
 
     useEffect(() => {
         let buildStandArray = []

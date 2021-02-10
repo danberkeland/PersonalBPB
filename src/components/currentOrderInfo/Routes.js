@@ -4,14 +4,16 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { CurrentDataContext } from '../../dataContexts/CurrentDataContext';
 import { CustomerContext } from '../../dataContexts/CustomerContext';
+import { ToggleContext } from '../../dataContexts/ToggleContext';
 
 import { createRouteList } from '../../helpers/sortDataHelpers'
 
 
 const Routes = () => {
 
-    const { customers, routeIsOn } = useContext(CustomerContext)
+    const { customers } = useContext(CustomerContext)
     const { route, setRoute } = useContext(CurrentDataContext)
+    const {  routeIsOn } = useContext(ToggleContext)
 
     const [ routes, setRoutes ] = useState()
 

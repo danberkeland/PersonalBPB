@@ -2,7 +2,6 @@ import React, { useState, createContext } from 'react';
 
 import { tomorrow } from '../helpers/dateTimeHelpers'
 
-require('dotenv').config()
 
 export const CurrentDataContext = createContext();
 

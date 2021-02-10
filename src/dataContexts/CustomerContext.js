@@ -11,10 +11,9 @@ export const CustomerContext = createContext();
 export const CustomerProvider = (props) => {
 
     const [customers, setCustomer] = useState([]);
-    const [ routeIsOn, setRouteIsOn ] =useState(false)
     
     return (
-        <CustomerContext.Provider value={{ customers, setCustomer, routeIsOn, setRouteIsOn }}>
+        <CustomerContext.Provider value={{ customers, setCustomer }}>
             {props.children}
         </CustomerContext.Provider>
     );   

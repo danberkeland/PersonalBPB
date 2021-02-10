@@ -9,7 +9,7 @@ import { HoldingContext } from '../../../../dataContexts/HoldingContext';
 import { ProductsContext } from '../../../../dataContexts/ProductsContext'
 import { ToggleContext } from '../../../../dataContexts/ToggleContext';
 
-import { findAvailableProducts,decideWhetherToAddOrModify } from '../../../../helpers/sortDataHelpers';
+import { findAvailableProducts } from '../../../../helpers/sortDataHelpers';
 
 
 const clonedeep = require('lodash.clonedeep')

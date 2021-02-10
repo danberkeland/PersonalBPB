@@ -57,6 +57,14 @@ export const compileOrderList = (cartList,standList) => {
 }
 
 
+export const buildCurrentOrder = (chosen,delivDate,orders,standing) => {
+    let cartList = buildCartList(chosen,delivDate,orders)
+    let standList = buildStandList(chosen, delivDate, standing)
+    let currentOrderList = compileOrderList(cartList,standList)
+    return currentOrderList
+}
+
+
 export const filterOutZeros = (currentOrderList) => {
     let filteredZeros = currentOrderList.filter(order => order[0] !== "0" && order[5] !== "0")
     return filteredZeros
@@ -79,58 +87,4 @@ export const addNewInfoToOrders = (currentOrderList, orders) => {
 }
 
 
-/*
-const makeSureRouteIsCorrect = (orderList, route) => {
-    if (orderList.length>0) {
-        for (let order in orderList){
-            console.log(orderList[order])
-            orderList[order][4] = route
-        }
-        return orderList
-        
-    } else {
-        swal ({
-            text: "Need to enter a product first",
-            icon: "warning",
-            buttons: false,
-            timer: 2000
-          })
-        return
-    }
-}
 
-
-const makeSurePONoteIsCorrect = (orderList, ponote) => {
-    if (orderList.length>0) {
-        for (let order in orderList){
-            orderList[order][3] = ponote
-        }
-        return orderList
-        
-    } else {
-        swal ({
-            text: "Need to enter a product first",
-            icon: "warning",
-            buttons: false,
-            timer: 2000
-          })
-        return
-    }
-}
-
-const rebuildOrderList = (currentOrderList, orders) => {
-    let recent = clonedeep(orders)
-        let newOrderList = currentOrderList.concat(recent)
-            for (let i=0; i<newOrderList.length; ++i ){
-                for (let j=i+1; j<newOrderList.length; ++j){
-                    if (  newOrderList[i][1] === newOrderList[j][1] &&
-                          newOrderList[i][2] === newOrderList[j][2] &&
-                          newOrderList[i][7] === newOrderList[j][7]){
-                        newOrderList.splice(j,1);
-                    }
-                }
-              }
-    return newOrderList    
-}
-
-*/

@@ -5,7 +5,7 @@ import { OrdersContext } from '../../../dataContexts/OrdersContext';
 import { StandingContext } from '../../../dataContexts/StandingContext';
 import { ToggleContext } from '../../../dataContexts/ToggleContext';
 
-import { buildCartList, buildStandList, compileOrderList, addNewInfoToOrders } from '../../../helpers/CartBuildingHelpers'
+import { buildCurrentOrder, addNewInfoToOrders } from '../../../helpers/CartBuildingHelpers'
 
 
 const PONotes = () => {
@@ -24,10 +24,8 @@ const PONotes = () => {
             document.getElementById('PONotes').value = '';
         
             if (editOn) {
-                let cartList = buildCartList(chosen,delivDate,orders)
-                let standList = buildStandList(chosen, delivDate, standing)
-                let currentOrderList = compileOrderList(cartList,standList)
-
+                let currentOrderList = buildCurrentOrder(chosen,delivDate,orders,standing)
+ 
                 if(currentOrderList){
                     currentOrderList.map(item => item[3] = newPonote)
                 }

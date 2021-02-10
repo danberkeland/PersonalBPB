@@ -1,6 +1,6 @@
 
-import { convertDatetoBPBDate, convertDatetoStandingDate } from './dateTimeHelpers'
-import { buildCartList, buildStandList, compileOrderList, filterOutZeros } from './CartBuildingHelpers'
+import { convertDatetoBPBDate } from './dateTimeHelpers'
+import { buildCartList, buildStandList, compileOrderList } from './CartBuildingHelpers'
 
 
 
@@ -9,19 +9,7 @@ export const sortAtoZDataByIndex = (data,index) => {
 }
 
 
-export const convertSheetsOrdersToAppOrders = (data) => {
-    let convertedOrderList = data.map(order => [ order[2],
-                                            order[7],
-                                            order[8],
-                                            order[4],
-                                            order[6],
-                                            order[2], 
-                                            order[3] !== "9999" ? true : false,
-                                            order[0],
-                                            
-    ])
-    return convertedOrderList
-}
+
 export const addAnEmptyRowToTop = (data) => {
     let len = data.length;
     let newArray = [];
@@ -79,46 +67,6 @@ export const findCurrentPonote =(chosen, delivDate, orders) => {
     return po
 }
 
-
-export const createCartList = (chosen, delivDate, orders) => {
-    let BPBDate = convertDatetoBPBDate(delivDate)
-    let filteredOrders = [...orders]
-    let cartList = filteredOrders ? filteredOrders.filter(order => order[7] === BPBDate && order[2] === chosen) : [];
-    return cartList
-}
-
-
-export const createStandingList = (chosen, delivDate, standing) => {
-    let standingDate = convertDatetoStandingDate(delivDate);  
-    let filteredStanding = [...standing] 
-    let standingList = filteredStanding ? filteredStanding.filter(standing => standing[0] === standingDate && standing[8] === chosen) : [];
-    let convertedOrderList = standingList.map(order => [ order[2],
-        order[7],
-        order[8],
-        'na',
-        order[6],
-        order[2], 
-        order[3] !== "9999" ? true : false,
-        standingDate
-])
-    return convertedOrderList
-
-}
-
-
-export const createCurrentOrderList = (cartList, standingList) => {
-
-    let orderList = cartList.concat(standingList)
-    for (let i=0; i<orderList.length; ++i ){
-        for (let j=i+1; j<orderList.length; ++j){
-            if (orderList[i][1] === orderList[j][1]){
-                orderList.splice(j,1);
-            }
-        }
-    }
-
-    return orderList
-}
 
 export const findAvailableProducts = (products, orders, chosen, delivDate) => {
     let availableProducts = [...products]

@@ -1,12 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 
-import swal from '@sweetalert/with-react';
 
 import { CurrentDataContext } from '../../../../dataContexts/CurrentDataContext';
 import { OrdersContext } from '../../../../dataContexts/OrdersContext';
 import { StandingContext } from '../../../../dataContexts/StandingContext';
 
-import { buildCartList, buildStandList, compileOrderList, filterOutZeros } from '../../../../helpers/CartBuildingHelpers'
+import { buildCurrentOrder, filterOutZeros } from '../../../../helpers/CartBuildingHelpers'
 
 
 const BuildCurrentCartList = () => {
@@ -18,9 +17,7 @@ const BuildCurrentCartList = () => {
 
     useEffect(() => {
 
-        let cartList = buildCartList(chosen,delivDate,orders)
-        let standList = buildStandList(chosen, delivDate, standing)
-        let currentOrderList = compileOrderList(cartList,standList)
+        let currentOrderList = buildCurrentOrder(chosen,delivDate,orders,standing)
         let noZerosOrderList = filterOutZeros(currentOrderList)
         setCurrentCartList(noZerosOrderList)
 

@@ -2,9 +2,9 @@ import React,{ useContext } from 'react';
 
 import swal from '@sweetalert/with-react';
 
-import { OrdersContext } from '../../dataContexts/OrdersContext';
-import { StandingContext } from '../../dataContexts/StandingContext';
-import { HoldingContext } from '../../dataContexts/HoldingContext';
+import { OrdersContext } from '../../../dataContexts/OrdersContext';
+import { StandingContext } from '../../../dataContexts/StandingContext';
+import { HoldingContext } from '../../../dataContexts/HoldingContext';
 
 import { cloneDeep } from 'lodash';
 

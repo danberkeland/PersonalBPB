@@ -9,12 +9,10 @@ export const CurrentDataContext = createContext();
 export const CurrentDataProvider = (props) => {
 
     const [chosen, setChosen] = useState('');
-    const [delivDate, setDelivDate] = useState(tomorrow());
+    const [ delivDate, setDelivDate ] = useState(tomorrow());
     const [ ponote, setPonote ] = useState('na')
-    const [route, setRoute ] = useState()
-    const [orderTypeWhole, setOrderTypeWhole] = useState(true)
-    const [ ordersHasBeenChanged, setOrdersHasBeenChanged ] = useState(false);
-    const [ modifications, setModifications ] = useState(false)
+    const [ route, setRoute ] = useState()
+    const [ currentCartList, setCurrentCartList ] = useState([])
 
     return (
         <CurrentDataContext.Provider 
@@ -22,9 +20,7 @@ export const CurrentDataProvider = (props) => {
                         delivDate, setDelivDate, 
                         ponote, setPonote,
                         route, setRoute,
-                        orderTypeWhole, setOrderTypeWhole,
-                        ordersHasBeenChanged, setOrdersHasBeenChanged,
-                        modifications, setModifications
+                        currentCartList, setCurrentCartList
                         }}>
             {props.children}
         </CurrentDataContext.Provider>

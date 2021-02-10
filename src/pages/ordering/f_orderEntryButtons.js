@@ -2,12 +2,12 @@ import React, { useContext } from 'react';
 
 import swal from '@sweetalert/with-react';
 
-import { CurrentDataContext } from '../dataContexts/CurrentDataContext';
-import { OrdersContext } from '../dataContexts/OrdersContext';
-import { StandingContext } from '../dataContexts/StandingContext';
-import { ToggleContext } from '../dataContexts/ToggleContext';
+import { CurrentDataContext } from '../../dataContexts/CurrentDataContext';
+import { OrdersContext } from '../../dataContexts/OrdersContext';
+import { StandingContext } from '../../dataContexts/StandingContext';
+import { ToggleContext } from '../../dataContexts/ToggleContext';
 
-import { convertDatetoBPBDate, convertDatetoStandingDate } from '../helpers/dateTimeHelpers';
+import { convertDatetoBPBDate, convertDatetoStandingDate } from '../../helpers/dateTimeHelpers';
 
 
 const clonedeep = require('lodash.clonedeep')

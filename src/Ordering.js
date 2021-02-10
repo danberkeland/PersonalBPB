@@ -2,13 +2,13 @@ import React from 'react';
 
 
 
-import CalendarApp from './components/calendarApp'
-import CurrentOrderInfo from './components/currentOrderInfo'
-import CurrentOrderList from './components/currentOrderList'
-import OrderCommandLine from './components/orderCommandLine'
-import OrderEntryButtons from './components/orderEntryButtons'
-import RecentOrderList from './components/recentOrderList';
-import OrderingFunctions from './components/OrderingFunctions'
+import CalendarApp from './pages/ordering/b_calendarApp'
+import CurrentOrderInfo from './pages/ordering/d_currentOrderInfo'
+import CurrentOrderList from './pages/ordering/e_currentOrderList'
+import OrderCommandLine from './pages/ordering/c_orderCommandLine'
+import OrderEntryButtons from './pages/ordering/f_orderEntryButtons'
+import RecentOrderList from './pages/ordering/g_recentOrderList';
+import OrderingFunctions from './pages/ordering/a_OrderingFunctions'
 
 
 

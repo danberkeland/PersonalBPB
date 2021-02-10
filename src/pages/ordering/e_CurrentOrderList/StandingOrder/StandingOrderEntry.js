@@ -2,10 +2,10 @@ import React, { useEffect, useContext, useState } from 'react';
 
 import swal from '@sweetalert/with-react';
 
-import { ToggleContext } from '../../../dataContexts/ToggleContext';
-import { StandingContext } from '../../../dataContexts/StandingContext';
-import { HoldingContext } from '../../../dataContexts/HoldingContext';
-import { CurrentDataContext } from '../../../dataContexts/CurrentDataContext';
+import { ToggleContext } from '../../../../dataContexts/ToggleContext';
+import { StandingContext } from '../../../../dataContexts/StandingContext';
+import { HoldingContext } from '../../../../dataContexts/HoldingContext';
+import { CurrentDataContext } from '../../../../dataContexts/CurrentDataContext';
 
 const clonedeep = require('lodash.clonedeep')
 

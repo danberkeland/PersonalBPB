@@ -1,10 +1,10 @@
 import React from 'react';
 
 
-import CalendarApp from './components/calendarApp'
-import { DeliveryDate } from './components/currentOrderInfo/DeliveryDate'
-import Routes from './components/currentOrderInfo/Routes'
-import DeliveryGrid from './components/deilveryGrid'
+import CalendarApp from './pages/ordering/b_calendarApp'
+import { DeliveryDate } from './pages/ordering/d_currentOrderInfo/DeliveryDate'
+import Routes from './pages/ordering/d_currentOrderInfo/Routes'
+
 
 
 
@@ -22,7 +22,7 @@ function Logistics() {
                 <Routes />
             </div>
             <div className = "deliveryList">
-                <DeliveryGrid />
+                
             </div>
         </div> 
       </div>          

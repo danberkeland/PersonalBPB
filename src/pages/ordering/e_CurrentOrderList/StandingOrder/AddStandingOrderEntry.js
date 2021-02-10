@@ -2,14 +2,14 @@ import React, { useState, useContext, useEffect } from 'react';
 
 import { v4 as uuidv4 } from 'uuid';
 
-import { CurrentDataContext } from '../../../dataContexts/CurrentDataContext';
-import { OrdersContext } from '../../../dataContexts/OrdersContext';
-import { StandingContext } from '../../../dataContexts/StandingContext';
-import { HoldingContext } from '../../../dataContexts/HoldingContext';
-import { ProductsContext } from '../../../dataContexts/ProductsContext'
-import { ToggleContext } from '../../../dataContexts/ToggleContext';
+import { CurrentDataContext } from '../../../../dataContexts/CurrentDataContext';
+import { OrdersContext } from '../../../../dataContexts/OrdersContext';
+import { StandingContext } from '../../../../dataContexts/StandingContext';
+import { HoldingContext } from '../../../../dataContexts/HoldingContext';
+import { ProductsContext } from '../../../../dataContexts/ProductsContext'
+import { ToggleContext } from '../../../../dataContexts/ToggleContext';
 
-import { findAvailableProducts,decideWhetherToAddOrModify } from '../../../helpers/sortDataHelpers';
+import { findAvailableProducts,decideWhetherToAddOrModify } from '../../../../helpers/sortDataHelpers';
 
 
 const clonedeep = require('lodash.clonedeep')

@@ -2,20 +2,18 @@ import React, { useContext, useEffect, useState } from 'react';
 
 import swal from '@sweetalert/with-react';
 
-import { CurrentDataContext } from '../../../dataContexts/CurrentDataContext';
-import { OrdersContext } from '../../../dataContexts/OrdersContext';
-import { StandingContext } from '../../../dataContexts/StandingContext';
+import { CurrentDataContext } from '../../../../dataContexts/CurrentDataContext';
+import { OrdersContext } from '../../../../dataContexts/OrdersContext';
+import { StandingContext } from '../../../../dataContexts/StandingContext';
 
-import { buildCartList, buildStandList, compileOrderList, filterOutZeros } from '../../../helpers/CartBuildingHelpers'
+import { buildCartList, buildStandList, compileOrderList, filterOutZeros } from '../../../../helpers/CartBuildingHelpers'
 
 
 const BuildCurrentCartList = () => {
 
-    const { orders, setOrders } = useContext(OrdersContext)
+    const { orders } = useContext(OrdersContext)
     const { standing } = useContext(StandingContext)
-    const { chosen, delivDate } = useContext(CurrentDataContext)
-
-    const [ currentList, setCurrentList ] = useState([])
+    const { chosen, delivDate, currentCartList, setCurrentCartList } = useContext(CurrentDataContext)
 
 
     useEffect(() => {
@@ -24,9 +22,10 @@ const BuildCurrentCartList = () => {
         let standList = buildStandList(chosen, delivDate, standing)
         let currentOrderList = compileOrderList(cartList,standList)
         let noZerosOrderList = filterOutZeros(currentOrderList)
-        setCurrentList(noZerosOrderList)
+        setCurrentCartList(noZerosOrderList)
 
-    }, [chosen, delivDate, orders, setOrders, standing])
+    }, [chosen, delivDate, orders, setCurrentCartList, standing])
+
 
     const handleRemove = e => {}
 
@@ -34,7 +33,7 @@ const BuildCurrentCartList = () => {
 
     return (
         <React.Fragment>
-        {currentList.map(order => 
+        {currentCartList.map(order => 
             <React.Fragment key={order[1]+"b"}>
                 <button 
                     className="trashButton"

@@ -1,7 +1,7 @@
 import React from 'react';
 
-import RecentOrderList from './recentOrderList/RecentOrderList';
-import RecentOrderListButtons from './recentOrderList/RecentOrderListButtons';
+import RecentOrderList from './g_recentOrderList/RecentOrderList';
+import RecentOrderListButtons from './g_recentOrderList/RecentOrderListButtons';
 
 
 

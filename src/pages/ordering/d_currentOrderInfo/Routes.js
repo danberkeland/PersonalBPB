@@ -2,9 +2,9 @@ import React, { useContext } from 'react';
 
 import { v4 as uuidv4 } from 'uuid';
 
-import { CurrentDataContext } from '../../dataContexts/CurrentDataContext';
-import { RoutesContext } from '../../dataContexts/RoutesContext';
-import { ToggleContext } from '../../dataContexts/ToggleContext';
+import { CurrentDataContext } from '../../../dataContexts/CurrentDataContext';
+import { RoutesContext } from '../../../dataContexts/RoutesContext';
+import { ToggleContext } from '../../../dataContexts/ToggleContext';
 
 
 const Routes = () => {

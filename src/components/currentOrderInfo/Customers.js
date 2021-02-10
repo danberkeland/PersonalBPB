@@ -5,6 +5,7 @@ import { CurrentDataContext } from '../../dataContexts/CurrentDataContext';
 import { CustomerContext } from '../../dataContexts/CustomerContext';
 import { OrdersContext } from '../../dataContexts/OrdersContext';
 
+import { FindNewRoute } from '../../helpers/sortDataHelpers'
 import { tomorrow } from '../../helpers/dateTimeHelpers'
 import { createRetailOrderCustomers } from '../../helpers/sortDataHelpers'
 
@@ -13,7 +14,7 @@ export const Customers = () => {
 
     const { customers, setRouteIsOn } = useContext(CustomerContext);
     const { orders } = useContext(OrdersContext)
-    const { chosen, setChosen, setDelivDate, orderTypeWhole, setModifications } = useContext(CurrentDataContext)
+    const { chosen, setRoute, setChosen, delivDate, setDelivDate, orderTypeWhole } = useContext(CurrentDataContext)
 
     const [ customerGroup, setCustomerGroup ] = useState(customers)
 
@@ -22,6 +23,13 @@ export const Customers = () => {
     useEffect(() => {
         orderTypeWhole ? setCustomerGroup(customers) : setCustomerGroup(createRetailOrderCustomers(orders))
     },[ customers, orderTypeWhole, orders ])
+
+
+    useEffect(() => {
+        let newRoute = FindNewRoute(chosen, delivDate, orders, customers)
+        setRoute(newRoute)      
+    },[chosen, delivDate, customers, setRoute, orders])
+    
 
     
     const handleChange = e => {

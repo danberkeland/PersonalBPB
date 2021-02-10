@@ -9,6 +9,7 @@ import CurrentOrderList from './components/currentOrderList'
 import OrderCommandLine from './components/orderCommandLine'
 import OrderEntryButtons from './components/orderEntryButtons'
 import RecentOrderList from './components/recentOrderList';
+import BuildCurrentCartList from './components/currentOrderList/CartOrder/BuildCurrentCartList';
 
 
 

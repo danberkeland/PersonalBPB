@@ -4,6 +4,8 @@ import { CurrentDataContext } from '../dataContexts/CurrentDataContext';
 
 const DeliveryGrid = () => {
 
+
+    /*
     const { delivDate, route } = useContext(CurrentDataContext)
 
     const [ delivListGrid, setDelivListGrid ] = useState([])
@@ -13,12 +15,13 @@ const DeliveryGrid = () => {
         let orderListByDateAndRoute = filterByDateAndRoute(orderList, delivDate, route)
         setDelivListGrid(orderListByDateAndRoute)    
     }, [delivDate, route])
-
+    */
     return (
         <React.Fragment>
-            {delivListGrid ? delivListGrid.map(line => line) : ""}
+            <h1>Nothing to see yet</h1>
         </React.Fragment>
     );
+    
 };
 
 export default DeliveryGrid;

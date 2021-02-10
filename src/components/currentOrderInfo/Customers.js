@@ -11,7 +11,7 @@ import { createRetailOrderCustomers } from '../../helpers/sortDataHelpers'
 
 export const Customers = () => {
 
-    const { customers } = useContext(CustomerContext);
+    const { customers, setRouteIsOn } = useContext(CustomerContext);
     const { orders } = useContext(OrdersContext)
     const { chosen, setChosen, setDelivDate, orderTypeWhole, setModifications } = useContext(CurrentDataContext)
 
@@ -26,6 +26,7 @@ export const Customers = () => {
     
     const handleChange = e => {
         setChosen(e.target.value);
+        setRouteIsOn(true)
         setDelivDate(tomorrow())
         }
 

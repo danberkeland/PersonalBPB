@@ -29,7 +29,7 @@ cartList ? orderType = "Cart" : standList ? orderType = "Standing" : orderType =
         <div className = "currentOrderInfo">
           <Customers /> 
           <DeliveryDate />
-          <Routes />
+          <Routes page="ordering"/>
           <PONotes />
         </div>
     </React.Fragment>

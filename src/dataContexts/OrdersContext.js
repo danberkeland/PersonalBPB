@@ -49,7 +49,7 @@ export const OrdersLoad = () => {
 
     return (
         <React.Fragment>
-            { loading && <p>Loading Orders ...</p>}
+            { loading && <p> Loading Orders!</p>}
             { error && <p> error while Loading Orders!</p>}
         </React.Fragment>
     )

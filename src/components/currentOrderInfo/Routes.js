@@ -10,30 +10,19 @@ import { StandingContext } from '../../dataContexts/StandingContext';
 
 import { createRouteList, FindNewRoute } from '../../helpers/sortDataHelpers'
 import { convertDatetoBPBDate, convertDatetoStandingDate } from '../../helpers/dateTimeHelpers'
+import { CheckIfRouteisEnabled } from '../../helpers/OrderingHelpers'
 
 const clonedeep = require('lodash.clonedeep')
 
-const Routes = () => {
+const Routes = ({page}) => {
 
-    const { customers } = useContext(CustomerContext)
-    const { orders, setOrders, cartList } = useContext(OrdersContext)
+    const { customers, routeIsOn } = useContext(CustomerContext)
+    const { orders, setOrders } = useContext(OrdersContext)
     const { standing } = useContext(StandingContext)
-    const { chosen, delivDate, route, setRoute, orderTypeWhole, ponote } = useContext(CurrentDataContext)
+    const { chosen, delivDate, route, setRoute } = useContext(CurrentDataContext)
 
     const [ routes, setRoutes ] = useState()
-    const [ routeIsOn, setRouteIsOn ] =useState(false)
 
-    useEffect(() => {
-        if(chosen){
-            if(!cartList){
-                setRouteIsOn(false)
-            } else {
-                setRouteIsOn(true)
-            }
-        } else {
-            setRouteIsOn(false)
-        }
-    })
     
     useEffect(()=> {
         let routeList = createRouteList(customers)

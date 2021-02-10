@@ -16,7 +16,7 @@ const OrderCommandLine = () => {
 
   const { chosen, setChosen, delivDate, setDelivDate, orderTypeWhole, setOrderTypeWhole, route, ponote } = useContext(CurrentDataContext)
   const { orders, setOrders } = useContext(OrdersContext)
-  const { customers } = useContext(CustomerContext)
+  const { customers, setRouteIsOn } = useContext(CustomerContext)
   const { standing } = useContext(StandingContext)
   const { products } = useContext(ProductsContext)
   
@@ -43,6 +43,7 @@ const OrderCommandLine = () => {
         nextCustomer = cust[2];
         if (nextCustomer !== ''){
           setChosen(nextCustomer)
+          setRouteIsOn(true)
           setDelivDate(tomorrow)
           setOrderTypeWhole(true)
           return

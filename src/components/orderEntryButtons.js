@@ -7,6 +7,7 @@ import { OrdersContext } from '../dataContexts/OrdersContext';
 import { StandingContext } from '../dataContexts/StandingContext';
 
 import { convertDatetoBPBDate, convertDatetoStandingDate } from '../helpers/dateTimeHelpers';
+import { CustomerContext } from '../dataContexts/CustomerContext';
 
 const clonedeep = require('lodash.clonedeep')
 
@@ -16,6 +17,7 @@ function OrderEntryButtons() {
   const { setChosen, delivDate, chosen, modifications, setModifications } = useContext(CurrentDataContext)
   const { orders, setOrders, recentOrders, setRecentOrders, cartList, setCartList, standList } = useContext(OrdersContext)
   const { standing } = useContext(StandingContext)
+  const { setRouteIsOn } = useContext(CustomerContext)
 
   let type = orderTypeWhole ? "Special" : "Whole";
   let cartStand = cartList ? "Standing" : "Cart"
@@ -30,6 +32,8 @@ function OrderEntryButtons() {
 
   const handleCartStandToggle = () => {
     document.getElementById('orderCommand').focus()
+    let realCartList = clonedeep(cartList)
+    realCartList ? setRouteIsOn(false) : setRouteIsOn(true)
     setCartList(!cartList)
   }
   

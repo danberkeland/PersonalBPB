@@ -3,22 +3,40 @@ import React, { useContext } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { CurrentDataContext } from '../../../dataContexts/CurrentDataContext';
+import { OrdersContext } from '../../../dataContexts/OrdersContext';
 import { RoutesContext } from '../../../dataContexts/RoutesContext';
+import { StandingContext } from '../../../dataContexts/StandingContext';
 import { ToggleContext } from '../../../dataContexts/ToggleContext';
+
+import { buildCartList, buildStandList, compileOrderList, addNewInfoToOrders } from '../../../helpers/CartBuildingHelpers'
 
 
 const Routes = () => {
 
-    const { route, setRoute } = useContext(CurrentDataContext)
+    const { chosen, delivDate, route, setRoute } = useContext(CurrentDataContext)
     const { routes } = useContext(RoutesContext)
-    const { routeIsOn } = useContext(ToggleContext)
+    const { orders, setOrders } = useContext(OrdersContext)
+    const { standing } = useContext(StandingContext)
+    const { routeIsOn, editOn } = useContext(ToggleContext)
 
     
     
     const handleChange = e => {
 
         let newRoute = e.target.value
-        setRoute(newRoute);
+        
+        if (editOn) {
+            let cartList = buildCartList(chosen,delivDate,orders)
+            let standList = buildStandList(chosen, delivDate, standing)
+            let currentOrderList = compileOrderList(cartList,standList)
+            if(currentOrderList){
+                currentOrderList.map(item => item[4] = newRoute)
+            }
+            let updatedOrders = addNewInfoToOrders(currentOrderList, orders)
+            setOrders(updatedOrders)
+        }
+        
+        setRoute(newRoute)
     }
     
 

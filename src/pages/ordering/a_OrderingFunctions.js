@@ -17,12 +17,19 @@ const OrderingFunctions = () => {
     const { orders } = useContext(OrdersContext)
     const { standing } = useContext(StandingContext)
     const { chosen, setRoute, delivDate, setPonote, currentCartList } = useContext(CurrentDataContext)
-    const { setRouteIsOn, setPONoteIsOn } = useContext(ToggleContext)
+    const { setRouteIsOn, setPONoteIsOn, setEditOn } = useContext(ToggleContext)
    
 
-    // T O G G L E S 
+
+    //  T O G G L E S 
 
     // when a customer is chosen, route and ponote are turned on
+
+    useEffect(() => {
+        setEditOn(true)
+    })
+
+
     useEffect(() => {
         chosen && setRouteIsOn(true)
         chosen && setPONoteIsOn(true)
@@ -38,7 +45,7 @@ const OrderingFunctions = () => {
 
 
 
-    // F U N C T I O N S
+    //  F U N C T I O N S
     
     // Create a new route list if customers changes
     useEffect(()=> {

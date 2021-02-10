@@ -63,6 +63,21 @@ export const filterOutZeros = (currentOrderList) => {
 }
 
 
+export const addNewInfoToOrders = (currentOrderList, orders) => {
+    let recent = clonedeep(orders)
+        let newOrderList = currentOrderList.concat(recent)
+            for (let i=0; i<newOrderList.length; ++i ){
+                for (let j=i+1; j<newOrderList.length; ++j){
+                    if (  newOrderList[i][1] === newOrderList[j][1] &&
+                          newOrderList[i][2] === newOrderList[j][2] &&
+                          newOrderList[i][7] === newOrderList[j][7]){
+                        newOrderList.splice(j,1);
+                    }
+                }
+              }
+    return newOrderList  
+}
+
 
 /*
 const makeSureRouteIsCorrect = (orderList, route) => {

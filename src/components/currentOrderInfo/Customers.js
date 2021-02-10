@@ -5,7 +5,6 @@ import { CurrentDataContext } from '../../dataContexts/CurrentDataContext';
 import { CustomerContext } from '../../dataContexts/CustomerContext';
 import { OrdersContext } from '../../dataContexts/OrdersContext';
 
-import { FindNewRoute } from '../../helpers/sortDataHelpers'
 import { tomorrow } from '../../helpers/dateTimeHelpers'
 import { createRetailOrderCustomers } from '../../helpers/sortDataHelpers'
 import { ToggleContext } from '../../dataContexts/ToggleContext';
@@ -13,9 +12,9 @@ import { ToggleContext } from '../../dataContexts/ToggleContext';
 
 export const Customers = () => {
 
-    const { customers, setRouteIsOn } = useContext(CustomerContext);
+    const { customers } = useContext(CustomerContext);
     const { orders } = useContext(OrdersContext)
-    const { chosen, setRoute, setChosen, delivDate, setDelivDate } = useContext(CurrentDataContext)
+    const { chosen, setChosen, setDelivDate } = useContext(CurrentDataContext)
     const { orderTypeWhole } = useContext(ToggleContext)
 
     const [ customerGroup, setCustomerGroup ] = useState(customers)
@@ -27,16 +26,9 @@ export const Customers = () => {
     },[ customers, orderTypeWhole, orders ])
 
 
-    useEffect(() => {
-        let newRoute = FindNewRoute(chosen, delivDate, orders, customers)
-        setRoute(newRoute)      
-    },[chosen, delivDate, customers, setRoute, orders])
-    
-
     
     const handleChange = e => {
         setChosen(e.target.value);
-        setRouteIsOn(true)
         setDelivDate(tomorrow())
         }
 

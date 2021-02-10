@@ -1,5 +1,7 @@
 
 import { convertDatetoBPBDate, convertDatetoStandingDate } from './dateTimeHelpers'
+import { buildCartList, buildStandList, compileOrderList, filterOutZeros } from './CartBuildingHelpers'
+
 
 
 export const sortAtoZDataByIndex = (data,index) => {
@@ -51,9 +53,12 @@ export const createRouteList = customers => {
     return newRoutesArray
 }
 
-export const FindNewRoute = (chosen, delivDate, orders, customers) => {
+export const findNewRoute = (chosen, delivDate, standing, orders, customers) => {
     let newRoute
-    let currentRoutes = orders.filter(order => order[2] === chosen && order[7] === convertDatetoBPBDate(delivDate) );
+    let cartList = buildCartList(chosen,delivDate,orders)
+    let standList = buildStandList(chosen, delivDate, standing)
+    let currentOrderList = compileOrderList(cartList,standList)
+    let currentRoutes = currentOrderList.filter(order => order[2] === chosen && order[7] === convertDatetoBPBDate(delivDate) );
     let custRoute = customers.find(element => element[2] === chosen)
     custRoute ? newRoute = custRoute[3] : newRoute = "Pick up Carlton"
     if (currentRoutes.length>0) {

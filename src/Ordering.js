@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
 
 import CalendarApp from './components/calendarApp'
@@ -9,7 +8,7 @@ import CurrentOrderList from './components/currentOrderList'
 import OrderCommandLine from './components/orderCommandLine'
 import OrderEntryButtons from './components/orderEntryButtons'
 import RecentOrderList from './components/recentOrderList';
-import BuildCurrentCartList from './components/currentOrderList/CartOrder/BuildCurrentCartList';
+import OrderingFunctions from './components/OrderingFunctions'
 
 
 
@@ -17,6 +16,7 @@ function Ordering() {
 
   return (
       <div className = "mainContainer">
+        <OrderingFunctions />
         <div className = "calendarContainer">
           <CalendarApp />
         </div>

@@ -1,30 +1,20 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 
 import { v4 as uuidv4 } from 'uuid';
 
 import { CurrentDataContext } from '../../dataContexts/CurrentDataContext';
-import { CustomerContext } from '../../dataContexts/CustomerContext';
+import { RoutesContext } from '../../dataContexts/RoutesContext';
 import { ToggleContext } from '../../dataContexts/ToggleContext';
-
-import { createRouteList } from '../../helpers/sortDataHelpers'
 
 
 const Routes = () => {
 
-    const { customers } = useContext(CustomerContext)
     const { route, setRoute } = useContext(CurrentDataContext)
-    const {  routeIsOn } = useContext(ToggleContext)
-
-    const [ routes, setRoutes ] = useState()
+    const { routes } = useContext(RoutesContext)
+    const { routeIsOn } = useContext(ToggleContext)
 
     
-    useEffect(()=> {
-        let routeList = createRouteList(customers)
-        setRoutes(routeList)
-    },[customers, setRoutes])
-
-
-
+    
     const handleChange = e => {
 
         let newRoute = e.target.value

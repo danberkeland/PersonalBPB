@@ -11,6 +11,7 @@ export const ToggleProvider = (props) => {
     const [ routeIsOn, setRouteIsOn ] =useState(false)
     const [ cartList, setCartList ] = useState(true)
     const [ standList, setStandList ] = useState(true)
+    const [ PONoteIsOn, setPONoteIsOn ] = useState(false)
 
     return (
         <ToggleContext.Provider 
@@ -20,7 +21,8 @@ export const ToggleProvider = (props) => {
                 modifications, setModifications,
                 routeIsOn, setRouteIsOn,
                 cartList, setCartList,
-                standList, setStandList
+                standList, setStandList,
+                PONoteIsOn, setPONoteIsOn
             }}>
             {props.children}
         </ToggleContext.Provider>

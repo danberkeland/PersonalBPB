@@ -7,6 +7,7 @@ import { StandingLoad, StandingProvider } from './dataContexts/StandingContext'
 import { HoldingLoad, HoldingProvider } from './dataContexts/HoldingContext'
 import { CurrentDataProvider } from './dataContexts/CurrentDataContext'
 import { ToggleProvider } from './dataContexts/ToggleContext'
+import { RoutesProvider } from './dataContexts/RoutesContext'
 
 
 import AppRoutes from './AppRoutes'
@@ -26,15 +27,17 @@ function App() {
             <HoldingProvider>
               <CurrentDataProvider>
                 <ToggleProvider>
+                  <RoutesProvider>
 
-                  <StandingLoad />
-                  <ProductsLoad />
-                  <CustomerLoad />
-                  <OrdersLoad />
-                  <HoldingLoad />
-    
-                  <AppRoutes />
+                    <StandingLoad />
+                    <ProductsLoad />
+                    <CustomerLoad />
+                    <OrdersLoad />
+                    <HoldingLoad />
 
+                    <AppRoutes />
+
+                  </RoutesProvider>
                 </ToggleProvider>
               </CurrentDataProvider>
             </HoldingProvider>

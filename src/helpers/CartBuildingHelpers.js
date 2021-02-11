@@ -1,5 +1,6 @@
 
 import { convertDatetoBPBDate, convertDatetoStandingDate } from '../helpers/dateTimeHelpers'
+import { sortAtoZDataByIndex } from '../helpers/sortDataHelpers'
 
 import swal from '@sweetalert/with-react';
 
@@ -55,6 +56,7 @@ export const compileOrderList = (cartList,standList) => {
             }
         }
     }
+    sortAtoZDataByIndex(orderList,1)
     return orderList
 }
 

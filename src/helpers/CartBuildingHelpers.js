@@ -115,15 +115,5 @@ export const updateCurrentLineInOrdersWithQty = (e,chosen, delivDate, orders, po
     return updatedOrders
 }
 
-export const entryIsNotNumber = e => {
-    if(isNaN(e.target.value)){
-        e.target.value = ''
-        swal ({
-            text: "Only Numbers Please",
-            icon: "warning",
-            buttons: false,
-            timer: 2000
-          })
-    }
-}
+
 

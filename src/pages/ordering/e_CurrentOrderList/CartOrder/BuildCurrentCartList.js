@@ -1,6 +1,8 @@
 
 import React, { useContext, useEffect } from 'react';
 
+import swal from '@sweetalert/with-react';
+
 import { CurrentDataContext } from '../../../../dataContexts/CurrentDataContext';
 import { OrdersContext } from '../../../../dataContexts/OrdersContext';
 import { StandingContext } from '../../../../dataContexts/StandingContext';
@@ -11,7 +13,6 @@ import { buildCurrentOrder,
     filterOutZeros, 
     setCurrentCartLineToQty, 
     updateCurrentLineInOrdersWithQty,
-    entryIsNotNumber  
 } from '../../../../helpers/CartBuildingHelpers'
 
 
@@ -35,7 +36,16 @@ const BuildCurrentCartList = () => {
 
     const handleQtyModify = (e,qty) => {
 
-        if(entryIsNotNumber(e)){return}
+        if(isNaN(e.target.value)){
+            e.target.value = ''
+            swal ({
+                text: "Only Numbers Please",
+                icon: "warning",
+                buttons: false,
+                timer: 2000
+              })
+            return
+        }
         let presentedListToModify = setCurrentCartLineToQty(e,currentCartList,qty)
         let updatedOrders = updateCurrentLineInOrdersWithQty(e,chosen, delivDate, orders, ponote, route, isWhole, qty)
         setCurrentCartList(presentedListToModify)

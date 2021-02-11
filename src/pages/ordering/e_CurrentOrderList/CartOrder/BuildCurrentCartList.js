@@ -1,18 +1,26 @@
-import React, { useContext, useEffect } from 'react';
 
+import React, { useContext, useEffect } from 'react';
 
 import { CurrentDataContext } from '../../../../dataContexts/CurrentDataContext';
 import { OrdersContext } from '../../../../dataContexts/OrdersContext';
 import { StandingContext } from '../../../../dataContexts/StandingContext';
+import { ToggleContext } from '../../../../dataContexts/ToggleContext';
 
-import { buildCurrentOrder, filterOutZeros } from '../../../../helpers/CartBuildingHelpers'
+
+import { buildCurrentOrder, 
+    filterOutZeros, 
+    setCurrentCartLineToQty, 
+    updateCurrentLineInOrdersWithQty,
+    entryIsNotNumber  
+} from '../../../../helpers/CartBuildingHelpers'
 
 
 const BuildCurrentCartList = () => {
 
-    const { orders } = useContext(OrdersContext)
+    const { orders, setOrders } = useContext(OrdersContext)
     const { standing } = useContext(StandingContext)
-    const { chosen, delivDate, currentCartList, setCurrentCartList } = useContext(CurrentDataContext)
+    const { chosen, delivDate, currentCartList, setCurrentCartList, ponote, route } = useContext(CurrentDataContext)
+    const { isWhole } = useContext(ToggleContext)
 
 
     useEffect(() => {
@@ -24,9 +32,26 @@ const BuildCurrentCartList = () => {
     }, [chosen, delivDate, orders, setCurrentCartList, standing])
 
 
-    const handleRemove = e => {}
+    const handleRemove = e => {
+        let qty = 0
+        let presentedListToModify = setCurrentCartLineToQty(e,currentCartList,qty)
+        let updatedOrders = updateCurrentLineInOrdersWithQty(e,chosen, delivDate, orders, ponote, route, isWhole, qty)
+        setCurrentCartList(presentedListToModify)
+        setOrders(updatedOrders) 
+    }
 
-    const handleQtyModify = e => {}
+    const handleQtyModify = e => {
+
+        let qty = e.target.value
+        if (entryIsNotNumber(e)){
+            return
+        }
+        let presentedListToModify = setCurrentCartLineToQty(e,currentCartList,qty)
+        let updatedOrders = updateCurrentLineInOrdersWithQty(e,chosen, delivDate, orders, ponote, route, isWhole, qty)
+        setCurrentCartList(presentedListToModify)
+        setOrders(updatedOrders) 
+    }
+
 
     return (
         <React.Fragment>

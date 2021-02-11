@@ -1,6 +1,8 @@
 
 import { convertDatetoBPBDate, convertDatetoStandingDate } from '../helpers/dateTimeHelpers'
 
+import swal from '@sweetalert/with-react';
+
 const clonedeep = require('lodash.clonedeep')
 
 
@@ -87,4 +89,41 @@ export const addNewInfoToOrders = (currentOrderList, orders) => {
 }
 
 
+export const setCurrentCartLineToQty = (e,currentCartList,qty) => {
+    let newQty = qty
+    let indexToFind = e.target.name
+    let foundPresentedIndex = currentCartList.findIndex(line => line[1] === indexToFind)
+    let presentedListToModify = [...currentCartList]
+    presentedListToModify[foundPresentedIndex][0] = newQty
+    return presentedListToModify
+}
+
+
+export const updateCurrentLineInOrdersWithQty = (e,chosen, delivDate, orders, ponote, route, isWhole,qty) => {
+    let newQty = qty
+    let indexToFind = e.target.name
+    let oldValue = e.target.placeholder
+    let updatedOrders = clonedeep(orders)
+    let foundOrdersIndex = updatedOrders.findIndex(line => line[1] === indexToFind &&
+        line[2] === chosen && line[7] === convertDatetoBPBDate(delivDate))
+    if(foundOrdersIndex>=0){
+        updatedOrders[foundOrdersIndex][0] = newQty
+    } else {
+        let orderToAdd = [qty,indexToFind,chosen, ponote, route, oldValue, isWhole, convertDatetoBPBDate(delivDate)]
+        updatedOrders.push(orderToAdd)
+    }
+    return updatedOrders
+}
+
+export const entryIsNotNumber = e => {
+    if(isNaN(e.target.value)){
+        e.target.value = ''
+        swal ({
+            text: "Only Numbers Please",
+            icon: "warning",
+            buttons: false,
+            timer: 2000
+          })
+    }
+}
 

@@ -32,20 +32,10 @@ const BuildCurrentCartList = () => {
     }, [chosen, delivDate, orders, setCurrentCartList, standing])
 
 
-    const handleRemove = e => {
-        let qty = 0
-        let presentedListToModify = setCurrentCartLineToQty(e,currentCartList,qty)
-        let updatedOrders = updateCurrentLineInOrdersWithQty(e,chosen, delivDate, orders, ponote, route, isWhole, qty)
-        setCurrentCartList(presentedListToModify)
-        setOrders(updatedOrders) 
-    }
 
-    const handleQtyModify = e => {
+    const handleQtyModify = (e,qty) => {
 
-        let qty = e.target.value
-        if (entryIsNotNumber(e)){
-            return
-        }
+        if(entryIsNotNumber(e)){return}
         let presentedListToModify = setCurrentCartLineToQty(e,currentCartList,qty)
         let updatedOrders = updateCurrentLineInOrdersWithQty(e,chosen, delivDate, orders, ponote, route, isWhole, qty)
         setCurrentCartList(presentedListToModify)
@@ -59,7 +49,7 @@ const BuildCurrentCartList = () => {
             <React.Fragment key={order[1]+"b"}>
                 <button 
                     className="trashButton"
-                    onClick={e => {handleRemove(e)}} 
+                    onClick={e => {handleQtyModify(e,0)}} 
                     key={order[1]+"e"} 
                     name={order[1]}
                     id={order[1]}>🗑️</button>
@@ -72,7 +62,7 @@ const BuildCurrentCartList = () => {
                     id={order[1]+"item"} 
                     name={order[1]} 
                     placeholder={order[0]} 
-                    onKeyUp={e => {handleQtyModify(e)}}
+                    onKeyUp={e => {handleQtyModify(e,e.target.value)}}
                     onBlur={(e) => {
 
                         e.target.value = ''

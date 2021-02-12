@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 
 import { v4 as uuidv4 } from 'uuid';
 
@@ -27,8 +27,11 @@ const AddCartEntryItem = () => {
     const [ pickedProduct, setPickedProduct ] = useState();
     const [ productList, setProductList ] = useState();
     
-    let standHold 
-    standList ? standHold = "MAKE H.O." : standHold = "MAKE S.O."
+   let standHold =useRef();
+
+    useEffect(() => { 
+        standList ? standHold.current = "MAKE H.O." : standHold.current = "MAKE S.O."
+    },[standList])
 
     useEffect(() => {
         let availableProducts = findAvailableProducts(products, orders, chosen, delivDate)
@@ -76,7 +79,7 @@ const AddCartEntryItem = () => {
         backgroundColor: "red"
       }
 
-      const so = {
+    const so = {
         backgroundColor: "green"
       }
 
@@ -92,7 +95,7 @@ const AddCartEntryItem = () => {
             </select>
            
             <button onClick={handleAdd}>ADD</button>
-            <button style={standList ? so : ho } onClick={handleStandHold}>{standHold}</button>
+            <button style={standList ? so : ho } onClick={handleStandHold}>{standHold.current}</button>
         </div>
     );
 };

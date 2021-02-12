@@ -13,6 +13,7 @@ export const CurrentDataProvider = (props) => {
     const [ ponote, setPonote ] = useState('na')
     const [ route, setRoute ] = useState()
     const [ currentCartList, setCurrentCartList ] = useState([])
+    const [ calendarEvents, setCalendarEvents ] = useState({})
 
     return (
         <CurrentDataContext.Provider 
@@ -20,7 +21,8 @@ export const CurrentDataProvider = (props) => {
                         delivDate, setDelivDate, 
                         ponote, setPonote,
                         route, setRoute,
-                        currentCartList, setCurrentCartList
+                        currentCartList, setCurrentCartList,
+                        calendarEvents, setCalendarEvents
                         }}>
             {props.children}
         </CurrentDataContext.Provider>

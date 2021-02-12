@@ -180,7 +180,6 @@ const OrderCommandLine = () => {
 
   const interpretEntry = async (entry) => {
     checkForCustomer(entry, customers)
-
     checkForDelivDate(entry)
     checkForProducts(entry)
   };

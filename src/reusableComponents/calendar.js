@@ -3,10 +3,10 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 
-import { CurrentDataContext } from '../../dataContexts/CurrentDataContext';
+import { CurrentDataContext } from '../dataContexts/CurrentDataContext';
 
 
-const CalendarApp = () => {
+const Calendar = () => {
 
     const { setDelivDate, calendarEvents } = useContext(CurrentDataContext);
   
@@ -39,5 +39,5 @@ const CalendarApp = () => {
   }
 
   
-export default CalendarApp;
+export default Calendar;
 

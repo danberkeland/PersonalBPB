@@ -1,10 +1,11 @@
 import React, { useContext } from 'react';
 
 import { ToggleContext } from '../../dataContexts/ToggleContext';
-import { Customers } from './d_currentOrderInfo/Customers'
-import { DeliveryDate } from './d_currentOrderInfo/DeliveryDate'
-import PONotes from './d_currentOrderInfo/PONotes'
-import Routes from './d_currentOrderInfo/Routes'
+
+import Customers from '../../reusableComponents/customers'
+import DeliveryDate from '../../reusableComponents/deliveryDate'
+import PONotes from '../../reusableComponents/poNotes'
+import Routes from '../../reusableComponents/routes'
 
 const CurrentOrderInfo = () => {
 

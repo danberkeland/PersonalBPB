@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
 
-import { CurrentDataContext } from '../../../dataContexts/CurrentDataContext';
-import { OrdersContext } from '../../../dataContexts/OrdersContext';
-import { StandingContext } from '../../../dataContexts/StandingContext';
-import { ToggleContext } from '../../../dataContexts/ToggleContext';
+import { CurrentDataContext } from '../dataContexts/CurrentDataContext';
+import { OrdersContext } from '../dataContexts/OrdersContext';
+import { StandingContext } from '../dataContexts/StandingContext';
+import { ToggleContext } from '../dataContexts/ToggleContext';
 
-import { buildCurrentOrder, addNewInfoToOrders } from '../../../helpers/CartBuildingHelpers'
+import { buildCurrentOrder, addNewInfoToOrders } from '../helpers/CartBuildingHelpers'
 
 
 const PONotes = () => {

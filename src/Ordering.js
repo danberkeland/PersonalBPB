@@ -2,7 +2,7 @@ import React from 'react';
 
 
 
-import CalendarApp from './pages/ordering/b_calendarApp'
+import Calendar from './reusableComponents/calendar'
 import CurrentOrderInfo from './pages/ordering/d_currentOrderInfo'
 import CurrentOrderList from './pages/ordering/e_currentOrderList'
 import OrderCommandLine from './pages/ordering/c_orderCommandLine'
@@ -18,7 +18,7 @@ function Ordering() {
       <div className = "mainContainer">
         <OrderingFunctions />
         <div className = "calendarContainer">
-          <CalendarApp />
+          <Calendar />
         </div>
         <div className = "centralContainer">
           <OrderCommandLine /> 

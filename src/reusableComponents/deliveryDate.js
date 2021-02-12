@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
-import { CurrentDataContext } from '../../../dataContexts/CurrentDataContext';
+import { CurrentDataContext } from '../dataContexts/CurrentDataContext';
 
-import { convertDatetoBPBDate } from '../../../helpers/dateTimeHelpers'
+import { convertDatetoBPBDate } from '../helpers/dateTimeHelpers'
 
 
-export const DeliveryDate = () => {
+const DeliveryDate = () => {
 
     const { delivDate } = useContext(CurrentDataContext)
 
@@ -17,3 +17,4 @@ export const DeliveryDate = () => {
 };
 
 
+export default DeliveryDate

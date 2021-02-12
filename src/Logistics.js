@@ -1,9 +1,9 @@
 import React from 'react';
 
 
-import CalendarApp from './pages/ordering/b_calendarApp'
-import { DeliveryDate } from './pages/ordering/d_currentOrderInfo/DeliveryDate'
-import Routes from './pages/ordering/d_currentOrderInfo/Routes'
+import Calendar from './reusableComponents/calendar'
+import DeliveryDate from './reusableComponents/deliveryDate'
+import Routes from './reusableComponents/routes'
 
 
 
@@ -14,7 +14,7 @@ function Logistics() {
   return (
       <div className = "mainContainer">
         <div className = "calendarContainer">
-          <CalendarApp />
+          <Calendar />
         </div>
         <div className = "logisticsContainer">
             <div className = "logisticsInfoSearch">

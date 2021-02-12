@@ -118,4 +118,64 @@ export const updateCurrentLineInOrdersWithQty = (e,chosen, delivDate, orders, po
 }
 
 
+export const testEntryForProduct = (entry) => {
+    return /\d+\s\w+/g.test(entry)
+}
+
+export const createArrayofEnteredProducts = (entry) => {
+    const array = [...entry.matchAll(/\d+\s\w+/g)];
+    let enteredProducts = array.map(item => item[0].split(" "))
+    return enteredProducts
+}
+
+export const createOrdersToUpdate = (products, enteredProducts, chosen, ponote, route, orderTypeWhole, delivDate) => {
+    let ordersToUpdate = [];
+    for (let product of products){
+      for (let enteredItem of enteredProducts){
+        if (product[2] === enteredItem[1]){
+          let newOrder = [enteredItem[0],product[1], chosen, ponote, route, "0", orderTypeWhole, convertDatetoBPBDate(delivDate)] // [ qty, prod, cust, po, route, so, ty ]
+          ordersToUpdate.push(newOrder)
+        }
+      }
+    }
+    return ordersToUpdate
+}
+
+
+export const buildOrdersToModify = (orders, chosen, delivDate, ordersToUpdate, custOrderList) => {
+    let ordersToModify = [...orders]
+    for (let orderToUpdate of ordersToUpdate){
+      for (let custOrder of custOrderList){
+        if (orderToUpdate[1] === custOrder[1]){
+        
+          let index = ordersToModify.findIndex(order => order[1] === custOrder[1] &&
+                order[2] === chosen && order[7] === convertDatetoBPBDate(delivDate));
+          if (index>=0){
+            ordersToModify[index][0] = orderToUpdate[0] 
+                 
+          } else{
+            orderToUpdate[5] = custOrder[5]
+            ordersToModify.push(orderToUpdate)
+            
+          }
+        }
+      }    
+    }
+    return ordersToModify
+}
+
+export const addUpdatesToOrders = (chosen, delivDate, ordersToUpdate, ordersToModify) => {
+    for (let ord of ordersToUpdate){
+        
+        let index = ordersToModify.findIndex(order => order[1] === ord[1] &&
+          order[2] === chosen && order[7] === convertDatetoBPBDate(delivDate));
+        if (index<0){
+          ordersToModify.push(ord)
+        
+      }
+    }  
+    return ordersToModify  
+}
+
+
 

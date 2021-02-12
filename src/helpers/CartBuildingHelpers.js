@@ -2,8 +2,6 @@
 import { convertDatetoBPBDate, convertDatetoStandingDate } from '../helpers/dateTimeHelpers'
 import { sortAtoZDataByIndex } from '../helpers/sortDataHelpers'
 
-import swal from '@sweetalert/with-react';
-
 const clonedeep = require('lodash.clonedeep')
 
 

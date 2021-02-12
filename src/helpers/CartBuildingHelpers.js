@@ -70,7 +70,8 @@ export const buildCurrentOrder = (chosen,delivDate,orders,standing) => {
 
 
 export const filterOutZeros = (currentOrderList) => {
-    let filteredZeros = currentOrderList.filter(order => order[0] !== "0" && order[5] !== "0")
+    console.log(currentOrderList)
+    let filteredZeros = currentOrderList.filter(order => (Number(order[5])+Number(order[0])>0))
     return filteredZeros
 }
 
@@ -101,17 +102,18 @@ export const setCurrentCartLineToQty = (e,currentCartList,qty) => {
 }
 
 
-export const updateCurrentLineInOrdersWithQty = (e,chosen, delivDate, orders, ponote, route, isWhole,qty) => {
+export const updateCurrentLineInOrdersWithQty = (e,chosen, delivDate, orders, ponote, route, isWhole, qty) => {
     let newQty = qty
     let indexToFind = e.target.name
-    let oldValue = e.target.placeholder
+    let oldValue = e.target.dataset.qty
     let updatedOrders = clonedeep(orders)
     let foundOrdersIndex = updatedOrders.findIndex(line => line[1] === indexToFind &&
         line[2] === chosen && line[7] === convertDatetoBPBDate(delivDate))
     if(foundOrdersIndex>=0){
         updatedOrders[foundOrdersIndex][0] = newQty
     } else {
-        let orderToAdd = [qty,indexToFind,chosen, ponote, route, oldValue, isWhole, convertDatetoBPBDate(delivDate)]
+        let orderToAdd = [newQty,indexToFind,chosen, ponote, route, oldValue, isWhole, convertDatetoBPBDate(delivDate)]
+        console.log(orderToAdd)
         updatedOrders.push(orderToAdd)
     }
     return updatedOrders

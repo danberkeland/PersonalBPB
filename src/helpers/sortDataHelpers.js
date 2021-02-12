@@ -84,7 +84,7 @@ export const decideWhetherToAddOrModify = (orders, newOrder, delivDate) => {
     let chosen = newOrder[2]
     let prodToAdd = newOrder[1]
     let qty = newOrder[0]
-    let prodIndex = orders.findIndex(order => 
+    let prodIndex = newOrderList.findIndex(order => 
         order[1] === prodToAdd && 
         order[2] === chosen && 
         order[7] === convertDatetoBPBDate(delivDate))

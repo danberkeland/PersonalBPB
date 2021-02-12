@@ -21,7 +21,7 @@ const BuildCurrentCartList = () => {
     const { orders, setOrders } = useContext(OrdersContext)
     const { standing } = useContext(StandingContext)
     const { chosen, delivDate, currentCartList, setCurrentCartList, ponote, route } = useContext(CurrentDataContext)
-    const { isWhole } = useContext(ToggleContext)
+    const { orderTypeWhole } = useContext(ToggleContext)
 
 
     useEffect(() => {
@@ -47,7 +47,7 @@ const BuildCurrentCartList = () => {
             return
         }
         let presentedListToModify = setCurrentCartLineToQty(e,currentCartList,qty)
-        let updatedOrders = updateCurrentLineInOrdersWithQty(e,chosen, delivDate, orders, ponote, route, isWhole, qty)
+        let updatedOrders = updateCurrentLineInOrdersWithQty(e,chosen, delivDate, orders, ponote, route, orderTypeWhole, qty)
         setCurrentCartList(presentedListToModify)
         setOrders(updatedOrders) 
     }
@@ -59,9 +59,10 @@ const BuildCurrentCartList = () => {
             <React.Fragment key={order[1]+"b"}>
                 <button 
                     className="trashButton"
-                    onClick={e => {handleQtyModify(e,0)}} 
+                    onClick={e => {handleQtyModify(e,"0")}} 
                     key={order[1]+"e"} 
                     name={order[1]}
+                    data-qty={order[0]}
                     id={order[1]}>🗑️</button>
                 <label key={order[1]}>{order[1]}</label>   
                 <input  
@@ -70,7 +71,8 @@ const BuildCurrentCartList = () => {
                     maxLength="5"
                     key={order[1]+"c"} 
                     id={order[1]+"item"} 
-                    name={order[1]} 
+                    name={order[1]}
+                    data-qty={order[0]} 
                     placeholder={order[0]} 
                     onKeyUp={e => {handleQtyModify(e,e.target.value)}}
                     onBlur={(e) => {

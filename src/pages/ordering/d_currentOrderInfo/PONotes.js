@@ -34,14 +34,8 @@ const PONotes = () => {
             }
         }
         setPonote(newPonote)
-
     }
 
-
-
-    
-        
-        
 
     return (
         <React.Fragment>

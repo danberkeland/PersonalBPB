@@ -22,7 +22,7 @@ const AddCartEntryItem = () => {
     const { holding, setHolding } = useContext(HoldingContext)
     const { orders } = useContext(OrdersContext)
     const { chosen, delivDate } = useContext(CurrentDataContext)
-    const { standList } = useContext(ToggleContext)
+    const { standList, setModifications } = useContext(ToggleContext)
 
     const [ pickedProduct, setPickedProduct ] = useState();
     const [ productList, setProductList ] = useState();
@@ -46,12 +46,14 @@ const AddCartEntryItem = () => {
 
     const handleAdd = () => {
         let newStandingList = clonedeep(standing)
-        for (let i=1; i<8; i++){
-            let newOrder =[i.toString(),"na","0","na","na","na","na",pickedProduct,chosen] 
-            newStandingList.push(newOrder)
+        if (pickedProduct !=="" && pickedProduct){
+            for (let i=1; i<8; i++){
+                let newOrder =[i.toString(),"na","0","na","na","na","na",pickedProduct,chosen] 
+                newStandingList.push(newOrder)
+            }
         }
-        
         setStanding(newStandingList)
+        setModifications(true)
         setPickedProduct('');
     }
 

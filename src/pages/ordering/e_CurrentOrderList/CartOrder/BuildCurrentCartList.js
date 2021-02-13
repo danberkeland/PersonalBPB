@@ -21,7 +21,7 @@ const BuildCurrentCartList = () => {
     const { orders, setOrders } = useContext(OrdersContext)
     const { standing } = useContext(StandingContext)
     const { chosen, delivDate, currentCartList, setCurrentCartList, ponote, route } = useContext(CurrentDataContext)
-    const { orderTypeWhole } = useContext(ToggleContext)
+    const { orderTypeWhole, setModifications } = useContext(ToggleContext)
 
 
     useEffect(() => {
@@ -50,6 +50,7 @@ const BuildCurrentCartList = () => {
         let updatedOrders = updateCurrentLineInOrdersWithQty(e,chosen, delivDate, orders, ponote, route, orderTypeWhole, qty)
         setCurrentCartList(presentedListToModify)
         setOrders(updatedOrders) 
+        setModifications(true)
     }
 
 

@@ -2,12 +2,23 @@
   box-sizing: border-box;
 }
 
+
+.Nav {
+  display: flex;
+  top: 0;
+  justify-content: left;
+  align-content: space-between;
+  position: fixed;
+  z-index: 100;
+  
+}
+
 .trashButton {
   background-color: transparent;
   border: none
 }
 
-body {
+.bigPicture {
   background: linear-gradient(
     to right bottom,
     rgba(64, 63, 70),
@@ -15,14 +26,13 @@ body {
   );  
   min-height: 100vh;
   display: flex;
-  align-items: center;
 }
 
 .mainContainer {
   font-family: 'Montserrat', sans-serif;
   margin: auto;
-  min-height: 80vh;
   width: 90%;
+  height: 90%;
   border-radius: 20px;
   background: linear-gradient(
     to right bottom,
@@ -102,11 +112,13 @@ h2 {
 
 .currentOrderList input {
   border: 1px solid gray;
+  color: black;
   width: 90%
 }
 
 .currentStandingList input {
   border: 1px solid gray;
+  color: black;
   width: 80%
 }
 

@@ -23,7 +23,7 @@ const BuildCurrentStandingList = () => {
 
     const { standing, setStanding } = useContext(StandingContext);
     const { holding, setHolding } = useContext(HoldingContext);
-    const { standList, setStandList } = useContext(ToggleContext)
+    const { standList, setStandList, setModifications } = useContext(ToggleContext)
     const { chosen } = useContext(CurrentDataContext);
 
 
@@ -40,6 +40,7 @@ const BuildCurrentStandingList = () => {
         
         let standListToModify = clearSelectedStandItem(e,standArray)
         setStandArray(standListToModify)
+        setModifications(true)
 
         let updatedStandorHold = clonedeep(standList ? standing : holding)   
         let updatedWeeklyList = createUpdateWeeklyList(e, updatedStandorHold, chosen)
@@ -60,6 +61,7 @@ const BuildCurrentStandingList = () => {
 
         let StandListToModify = setCurrentStandLineToQty(e,standArray,qty)
         setStandArray(StandListToModify)
+        setModifications(true)
 
         let updatedStandorHold = clonedeep(standList ? standing : holding)   
         let updatedWeeklyStandList = createUpdateWeeklyStandList(e, updatedStandorHold, chosen)

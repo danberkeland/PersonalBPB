@@ -7,7 +7,9 @@ import { OrdersContext } from '../../dataContexts/OrdersContext';
 import { StandingContext } from '../../dataContexts/StandingContext';
 import { ToggleContext } from '../../dataContexts/ToggleContext';
 
-import { convertDatetoBPBDate, convertDatetoStandingDate } from '../../helpers/dateTimeHelpers';
+import { convertDatetoBPBDate } from '../../helpers/dateTimeHelpers';
+
+import { buildCurrentOrder } from '../../helpers/CartBuildingHelpers'
 
 
 const clonedeep = require('lodash.clonedeep')
@@ -43,32 +45,8 @@ function OrderEntryButtons() {
 
      // BUILD PRESENT LIST
     // Build Orders List based on delivDate and Chosen
-    let BPBDate = convertDatetoBPBDate(delivDate)
-    let filteredOrders = clonedeep(orders)
-    let cartList = filteredOrders ? filteredOrders.filter(order => order[7] === BPBDate && order[2] === chosen) : [];
-    
-    // Build Standing List based on delivDate and Chosen
-    let standingDate = convertDatetoStandingDate(delivDate);  
-    let filteredStanding = clonedeep(standing)
-    let standingList = filteredStanding ? filteredStanding.filter(standing => standing[0] === standingDate && standing[8] === chosen) : [];
-    let convertedOrderList = standingList.map(order => [    order[2],
-                                                            order[7],
-                                                            order[8],
-                                                            'na',
-                                                            order[6],
-                                                            order[2], 
-                                                            order[3] !== "9999" ? true : false,
-                                                            standingDate])
-    
-    // Compare Order List to Stand List and give Order List precedence in final list                                                        
-    let orderList = cartList.concat(convertedOrderList)
-    for (let i=0; i<orderList.length; ++i ){
-        for (let j=i+1; j<orderList.length; ++j){
-            if (orderList[i][1] === orderList[j][1]){
-                orderList.splice(j,1);
-            }
-        }
-    }
+    let orderList = buildCurrentOrder(chosen,delivDate,orders,standing)
+    setModifications(true)
 
     console.log(orderList)
     orderList = orderList.map(order => ["0",order[1],order[2],order[3],order[4],order[0], orderTypeWhole,convertDatetoBPBDate(delivDate)]) 
@@ -89,35 +67,8 @@ function OrderEntryButtons() {
   
   const handleAddUpdate =  () => {
 
+    let orderList = buildCurrentOrder(chosen,delivDate,orders,standing)
     setModifications(false)
-    // BUILD PRESENT LIST
-    // Build Orders List based on delivDate and Chosen
-    let BPBDate = convertDatetoBPBDate(delivDate)
-    let filteredOrders = clonedeep(orders)
-    let buildCartList = filteredOrders ? filteredOrders.filter(order => order[7] === BPBDate && order[2] === chosen) : [];
-    
-    // Build Standing List based on delivDate and Chosen
-    let standingDate = convertDatetoStandingDate(delivDate);  
-    let filteredStanding = clonedeep(standing)
-    let standingList = filteredStanding ? filteredStanding.filter(standing => standing[0] === standingDate && standing[8] === chosen) : [];
-    let convertedOrderList = standingList.map(order => [    order[2],
-                                                            order[7],
-                                                            order[8],
-                                                            'na',
-                                                            order[6],
-                                                            order[2], 
-                                                            order[3] !== "9999" ? true : false,
-                                                            standingDate])
-    
-    // Compare Order List to Stand List and give Order List precedence in final list                                                        
-    let orderList = buildCartList.concat(convertedOrderList)
-    for (let i=0; i<orderList.length; ++i ){
-        for (let j=i+1; j<orderList.length; ++j){
-            if (orderList[i][1] === orderList[j][1]){
-                orderList.splice(j,1);
-            }
-        }
-    }
     // set route if route has changed
     if (orderList.length>0) {
       if (orderList[0][4]!==route){
@@ -187,7 +138,7 @@ function OrderEntryButtons() {
       <button style={modifications ? mods : noMods}
         onClick={handleAddUpdate}
         >Add/Update</button>
-      <button 
+      <button disabled={!cartList} 
         onClick={handleClear}
         >Clear Order</button>
       <button onClick={handleCartStandToggle}>{cartStand}</button>

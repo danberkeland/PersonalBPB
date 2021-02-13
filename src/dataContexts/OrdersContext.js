@@ -1,6 +1,6 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 
-import { useFetch } from '../helpers/useFetch'
+import { useFetch, FilterForMostRecentDuplicate } from '../helpers/useFetch'
 
 require('dotenv').config()
 
@@ -36,9 +36,10 @@ export const OrdersLoad = () => {
     const { setOrders, setOriginalOrders } = useContext(OrdersContext)
 
     useEffect(() => {
-        if(data){
-            setOrders(data);
-            setOriginalOrders(data);
+        if(data.length>0){
+            let currentData = FilterForMostRecentDuplicate(data)
+            setOrders(currentData);
+            setOriginalOrders(currentData);
         }
     },[data, setOrders, setOriginalOrders]);
 

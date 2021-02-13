@@ -28,6 +28,7 @@ const BuildCurrentCartList = () => {
 
         let currentOrderList = buildCurrentOrder(chosen,delivDate,orders,standing)
         let noZerosOrderList = filterOutZeros(currentOrderList)
+        console.log(noZerosOrderList)
         setCurrentCartList(noZerosOrderList)
 
     }, [chosen, delivDate, orders, setCurrentCartList, standing])

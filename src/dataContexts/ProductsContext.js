@@ -40,7 +40,7 @@ export const ProductsLoad = () => {
 
     return (
         <React.Fragment>
-            { loading && <div className = "Loader"><ProgressSpinner/></div>}
+            { loading && <div className = "Loader"><div className = "loaderBack"><ProgressSpinner/></div></div>}
             { error && <p> error while loading products!</p>}
         </React.Fragment>
     )

@@ -10,12 +10,23 @@ import OrderEntryButtons from './pages/ordering/f_orderEntryButtons'
 import RecentOrderList from './pages/ordering/g_recentOrderList';
 import OrderingFunctions from './pages/ordering/a_OrderingFunctions'
 
+import { CustomerLoad } from './dataContexts/CustomerContext'
+import { OrdersLoad } from './dataContexts/OrdersContext'
+import { ProductsLoad } from './dataContexts/ProductsContext'
+import { StandingLoad } from './dataContexts/StandingContext'
+import { HoldingLoad } from './dataContexts/HoldingContext'
+
 
 
 function Ordering() {
 
   return (
       <div className = "mainContainer">
+        <StandingLoad />
+        <ProductsLoad />
+        <CustomerLoad />
+        <OrdersLoad />
+        <HoldingLoad />
         <OrderingFunctions />
         <div className = "calendarContainer">
           <Calendar />

@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { CustomerLoad, CustomerProvider } from './dataContexts/CustomerContext'
-import { OrdersLoad, OrdersProvider } from './dataContexts/OrdersContext'
-import { ProductsLoad, ProductsProvider } from './dataContexts/ProductsContext'
-import { StandingLoad, StandingProvider } from './dataContexts/StandingContext'
-import { HoldingLoad, HoldingProvider } from './dataContexts/HoldingContext'
+import { CustomerProvider } from './dataContexts/CustomerContext'
+import { OrdersProvider } from './dataContexts/OrdersContext'
+import { ProductsProvider } from './dataContexts/ProductsContext'
+import { StandingProvider } from './dataContexts/StandingContext'
+import { HoldingProvider } from './dataContexts/HoldingContext'
 import { CurrentDataProvider } from './dataContexts/CurrentDataContext'
 import { ToggleProvider } from './dataContexts/ToggleContext'
 import { RoutesProvider } from './dataContexts/RoutesContext'
@@ -28,12 +28,6 @@ function App() {
               <CurrentDataProvider>
                 <ToggleProvider>
                   <RoutesProvider>
-
-                    <StandingLoad />
-                    <ProductsLoad />
-                    <CustomerLoad />
-                    <OrdersLoad />
-                    <HoldingLoad />
 
                     <AppRoutes />
 

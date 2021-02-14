@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext} from 'react';
 
 
 
@@ -10,23 +10,29 @@ import OrderEntryButtons from './pages/ordering/f_orderEntryButtons'
 import RecentOrderList from './pages/ordering/g_recentOrderList';
 import OrderingFunctions from './pages/ordering/a_OrderingFunctions'
 
-import { CustomerLoad } from './dataContexts/CustomerContext'
-import { OrdersLoad } from './dataContexts/OrdersContext'
-import { ProductsLoad } from './dataContexts/ProductsContext'
-import { StandingLoad } from './dataContexts/StandingContext'
-import { HoldingLoad } from './dataContexts/HoldingContext'
+import { CustomerContext, CustomerLoad } from './dataContexts/CustomerContext'
+import { OrdersContext, OrdersLoad } from './dataContexts/OrdersContext'
+import { ProductsContext, ProductsLoad } from './dataContexts/ProductsContext'
+import { StandingContext, StandingLoad } from './dataContexts/StandingContext'
+import { HoldingContext, HoldingLoad } from './dataContexts/HoldingContext'
 
 
 
 function Ordering() {
 
+  const { standLoaded } = useContext(StandingContext)
+  const { prodLoaded } = useContext(ProductsContext)
+  const { custLoaded } = useContext(CustomerContext)
+  const { ordersLoaded } = useContext(OrdersContext)
+  const { holdLoaded } = useContext(HoldingContext)
+
   return (
       <div className = "mainContainer">
-        <StandingLoad />
-        <ProductsLoad />
-        <CustomerLoad />
-        <OrdersLoad />
-        <HoldingLoad />
+        {!standLoaded ? <StandingLoad /> : ''}
+        {!prodLoaded ? <ProductsLoad /> : ''}
+        {!custLoaded ? <CustomerLoad /> : ''}
+        {!ordersLoaded ? <OrdersLoad /> : ''}
+        {!holdLoaded ? <HoldingLoad /> : ''}
         <OrderingFunctions />
         <div className = "calendarContainer">
           <Calendar />

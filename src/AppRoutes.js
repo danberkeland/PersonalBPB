@@ -37,6 +37,7 @@ function AppRoutes() {
         <Route path="/customers" component={Customers} />
         <Route path="/billing" component={Billing} />
         <Route path="/admin" component={Admin} />
+        <Route path="/" exact component={Ordering} />
 
       </div>
     </Router>        

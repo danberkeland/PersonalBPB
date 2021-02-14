@@ -14,7 +14,7 @@ export const OrdersProvider = (props) => {
     const [orders, setOrders] = useState([]);
     const [ recentOrders, setRecentOrders ] = useState([]);
     const [ originalOrders, setOriginalOrders ] = useState([]);
-    const [ ordersLoaded, setOrdersLoaded ] = useState(true)
+    const [ ordersLoaded, setOrdersLoaded ] = useState(false)
  
     return (
         <OrdersContext.Provider value={{ 

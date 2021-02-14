@@ -14,7 +14,7 @@ export const HoldingProvider = (props) => {
 
     const [holding, setHolding] = useState([]);
     const [ originalHolding, setOriginalHolding ] = useState([]);
-    const [ holdLoaded, setHoldLoaded ] = useState(true)
+    const [ holdLoaded, setHoldLoaded ] = useState(false)
 
     return (
         <HoldingContext.Provider value={{ holding, setHolding, originalHolding, setOriginalHolding, holdLoaded, setHoldLoaded }}>

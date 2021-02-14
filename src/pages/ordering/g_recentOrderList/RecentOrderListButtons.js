@@ -6,23 +6,21 @@ import { OrdersContext } from '../../../dataContexts/OrdersContext';
 import { StandingContext } from '../../../dataContexts/StandingContext';
 import { HoldingContext } from '../../../dataContexts/HoldingContext';
 
-import { cloneDeep } from 'lodash';
+import { createOrderUpdatesClip } from '../../../helpers/sortDataHelpers'
+
 
 require('dotenv').config()
 
 
 const RecentOrderListButtons = () => {
 
-  const { orders, setOrders, setRecentOrders } = useContext(OrdersContext)
+  const { orders, originalOrders, setRecentOrders } = useContext(OrdersContext)
   const { standing } = useContext(StandingContext)
   const { holding } = useContext(HoldingContext)
 
   const handleUpload = () => {
-    //turn orders into json object - data
-    let orderData = cloneDeep(orders)
-    orderData = orderData.map(order => [order[5],order[1],order[2],order[3],order[4],order[5],order[6],order[7]])
-    setOrders(orderData)
-
+    let orderData = createOrderUpdatesClip(orders, originalOrders)
+    // need to trigger reload of orders from API
 
     const uploadOrders = {
       method: 'POST',

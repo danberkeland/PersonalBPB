@@ -2,6 +2,9 @@
 import { convertDatetoBPBDate } from './dateTimeHelpers'
 import { buildCartList, buildStandList, compileOrderList } from './CartBuildingHelpers'
 
+import { cloneDeep } from 'lodash';
+import { DayCellContent } from '@fullcalendar/react';
+
 
 
 export const sortAtoZDataByIndex = (data,index) => {
@@ -101,4 +104,29 @@ export const decideWhetherToAddOrModify = (orders, newOrder, delivDate) => {
         newOrderList.push(newOrder)
     }
     return newOrderList
+}
+
+
+export const createOrderUpdatesClip = (orders, originalOrders) => {
+    let orderData = cloneDeep(orders)
+    let originalOrderData = cloneDeep(originalOrders)
+    console.log(originalOrderData)
+    
+    for (let i=0; i<orderData.length; ++i ){
+        for (let j=0; j<originalOrderData.length; ++j){
+            if (  orderData[i][0] === originalOrderData[j][0] &&
+                orderData[i][1] === originalOrderData[j][1] &&
+                orderData[i][2] === originalOrderData[j][2] &&
+                orderData[i][3] === originalOrderData[j][3] &&
+                orderData[i][4] === originalOrderData[j][4] &&
+                orderData[i][7] === originalOrderData[j][7] 
+                ){
+                    orderData.splice(i,1);
+                }
+            }
+        }
+
+    let timeStamp = new Date()
+    let timeStampedData = orderData.map(order => [order[5],order[1],order[2],order[3],order[4],order[5],order[6],order[7],timeStamp])
+    return timeStampedData
 }

@@ -68,7 +68,6 @@ export const buildCurrentOrder = (chosen,delivDate,orders,standing) => {
 
 
 export const filterOutZeros = (currentOrderList) => {
-    console.log(currentOrderList)
     let filteredZeros = currentOrderList.filter(order => (Number(order[5])+Number(order[0])>0))
     return filteredZeros
 }
@@ -111,7 +110,6 @@ export const updateCurrentLineInOrdersWithQty = (e,chosen, delivDate, orders, po
         updatedOrders[foundOrdersIndex][0] = newQty
     } else {
         let orderToAdd = [newQty,indexToFind,chosen, ponote, route, oldValue, isWhole, convertDatetoBPBDate(delivDate)]
-        console.log(orderToAdd)
         updatedOrders.push(orderToAdd)
     }
     return updatedOrders

@@ -1,6 +1,9 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 
-import { useFetch } from '../helpers/useFetch'
+import { sortAtoZDataByIndex,addAnEmptyRowToTop } from '../helpers/sortDataHelpers'
+import { useFetch, FilterStandHoldDups } from '../helpers/useFetch'
+
+import { ProgressSpinner } from 'primereact/progressspinner';
 
 require('dotenv').config()
 
@@ -30,14 +33,17 @@ export const StandingLoad = () => {
 
     useEffect(() => {
         if(data){
-            setOriginalStanding(data);
-            setStanding(data);
+            let currentData = FilterStandHoldDups(data)
+            sortAtoZDataByIndex(currentData,7)
+            let newData = addAnEmptyRowToTop(currentData)
+            setOriginalStanding(newData);
+            setStanding(newData);
         }   
     },[data, setOriginalStanding, setStanding]);
 
     return (
         <React.Fragment>
-            { loading && <p>Loading Standing Orders ...</p>}
+            { loading && <div className = "Loader"><ProgressSpinner/></div>}
             { error && <p> error while loading standing orders!</p>}
         </React.Fragment>
     )

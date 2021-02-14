@@ -110,7 +110,6 @@ export const decideWhetherToAddOrModify = (orders, newOrder, delivDate) => {
 export const createOrderUpdatesClip = (orders, originalOrders) => {
     let orderData = cloneDeep(orders)
     let originalOrderData = cloneDeep(originalOrders)
-    console.log(originalOrderData)
     
     for (let i=0; i<orderData.length; ++i ){
         for (let j=0; j<originalOrderData.length; ++j){
@@ -128,5 +127,27 @@ export const createOrderUpdatesClip = (orders, originalOrders) => {
 
     let timeStamp = new Date()
     let timeStampedData = orderData.map(order => [order[5],order[1],order[2],order[3],order[4],order[5],order[6],order[7],timeStamp])
+    return timeStampedData
+}
+
+
+export const createStandHoldClip = (orders, originalOrders) => {
+    let orderData = cloneDeep(orders)
+    let originalOrderData = cloneDeep(originalOrders)
+    
+    for (let i=0; i<orderData.length; ++i ){
+        for (let j=0; j<originalOrderData.length; ++j){
+            if (  orderData[i][0] === originalOrderData[j][0] &&
+                orderData[i][2] === originalOrderData[j][2] &&
+                orderData[i][7] === originalOrderData[j][7] &&
+                orderData[i][8] === originalOrderData[j][8] 
+                ){
+                    orderData.splice(i,1);
+                }
+            }
+        }
+
+    let timeStamp = new Date()
+    let timeStampedData = orderData.map(order => [order[0],order[1],order[2],order[3],timeStamp,order[5],order[6],order[7],order[8]])
     return timeStampedData
 }

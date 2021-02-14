@@ -24,7 +24,7 @@ export const useFetch = url => {
 };
 
 
-export const FilterForMostRecentDuplicate = data => {
+export const FilterOrdersDups = data => {
     let groupedData = data.map(item => [(
         item[1]+"_"+
         item[2]+"_"+
@@ -51,6 +51,52 @@ export const FilterForMostRecentDuplicate = data => {
         item[3] === "TRUE" ? true : false,
         item[0].split("_")[4],
         item[4]
+    ])
+    
+    return reassembledData
+}
+
+
+export const FilterDupsByIndex = (data,ind) => {
+
+
+    for (let i=0; i<data.length; ++i ){
+        for (let j=i+1; j<data.length; ++j){
+            if (data[i][ind] === data[j][ind]){
+                data.splice(j,1);
+            }
+        }
+    }
+
+    return data
+}
+
+
+export const FilterStandHoldDups = data => {
+    let groupedData = data.map(item => [(
+        item[0]+"_"+
+        item[7]+"_"+
+        item[8]),item[1],item[2],item[3],item[4],item[5],item[6]]
+        )
+
+    for (let i=0; i<groupedData.length; ++i ){
+        for (let j=i+1; j<groupedData.length; ++j){
+            if (groupedData[i][0] === groupedData[j][0]){
+                groupedData.splice(j,1);
+            }
+        }
+    }
+
+    let reassembledData = groupedData.map(item => [
+        item[0].split("_")[0],
+        item[1],
+        item[2],
+        item[3],
+        item[4],
+        item[5],
+        item[6],
+        item[0].split("_")[1],
+        item[0].split("_")[2],
     ])
     
     return reassembledData

@@ -1,7 +1,9 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 
 import { sortAtoZDataByIndex,addAnEmptyRowToTop } from '../helpers/sortDataHelpers'
-import { useFetch } from '../helpers/useFetch'
+import { useFetch, FilterDupsByIndex } from '../helpers/useFetch'
+
+import { ProgressSpinner } from 'primereact/progressspinner';
 
 require('dotenv').config()
 
@@ -29,15 +31,16 @@ export const ProductsLoad = () => {
 
     useEffect(() => {
         if (data){
-            sortAtoZDataByIndex(data,1)
-            let newData = addAnEmptyRowToTop(data)
+            let currentData = FilterDupsByIndex(data,1)
+            sortAtoZDataByIndex(currentData,2)
+            let newData = addAnEmptyRowToTop(currentData)
             setProducts(newData);
         }   
     },[data, setProducts]);
 
     return (
         <React.Fragment>
-            { loading && <p>Loading Products ...</p>}
+            { loading && <div className = "Loader"><ProgressSpinner/></div>}
             { error && <p> error while loading products!</p>}
         </React.Fragment>
     )

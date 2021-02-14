@@ -1,6 +1,8 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 
-import { useFetch, FilterForMostRecentDuplicate } from '../helpers/useFetch'
+import { useFetch, FilterOrdersDups } from '../helpers/useFetch'
+
+import { ProgressSpinner } from 'primereact/progressspinner';
 
 require('dotenv').config()
 
@@ -37,7 +39,7 @@ export const OrdersLoad = () => {
 
     useEffect(() => {
         if(data.length>0){
-            let currentData = FilterForMostRecentDuplicate(data)
+            let currentData = FilterOrdersDups(data)
             setOrders(currentData);
             setOriginalOrders(currentData);
         }
@@ -45,7 +47,7 @@ export const OrdersLoad = () => {
 
     return (
         <React.Fragment>
-            { loading && <p> Loading Orders!</p>}
+            { loading && <div className = "Loader"><ProgressSpinner/></div>}
             { error && <p> error while Loading Orders!</p>}
         </React.Fragment>
     )

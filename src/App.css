@@ -3,6 +3,16 @@
 }
 
 
+.Loader {
+  width: 100%;
+  margin: 45vh 45%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 200;
+}
+
+
 .Nav {
   display: flex;
   top: 0;

@@ -6,7 +6,7 @@ import { OrdersContext } from '../../../dataContexts/OrdersContext';
 import { StandingContext } from '../../../dataContexts/StandingContext';
 import { HoldingContext } from '../../../dataContexts/HoldingContext';
 
-import { createOrderUpdatesClip } from '../../../helpers/sortDataHelpers'
+import { createOrderUpdatesClip, createStandHoldClip } from '../../../helpers/sortDataHelpers'
 
 
 require('dotenv').config()
@@ -15,11 +15,13 @@ require('dotenv').config()
 const RecentOrderListButtons = () => {
 
   const { orders, originalOrders, setRecentOrders } = useContext(OrdersContext)
-  const { standing } = useContext(StandingContext)
-  const { holding } = useContext(HoldingContext)
+  const { standing, originalStanding } = useContext(StandingContext)
+  const { holding, originalHolding } = useContext(HoldingContext)
 
   const handleUpload = () => {
     let orderData = createOrderUpdatesClip(orders, originalOrders)
+    let standingData = createStandHoldClip(standing, originalStanding)
+    let holdingData = createStandHoldClip(holding, originalHolding)
     // need to trigger reload of orders from API
 
     const uploadOrders = {
@@ -31,13 +33,13 @@ const RecentOrderListButtons = () => {
     const uploadStanding = {
       method: 'POST',
       headers: { 'Content-Type':'application/json'},
-      body: JSON.stringify(standing)
+      body: JSON.stringify(standingData)
     };
 
     const uploadHolding = {
       method: 'POST',
       headers: { 'Content-Type':'application/json'},
-      body: JSON.stringify(holding)
+      body: JSON.stringify(holdingData)
     };
 
 

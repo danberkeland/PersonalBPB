@@ -14,9 +14,10 @@ export const StandingProvider = (props) => {
 
     const [standing, setStanding] = useState([]);
     const [ originalStanding, setOriginalStanding ] = useState([]);
+    const [ standLoaded, setStandLoaded ] = useState(true)
 
     return (
-        <StandingContext.Provider value={{ standing, setStanding,originalStanding, setOriginalStanding }}>
+        <StandingContext.Provider value={{ standing, setStanding,originalStanding, setOriginalStanding, standLoaded, setStandLoaded }}>
             {props.children}
         </StandingContext.Provider>
     );   
@@ -28,7 +29,7 @@ export const StandingLoad = () => {
 
     const { loading, error, data } = useFetch(process.env.REACT_APP_API_STANDING,[]);
 
-    const { setStanding, setOriginalStanding } = useContext(StandingContext)
+    const { setStanding, setOriginalStanding, setStandLoaded } = useContext(StandingContext)
     
 
     useEffect(() => {
@@ -41,10 +42,12 @@ export const StandingLoad = () => {
         }   
     },[data, setOriginalStanding, setStanding]);
 
+    useEffect(() => {
+        setStandLoaded(!loading)
+    },[loading, setStandLoaded])
+
     return (
         <React.Fragment>
-            { loading && <div className = "Loader"><div className = "loaderBack"><ProgressSpinner/></div></div>}
-            { error && <p> error while loading standing orders!</p>}
         </React.Fragment>
     )
     

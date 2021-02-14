@@ -14,12 +14,14 @@ export const OrdersProvider = (props) => {
     const [orders, setOrders] = useState([]);
     const [ recentOrders, setRecentOrders ] = useState([]);
     const [ originalOrders, setOriginalOrders ] = useState([]);
+    const [ ordersLoaded, setOrdersLoaded ] = useState(true)
  
     return (
         <OrdersContext.Provider value={{ 
             orders, setOrders, 
             recentOrders, setRecentOrders,
-            originalOrders, setOriginalOrders
+            originalOrders, setOriginalOrders,
+            ordersLoaded, setOrdersLoaded
             }}>
 
             {props.children}
@@ -33,9 +35,9 @@ export const OrdersProvider = (props) => {
 
 export const OrdersLoad = () => {
 
-    const { loading, error, data } = useFetch(process.env.REACT_APP_API_ORDERS, []);
+    const { loading, data } = useFetch(process.env.REACT_APP_API_ORDERS, []);
 
-    const { setOrders, setOriginalOrders } = useContext(OrdersContext)
+    const { setOrders, setOriginalOrders, setOrdersLoaded } = useContext(OrdersContext)
 
     useEffect(() => {
         if(data.length>0){
@@ -45,10 +47,12 @@ export const OrdersLoad = () => {
         }
     },[data, setOrders, setOriginalOrders]);
 
+    useEffect(() => {
+        setOrdersLoaded(!loading)
+    },[loading, setOrdersLoaded])
+
     return (
         <React.Fragment>
-            { loading && <div className = "Loader"><div className = "loaderBack"><ProgressSpinner/></div></div>}
-            { error && <p> error while Loading Orders!</p>}
         </React.Fragment>
     )
     

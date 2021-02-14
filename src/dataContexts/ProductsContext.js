@@ -13,9 +13,10 @@ export const ProductsContext = createContext();
 export const ProductsProvider = (props) => {
 
     const [products, setProducts] = useState([]);
+    const [ prodLoaded, setProdLoaded ] = useState(true)
 
     return (
-        <ProductsContext.Provider value={{ products, setProducts }}>
+        <ProductsContext.Provider value={{ products, setProducts, prodLoaded, setProdLoaded }}>
             {props.children}
         </ProductsContext.Provider>
     );   
@@ -25,9 +26,9 @@ export const ProductsProvider = (props) => {
 
 export const ProductsLoad = () => {
 
-    const { loading, error, data } = useFetch(process.env.REACT_APP_API_PRODUCTS,[]);
+    const { loading, data } = useFetch(process.env.REACT_APP_API_PRODUCTS,[]);
 
-    const { setProducts } = useContext(ProductsContext)
+    const { setProducts, setProdLoaded } = useContext(ProductsContext)
 
     useEffect(() => {
         if (data){
@@ -38,10 +39,13 @@ export const ProductsLoad = () => {
         }   
     },[data, setProducts]);
 
+
+    useEffect(() => {
+        setProdLoaded(!loading)
+    },[loading, setProdLoaded])
+    
     return (
         <React.Fragment>
-            { loading && <div className = "Loader"><div className = "loaderBack"><ProgressSpinner/></div></div>}
-            { error && <p> error while loading products!</p>}
         </React.Fragment>
     )
     

@@ -3,7 +3,6 @@ import React, { useState, createContext, useContext, useEffect } from 'react';
 import { sortAtoZDataByIndex, addAnEmptyRowToTop } from '../helpers/sortDataHelpers'
 import { useFetch, FilterDupsByIndex } from '../helpers/useFetch'
 
-import { ProgressSpinner } from 'primereact/progressspinner';
 
 require('dotenv').config()
 
@@ -13,9 +12,10 @@ export const CustomerContext = createContext();
 export const CustomerProvider = (props) => {
 
     const [customers, setCustomer] = useState([]);
+    const [ custLoaded, setCustLoaded ] = useState(true)
     
     return (
-        <CustomerContext.Provider value={{ customers, setCustomer }}>
+        <CustomerContext.Provider value={{ customers, setCustomer, custLoaded, setCustLoaded }}>
             {props.children}
         </CustomerContext.Provider>
     );   
@@ -26,10 +26,11 @@ export const CustomerProvider = (props) => {
 
 export const CustomerLoad = () => {
 
-    const { loading, error, data } = useFetch(process.env.REACT_APP_API_CUSTOMERS,[]);
+    const { setCustomer, setCustLoaded } = useContext(CustomerContext)
 
-    const { setCustomer } = useContext(CustomerContext)
-
+    
+    let { loading, data } = useFetch(process.env.REACT_APP_API_CUSTOMERS,[]);
+    
     useEffect(() => {
         if(data){
 
@@ -40,11 +41,12 @@ export const CustomerLoad = () => {
         }
     },[data, setCustomer]);
 
+    useEffect(() => {
+        setCustLoaded(!loading)
+    },[loading, setCustLoaded])
 
     return (
         <React.Fragment>
-            { loading && <div className = "Loader"><div className = "loaderBack"><ProgressSpinner/></div></div>}
-            { error && <p> error while loading customers!</p>}
         </React.Fragment>
     )
     

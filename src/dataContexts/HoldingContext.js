@@ -14,9 +14,10 @@ export const HoldingProvider = (props) => {
 
     const [holding, setHolding] = useState([]);
     const [ originalHolding, setOriginalHolding ] = useState([]);
+    const [ holdLoaded, setHoldLoaded ] = useState(true)
 
     return (
-        <HoldingContext.Provider value={{ holding, setHolding, originalHolding, setOriginalHolding }}>
+        <HoldingContext.Provider value={{ holding, setHolding, originalHolding, setOriginalHolding, holdLoaded, setHoldLoaded }}>
             {props.children}
         </HoldingContext.Provider>
     );   
@@ -26,9 +27,10 @@ export const HoldingProvider = (props) => {
 
 export const HoldingLoad = () => {
 
-    const { loading, error, data } = useFetch(process.env.REACT_APP_API_HOLDING,[]);
+    const { loading, data } = useFetch(process.env.REACT_APP_API_HOLDING,[]);
 
-    const { setHolding, setOriginalHolding } = useContext(HoldingContext)
+    const { setHolding, setOriginalHolding, setHoldLoaded } = useContext(HoldingContext)
+
     
 
     useEffect(() => {
@@ -41,10 +43,15 @@ export const HoldingLoad = () => {
         }   
     },[data, setOriginalHolding, setHolding]);
 
+
+    useEffect(() => {
+        setHoldLoaded(!loading)
+    },[loading, setHoldLoaded])
+
+    
+
     return (
         <React.Fragment>
-            { loading && <div className = "Loader"><div className = "loaderBack"><ProgressSpinner/></div></div>}
-            { error && <p> error while loading standing orders!</p>}
         </React.Fragment>
     )
     

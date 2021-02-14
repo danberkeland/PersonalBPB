@@ -13,6 +13,7 @@ import Customers from './Customers'
 import Products from './Products'
 import Billing from './Billing'
 import Admin from './Admin'
+import Loader from './Loader'
 
 import Nav from './Nav'
 
@@ -22,6 +23,7 @@ function AppRoutes() {
 
   return (
     <Router>
+      <Loader />
       <div className="Nav">
       <Nav />
       </div>

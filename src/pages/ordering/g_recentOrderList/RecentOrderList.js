@@ -15,16 +15,31 @@ const RecentOrderList = () => {
   const { orders, setOrders, recentOrders, setRecentOrders, originalOrders } = useContext(OrdersContext)
   const { standing, setStanding, originalStanding } = useContext(StandingContext)
   const { setChosen, setDelivDate } = useContext(CurrentDataContext)
-  const { setOrderTypeWhole } = useContext(ToggleContext)
+  const { setOrderTypeWhole, setCartList, setStandList } = useContext(ToggleContext)
 
 
   
   const handleClick = async (e) => {
-    let str = e.target.dataset.whole.toString()
-    if (str === 'true'){
+    let whole = e.target.dataset.whole.toString()
+    let cart = e.target.dataset.cart.toString()
+    let stand = e.target.dataset.stand.toString()
+    
+    if (whole === 'true'){
       setOrderTypeWhole(true)
     } else {
       setOrderTypeWhole(false)
+    }
+
+    if (cart === 'true'){
+      setCartList(true)
+    } else {
+      setCartList(false)
+    }
+
+    if (stand === 'true'){
+      setStandList(true)
+    } else {
+      setStandList(false)
     }
     
     document.getElementById('orderCommand').focus()
@@ -104,6 +119,7 @@ const RecentOrderList = () => {
                                           data-cust={order[1]}
                                           data-whole={order[2]}
                                           data-cart={order[3]}
+                                          data-stand={order[4]}
                                           onClick = {e => handleClick(e)}
                                           >
 

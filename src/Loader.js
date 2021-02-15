@@ -23,13 +23,6 @@ const Loader = () => {
 
     useEffect(() => {
 
-        console.log("Cust "+custLoaded)
-        console.log("Orders "+ordersLoaded)
-        console.log("Prod "+prodLoaded)
-        console.log("Stand "+standLoaded)
-        console.log("Hold "+holdLoaded)
-
-
         if (custLoaded === true &&
             ordersLoaded === true &&
             prodLoaded === true &&

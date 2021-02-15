@@ -28,12 +28,13 @@ function Ordering() {
 
   return (
       <div className = "mainContainer">
+        <OrderingFunctions />
         {!standLoaded ? <StandingLoad /> : ''}
         {!prodLoaded ? <ProductsLoad /> : ''}
         {!custLoaded ? <CustomerLoad /> : ''}
         {!ordersLoaded ? <OrdersLoad /> : ''}
         {!holdLoaded ? <HoldingLoad /> : ''}
-        <OrderingFunctions />
+        
         <div className = "calendarContainer">
           <Calendar />
         </div>

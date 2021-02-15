@@ -10,11 +10,11 @@ export const OrdersContext = createContext();
 
 
 export const OrdersProvider = (props) => {
-
+    
     const [orders, setOrders] = useState([]);
     const [ recentOrders, setRecentOrders ] = useState([]);
     const [ originalOrders, setOriginalOrders ] = useState([]);
-    const [ ordersLoaded, setOrdersLoaded ] = useState(false)
+    const [ ordersLoaded, setOrdersLoaded ] = useState(true)
  
     return (
         <OrdersContext.Provider value={{ 

@@ -1,15 +1,37 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import { Menubar } from 'primereact/menubar';
+
+import swal from '@sweetalert/with-react';
 
 import 'primereact/resources/themes/bootstrap4-light-purple/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 
+
+import { OrdersContext } from './dataContexts/OrdersContext';
+
 function Nav() {
 
+   const { recentOrders } = useContext(OrdersContext)
 
-  const items = [
+   const handleChange = (page) => {
+      if (recentOrders.length>0){
+         swal ({
+         text: "Recent Order entries will be lost.  Continue?",
+         icon: "warning",
+         buttons: true,
+       }).then(choice => {
+          if(choice){
+            window.location = `/${page}`;
+          }
+       }) } else {
+         window.location = `/${page}`;
+       }
+   }
+
+
+   const items = [
     {
        label:'Menu',
        icon:'pi pi-fw pi-bars',
@@ -22,17 +44,23 @@ function Nav() {
                {
                   label:'BPBN (Carlton)',
                   icon:'pi pi-fw pi-chevron-circle-up',
-                  command:()=>{ window.location = "/bpbn"; }
+                  command:()=>{  
+                     handleChange("bpbn")
+                  }
                },
                {
                   label:'BPBS (Prado)',
                   icon:'pi pi-fw pi-chevron-circle-down',
-                  command:()=>{ window.location = "/bpbs"; }
+                  command:()=>{  
+                     handleChange("bpbs")
+                  }
                },
                {
                   label:'Croix',
                   icon:'pi pi-fw pi-slack',
-                  command:()=>{ window.location = "/croix"; }
+                  command:()=>{  
+                     handleChange("croix")
+                  }
                },
 
             ]
@@ -40,38 +68,50 @@ function Nav() {
          {
             label:'Logistics',
             icon:'pi pi-fw pi-compass',
-            command:()=>{ window.location = "/logistics"; }
+            command:()=>{  
+               handleChange("logistics")
+            }
             
          },
          {
             label:'Ordering',
             icon:'pi pi-fw pi-shopping-cart',
-            command:()=>{ window.location = "/ordering"; }
+            command:()=>{  
+               handleChange("ordering")
+            }
             
          },
          {
             label:'Customers',
             icon:'pi pi-fw pi-users',
-            command:()=>{ window.location = "/customers"; }
+            command:()=>{  
+               handleChange("customers")
+            }
            
          },
          {
             label:'Products',
             icon:'pi pi-fw pi-tags',
-            command:()=>{ window.location = "/products"; }
+            command:()=>{  
+               handleChange("products")
+            }
            
          },
          {
             label:'Billing',
             icon:'pi pi-fw pi-dollar',
-            command:()=>{ window.location = "/billing"; }
+            command:()=>{  
+               handleChange("billing")
+            }
 
            
          },
          {
             label:'Admin',
             icon:'pi pi-fw pi-cog',
-            command:()=>{ window.location = "/admin"; }
+            command:()=>{  
+               handleChange("admin")
+            }
            
          },
        ]

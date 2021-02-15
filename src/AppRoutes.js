@@ -28,17 +28,18 @@ function AppRoutes() {
       <Nav />
       </div>
       <div className="bigPicture">
-        <Route path="/ordering" component={Ordering} /> 
-        <Route path="/logistics" component={Logistics} />  
-        <Route path="/bpbs" component={BPBS} />
-        <Route path="/bpbn" component={BPBN} />
-        <Route path="/croix" component={Croix} />
-        <Route path="/products" component={Products} />
-        <Route path="/customers" component={Customers} />
-        <Route path="/billing" component={Billing} />
-        <Route path="/admin" component={Admin} />
-        <Route path="/" exact component={Ordering} />
-
+        <Switch>
+          <Route path="/ordering" component={Ordering} /> 
+          <Route path="/logistics" component={Logistics} />  
+          <Route path="/bpbs" component={BPBS} />
+          <Route path="/bpbn" component={BPBN} />
+          <Route path="/croix" component={Croix} />
+          <Route path="/products" component={Products} />
+          <Route path="/customers" component={Customers} />
+          <Route path="/billing" component={Billing} />
+          <Route path="/admin" component={Admin} />
+          <Route path="/" exact component={Ordering} />
+        </Switch>
       </div>
     </Router>        
   );

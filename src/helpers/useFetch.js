@@ -35,7 +35,7 @@ export const FilterOrdersDups = data => {
 
     for (let i=0; i<groupedData.length; ++i ){
         for (let j=i+1; j<groupedData.length; ++j){
-            if (groupedData[i][0] === groupedData[j][0]){
+            while(groupedData[i][0] === groupedData[j][0]){
                 groupedData.splice(j,1);
             }
         }
@@ -52,7 +52,7 @@ export const FilterOrdersDups = data => {
         item[0].split("_")[4],
         item[4]
     ])
-    
+    console.log(reassembledData)
     return reassembledData
 }
 
@@ -62,7 +62,7 @@ export const FilterDupsByIndex = (data,ind) => {
 
     for (let i=0; i<data.length; ++i ){
         for (let j=i+1; j<data.length; ++j){
-            if (data[i][ind] === data[j][ind]){
+            while (data[i][ind] === data[j][ind]){
                 data.splice(j,1);
             }
         }
@@ -81,7 +81,7 @@ export const FilterStandHoldDups = data => {
 
     for (let i=0; i<groupedData.length; ++i ){
         for (let j=i+1; j<groupedData.length; ++j){
-            if (groupedData[i][0] === groupedData[j][0]){
+            while (groupedData[i][0] === groupedData[j][0]){
                 groupedData.splice(j,1);
             }
         }

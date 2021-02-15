@@ -137,6 +137,7 @@ function OrderEntryButtons() {
     <div className = "orderEntryButtons">
       <button style={modifications ? mods : noMods}
         onClick={handleAddUpdate}
+        disabled={chosen===''}
         >Add/Update</button>
       <button disabled={!cartList} 
         onClick={handleClear}

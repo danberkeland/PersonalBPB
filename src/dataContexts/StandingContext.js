@@ -14,7 +14,7 @@ export const StandingProvider = (props) => {
 
     const [standing, setStanding] = useState([]);
     const [ originalStanding, setOriginalStanding ] = useState([]);
-    const [ standLoaded, setStandLoaded ] = useState(false)
+    const [ standLoaded, setStandLoaded ] = useState(true)
 
     return (
         <StandingContext.Provider value={{ standing, setStanding,originalStanding, setOriginalStanding, standLoaded, setStandLoaded }}>

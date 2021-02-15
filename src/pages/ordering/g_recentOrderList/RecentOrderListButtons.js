@@ -14,9 +14,9 @@ require('dotenv').config()
 
 const RecentOrderListButtons = () => {
 
-  const { orders, originalOrders, setRecentOrders } = useContext(OrdersContext)
-  const { standing, originalStanding } = useContext(StandingContext)
-  const { holding, originalHolding } = useContext(HoldingContext)
+  const { orders, originalOrders, setRecentOrders, setOrdersLoaded } = useContext(OrdersContext)
+  const { standing, originalStanding, setStandLoaded } = useContext(StandingContext)
+  const { holding, originalHolding, setHoldLoaded } = useContext(HoldingContext)
 
   const handleUpload = () => {
     let orderData = createOrderUpdatesClip(orders, originalOrders)
@@ -44,16 +44,15 @@ const RecentOrderListButtons = () => {
 
 
     fetch(process.env.REACT_APP_API_SENDORDERS, uploadOrders)
-      .then(response => response.json())
-      .then(data => console.log(data))
+      .then(response => response.status===200 ? setOrdersLoaded(false): '')
+      
+      
 
     fetch(process.env.REACT_APP_API_SENDSTANDING, uploadStanding)
-      .then(response => response.json())
-      .then(data => console.log(data))
+    .then(response => response.status===200 ? setStandLoaded(false): '')
 
     fetch(process.env.REACT_APP_API_SENDHOLDING, uploadHolding)
-      .then(response => response.json())
-      .then(data => console.log(data))
+    .then(response => response.status===200 ? setHoldLoaded(false): '')
 
 
     

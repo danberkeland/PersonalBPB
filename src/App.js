@@ -19,7 +19,7 @@ import './App.css';
 function App() {
 
   return (
-    
+    <RoutesProvider>
     <CustomerProvider>
       <OrdersProvider>
         <ProductsProvider>
@@ -27,11 +27,11 @@ function App() {
             <HoldingProvider>
               <CurrentDataProvider>
                 <ToggleProvider>
-                  <RoutesProvider>
+                  
 
                     <AppRoutes />
 
-                  </RoutesProvider>
+                  
                 </ToggleProvider>
               </CurrentDataProvider>
             </HoldingProvider>
@@ -39,7 +39,7 @@ function App() {
         </ProductsProvider>
       </OrdersProvider>
     </CustomerProvider>
-           
+    </RoutesProvider>       
   );
 }
 

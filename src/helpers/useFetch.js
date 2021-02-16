@@ -52,7 +52,6 @@ export const FilterOrdersDups = data => {
         item[0].split("_")[4],
         item[4]
     ])
-    console.log(reassembledData)
     return reassembledData
 }
 

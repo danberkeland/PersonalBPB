@@ -48,7 +48,6 @@ function OrderEntryButtons() {
     let orderList = buildCurrentOrder(chosen,delivDate,orders,standing)
     setModifications(true)
 
-    console.log(orderList)
     orderList = orderList.map(order => ["0",order[1],order[2],order[3],order[4],order[0], orderTypeWhole,convertDatetoBPBDate(delivDate)]) 
     let currentOrderList = orderList.concat(orders)
     for (let i=0; i<currentOrderList.length; ++i ){

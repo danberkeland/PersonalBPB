@@ -81,12 +81,11 @@ export const createUpdateWeeklyList = (e, updatedStandorHold, chosen) => {
         let ind = updatedStandorHold.findIndex(stand => stand[0] === i.toString() && stand[7] === indexToFind && stand[8] === chosen)
         if (ind>=0){
             updatedStandorHold[ind][2] = "0";
-        }
-    }
+        } 
     updatedStandorHold = updatedStandorHold.filter(stand => stand[2] !=="0")
     return updatedStandorHold
+    }
 }
-
 
 export const setCurrentStandLineToQty = (e,standArray) => {
     let newQty = e.target.value
@@ -103,6 +102,7 @@ export const setCurrentStandLineToQty = (e,standArray) => {
 export const createUpdateWeeklyStandList = (e, updatedStandorHold, chosen) => {
     let newQty = e.target.value
     let indexToFind = e.target.name
+    let timeStamp = new Date().toISOString()
     let intTarg = e.target.id
     intTarg = intTarg.split('_')
     let updatedStanding = clonedeep(updatedStandorHold)
@@ -110,6 +110,10 @@ export const createUpdateWeeklyStandList = (e, updatedStandorHold, chosen) => {
         && stand[7] === indexToFind && stand[8] === chosen)
     if(ind>=0){
         updatedStanding[ind][2] = newQty
+    } else {
+        let newStand = [e.target.dataset.day,"na",e.target.value,"na",timeStamp.toString(),"na","na",e.target.name,chosen]
+        updatedStanding.push(newStand)
     }
+
     return updatedStanding
 }

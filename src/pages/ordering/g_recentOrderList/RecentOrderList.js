@@ -72,7 +72,7 @@ const RecentOrderList = () => {
         originalStandingToAddBack = originalStandingToAddBack.filter(stand => stand[8] === e.target.dataset.cust)
 
         let standingToModify = cloneDeep(standing);
-        console.log(standingToModify)
+    
 
         standingToModify = standingToModify.filter(stand => stand[8] !== e.target.dataset.cust)
 

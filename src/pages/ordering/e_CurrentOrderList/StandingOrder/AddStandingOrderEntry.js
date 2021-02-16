@@ -61,17 +61,19 @@ const AddCartEntryItem = () => {
         let currentStandList = await clonedeep(standing)
         let currentHoldList = await clonedeep(holding)
 
-        if(standList){
+        let standID = clonedeep(standList)
+
+        if(standID){
             let currentStandListClip = await currentStandList.filter(stand => stand[8] === chosen)
             let reducedStandList = await currentStandList.filter(stand => stand[8] !== chosen)
             let send = currentHoldList.concat(currentStandListClip)
-            setStanding(await reducedStandList)
+            setStanding(reducedStandList)
             setHolding(send)
         } else {
-            let currentHoldListClip = currentHoldList.filter(hold => hold[8] === chosen)
-            let reducedHoldList = currentHoldList.filter(hold => hold[8] !== chosen)
+            let currentHoldListClip = await currentHoldList.filter(hold => hold[8] === chosen)
+            let reducedHoldList = await currentHoldList.filter(hold => hold[8] !== chosen)
             let send = currentStandList.concat(currentHoldListClip)
-            setHolding(reducedHoldList)
+            setHolding(await reducedHoldList)
             setStanding(send)
             
         }

@@ -10,16 +10,32 @@ export const checkStandHoldStatus = (standing,holding,chosen) => {
     let holdingToCheck = clonedeep(holding)
     // check for standing, if no, check for holding, if no return
     
-    for (let stand in standingToCheck){
-        if (standingToCheck[stand][8] === chosen){
+    let standingToCount = standingToCheck.filter(stand => stand[8] === chosen)
+    if (standingToCount.length>0){
+        standingToCount = standingToCount.map(stand => Number(stand[2]))
+        let sum = standingToCount.reduce((a,b) => {
+            return a + b;
+        },0);
+        if (sum>0){
             Stand = true
         }
     }
-    for (let hold in holdingToCheck){
-        if (holdingToCheck[hold][8] === chosen){
+
+    let holdingToCount = holdingToCheck.filter(hold => hold[8] === chosen)
+    if (holdingToCount.length>0){
+        holdingToCount = holdingToCount.map(hold => Number(hold[2]))
+        let sum = holdingToCount.reduce((a,b) => {
+            return a + b;
+        },0);
+        if (sum>0){
             Hold = true
         }
     }
+
+
+   
+   
+
     return [Stand,Hold]
 }
 

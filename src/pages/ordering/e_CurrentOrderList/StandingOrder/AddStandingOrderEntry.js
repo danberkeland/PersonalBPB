@@ -64,17 +64,27 @@ const AddCartEntryItem = () => {
         let standID = clonedeep(standList)
 
         if(standID){
-            let currentStandListClip = await currentStandList.filter(stand => stand[8] === chosen)
+            let currentStandListClip = currentStandList.filter(stand => stand[8] === chosen)
+            let clipToManipulate = clonedeep(currentStandListClip)
+            let timeStamp = new Date().toISOString()
+            let zeroCurrentStand = clipToManipulate.map(stand => 
+                [stand[0],"na","0","na",timeStamp,"na","na",stand[7],stand[8]])
             let reducedStandList = await currentStandList.filter(stand => stand[8] !== chosen)
-            let send = currentHoldList.concat(currentStandListClip)
-            setStanding(reducedStandList)
-            setHolding(send)
+            let sendStand = reducedStandList.concat(zeroCurrentStand)
+            let sendHold = currentHoldList.concat(currentStandListClip)
+            setStanding(sendStand)
+            setHolding(sendHold)
         } else {
             let currentHoldListClip = await currentHoldList.filter(hold => hold[8] === chosen)
+            let clipToManipulate = clonedeep(currentHoldListClip)
+            let timeStamp = new Date().toISOString()
+            let zeroCurrentHold = Array.from(clipToManipulate, stand => 
+                [stand[0],"na","0","na",timeStamp,"na","na",stand[7],stand[8]])
             let reducedHoldList = await currentHoldList.filter(hold => hold[8] !== chosen)
-            let send = currentStandList.concat(currentHoldListClip)
-            setHolding(await reducedHoldList)
-            setStanding(send)
+            let sendHold = reducedHoldList.concat(zeroCurrentHold)
+            let sendStand = currentStandList.concat(currentHoldListClip)
+            setHolding(sendHold)
+            setStanding(sendStand)
             
         }
     }

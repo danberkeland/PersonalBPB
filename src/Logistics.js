@@ -3,8 +3,7 @@ import React from 'react';
 
 import Calendar from './reusableComponents/calendar'
 import DeliveryDate from './reusableComponents/deliveryDate'
-import Routes from './reusableComponents/routes'
-
+import ByCustomer from './pages/logistics/ByCustomer'
 
 
 
@@ -12,18 +11,16 @@ import Routes from './reusableComponents/routes'
 function Logistics() {
 
   return (
-      <div className = "mainContainer">
+      <div className = "logisticsContainer">
         <div className = "calendarContainer">
           <Calendar />
         </div>
-        <div className = "logisticsContainer">
+        <div className = "logisticsDisplayContainer">
             <div className = "logisticsInfoSearch">
+                <div id="orderCommand" />
                 <DeliveryDate />
-                <Routes />
-            </div>
-            <div className = "deliveryList">
-                
-            </div>
+                <ByCustomer />
+            </div>  
         </div> 
       </div>          
   );

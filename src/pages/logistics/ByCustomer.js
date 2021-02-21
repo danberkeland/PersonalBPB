@@ -9,6 +9,8 @@ import { ProductsContext } from '../../dataContexts/ProductsContext'
 
 import { buildCartList, buildStandList } from '../../helpers/CartBuildingHelpers'
 
+import { sortAtoZDataByIndex } from '../../helpers/sortDataHelpers'
+
 const ByCustomer = () => {
 
     const { orders } = useContext(OrdersContext)
@@ -29,12 +31,13 @@ const ByCustomer = () => {
    
         for (let i=0; i<orderList.length; ++i ){
             for (let j=i+1; j<orderList.length; ++j){
-                if (orderList[i][1] === orderList[j][1] && orderList[i][2] === orderList[j][2]){
+                if (orderList[i][1] === orderList[j][1] && 
+                    orderList[i][2] === orderList[j][2] 
+                    ){
                     orderList.splice(j,1);
                 }
             }
         }
-
         orderList = orderList.filter(order => order[4] === route)
 
         let listOfProducts = orderList.map(order => order[1])
@@ -49,12 +52,15 @@ const ByCustomer = () => {
             }
         }
 
+        sortAtoZDataByIndex(prodArray,2)
+
+
         let columns = [{field: 'customer', header: 'Customer', width: {width:'10%'} }]
         for (let prod of prodArray){
             let newCol = {field: prod[0], header: prod[1], width: {width:'30px'}}
             columns.push(newCol)
         }
-
+        console.log(columns)
         return columns
         
     }
@@ -76,7 +82,6 @@ const ByCustomer = () => {
         }
 
         orderList = orderList.filter(order => order[4] === route)
-
         let listOfCustomers = orderList.map(order => order[2])
         listOfCustomers = new Set(listOfCustomers)
         
@@ -88,9 +93,10 @@ const ByCustomer = () => {
                     newData[order[1]] = order[0]
                 }
             }
-            console.log(newData)
+
             data.push(newData)
         }
+        
         return data
     
     }

@@ -5,7 +5,9 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
 
 import Ordering from './Ordering'
-import Logistics from './Logistics'
+import DeliveryRouteGrid from './pages/logistics/DeliveryRouteGrid'
+import DeliveryCustomerGrid from './pages/logistics/DeliveryCustomerGrid'
+import DeliveryProductGrid from './pages/logistics/DeliveryProductGrid'
 import BPBS from './BPBS'
 import BPBN from './BPBN'
 import Croix from './Croix'
@@ -30,7 +32,9 @@ function AppRoutes() {
       <div className="bigPicture">
         <Switch>
           <Route path="/ordering" component={Ordering} /> 
-          <Route path="/logistics" component={Logistics} />  
+          <Route path="/logistics/byRoute" component={DeliveryRouteGrid} />  
+          <Route path="/logistics/byCustomer" component={DeliveryCustomerGrid} />  
+          <Route path="/logistics/byProduct" component={DeliveryProductGrid} />  
           <Route path="/bpbs" component={BPBS} />
           <Route path="/bpbn" component={BPBN} />
           <Route path="/croix" component={Croix} />

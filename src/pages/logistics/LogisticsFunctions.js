@@ -58,7 +58,6 @@ const LogisticsFunctions = () => {
 
 
 
-
     //  F U N C T I O N S
     
     // Create a new route list if customers changes

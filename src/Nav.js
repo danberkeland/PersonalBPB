@@ -68,9 +68,30 @@ function Nav() {
          {
             label:'Logistics',
             icon:'pi pi-fw pi-compass',
-            command:()=>{  
-               handleChange("logistics")
-            }
+            items:[
+               {
+                  label:'By Route',
+                  icon:'pi pi-fw pi-compass',
+                  command:()=>{  
+                     handleChange("logistics/byRoute")
+                  }
+               },
+               {
+                  label:'By Customer',
+                  icon:'pi pi-fw pi-users',
+                  command:()=>{  
+                     handleChange("logistics/byCustomer")
+                  }
+               },
+               {
+                  label:'By Product',
+                  icon:'pi pi-fw pi-tags',
+                  command:()=>{  
+                     handleChange("logistics/byProduct")
+                  }
+               },
+
+            ]
             
          },
          {

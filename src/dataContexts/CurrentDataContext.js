@@ -8,7 +8,7 @@ export const CurrentDataContext = createContext();
 
 export const CurrentDataProvider = (props) => {
 
-    const [chosen, setChosen] = useState('');
+    const [chosen, setChosen] = useState('  ');
     const [ delivDate, setDelivDate ] = useState(tomorrow());
     const [ ponote, setPonote ] = useState('na')
     const [ route, setRoute ] = useState()

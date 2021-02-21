@@ -10,7 +10,7 @@ export const buildCartList = (chosen,delivDate,orders) => {
     let filteredOrders = clonedeep(orders)
     let builtCartList = []
     if (filteredOrders.length>=0){
-        builtCartList = filteredOrders.filter(order => order[7] === BPBDate && order[2] === chosen)
+        builtCartList = filteredOrders.filter(order => order[7] === BPBDate && order[2].match(`${chosen}`))
     }
     return builtCartList 
 }

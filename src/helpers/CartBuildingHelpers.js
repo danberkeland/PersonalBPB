@@ -2,6 +2,8 @@
 import { convertDatetoBPBDate, convertDatetoStandingDate } from '../helpers/dateTimeHelpers'
 import { sortAtoZDataByIndex } from '../helpers/sortDataHelpers'
 
+import { wildcardRegExp } from 'wildcard-regex'
+
 const clonedeep = require('lodash.clonedeep')
 
 
@@ -10,7 +12,7 @@ export const buildCartList = (chosen,delivDate,orders) => {
     let filteredOrders = clonedeep(orders)
     let builtCartList = []
     if (filteredOrders.length>=0){
-        builtCartList = filteredOrders.filter(order => order[7] === BPBDate && order[2].match(`${chosen}`))
+        builtCartList = filteredOrders.filter(order => order[7] === BPBDate && order[2].match(wildcardRegExp(`${chosen}`)))
     }
     return builtCartList 
 }
@@ -21,10 +23,9 @@ export const buildStandList = (chosen,delivDate,standing) => {
     let filteredStanding = clonedeep(standing)
     let builtStandList =[]
     if (filteredStanding.length>=0){
-        builtStandList = filteredStanding.filter(standing => standing[0] === standingDate && standing[8] === chosen)
+        builtStandList = filteredStanding.filter(standing => standing[0] === standingDate && standing[8].match(wildcardRegExp(`${chosen}`)))
     }
     let convertedStandList = convertStandListtoStandArray(builtStandList, delivDate)
-   
     return convertedStandList
 }
 
@@ -45,7 +46,6 @@ const convertStandListtoStandArray = (builtStandList, delivDate) => {
 
 export const compileOrderList = (cartList,standList) => {
     let orderList = cartList.concat(standList)
-
     // Remove old cart order from orders if it exists
     for (let i=0; i<orderList.length; ++i ){
         for (let j=i+1; j<orderList.length; ++j){

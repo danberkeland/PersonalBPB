@@ -7,6 +7,8 @@ import { OrdersContext } from '../../dataContexts/OrdersContext'
 import { StandingContext } from '../../dataContexts/StandingContext'
 import { ProductsContext } from '../../dataContexts/ProductsContext'
 
+import { buildCartList, buildStandList } from '../../helpers/CartBuildingHelpers'
+
 const ByCustomer = () => {
 
     const { orders } = useContext(OrdersContext)
@@ -19,52 +21,87 @@ const ByCustomer = () => {
 
 
     const constructColumns = () => {
-        // construct order list by orders and standing orders
-        //convertStandListtoStandArray = (builtStandList, delivDate)
-        // filter order list by delivDate
-        // filter order list by route
-        // construct list of products
-        // one by one through products, add nick to columns
-        // return columns
-        return [
-            {field: 'customer', header: 'Customer', width: {width:'10%'} },
-            {field: 'pl', header: 'pl', width: {width:'30px'}},
-            {field: 'ch', header: 'ch', width: {width:'30px'}},
-            {field: 'al', header: 'al', width: {width:'30px'}},
-            {field: 'sf', header: 'sf', width: {width:'30px'}},
-            {field: 'pg', header: 'pg', width: {width:'30px'}},
-            {field: 'mini', header: 'mini', width: {width:'30px'}},
-            {field: 'bag', header: 'bag', width: {width:'30px'}},
-            {field: 'bri', header: 'bri', width: {width:'30px'}},
-            {field: 'bz', header: 'bz', width: {width:'30px'}},
-            {field: 'pg', header: 'pg', width: {width:'30px'}},
-            {field: 'mini', header: 'mini', width: {width:'30px'}},
-            {field: 'bag', header: 'bag', width: {width:'30px'}},
-            {field: 'bri', header: 'bri', width: {width:'30px'}},
-            {field: 'bz', header: 'bz', width: {width:'30px'}},
-            
-        ];
-    
+      
+        let cartList = buildCartList("*",delivDate,orders)
+        let standList = buildStandList("*", delivDate, standing)
+
+        let orderList = cartList.concat(standList)
+   
+        for (let i=0; i<orderList.length; ++i ){
+            for (let j=i+1; j<orderList.length; ++j){
+                if (orderList[i][1] === orderList[j][1] && orderList[i][2] === orderList[j][2]){
+                    orderList.splice(j,1);
+                }
+            }
+        }
+
+        orderList = orderList.filter(order => order[4] === route)
+
+        let listOfProducts = orderList.map(order => order[1])
+        listOfProducts = new Set(listOfProducts)
+        let prodArray = []
+        for (let prod of listOfProducts){
+            for (let item of products){
+                if (prod === item[1]){
+                    let newItem = [prod, item[2],item[4],item[5]]
+                    prodArray.push(newItem)
+                }
+            }
+        }
+
+        let columns = [{field: 'customer', header: 'Customer', width: {width:'10%'} }]
+        for (let prod of prodArray){
+            let newCol = {field: prod[0], header: prod[1], width: {width:'30px'}}
+            columns.push(newCol)
+        }
+
+        return columns
+        
     }
 
     const constructData = () => {
-        return [
-            {"customer": "Kreuzberg Kreuzberg","pl": 2,"ch": 2,"sf": 2,"pg": 65,"mini": 5,"bag":3,"bri":4,"bz":3},
-            {"customer": "Kreuzberg Kreuzberg","pl": 2,"ch": 2,"al": 2,"sf": 2,"pg": 5,"bag":3,"bri":4,"bz":3},
-            {"customer": "Kreuzberg","pl": 2,"ch": 2,"al": 2,"sf": 2,"pg": 65,"mini": 5,"bag":3,"bri":4,"bz":3},
-            {"customer": "Kreuzberg","pl": 2,"ch": 2,"sf": 2,"mini": 5,"bag":3,"bri":4,"bz":3},
-            {"customer": "Kreuzberg","ch": 2,"al": 2,"sf": 2,"pg": 65,"mini": 5,"bag":3,"bri":4,"bz":3},
-           
-        ];
+
+        
+        let cartList = buildCartList("*",delivDate,orders)
+        let standList = buildStandList("*", delivDate, standing)
+
+        let orderList = cartList.concat(standList)
+   
+        for (let i=0; i<orderList.length; ++i ){
+            for (let j=i+1; j<orderList.length; ++j){
+                if (orderList[i][1] === orderList[j][1] && orderList[i][2] === orderList[j][2]){
+                    orderList.splice(j,1);
+                }
+            }
+        }
+
+        orderList = orderList.filter(order => order[4] === route)
+
+        let listOfCustomers = orderList.map(order => order[2])
+        listOfCustomers = new Set(listOfCustomers)
+        
+        let data=[]
+        for (let cust of listOfCustomers){
+            let newData = {"customer": cust}
+            for (let order of orderList){
+                if (order[2] === cust){
+                    newData[order[1]] = order[0]
+                }
+            }
+            console.log(newData)
+            data.push(newData)
+        }
+        return data
+    
     }
 
     useEffect(() => {
-        let col = constructColumns(orders,standing, products)
-        let dat = constructData(orders,standing,products)
+        let col = constructColumns()
+        let dat = constructData()
         setColumns(col)
         setData(dat)
 
-    },[orders,products,standing])
+    },[delivDate, route])
     
     
 

@@ -10,7 +10,7 @@ import OrderEntryButtons from './pages/ordering/f_orderEntryButtons'
 import RecentOrderList from './pages/ordering/g_recentOrderList';
 import OrderingFunctions from './pages/ordering/a_OrderingFunctions'
 
-import { CustomerContext, CustomerLoad } from './dataContexts/CustomerContext'
+import { CustomerContext, CustomerLoad, FullCustomerLoad } from './dataContexts/CustomerContext'
 import { OrdersContext, OrdersLoad } from './dataContexts/OrdersContext'
 import { ProductsContext, ProductsLoad } from './dataContexts/ProductsContext'
 import { StandingContext, StandingLoad } from './dataContexts/StandingContext'
@@ -22,7 +22,7 @@ function Ordering() {
 
   const { standLoaded } = useContext(StandingContext)
   const { prodLoaded } = useContext(ProductsContext)
-  const { custLoaded } = useContext(CustomerContext)
+  const { custLoaded, fullCustLoaded } = useContext(CustomerContext)
   const { ordersLoaded } = useContext(OrdersContext)
   const { holdLoaded } = useContext(HoldingContext)
 
@@ -32,6 +32,7 @@ function Ordering() {
         {!standLoaded ? <StandingLoad /> : ''}
         {!prodLoaded ? <ProductsLoad /> : ''}
         {!custLoaded ? <CustomerLoad /> : ''}
+        {!fullCustLoaded ? <FullCustomerLoad /> : ''}
         {!ordersLoaded ? <OrdersLoad /> : ''}
         {!holdLoaded ? <HoldingLoad /> : ''}
         

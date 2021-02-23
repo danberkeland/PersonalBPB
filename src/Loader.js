@@ -14,7 +14,7 @@ import { HoldingContext } from './dataContexts/HoldingContext';
 const Loader = () => {
 
     let { isLoading, setIsLoading } = useContext(ToggleContext)
-    let { custLoaded } = useContext(CustomerContext)
+    let { custLoaded, fullCustLoaded } = useContext(CustomerContext)
     let { ordersLoaded } = useContext(OrdersContext)
     let { prodLoaded } = useContext(ProductsContext)
     let { standLoaded } = useContext(StandingContext)
@@ -24,6 +24,7 @@ const Loader = () => {
     useEffect(() => {
 
         if (custLoaded === true &&
+            fullCustLoaded === true &&
             ordersLoaded === true &&
             prodLoaded === true &&
             standLoaded === true &&

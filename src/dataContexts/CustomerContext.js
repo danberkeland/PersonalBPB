@@ -13,9 +13,16 @@ export const CustomerProvider = (props) => {
 
     const [customers, setCustomer] = useState([]);
     const [ custLoaded, setCustLoaded ] = useState(true)
+    const [ fullCustomer, setFullCustomer ] = useState([])
+    const [ fullCustLoaded, setFullCustLoaded ] = useState(true)
     
     return (
-        <CustomerContext.Provider value={{ customers, setCustomer, custLoaded, setCustLoaded }}>
+        <CustomerContext.Provider value={{ 
+            customers, setCustomer, 
+            custLoaded, setCustLoaded, 
+            fullCustomer, setFullCustomer,
+            fullCustLoaded, setFullCustLoaded 
+            }}>
             {props.children}
         </CustomerContext.Provider>
     );   
@@ -26,7 +33,7 @@ export const CustomerProvider = (props) => {
 
 export const CustomerLoad = () => {
 
-    const { setCustomer, setCustLoaded } = useContext(CustomerContext)
+    const { setCustomer, setCustLoaded, setFullCustLoaded } = useContext(CustomerContext)
 
     
     let { loading, data } = useFetch(process.env.REACT_APP_API_CUSTOMERS,[]);
@@ -43,7 +50,33 @@ export const CustomerLoad = () => {
 
     useEffect(() => {
         setCustLoaded(!loading)
-    },[loading, setCustLoaded])
+        setFullCustLoaded(!loading)
+    },[loading, setFullCustLoaded, setCustLoaded])
+
+    return (
+        <React.Fragment>
+        </React.Fragment>
+    )
+    
+};
+
+
+export const FullCustomerLoad = () => {
+
+    const { setFullCustomer, setFullCustLoaded } = useContext(CustomerContext)
+
+    
+    let { loading, data } = useFetch(process.env.REACT_APP_API_GETOBJCUSTOMER,[]);
+    
+    useEffect(() => {
+        if(data){
+            setFullCustomer(data);
+        }
+    },[data, setFullCustomer]);
+
+    useEffect(() => {
+        setFullCustLoaded(!loading)
+    },[loading, setFullCustLoaded])
 
     return (
         <React.Fragment>

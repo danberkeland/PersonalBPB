@@ -37,7 +37,7 @@ function Customers() {
         <MainWrapper>
           <DataTable value={fullCustomer} className="p-datatable-striped" selectionMode="single" dataKey="id">
             <Column field="name" header="Customer"sortable filter filterPlaceholder="Search by name"></Column>
-            <Column field="addrCity" header="City" sortable></Column>
+            <Column field="zoneName" header="Zone" sortable></Column>
             <Column field="email" header="Email"></Column>
             <Column field="phone" header="Phone"></Column>
           </DataTable>

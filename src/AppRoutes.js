@@ -20,15 +20,11 @@ import Loader from './Loader'
 import Nav from './Nav'
 
 
-
 function AppRoutes() {
 
   return (
     <Router>
       <Loader />
-      <div className="Nav">
-      <Nav />
-      </div>
       <div className="bigPicture">
         <Switch>
           <Route path="/ordering" component={Ordering} /> 

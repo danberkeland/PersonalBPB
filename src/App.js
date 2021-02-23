@@ -11,6 +11,7 @@ import { RoutesProvider } from './dataContexts/RoutesContext'
 
 
 import AppRoutes from './AppRoutes'
+import Nav from './Nav'
 
 
 import './App.css';
@@ -19,7 +20,9 @@ import './App.css';
 function App() {
 
   return (
-    <RoutesProvider>
+    <React.Fragment>
+    <Nav />
+    <RoutesProvider>   
     <CustomerProvider>
       <OrdersProvider>
         <ProductsProvider>
@@ -39,7 +42,8 @@ function App() {
         </ProductsProvider>
       </OrdersProvider>
     </CustomerProvider>
-    </RoutesProvider>       
+    </RoutesProvider>  
+    </React.Fragment>     
   );
 }
 

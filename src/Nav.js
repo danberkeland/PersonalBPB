@@ -1,6 +1,8 @@
-import React, { useContext } from 'react';
+import React, { useRef, useState } from 'react';
 
 import { Menubar } from 'primereact/menubar';
+import { TabMenu } from 'primereact/tabmenu';
+
 
 import swal from '@sweetalert/with-react';
 
@@ -9,136 +11,58 @@ import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 
 
-import { OrdersContext } from './dataContexts/OrdersContext';
-
 function Nav() {
 
-   const { recentOrders } = useContext(OrdersContext)
+   const [ selectedMenu, setSelectedMenu ] = useState("")
 
-   const handleChange = (page) => {
-      if (recentOrders.length>0){
-         swal ({
-         text: "Recent Order entries will be lost.  Continue?",
-         icon: "warning",
-         buttons: true,
-       }).then(choice => {
-          if(choice){
-            window.location = `/${page}`;
-          }
-       }) } else {
-         window.location = `/${page}`;
-       }
-   }
-
-
+   
    const items = [
-    {
-       label:'Menu',
-       icon:'pi pi-fw pi-bars',
-       items:[
+      {label: 'Production', icon: 'pi pi-fw pi-chart-bar', command:()=>{ setSelectedMenu("prod")}},
+      {label: 'Logistics', icon: 'pi pi-fw pi-map', command:()=>{ setSelectedMenu("log")}},
+      {label: 'Ordering', icon: 'pi pi-fw pi-shopping-cart', command:()=>{ setSelectedMenu("order")}},
+      {label: 'Customers', icon: 'pi pi-fw pi-users', command:()=>{ setSelectedMenu("cust")}},
+      {label: 'Products', icon: 'pi pi-fw pi-tags', command:()=>{ setSelectedMenu("items")}},
+      {label: 'Billing', icon: 'pi pi-fw pi-money-bill', command:()=>{ setSelectedMenu("billing")}},
+      {label: 'Settings', icon: 'pi pi-fw pi-cog', command:()=>{ setSelectedMenu("settings")}}
+   ];
 
-          {
-            label:'Production',
-            icon:'pi pi-fw pi-chart-bar',
-            items:[
-               {
-                  label:'BPBN (Carlton)',
-                  icon:'pi pi-fw pi-chevron-circle-up',
-                  command:()=>{  
-                     handleChange("bpbn")
-                  }
-               },
-               {
-                  label:'BPBS (Prado)',
-                  icon:'pi pi-fw pi-chevron-circle-down',
-                  command:()=>{  
-                     handleChange("bpbs")
-                  }
-               },
-               {
-                  label:'Croix',
-                  icon:'pi pi-fw pi-slack',
-                  command:()=>{  
-                     handleChange("croix")
-                  }
-               },
 
-            ]
-         },
-         {
-            label:'Logistics',
-            icon:'pi pi-fw pi-compass',
-            items:[
-               {
-                  label:'By Route',
-                  icon:'pi pi-fw pi-compass',
-                  command:()=>{  
-                     handleChange("logistics/byRoute")
-                  }
-               },
-               {
-                  label:'By Customer',
-                  icon:'pi pi-fw pi-users',
-                  command:()=>{  
-                     handleChange("logistics/byCustomer")
-                  }
-               },
-               {
-                  label:'By Product',
-                  icon:'pi pi-fw pi-tags',
-                  command:()=>{  
-                     handleChange("logistics/byProduct")
-                  }
-               },
 
-            ]
-            
-         },
-         {
-            label:'Ordering',
-            icon:'pi pi-fw pi-shopping-cart',
-            command:()=>{  
-               handleChange("ordering")
-            }
-            
-         },
-         {
-            label:'Customers',
-            icon:'pi pi-fw pi-users',
-            command:()=>{  
-               handleChange("customers")
-            }
-           
-         },
-         {
-            label:'Products',
-            icon:'pi pi-fw pi-tags',
-            command:()=>{  
-               handleChange("products")
-            }
-           
-         },
-         {
-            label:'Billing',
-            icon:'pi pi-fw pi-dollar',
-            command:()=>{  
-               handleChange("billing")
-            }
+   const noitems = [
+      {label: ''},
+   ];
 
-           
-         },
-         {
-            label:'Admin',
-            icon:'pi pi-fw pi-cog',
-            command:()=>{  
-               handleChange("admin")
-            }
-           
-         },
-       ]
-    },
-    
- ];
+   const proditems = [
+      {label: 'BPBN'},
+      {label: 'BPBS'},
+      {label: 'Croix'},
+   ];
+
+   const logitems = [
+      {label: 'By Route'},
+      {label: 'By Customer'},
+      {label: 'By Product'},
+   ];
+
+   const orderitems = [
+      {label: 'Ordering'},
+   ];
+
+   const custitems = [
+      {label: 'Customers', command:()=>{ window.location="/Customers"; }},
+   ];
+
+   const itemitems = [
+      {label: 'Products'},
+   ];
+
+   const billingitems = [
+      {label: 'Billing'},
+   ];
+
+   const settingsitems = [
+      {label: 'Settings'},
+   ];
 
 
  
@@ -146,6 +70,18 @@ function Nav() {
   return (
       <div className = "card">
         <Menubar model={items} />
+        <TabMenu model={
+           selectedMenu === "prod" ? proditems :
+           selectedMenu === "log" ? logitems :
+           selectedMenu === "order" ? orderitems :
+           selectedMenu === "cust" ? custitems :
+           selectedMenu === "items" ? itemitems :
+           selectedMenu === "billing" ? billingitems :
+           selectedMenu === "settings" ? settingsitems :
+           selectedMenu === "" ? noitems :
+
+           ''
+           } />
       </div>          
   );
 }

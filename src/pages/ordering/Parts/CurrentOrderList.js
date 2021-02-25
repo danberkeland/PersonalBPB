@@ -1,11 +1,11 @@
 import React,{ useContext } from 'react';
 
-import CartEntryItem from './e_CurrentOrderList/CartOrder/CartEntryItem'
-import AddCartEntryItem from './e_CurrentOrderList/CartOrder/AddCartEntryItem'
-import StandingOrderEntry from './e_CurrentOrderList/StandingOrder/StandingOrderEntry'
-import AddStandingOrderEntry from './e_CurrentOrderList/StandingOrder/AddStandingOrderEntry'
+import CartEntryItem from '../e_CurrentOrderList/CartOrder/CartEntryItem'
+import AddCartEntryItem from '../e_CurrentOrderList/CartOrder/AddCartEntryItem'
+import StandingOrderEntry from '../e_CurrentOrderList/StandingOrder/StandingOrderEntry'
+import AddStandingOrderEntry from '../e_CurrentOrderList/StandingOrder/AddStandingOrderEntry'
 
-import { ToggleContext } from '../../dataContexts/ToggleContext';
+import { ToggleContext } from '../../../dataContexts/ToggleContext';
 
 
 

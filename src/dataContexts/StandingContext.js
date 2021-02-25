@@ -1,9 +1,9 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 
-import { sortAtoZDataByIndex,addAnEmptyRowToTop } from '../helpers/sortDataHelpers'
+import { sortAtoZDataByIndex } from '../helpers/sortDataHelpers'
 import { useFetch, FilterStandHoldDups } from '../helpers/useFetch'
 
-import { ProgressSpinner } from 'primereact/progressspinner';
+import { ToggleContext } from './ToggleContext';
 
 require('dotenv').config()
 
@@ -14,7 +14,7 @@ export const StandingProvider = (props) => {
 
     const [standing, setStanding] = useState([]);
     const [ originalStanding, setOriginalStanding ] = useState([]);
-    const [ standLoaded, setStandLoaded ] = useState(true)
+    const [ standLoaded, setStandLoaded ] = useState(false)
 
     return (
         <StandingContext.Provider value={{ standing, setStanding,originalStanding, setOriginalStanding, standLoaded, setStandLoaded }}>
@@ -27,24 +27,27 @@ export const StandingProvider = (props) => {
 
 export const StandingLoad = () => {
 
-    const { loading, error, data } = useFetch(process.env.REACT_APP_API_STANDING,[]);
+    const { data } = useFetch(process.env.REACT_APP_API_STANDING,[]);
 
     const { setStanding, setOriginalStanding, setStandLoaded } = useContext(StandingContext)
+    const { setIsLoading } = useContext(ToggleContext)
     
 
-    useEffect(() => {
+    useEffect(() => { 
+        setIsLoading(true) 
         if(data){
-            let currentData = FilterStandHoldDups(data)
-            sortAtoZDataByIndex(currentData,7)
-            let newData = addAnEmptyRowToTop(currentData)
-            setOriginalStanding(newData);
-            setStanding(newData);
-        }   
-    },[data, setOriginalStanding, setStanding]);
+            if(data.length>0){
+                let currentData = FilterStandHoldDups(data)
+                setOriginalStanding(currentData);
+                setStanding(currentData);
+                setStandLoaded(true)
+                setIsLoading(false)
+            }
+        }
+        console.log(data)
+    },[data]);
+    
 
-    useEffect(() => {
-        setStandLoaded(!loading)
-    },[loading, setStandLoaded])
 
     return (
         <React.Fragment>

@@ -10,10 +10,36 @@ import { ToggleContext } from '../../../../dataContexts/ToggleContext';
 import { convertDatetoBPBDate } from '../../../../helpers/dateTimeHelpers';
 import { findAvailableProducts,decideWhetherToAddOrModify } from '../../../../helpers/sortDataHelpers';
 
+import { Button } from 'primereact/button';
+import { Dropdown } from 'primereact/dropdown';
+import { InputText } from 'primereact/inputtext';
+
+
+import styled from 'styled-components'
+
 
 
 
 const AddCartEntryItem = () => {
+
+    const AddProductButtons = styled.div`
+        display: flex;
+        width: 100%;
+        margin: 20px 0;
+        justify-content: space-around;
+        background-color: lightgrey;
+        padding: 10px 0;
+        `
+
+
+    const cities = [
+        {name: 'New York', code: 'NY'},
+        {name: 'Rome', code: 'RM'},
+        {name: 'London', code: 'LDN'},
+        {name: 'Istanbul', code: 'IST'},
+        {name: 'Paris', code: 'PRS'}
+        ];
+    
 
     const { products } = useContext(ProductsContext)
     const { orders, setOrders } = useContext(OrdersContext)
@@ -47,17 +73,14 @@ const AddCartEntryItem = () => {
     
 
     return (
-        <div className="addAProductToCart">
-            <select id = "products" name="products" value={pickedProduct} onChange={handleChange} disabled={chosen ? false : true}>
-            {
-                productList ? productList.map((product) => 
-                    <option key = {uuidv4()} value={product[1]}>{product[1]}</option>
-                ) : ''
-                }; 
-            </select>
-            <input type="text" id="addedProdQty" disabled={chosen ? false : true}></input>
-            <button onClick={handleAdd}>ADD</button>
-        </div>
+        <AddProductButtons>
+            <Dropdown options={cities} optionLabel="name" placeholder="Select a product"/>
+            <span className="p-float-label">
+                <InputText id="qty" size="10"/>
+                <label htmlhtmlFor="qty">Quantity</label>
+            </span>
+            <Button label="ADD" icon="pi pi-plus"/>
+        </AddProductButtons>
     );
 };
 

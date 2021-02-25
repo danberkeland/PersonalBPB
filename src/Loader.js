@@ -21,21 +21,7 @@ const Loader = () => {
     let { holdLoaded } = useContext(HoldingContext)
 
 
-    useEffect(() => {
-
-        if (custLoaded === true &&
-            fullCustLoaded === true &&
-            ordersLoaded === true &&
-            prodLoaded === true &&
-            standLoaded === true &&
-            holdLoaded === true){
-                setIsLoading(false)
-            } else {
-                setIsLoading(true)
-            }
-
-    })
-    
+   
 
     return (
         <React.Fragment>

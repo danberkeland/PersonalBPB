@@ -8,6 +8,9 @@ import { OrdersContext } from '../../../../dataContexts/OrdersContext';
 import { StandingContext } from '../../../../dataContexts/StandingContext';
 import { ToggleContext } from '../../../../dataContexts/ToggleContext';
 
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+
 
 import { buildCurrentOrder, 
     filterOutZeros, 
@@ -22,6 +25,27 @@ const BuildCurrentCartList = () => {
     const { standing } = useContext(StandingContext)
     const { chosen, delivDate, currentCartList, setCurrentCartList, ponote, route } = useContext(CurrentDataContext)
     const { orderTypeWhole, setModifications } = useContext(ToggleContext)
+
+    const products =[
+        {
+        "product": "baguette",
+        "name": "name",
+        "qty": "7",
+        "prev": "10"
+        },
+        {
+        "product": "baguette",
+        "name": "name",
+        "qty": "7",
+        "prev": "10"
+        },
+        {
+        "product": "baguette",
+        "name": "name",
+        "qty": "7",
+        "prev": "10"
+        },
+    ]
 
 
     useEffect(() => {
@@ -55,42 +79,12 @@ const BuildCurrentCartList = () => {
 
 
     return (
-        <React.Fragment>
-        {currentCartList.map(order => 
-            <React.Fragment key={order[1]+"b"}>
-                <button 
-                    className="trashButton"
-                    onClick={e => {handleQtyModify(e,"0")}} 
-                    key={order[1]+"e"} 
-                    name={order[1]}
-                    data-qty={order[0]}
-                    id={order[1]}>🗑️</button>
-                <label key={order[1]}>{order[1]}</label>   
-                <input  
-                    type="text" 
-                    size="4"
-                    maxLength="5"
-                    key={order[1]+"c"} 
-                    id={order[1]+"item"} 
-                    name={order[1]}
-                    data-qty={order[0]} 
-                    placeholder={order[0]} 
-                    onKeyUp={e => {handleQtyModify(e,e.target.value)}}
-                    onBlur={(e) => {
-
-                        e.target.value = ''
-
-                    }}
-                        >
-                </input>
-                <label 
-                    key={order[1]+"d"} 
-                    className="previous">{order[5] === order[0] ? '' : order[5]}
-                </label>
-
-            </React.Fragment>
-        )}
-        </React.Fragment>
+        <DataTable value={products} editMode="cell" className="editable-cells-table p-datatable-sm">
+            <Column field="product" header="Product"></Column>
+            <Column field="name" header="Quantity"></Column>
+            <Column field="qty" header="QTY"></Column>
+            <Column field="prev" header="PREV"></Column>
+        </DataTable>
     );
 };
 

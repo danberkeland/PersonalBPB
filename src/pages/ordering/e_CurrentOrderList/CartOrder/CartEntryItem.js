@@ -7,13 +7,7 @@ const CartEntryItem = () => {
 
     return (
         <React.Fragment> 
-            <label></label>
-            <label>PRODUCT</label>
-            <label>QTY</label>
-            <label>PREV</label>
-            <BuildCurrentCartList />
-            
-            
+            <BuildCurrentCartList />        
         </React.Fragment>
         
     )

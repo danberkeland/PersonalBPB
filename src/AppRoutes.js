@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
 
 
-import Ordering from './Ordering'
+import Ordering from './pages/ordering/Ordering'
 import DeliveryRouteGrid from './pages/logistics/DeliveryRouteGrid'
 import DeliveryCustomerGrid from './pages/logistics/DeliveryCustomerGrid'
 import DeliveryProductGrid from './pages/logistics/DeliveryProductGrid'

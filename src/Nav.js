@@ -10,8 +10,15 @@ import 'primereact/resources/themes/bootstrap4-light-purple/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 
+import styled from 'styled-components'
 
 function Nav() {
+
+   const BackGround = styled.div`
+      width: 100%;
+      background-color: white
+   `
+
 
    const [ selectedMenu, setSelectedMenu ] = useState("")
 
@@ -19,8 +26,8 @@ function Nav() {
    const items = [
       {label: 'Production', icon: 'pi pi-fw pi-chart-bar', command:()=>{ setSelectedMenu("prod")}},
       {label: 'Logistics', icon: 'pi pi-fw pi-map', command:()=>{ setSelectedMenu("log")}},
-      {label: 'Ordering', icon: 'pi pi-fw pi-shopping-cart', command:()=>{ setSelectedMenu("order")}},
-      {label: 'Customers', icon: 'pi pi-fw pi-users', command:()=>{ setSelectedMenu("cust")}},
+      {label: 'Ordering', icon: 'pi pi-fw pi-shopping-cart', command:()=>{ window.location="/Ordering"; }},
+      {label: 'Customers', icon: 'pi pi-fw pi-users', command:()=>{ window.location="/Customers"; }},
       {label: 'Products', icon: 'pi pi-fw pi-tags', command:()=>{ setSelectedMenu("items")}},
       {label: 'Billing', icon: 'pi pi-fw pi-money-bill', command:()=>{ setSelectedMenu("billing")}},
       {label: 'Settings', icon: 'pi pi-fw pi-cog', command:()=>{ setSelectedMenu("settings")}}
@@ -39,9 +46,9 @@ function Nav() {
    ];
 
    const logitems = [
-      {label: 'By Route'},
-      {label: 'By Customer'},
-      {label: 'By Product'},
+      {label: 'By Route', command:()=>{ window.location="/logistics/byRoute"; }},
+      {label: 'By Customer', command:()=>{ window.location="/logistics/byCustomer"; }},
+      {label: 'By Product', command:()=>{ window.location="/logistics/byProduct"; }},
    ];
 
    const orderitems = [
@@ -69,8 +76,9 @@ function Nav() {
 
   return (
       <div className = "card">
-        <Menubar model={items} />
-        <TabMenu model={
+         <Menubar model={items} />
+         <BackGround>
+         <TabMenu model={
            selectedMenu === "prod" ? proditems :
            selectedMenu === "log" ? logitems :
            selectedMenu === "order" ? orderitems :
@@ -82,6 +90,7 @@ function Nav() {
 
            ''
            } />
+         </BackGround>
       </div>          
   );
 }

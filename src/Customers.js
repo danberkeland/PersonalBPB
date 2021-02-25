@@ -5,37 +5,34 @@ import styled from 'styled-components'
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 
-import { CustomerContext, FullCustomerLoad } from './dataContexts/CustomerContext'
+import { CustomerContext, CustomerLoad } from './dataContexts/CustomerContext'
 
 
 
 
 function Customers() {
 
-  const { fullCustomer, fullCustLoaded, setFullCustLoaded } = useContext(CustomerContext)
+  const { customer, custLoaded, setCustLoaded } = useContext(CustomerContext)
 
   useEffect(() => {
-    if (fullCustomer.length<1){
-        setFullCustLoaded(false)
+    if (!customer){
+        setCustLoaded(false)
     }
   },[])
 
   const MainWrapper = styled.div`
   font-family: 'Montserrat', sans-serif;
   margin: auto;
-  width: 90%;
-  height: 90%;
-  border-radius: 20px;
+  width: 100%;
+  height: 100%;
   background: #ffffff;
-  display: grid;
-  grid-template-columns: 1fr;  
   `
 
   return (
     <React.Fragment>
-      {!fullCustLoaded ? <FullCustomerLoad /> : ''}
+      {!custLoaded ? <CustomerLoad /> : ''}
         <MainWrapper>
-          <DataTable value={fullCustomer} className="p-datatable-striped" selectionMode="single" dataKey="id">
+          <DataTable value={customer} className="p-datatable-striped" selectionMode="single" dataKey="id">
             <Column field="name" header="Customer"sortable filter filterPlaceholder="Search by name"></Column>
             <Column field="zoneName" header="Zone" sortable></Column>
             <Column field="email" header="Email"></Column>

@@ -70,12 +70,12 @@ const OrderingFunctions = () => {
         setEditOn(true)
     })
 
-
+    
     useEffect(() => {
         chosen && setRouteIsOn(true)
         chosen && setPONoteIsOn(true)
     },[chosen, setRouteIsOn, setPONoteIsOn])
-
+    
 
     // Turn PO Note Off and ON based on currentEntryList
     useEffect(() => {

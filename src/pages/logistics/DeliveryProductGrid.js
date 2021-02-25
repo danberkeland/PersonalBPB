@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 
 
-import Calendar from '../../reusableComponents/calendar'
+import Calendar from '../ordering/Parts/Calendar'
 import DeliveryDate from '../../reusableComponents/deliveryDate'
 import ByProduct from './ByProduct.js'
 import Routes from '../../reusableComponents/routes';

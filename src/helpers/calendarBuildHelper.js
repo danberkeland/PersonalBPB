@@ -12,8 +12,8 @@ export const CreateStandingArray = (standing, chosen) => {
         return "No Standing Order Loaded ..."
     }
 
-    let standingArray = standing ? standing.filter(order => order[8] === chosen) : [];
-    standingArray = standingArray.map(order => Number(order[0])-1)
+    let standingArray = standing ? standing.filter(order => order["custName"] === chosen) : [];
+    standingArray = standingArray.map(order => Number(order["dayNum"])-1)
     let uniqueStanding = new Set(standingArray);
     return [...uniqueStanding]
 }
@@ -26,8 +26,8 @@ export const CreateCartDateArray = (orders, chosen) => {
         return "No Orders Loaded ..."
     }
 
-    let cartDateArray = orders ? orders.filter(order => order[2] === chosen) : [];
-    cartDateArray = cartDateArray.map(order => ChangeBPBDatetoJSDate(order[7]))
+    let cartDateArray = orders ? orders.filter(order => order["custName"] === chosen) : [];
+    cartDateArray = cartDateArray.map(order => ChangeBPBDatetoJSDate(order["delivDate"]))
     let uniqueCart = new Set(cartDateArray);
     return [...uniqueCart]
 }
@@ -35,8 +35,8 @@ export const CreateCartDateArray = (orders, chosen) => {
 
 export const CreateBlankCartDateArray = (orders, chosen)=> {
 
-    let cartDateBlankArray = orders ? orders.filter(order => order[2] === chosen) : [];
-    cartDateBlankArray = cartDateBlankArray.map(order => ({'ddate':order[7], 'qqty': Number(order[0])}));
+    let cartDateBlankArray = orders ? orders.filter(order => order["custName"] === chosen) : [];
+    cartDateBlankArray = cartDateBlankArray.map(order => ({'ddate':order["delivDate"], 'qqty': Number(order["qty"])}));
     let holder = {}
     cartDateBlankArray.forEach(d => holder.hasOwnProperty(d.ddate) ? holder[d.ddate] = holder[d.ddate] + d.qqty :
         holder[d.ddate] = d.qqty);
@@ -44,7 +44,7 @@ export const CreateBlankCartDateArray = (orders, chosen)=> {
     let BlankDateArray = [];
     for (var prop in holder) {
         let i = prop.split('/')
-        let prop2 = i[2]+"-"+i[0]+"-"+i[1]
+        let prop2 = i["custName"]+"-"+i["qty"]+"-"+i["prodName"]
         BlankDateArray.push([prop2,holder[prop]])
     }
 

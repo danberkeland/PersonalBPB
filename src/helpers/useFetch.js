@@ -26,11 +26,11 @@ export const useFetch = url => {
 
 export const FilterOrdersDups = data => {
     let groupedData = data.map(item => [(
-        item[1]+"_"+
-        item[2]+"_"+
-        item[3]+"_"+
-        item[4]+"_"+
-        item[7]),item[0],item[5],item[6],item[8]]
+        item["prodName"]+"_"+
+        item["custName"]+"_"+
+        item["PONote"]+"_"+
+        item["route"]+"_"+
+        item["delivDate"]),item["qty"],item["SO"],item["isWhole"],item["timeStamp"]]
         )
 
     for (let i=0; i<groupedData.length; ++i ){
@@ -41,17 +41,17 @@ export const FilterOrdersDups = data => {
         }
     }
 
-    let reassembledData = groupedData.map(item => [
-        item[1],
-        item[0].split("_")[0],
-        item[0].split("_")[1],
-        item[0].split("_")[2],
-        item[0].split("_")[3],
-        item[2],
-        item[3] === "TRUE" ? true : false,
-        item[0].split("_")[4],
-        item[4]
-    ])
+    let reassembledData = groupedData.map(item => [{
+        "qty": item[1],
+        "prodName": item[0].split("_")[0],
+        "custName": item[0].split("_")[1],
+        "PONote": item[0].split("_")[2],
+        "route": item[0].split("_")[3],
+        "SO": item[2],
+        "isWhole": item[3] === "TRUE" ? true : false,
+        "delivDate": item[0].split("_")[4],
+        "timeStamp": item[4]
+    }])
     return reassembledData
 }
 
@@ -73,9 +73,9 @@ export const FilterDupsByIndex = (data,ind) => {
 
 export const FilterStandHoldDups = data => {
     let groupedData = data.map(item => [(
-        item[0]+"_"+
-        item[7]+"_"+
-        item[8]),item[1],item[2],item[3],item[4],item[5],item[6]]
+        item["dayNum"]+"_"+
+        item["prodName"]+"_"+
+        item["custName"]),"na",item["qty"],"na",item["timeStamp"],"na","na"]
         )
 
     for (let i=0; i<groupedData.length; ++i ){
@@ -86,17 +86,13 @@ export const FilterStandHoldDups = data => {
         }
     }
 
-    let reassembledData = groupedData.map(item => [
-        item[0].split("_")[0],
-        item[1],
-        item[2],
-        item[3],
-        item[4],
-        item[5],
-        item[6],
-        item[0].split("_")[1],
-        item[0].split("_")[2],
-    ])
+    let reassembledData = groupedData.map(item => [{
+        "dayNum": item[0].split("_")[0],
+        "qty": item[2],
+        "timeStamp": item[4],
+        "prodName": item[0].split("_")[1],
+        "custName": item[0].split("_")[2],
+    }])
     
     return reassembledData
 }

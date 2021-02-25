@@ -1,7 +1,8 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 
-import { sortAtoZDataByIndex, addAnEmptyRowToTop } from '../helpers/sortDataHelpers'
-import { useFetch, FilterDupsByIndex } from '../helpers/useFetch'
+import { useFetch } from '../helpers/useFetch'
+
+import { ToggleContext } from './ToggleContext';
 
 
 require('dotenv').config()
@@ -12,16 +13,13 @@ export const CustomerContext = createContext();
 export const CustomerProvider = (props) => {
 
     const [customers, setCustomer] = useState([]);
-    const [ custLoaded, setCustLoaded ] = useState(true)
-    const [ fullCustomer, setFullCustomer ] = useState([])
-    const [ fullCustLoaded, setFullCustLoaded ] = useState(true)
+    const [ custLoaded, setCustLoaded ] = useState(false)
+    
     
     return (
         <CustomerContext.Provider value={{ 
             customers, setCustomer, 
-            custLoaded, setCustLoaded, 
-            fullCustomer, setFullCustomer,
-            fullCustLoaded, setFullCustLoaded 
+            custLoaded, setCustLoaded
             }}>
             {props.children}
         </CustomerContext.Provider>
@@ -33,50 +31,26 @@ export const CustomerProvider = (props) => {
 
 export const CustomerLoad = () => {
 
-    const { setCustomer, setCustLoaded, setFullCustLoaded } = useContext(CustomerContext)
+    const { setCustomer, setCustLoaded } = useContext(CustomerContext)
+    const { setIsLoading } = useContext(ToggleContext)
 
     
-    let { loading, data } = useFetch(process.env.REACT_APP_API_CUSTOMERS,[]);
-    
-    useEffect(() => {
+    let { data } = useFetch(process.env.REACT_APP_API_GETOBJCUSTOMER,[]);
+
+
+    useEffect(() => { 
+        setIsLoading(true) 
         if(data){
-
-            let currentData = FilterDupsByIndex(data,2)
-            sortAtoZDataByIndex(currentData,2)
-            let newData = addAnEmptyRowToTop(currentData)
-            setCustomer(newData);
+            if(data.length>0){
+                setCustomer(data);
+                setCustLoaded(true)
+                setIsLoading(false)
+            }
         }
-    },[data, setCustomer]);
-
-    useEffect(() => {
-        setCustLoaded(!loading)
-        setFullCustLoaded(!loading)
-    },[loading, setFullCustLoaded, setCustLoaded])
-
-    return (
-        <React.Fragment>
-        </React.Fragment>
-    )
+        console.log(data)
+    },[data]);
     
-};
-
-
-export const FullCustomerLoad = () => {
-
-    const { setFullCustomer, setFullCustLoaded } = useContext(CustomerContext)
-
-    
-    let { loading, data } = useFetch(process.env.REACT_APP_API_GETOBJCUSTOMER,[]);
-    
-    useEffect(() => {
-        if(data){
-            setFullCustomer(data);
-        }
-    },[data, setFullCustomer]);
-
-    useEffect(() => {
-        setFullCustLoaded(!loading)
-    },[loading, setFullCustLoaded])
+  
 
     return (
         <React.Fragment>

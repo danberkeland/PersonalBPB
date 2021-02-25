@@ -1,9 +1,8 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 
-import { sortAtoZDataByIndex,addAnEmptyRowToTop } from '../helpers/sortDataHelpers'
-import { useFetch, FilterDupsByIndex } from '../helpers/useFetch'
+import { useFetch } from '../helpers/useFetch'
 
-import { ProgressSpinner } from 'primereact/progressspinner';
+import { ToggleContext } from './ToggleContext';
 
 require('dotenv').config()
 
@@ -13,7 +12,7 @@ export const ProductsContext = createContext();
 export const ProductsProvider = (props) => {
 
     const [products, setProducts] = useState([]);
-    const [ prodLoaded, setProdLoaded ] = useState(true)
+    const [ prodLoaded, setProdLoaded ] = useState(false)
 
     return (
         <ProductsContext.Provider value={{ products, setProducts, prodLoaded, setProdLoaded }}>
@@ -26,23 +25,23 @@ export const ProductsProvider = (props) => {
 
 export const ProductsLoad = () => {
 
-    const { loading, data } = useFetch(process.env.REACT_APP_API_PRODUCTS,[]);
+    const { data } = useFetch(process.env.REACT_APP_API_PRODUCTS,[]);
 
     const { setProducts, setProdLoaded } = useContext(ProductsContext)
+    const { setIsLoading } = useContext(ToggleContext)
 
-    useEffect(() => {
-        if (data){
-            let currentData = FilterDupsByIndex(data,1)
-            sortAtoZDataByIndex(currentData,2)
-            let newData = addAnEmptyRowToTop(currentData)
-            setProducts(newData);
-        }   
-    },[data, setProducts]);
-
-
-    useEffect(() => {
-        setProdLoaded(!loading)
-    },[loading, setProdLoaded])
+    useEffect(() => { 
+        setIsLoading(true) 
+        if(data){
+            if(data.length>0){
+                setProducts(data);
+                setProdLoaded(true)
+                setIsLoading(false)
+            }
+        }
+        console.log(data)
+    },[data]);
+    
     
     return (
         <React.Fragment>

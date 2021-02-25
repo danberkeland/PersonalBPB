@@ -13,36 +13,53 @@ import { RoutesProvider } from './dataContexts/RoutesContext'
 import AppRoutes from './AppRoutes'
 import Nav from './Nav'
 
+import styled from 'styled-components'
 
-import './App.css';
+const NavLock = styled.div`
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  `
+
+const BodyLock = styled.div`
+  position: relative;
+  width: 100%;
+  top: 100px;
+`
+
 
 
 function App() {
 
   return (
     <React.Fragment>
-    <Nav />
-    <RoutesProvider>   
-    <CustomerProvider>
-      <OrdersProvider>
-        <ProductsProvider>
-          <StandingProvider>
-            <HoldingProvider>
-              <CurrentDataProvider>
-                <ToggleProvider>
+      <NavLock>
+        <Nav />
+      </NavLock>
+      
+      <RoutesProvider>   
+        <CustomerProvider>
+          <OrdersProvider>
+            <ProductsProvider>
+              <StandingProvider>
+                <HoldingProvider>
+                  <CurrentDataProvider>
+                    <ToggleProvider>
+                      
+                        <BodyLock>
+                          <AppRoutes />
+                        </BodyLock>
                   
-
-                    <AppRoutes />
-
-                  
-                </ToggleProvider>
-              </CurrentDataProvider>
-            </HoldingProvider>
-          </StandingProvider>
-        </ProductsProvider>
-      </OrdersProvider>
-    </CustomerProvider>
-    </RoutesProvider>  
+                    </ToggleProvider>
+                  </CurrentDataProvider>
+                </HoldingProvider>
+              </StandingProvider>
+            </ProductsProvider>
+          </OrdersProvider>
+        </CustomerProvider>
+      </RoutesProvider>  
     </React.Fragment>     
   );
 }

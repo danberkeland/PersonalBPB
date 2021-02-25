@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
 
-import { CurrentDataContext } from '../../dataContexts/CurrentDataContext';
-import { OrdersContext } from '../../dataContexts/OrdersContext';
-import { CustomerContext } from '../../dataContexts/CustomerContext';
-import { StandingContext } from '../../dataContexts/StandingContext';
-import { ProductsContext } from '../../dataContexts/ProductsContext';
-import { ToggleContext } from '../../dataContexts/ToggleContext';
+import { CurrentDataContext } from '../../../dataContexts/CurrentDataContext';
+import { OrdersContext } from '../../../dataContexts/OrdersContext';
+import { CustomerContext } from '../../../dataContexts/CustomerContext';
+import { StandingContext } from '../../../dataContexts/StandingContext';
+import { ProductsContext } from '../../../dataContexts/ProductsContext';
+import { ToggleContext } from '../../../dataContexts/ToggleContext';
 
-import { todayPlus, daysOfTheWeek } from '../../helpers/dateTimeHelpers'
+import { todayPlus, daysOfTheWeek } from '../../../helpers/dateTimeHelpers'
 import { 
   buildCurrentOrder, 
   testEntryForProduct, 
@@ -15,12 +15,23 @@ import {
   createOrdersToUpdate,
   buildOrdersToModify,
   addUpdatesToOrders
-  } from '../../helpers/CartBuildingHelpers'
+  } from '../../../helpers/CartBuildingHelpers'
+
+import { InputText } from 'primereact/inputtext';
+
+import styled from 'styled-components'
+ 
 
 import swal from '@sweetalert/with-react';
 
 
 const OrderCommandLine = () => {
+
+  const CommandLine = styled.span`
+    display: grid;
+    justify-self: stretch;
+
+    `
 
   const { chosen, setChosen, delivDate, setDelivDate, route, ponote } = useContext(CurrentDataContext)
   const { orders, setOrders } = useContext(OrdersContext)
@@ -129,17 +140,14 @@ const OrderCommandLine = () => {
   };
 
   
-  return (        
-    <div className = "orderCommandLine">
-      <input  type="text" 
-              id="orderCommand" 
-              className="orderCommand"
-              name="orderCommand" 
-              placeholder="Enter Customers, Orders, Dates ..."
-              onKeyUp={e => handleInput(e)}>
-
-      </input>
-    </div>     
+  return (  
+    <CommandLine>
+    <span className="p-float-label">
+      <InputText id="orderCommand" size="50"/>
+      <label htmlFor="orderCommand">Enter Customers, Orders, Dates ...</label>
+    </span>
+    </CommandLine>
+      
   );
 }
 

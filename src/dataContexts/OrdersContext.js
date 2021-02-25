@@ -2,7 +2,7 @@ import React, { useState, createContext, useContext, useEffect } from 'react';
 
 import { useFetch, FilterOrdersDups } from '../helpers/useFetch'
 
-import { ProgressSpinner } from 'primereact/progressspinner';
+import { ToggleContext } from './ToggleContext';
 
 require('dotenv').config()
 
@@ -14,7 +14,7 @@ export const OrdersProvider = (props) => {
     const [orders, setOrders] = useState([]);
     const [ recentOrders, setRecentOrders ] = useState([]);
     const [ originalOrders, setOriginalOrders ] = useState([]);
-    const [ ordersLoaded, setOrdersLoaded ] = useState(true)
+    const [ ordersLoaded, setOrdersLoaded ] = useState(false)
  
     return (
         <OrdersContext.Provider value={{ 
@@ -35,21 +35,28 @@ export const OrdersProvider = (props) => {
 
 export const OrdersLoad = () => {
 
-    const { loading, data } = useFetch(process.env.REACT_APP_API_ORDERS, []);
-
     const { setOrders, setOriginalOrders, setOrdersLoaded } = useContext(OrdersContext)
+    const { setIsLoading } = useContext(ToggleContext)
 
-    useEffect(() => {
-        if(data.length>0){
-            let currentData = FilterOrdersDups(data)
-            setOrders(currentData);
-            setOriginalOrders(currentData);
+    const { data } = useFetch(process.env.REACT_APP_API_ORDERS, []);
+
+    
+
+    useEffect(() => { 
+        setIsLoading(true) 
+        if(data){
+            if(data.length>0){
+                let currentData = FilterOrdersDups(data)
+                setOrders(currentData);
+                setOriginalOrders(currentData);
+                setOrdersLoaded(true)
+                setIsLoading(false)
+            }
         }
-    },[data, setOrders, setOriginalOrders]);
+        console.log(data)
+    },[data]);
 
-    useEffect(() => {
-        setOrdersLoaded(!loading)
-    },[loading, setOrdersLoaded])
+    
 
     return (
         <React.Fragment>

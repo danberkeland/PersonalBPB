@@ -10,6 +10,7 @@ const clonedeep = require('lodash.clonedeep')
 export const buildCartList = (chosen,delivDate,orders) => {
     let BPBDate = convertDatetoBPBDate(delivDate)
     let filteredOrders = clonedeep(orders)
+    console.log(orders)
     let builtCartList = []
     if (filteredOrders){
         builtCartList = filteredOrders.filter(order => order["delivDate"] === BPBDate && order["custName"].match(wildcardRegExp(`${chosen}`)))
@@ -94,9 +95,9 @@ export const addNewInfoToOrders = (currentOrderList, orders) => {
 export const setCurrentCartLineToQty = (e,currentCartList,qty) => {
     let newQty = qty
     let indexToFind = e.target.name
-    let foundPresentedIndex = currentCartList.findIndex(line => line[1] === indexToFind)
+    let foundPresentedIndex = currentCartList.findIndex(line => line["prodName"] === indexToFind)
     let presentedListToModify = [...currentCartList]
-    presentedListToModify[foundPresentedIndex][0] = newQty
+    presentedListToModify[foundPresentedIndex]["qty"] = newQty
     return presentedListToModify
 }
 
@@ -104,14 +105,23 @@ export const setCurrentCartLineToQty = (e,currentCartList,qty) => {
 export const updateCurrentLineInOrdersWithQty = (e,chosen, delivDate, orders, ponote, route, isWhole, qty) => {
     let newQty = qty
     let indexToFind = e.target.name
-    let oldValue = e.target.dataset.qty
+    console.log(e.target.id)
+    let oldValue = e.target.id
     let updatedOrders = clonedeep(orders)
-    let foundOrdersIndex = updatedOrders.findIndex(line => line[1] === indexToFind &&
-        line[2] === chosen && line[7] === convertDatetoBPBDate(delivDate))
+    let foundOrdersIndex = updatedOrders.findIndex(line => line["prodName"] === indexToFind &&
+        line["custName"] === chosen && line["delivDate"] === convertDatetoBPBDate(delivDate))
     if(foundOrdersIndex>=0){
-        updatedOrders[foundOrdersIndex][0] = newQty
+        updatedOrders[foundOrdersIndex]["qty"] = newQty
     } else {
-        let orderToAdd = [newQty,indexToFind,chosen, ponote, route, oldValue, isWhole, convertDatetoBPBDate(delivDate)]
+        let orderToAdd = {
+            "qty": newQty,
+            "prodName": indexToFind,
+            "custName": chosen.name, 
+            "PONote": ponote, 
+            "route": route, 
+            "SO": oldValue, 
+            "isWhole": isWhole, 
+            "delivDate": convertDatetoBPBDate(delivDate)}
         updatedOrders.push(orderToAdd)
     }
     return updatedOrders

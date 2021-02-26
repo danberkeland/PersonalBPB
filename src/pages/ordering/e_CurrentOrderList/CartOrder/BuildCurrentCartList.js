@@ -10,6 +10,7 @@ import { ToggleContext } from '../../../../dataContexts/ToggleContext';
 
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
+import { InputNumber } from 'primereact/inputnumber';
 
 
 import { buildCurrentOrder, 
@@ -34,8 +35,7 @@ const BuildCurrentCartList = () => {
 
     }, [chosen, delivDate, orders, setCurrentCartList, standing])
 
-
-    /*
+    
     const handleQtyModify = (e,qty) => {
 
         if(isNaN(e.target.value)){
@@ -54,14 +54,19 @@ const BuildCurrentCartList = () => {
         setOrders(updatedOrders) 
         setModifications(true)
     }
-    */
+    
+
+   const qtyEditor = (props) => {
+    return <InputNumber size="1" value={Number(props.rowData['qty'])} name={props.rowData['prodName']}
+        id={props.rowData['SO']} onValueChange={(e) => handleQtyModify(e,props.rowData['qty'])} />
+}
 
     return (
         <DataTable value={currentCartList} editMode="cell" className="editable-cells-table p-datatable-sm">
-            <Column field="prodName" header="Product"></Column>
-            <Column field="qty" header="Quantity"></Column>
-            <Column field="SO" header="QTY"></Column>
-            <Column field="SO" header="PREV"></Column>
+            <Column field="trash" header=""></Column>
+            <Column field="prodName" header="Product" style={{width:'60%'}}></Column>
+            <Column field="qty" header="Qty" editor={(props) => qtyEditor(props)}></Column>
+            <Column field="SO" header="Prev"></Column>
         </DataTable>
     );
 };

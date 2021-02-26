@@ -10,7 +10,7 @@ export const CurrentDataProvider = (props) => {
 
     const [chosen, setChosen] = useState('  ');
     const [ delivDate, setDelivDate ] = useState(tomorrow());
-    const [ ponote, setPonote ] = useState('na')
+    const [ ponote, setPonote ] = useState('')
     const [ route, setRoute ] = useState()
     const [ currentCartList, setCurrentCartList ] = useState([])
     const [ calendarEvents, setCalendarEvents ] = useState({})

@@ -45,10 +45,10 @@ const CurrentInfo = styled.div`
     `
   const FulfillOptions = styled.div`
     display: grid;
-    grid-template-columns: 3fr 3fr 1fr 3fr 1fr 3fr 1fr;
+    grid-template-columns: 3fr 1fr 3fr 1fr 3fr 1fr 3fr;
     margin: 10px;
     align-items: center;
-    justify-items: center;
+    justify-items: left;
     `
 
   const ho = {
@@ -64,7 +64,7 @@ const CurrentOrderInfo = () => {
 
   const {cartList, standList, orderTypeWhole } = useContext(ToggleContext)
   const { customers } = useContext(CustomerContext)
-  const { chosen, setChosen, delivDate, currentCartList } = useContext(CurrentDataContext)
+  const { chosen, ponote, setPonote, setChosen, delivDate, currentCartList } = useContext(CurrentDataContext)
 
   const [ customerGroup, setCustomerGroup ] = useState(customers)
   const [ delivStatus, setDelivStatus ] = useState('slopick')
@@ -81,11 +81,18 @@ const CurrentOrderInfo = () => {
 
 
     useEffect(() => {
-      currentCartList.length>0 ? setDelivStatus(currentCartList[0]["route"]) : setDelivStatus("slopick")
-    }, [currentCartList])
+      setPonote('')
+      if (currentCartList.length>0){
+        setDelivStatus(currentCartList[0]["route"])
+        if (currentCartList[0]["ponote"]!=="na" && currentCartList[0]["ponote"] !==undefined){
+          setPonote(currentCartList[0]["ponote"])
+        } else {
+          setPonote("")
+        }
+      }
+    }, [currentCartList, chosen, delivDate])
 
     
-
     const changeDate = (date) => {
       let currentDate = new Date(date);
       var fd = currentDate.toDateString();
@@ -106,24 +113,30 @@ const CurrentOrderInfo = () => {
         <CurrentInfo>
          
           <FulfillOptions> 
+
             <Dropdown id="customers" 
               value={chosen} options={customerGroup} 
               optionLabel="name" placeholder="Select a customer"
               onChange={(e) => setChosen(e.value)}/>     
-            <label htmlFor="delivery">Delivery</label>
+            
             <RadioButton value="deliv" name="delivery" 
               onChange={(e) => setDelivStatus(e.value)} checked={delivStatus === 'deliv'}/>
-            <label htmlFor="pickupSLO">Pick up SLO</label>
+            <label htmlFor="delivery">Delivery</label>
+            
             <RadioButton value="slopick" name="delivery"
               onChange={(e) => setDelivStatus(e.value)} checked={delivStatus === 'slopick'} />
-            <label htmlFor="pickupAtown">Pick up Carlton</label>
+            <label htmlFor="pickupSLO">Pick up SLO</label>
+            
             <RadioButton value="atownpick" name="delivery" 
               onChange={(e) => setDelivStatus(e.value)} checked={delivStatus === 'atownpick'}/>
+            <label htmlFor="pickupAtown">Pick up Carlton</label>
+
           </FulfillOptions>
+
           <SpecialInfo>
             <span className="p-float-label">
-              <InputText id="in" size="50"/>
-              <label htmlFor="in">PO#/Special Instructions ...</label>
+              <InputText id="in" size="50" value={ponote} onChange={(e) => setPonote(e.target.value)}/>
+              <label htmlFor="in">{ponote==="" ? "PO#/Special Instructions..." : ""}</label>
             </span>
           </SpecialInfo>
         </CurrentInfo>

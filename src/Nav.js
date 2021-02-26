@@ -12,14 +12,14 @@ import 'primeicons/primeicons.css';
 
 import styled from 'styled-components'
 
-function Nav() {
-
-   const BackGround = styled.div`
+const BackGround = styled.div`
       width: 100%;
       background-color: white
    `
 
+function Nav() {
 
+   
    const [ selectedMenu, setSelectedMenu ] = useState("")
 
    

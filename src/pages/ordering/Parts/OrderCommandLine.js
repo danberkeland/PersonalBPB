@@ -19,19 +19,17 @@ import {
 
 import { InputText } from 'primereact/inputtext';
 
-import styled from 'styled-components'
- 
-
 import swal from '@sweetalert/with-react';
 
+import styled from 'styled-components'
 
-const OrderCommandLine = () => {
-
-  const CommandLine = styled.span`
+const CommandLine = styled.span`
     display: grid;
     justify-self: stretch;
 
     `
+ 
+const OrderCommandLine = () => {
 
   const { chosen, setChosen, delivDate, setDelivDate, route, ponote } = useContext(CurrentDataContext)
   const { orders, setOrders } = useContext(OrdersContext)

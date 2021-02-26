@@ -41,7 +41,7 @@ export const FilterOrdersDups = data => {
         }
     }
 
-    let reassembledData = groupedData.map(item => [{
+    let reassembledData = groupedData.map(item => ({
         "qty": item[1],
         "prodName": item[0].split("_")[0],
         "custName": item[0].split("_")[1],
@@ -51,7 +51,7 @@ export const FilterOrdersDups = data => {
         "isWhole": item[3] === "TRUE" ? true : false,
         "delivDate": item[0].split("_")[4],
         "timeStamp": item[4]
-    }])
+    }))
     return reassembledData
 }
 
@@ -86,13 +86,13 @@ export const FilterStandHoldDups = data => {
         }
     }
 
-    let reassembledData = groupedData.map(item => [{
+    let reassembledData = groupedData.map(item => ({
         "dayNum": item[0].split("_")[0],
         "qty": item[2],
         "timeStamp": item[4],
         "prodName": item[0].split("_")[1],
         "custName": item[0].split("_")[2],
-    }])
+    }))
     
     return reassembledData
 }

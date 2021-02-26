@@ -1,32 +1,34 @@
 import React, { useContext } from 'react';
 
-import swal from '@sweetalert/with-react';
-
-import styled from 'styled-components'
-
 import { CurrentDataContext } from '../../../dataContexts/CurrentDataContext';
 import { OrdersContext } from '../../../dataContexts/OrdersContext';
 import { StandingContext } from '../../../dataContexts/StandingContext';
 import { ToggleContext } from '../../../dataContexts/ToggleContext';
 
 import { convertDatetoBPBDate } from '../../../helpers/dateTimeHelpers';
-
 import { buildCurrentOrder } from '../../../helpers/CartBuildingHelpers'
 
 import { Button } from 'primereact/button';
 
+import swal from '@sweetalert/with-react';
 
-const clonedeep = require('lodash.clonedeep')
+import styled from 'styled-components'
 
-function OrderEntryButtons() {
-
-  const OrderEntryButtons = styled.div`
+const OrderButtons = styled.div`
     display: flex;
     justify-content: space-around;
     width: 100%;
     margin: 5px 0;
     `
 
+
+
+
+const clonedeep = require('lodash.clonedeep')
+
+function OrderEntryButtons() {
+
+  
 
   const { route, ponote } = useContext(CurrentDataContext)
   const { setChosen, delivDate, chosen } = useContext(CurrentDataContext)
@@ -145,13 +147,13 @@ function OrderEntryButtons() {
   }
 
   return (         
-    <OrderEntryButtons>
+    <OrderButtons>
       <Button label="Add/Update" icon="pi pi-plus" className="p-button-raised p-button-rounded p-button-success" />
       <Button label="Clear" icon="pi pi-trash" className="p-button-raised p-button-rounded p-button-info" />
       <Button label="Cart" icon="pi pi-shopping-cart" className="p-button-raised p-button-rounded p-button-secondary" />
       <Button label="Whole" icon="pi pi-dollar" className="p-button-raised p-button-rounded p-button-secondary" />
       
-    </OrderEntryButtons>    
+    </OrderButtons>    
   );
 
 

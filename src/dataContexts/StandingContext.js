@@ -44,7 +44,6 @@ export const StandingLoad = () => {
                 setIsLoading(false)
             }
         }
-        console.log(data)
     },[data]);
     
 

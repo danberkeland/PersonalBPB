@@ -17,12 +17,7 @@ import { InputText } from 'primereact/inputtext';
 
 import styled from 'styled-components'
 
-
-
-
-const AddCartEntryItem = () => {
-
-    const AddProductButtons = styled.div`
+const AddProductButtons = styled.div`
         display: flex;
         width: 100%;
         margin: 20px 0;
@@ -31,6 +26,11 @@ const AddCartEntryItem = () => {
         padding: 10px 0;
         `
 
+
+
+
+
+const AddCartEntryItem = () => {
 
     const cities = [
         {name: 'New York', code: 'NY'},
@@ -77,7 +77,7 @@ const AddCartEntryItem = () => {
             <Dropdown options={cities} optionLabel="name" placeholder="Select a product"/>
             <span className="p-float-label">
                 <InputText id="qty" size="10"/>
-                <label htmlhtmlFor="qty">Quantity</label>
+                <label htmlFor="qty">Quantity</label>
             </span>
             <Button label="ADD" icon="pi pi-plus"/>
         </AddProductButtons>

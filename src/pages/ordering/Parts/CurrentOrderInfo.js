@@ -1,20 +1,18 @@
 import React, { useContext, useEffect, useState } from 'react';
 
+import { CustomerContext } from '../../../dataContexts/CustomerContext';
+import { CurrentDataContext } from '../../../dataContexts/CurrentDataContext';
 import { ToggleContext } from '../../../dataContexts/ToggleContext';
 
 import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { RadioButton } from 'primereact/radiobutton';
 
+
+
 import styled from 'styled-components'
-import { CustomerContext } from '../../../dataContexts/CustomerContext';
-import { CurrentDataContext } from '../../../dataContexts/CurrentDataContext';
-import { OrdersContext } from '../../../dataContexts/OrdersContext';
-import { StandingContext } from '../../../dataContexts/StandingContext';
 
-const CurrentOrderInfo = () => {
-
-  const CurrentOrderInfo = styled.div`
+const CurrentInfo = styled.div`
     width: 100%;
     display: grid;
     margin: 10px 0;
@@ -52,24 +50,25 @@ const CurrentOrderInfo = () => {
     align-items: center;
     justify-items: center;
     `
-    
+
+  const ho = {
+    color: "red"
+    }
+
+  const so = {
+    color: "rgb(66, 97, 201)"
+    }
+
+
+const CurrentOrderInfo = () => {
+
   const {cartList, standList, orderTypeWhole } = useContext(ToggleContext)
   const { customers } = useContext(CustomerContext)
-  const { chosen, setChosen, delivDate } = useContext(CurrentDataContext)
-  const { orders } = useContext(OrdersContext)
-  const { standing } = useContext(StandingContext)
+  const { chosen, setChosen, delivDate, currentCartList } = useContext(CurrentDataContext)
 
   const [ customerGroup, setCustomerGroup ] = useState(customers)
   const [ delivStatus, setDelivStatus ] = useState('slopick')
 
-
-  const ho = {
-  color: "red"
-  }
-
-  const so = {
-    color: "rgb(66, 97, 201)"
-  }
 
   let orderType
   cartList ? orderType = "Cart" : standList ? orderType = "Standing" : orderType = "Holding"
@@ -81,30 +80,11 @@ const CurrentOrderInfo = () => {
     },[ customers ])
 
 
-    // Figure out if current order is delivery or pickup
     useEffect(() => {
-      let custRoute
-      let currentOrderList = buildCurrentOrder(chosen,delivDate,orders,standing)
-      if (currentOrderList.length>0){
-        custRoute = currentOrderList[0]["route"]
-      } else {
-        custRoute = customers.filter(cust => cust["name"]===chosen)[0]["route"]
-      }
+      currentCartList.length>0 ? setDelivStatus(currentCartList[0]["route"]) : setDelivStatus("slopoick")
+    }, [currentCartList])
 
-      switch(custRoute){
-        case "Pick up SLO":
-          setDelivStatus('slopick');
-          break;
-        case "Pick up Carlton":
-          setDelivStatus('atownpick');
-          break;
-        default:
-          setDelivStatus('deliv');
-          break;
-      }    
-    }, [chosen, delivDate, customers, orders, standing])
-   
-
+    
 
     const changeDate = (date) => {
       let currentDate = new Date(date);
@@ -123,7 +103,7 @@ const CurrentOrderInfo = () => {
       </React.Fragment> : <h2 style={standList ? so : ho }>Retail {orderType} Order</h2>}
 
       
-        <CurrentOrderInfo>
+        <CurrentInfo>
          
           <FulfillOptions> 
             <Dropdown id="customers" 
@@ -143,10 +123,10 @@ const CurrentOrderInfo = () => {
           <SpecialInfo>
             <span className="p-float-label">
               <InputText id="in" size="50"/>
-              <label htmlhtmlFor="in">PO#/Special Instructions ...</label>
+              <label htmlFor="in">PO#/Special Instructions ...</label>
             </span>
           </SpecialInfo>
-        </CurrentOrderInfo>
+        </CurrentInfo>
     </React.Fragment>
       
   );

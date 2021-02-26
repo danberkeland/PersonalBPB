@@ -15,6 +15,7 @@ import Nav from './Nav'
 
 import styled from 'styled-components'
 
+
 const NavLock = styled.div`
   position: fixed;
   width: 100%;

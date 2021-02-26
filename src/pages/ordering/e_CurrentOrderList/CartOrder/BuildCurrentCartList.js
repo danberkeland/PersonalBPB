@@ -26,38 +26,16 @@ const BuildCurrentCartList = () => {
     const { chosen, delivDate, currentCartList, setCurrentCartList, ponote, route } = useContext(CurrentDataContext)
     const { orderTypeWhole, setModifications } = useContext(ToggleContext)
 
-    const products =[
-        {
-        "product": "baguette",
-        "name": "name",
-        "qty": "7",
-        "prev": "10"
-        },
-        {
-        "product": "baguette",
-        "name": "name",
-        "qty": "7",
-        "prev": "10"
-        },
-        {
-        "product": "baguette",
-        "name": "name",
-        "qty": "7",
-        "prev": "10"
-        },
-    ]
-
-
+    
     useEffect(() => {
-
-        let currentOrderList = buildCurrentOrder(chosen,delivDate,orders,standing)
+        let currentOrderList = buildCurrentOrder(chosen.name,delivDate,orders,standing)
         let noZerosOrderList = filterOutZeros(currentOrderList)
         setCurrentCartList(noZerosOrderList)
 
     }, [chosen, delivDate, orders, setCurrentCartList, standing])
 
 
-
+    /*
     const handleQtyModify = (e,qty) => {
 
         if(isNaN(e.target.value)){
@@ -76,14 +54,14 @@ const BuildCurrentCartList = () => {
         setOrders(updatedOrders) 
         setModifications(true)
     }
-
+    */
 
     return (
-        <DataTable value={products} editMode="cell" className="editable-cells-table p-datatable-sm">
-            <Column field="product" header="Product"></Column>
-            <Column field="name" header="Quantity"></Column>
-            <Column field="qty" header="QTY"></Column>
-            <Column field="prev" header="PREV"></Column>
+        <DataTable value={currentCartList} editMode="cell" className="editable-cells-table p-datatable-sm">
+            <Column field="prodName" header="Product"></Column>
+            <Column field="qty" header="Quantity"></Column>
+            <Column field="SO" header="QTY"></Column>
+            <Column field="SO" header="PREV"></Column>
         </DataTable>
     );
 };

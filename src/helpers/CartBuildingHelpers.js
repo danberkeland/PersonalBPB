@@ -11,8 +11,8 @@ export const buildCartList = (chosen,delivDate,orders) => {
     let BPBDate = convertDatetoBPBDate(delivDate)
     let filteredOrders = clonedeep(orders)
     let builtCartList = []
-    if (filteredOrders.length>=0){
-        builtCartList = filteredOrders.filter(order => order[7] === BPBDate && order[2].match(wildcardRegExp(`${chosen}`)))
+    if (filteredOrders){
+        builtCartList = filteredOrders.filter(order => order["delivDate"] === BPBDate && order["custName"].match(wildcardRegExp(`${chosen}`)))
     }
     return builtCartList 
 }
@@ -22,34 +22,36 @@ export const buildStandList = (chosen,delivDate,standing) => {
     let standingDate = convertDatetoStandingDate(delivDate);  
     let filteredStanding = clonedeep(standing)
     let builtStandList =[]
-    if (filteredStanding.length>=0){
-        builtStandList = filteredStanding.filter(standing => standing[0] === standingDate && standing[8].match(wildcardRegExp(`${chosen}`)))
-    }
+    builtStandList = filteredStanding.filter(standing => standing["dayNum"] === standingDate && standing["custName"].match(wildcardRegExp(`${chosen}`)) )
+    
     let convertedStandList = convertStandListtoStandArray(builtStandList, delivDate)
     return convertedStandList
 }
 
 
 const convertStandListtoStandArray = (builtStandList, delivDate) => {
-    let convertedStandList = builtStandList.map(order => [    
-        order[2],
-        order[7],
-        order[8],
-        'na',
-        order[6],
-        order[2], 
-        order[3] !== "9999" ? true : false,
-        convertDatetoBPBDate(delivDate)])
+    let convertedStandList = builtStandList.map(order => ({   
+        "qty": order["qty"],
+        "prodName": order["prodName"],
+        "custName": order["custName"],
+        "PONote": "na",
+        "route": "na",
+        "isWhole": true,
+        "delivDate": convertDatetoBPBDate(delivDate),
+        "timeStamp": order["timeStamp"],
+        "SO": order["qty"]
+    }))
     return convertedStandList
 }
 
 
 export const compileOrderList = (cartList,standList) => {
     let orderList = cartList.concat(standList)
+
     // Remove old cart order from orders if it exists
     for (let i=0; i<orderList.length; ++i ){
         for (let j=i+1; j<orderList.length; ++j){
-            if (orderList[i][1] === orderList[j][1]){
+            if (orderList[i]["prodName"] === orderList[j]["prodName"]){
                 orderList.splice(j,1);
             }
         }
@@ -68,7 +70,7 @@ export const buildCurrentOrder = (chosen,delivDate,orders,standing) => {
 
 
 export const filterOutZeros = (currentOrderList) => {
-    let filteredZeros = currentOrderList.filter(order => (Number(order[5])+Number(order[0])>0))
+    let filteredZeros = currentOrderList.filter(order => (Number(order["qty"])+Number(order["SO"])>0))
     return filteredZeros
 }
 

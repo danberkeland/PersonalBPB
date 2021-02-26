@@ -15,18 +15,7 @@ import { HoldingContext, HoldingLoad } from '../../dataContexts/HoldingContext'
 
 import styled from 'styled-components'
 
-
-function Ordering() {
-
-  const { standLoaded } = useContext(StandingContext)
-  const { prodLoaded } = useContext(ProductsContext)
-  const { custLoaded } = useContext(CustomerContext)
-  const { ordersLoaded } = useContext(OrdersContext)
-  const { holdLoaded } = useContext(HoldingContext)
-
-  
-
-  const MainWindow = styled.div`
+const MainWindow = styled.div`
     font-family: 'Montserrat', sans-serif;
     width: 100%;
     height: 100%;
@@ -45,6 +34,16 @@ function Ordering() {
     box-sizing: border-box;
     `
 
+
+
+function Ordering() {
+
+  const { standLoaded } = useContext(StandingContext)
+  const { prodLoaded } = useContext(ProductsContext)
+  const { custLoaded } = useContext(CustomerContext)
+  const { ordersLoaded } = useContext(OrdersContext)
+  const { holdLoaded } = useContext(HoldingContext)
+
   
   return (
       <MainWindow>     
@@ -58,9 +57,9 @@ function Ordering() {
           <Calendar />
         </BasicContainer>
         <BasicContainer>
-          <OrderCommandLine /> 
+          <OrderCommandLine />   
           <CurrentOrderInfo />  
-          <CurrentOrderList />    
+          <CurrentOrderList />  
           <OrderEntryButtons />
         </BasicContainer> 
         <BasicContainer>

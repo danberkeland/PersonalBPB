@@ -47,7 +47,6 @@ export const CustomerLoad = () => {
                 setIsLoading(false)
             }
         }
-        console.log(data)
     },[data]);
     
   

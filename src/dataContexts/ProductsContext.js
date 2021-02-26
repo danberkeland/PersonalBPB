@@ -39,7 +39,6 @@ export const ProductsLoad = () => {
                 setIsLoading(false)
             }
         }
-        console.log(data)
     },[data]);
     
     

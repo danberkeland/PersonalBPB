@@ -42,7 +42,6 @@ export const HoldingLoad = () => {
                 setIsLoading(false)
             }
         }
-        console.log(data)
     },[data]);
     
 

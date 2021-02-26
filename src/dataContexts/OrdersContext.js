@@ -53,7 +53,6 @@ export const OrdersLoad = () => {
                 setIsLoading(false)
             }
         }
-        console.log(data)
     },[data]);
 
     

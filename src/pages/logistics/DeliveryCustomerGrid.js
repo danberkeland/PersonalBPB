@@ -1,7 +1,5 @@
 import React, { useContext } from 'react';
 
-import styled from 'styled-components'
-
 
 import Calendar from '../ordering/Parts/Calendar'
 import ByCustomer from './ByCustomer.js'
@@ -18,21 +16,9 @@ import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 
 
+import styled from 'styled-components'
 
-
-function Logistics() {
-
-  const delivDate = "01/02/2021"
-
-  const cities = [
-    {name: 'New York', code: 'NY'},
-    {name: 'Rome', code: 'RM'},
-    {name: 'London', code: 'LDN'},
-    {name: 'Istanbul', code: 'IST'},
-    {name: 'Paris', code: 'PRS'}
-  ];
-
-  const LogisticsContainer = styled.div`
+const LogisticsContainer = styled.div`
     font-family: 'Montserrat', sans-serif;
     margin: auto;
     width: 100%;
@@ -58,6 +44,23 @@ function Logistics() {
     padding: 10px 10px;
     `
 
+
+
+
+
+function Logistics() {
+
+  const delivDate = "01/02/2021"
+
+  const cities = [
+    {name: 'New York', code: 'NY'},
+    {name: 'Rome', code: 'RM'},
+    {name: 'London', code: 'LDN'},
+    {name: 'Istanbul', code: 'IST'},
+    {name: 'Paris', code: 'PRS'}
+  ];
+
+  
   const { standLoaded } = useContext(StandingContext)
   const { prodLoaded } = useContext(ProductsContext)
   const { custLoaded } = useContext(CustomerContext)

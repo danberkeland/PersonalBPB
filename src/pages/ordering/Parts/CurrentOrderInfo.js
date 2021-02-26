@@ -81,7 +81,7 @@ const CurrentOrderInfo = () => {
 
 
     useEffect(() => {
-      currentCartList.length>0 ? setDelivStatus(currentCartList[0]["route"]) : setDelivStatus("slopoick")
+      currentCartList.length>0 ? setDelivStatus(currentCartList[0]["route"]) : setDelivStatus("slopick")
     }, [currentCartList])
 
     

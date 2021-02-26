@@ -35,7 +35,7 @@ const convertStandListtoStandArray = (builtStandList, delivDate) => {
         "prodName": order["prodName"],
         "custName": order["custName"],
         "PONote": "na",
-        "route": "na",
+        "route": order["route"],
         "isWhole": true,
         "delivDate": convertDatetoBPBDate(delivDate),
         "timeStamp": order["timeStamp"],

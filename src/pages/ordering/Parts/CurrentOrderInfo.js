@@ -45,7 +45,7 @@ const CurrentInfo = styled.div`
     `
   const FulfillOptions = styled.div`
     display: grid;
-    grid-template-columns: 3fr 1fr 3fr 1fr 3fr 1fr 3fr;
+    grid-template-columns: 4fr 1fr 3fr 1fr 3fr 1fr 3fr;
     margin: 10px;
     align-items: center;
     justify-items: left;

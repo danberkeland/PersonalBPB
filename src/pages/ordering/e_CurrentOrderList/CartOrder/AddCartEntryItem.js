@@ -51,7 +51,7 @@ const AddCartEntryItem = () => {
     
 
     useEffect(() => {
-        let availableProducts = findAvailableProducts(products, orders, chosen, delivDate)
+        let availableProducts = findAvailableProducts(products, orders, chosen.name, delivDate)
         setProductList(availableProducts)
         },[products, orders, chosen, delivDate ]);
 
@@ -63,7 +63,17 @@ const AddCartEntryItem = () => {
 
     const handleAdd = () => {
         let qty = document.getElementById("addedProdQty").value
-        let newOrder =[qty, pickedProduct, chosen, ponote, route, "0", orderTypeWhole, convertDatetoBPBDate(delivDate)] 
+        console.log(pickedProduct)
+        let newOrder ={
+            "qty": qty, 
+            "prodName": pickedProduct.name,
+            "custName": chosen.name, 
+            "PONote": ponote, 
+            "route": route, 
+            "SO": "0", 
+            "isWhole": orderTypeWhole, 
+            "delivDate": convertDatetoBPBDate(delivDate)
+        }
         let newOrderList = decideWhetherToAddOrModify(orders, newOrder, delivDate)
         setOrders(newOrderList)
         document.getElementById("addedProdQty").value = '';
@@ -74,12 +84,13 @@ const AddCartEntryItem = () => {
 
     return (
         <AddProductButtons>
-            <Dropdown options={cities} optionLabel="name" placeholder="Select a product"/>
+            <Dropdown options={products} optionLabel="name" placeholder="Select a product"
+                name="products" value={pickedProduct} onChange={handleChange} disabled={chosen!=='  ' ? false : true}/>
             <span className="p-float-label">
-                <InputText id="qty" size="10"/>
+                <InputText id="addedProdQty" size="10" disabled={chosen!=='  ' ? false : true}/>
                 <label htmlFor="qty">Quantity</label>
             </span>
-            <Button label="ADD" icon="pi pi-plus"/>
+            <Button label="ADD" icon="pi pi-plus" onClick={() => handleAdd()}/>
         </AddProductButtons>
     );
 };

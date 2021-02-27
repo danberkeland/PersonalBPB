@@ -90,15 +90,15 @@ export const findAvailableProducts = (products, orders, chosen, delivDate) => {
 
 export const decideWhetherToAddOrModify = (orders, newOrder, delivDate) => {
     let newOrderList = [...orders]
-    let chosen = newOrder[2]
-    let prodToAdd = newOrder[1]
-    let qty = newOrder[0]
+    let chosen = newOrder["custName"]
+    let prodToAdd = newOrder["prodName"]
+    let qty = newOrder["qty"]
     let prodIndex = newOrderList.findIndex(order => 
-        order[1] === prodToAdd && 
-        order[2] === chosen && 
-        order[7] === convertDatetoBPBDate(delivDate))
+        order["prodName"] === prodToAdd && 
+        order["custName"] === chosen && 
+        order["delivDate"] === convertDatetoBPBDate(delivDate))
     if(prodIndex >= 0){
-        newOrderList[prodIndex][0] = qty
+        newOrderList[prodIndex]["qty"] = qty
     } else {
 
         newOrderList.push(newOrder)

@@ -64,7 +64,7 @@ const CurrentOrderInfo = () => {
 
   const {cartList, standList, orderTypeWhole } = useContext(ToggleContext)
   const { customers } = useContext(CustomerContext)
-  const { chosen, ponote, setPonote, setChosen, delivDate, currentCartList } = useContext(CurrentDataContext)
+  const { chosen, setRoute, ponote, setPonote, setChosen, delivDate, currentCartList } = useContext(CurrentDataContext)
 
   const [ customerGroup, setCustomerGroup ] = useState(customers)
   const [ delivStatus, setDelivStatus ] = useState('slopick')
@@ -81,16 +81,16 @@ const CurrentOrderInfo = () => {
 
 
     useEffect(() => {
-      setPonote('')
       if (currentCartList.length>0){
         setDelivStatus(currentCartList[0]["route"])
+        setRoute(currentCartList[0]["route"])
         if (currentCartList[0]["ponote"]!=="na" && currentCartList[0]["ponote"] !==undefined){
           setPonote(currentCartList[0]["ponote"])
         } else {
           setPonote("")
         }
       }
-    }, [currentCartList, chosen, delivDate])
+    }, [currentCartList])
 
     
     const changeDate = (date) => {

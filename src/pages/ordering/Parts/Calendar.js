@@ -58,7 +58,7 @@ const Calendar = () => {
         }
 
         setCalendarEvents(calendarEvents)
-    },[chosen, delivDate, orders, standing, setCalendarEvents])
+    },[chosen, delivDate])
   
 
 

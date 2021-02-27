@@ -8,10 +8,7 @@ import { OrdersContext } from '../../../../dataContexts/OrdersContext';
 import { StandingContext } from '../../../../dataContexts/StandingContext';
 import { ToggleContext } from '../../../../dataContexts/ToggleContext';
 
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { InputNumber } from 'primereact/inputnumber';
-
+import styled from 'styled-components'
 
 import { buildCurrentOrder, 
     filterOutZeros, 
@@ -20,6 +17,17 @@ import { buildCurrentOrder,
 } from '../../../../helpers/CartBuildingHelpers'
 
 
+const OrderGrid = styled.div`
+    width: 100%;
+    border-radius: 10px;
+    padding: 20px;
+    border: none;
+    display: grid;
+    grid-template-columns: .5fr 3fr .5fr .5fr;
+    row-gap: 10px;
+    flex-shrink: 1; 
+    `
+
 const BuildCurrentCartList = () => {
 
     const { orders, setOrders } = useContext(OrdersContext)
@@ -27,15 +35,18 @@ const BuildCurrentCartList = () => {
     const { chosen, delivDate, currentCartList, setCurrentCartList, ponote, route } = useContext(CurrentDataContext)
     const { orderTypeWhole, setModifications } = useContext(ToggleContext)
 
-    
+
     useEffect(() => {
+
         let currentOrderList = buildCurrentOrder(chosen.name,delivDate,orders,standing)
         let noZerosOrderList = filterOutZeros(currentOrderList)
+        console.log(currentOrderList)
         setCurrentCartList(noZerosOrderList)
 
     }, [chosen, delivDate, orders, setCurrentCartList, standing])
 
-    
+
+
     const handleQtyModify = (e,qty) => {
 
         if(isNaN(e.target.value)){
@@ -49,25 +60,53 @@ const BuildCurrentCartList = () => {
             return
         }
         let presentedListToModify = setCurrentCartLineToQty(e,currentCartList,qty)
-        let updatedOrders = updateCurrentLineInOrdersWithQty(e,chosen, delivDate, orders, ponote, route, orderTypeWhole, qty)
+        //let updatedOrders = updateCurrentLineInOrdersWithQty(e,chosen, delivDate, orders, ponote, route, orderTypeWhole, qty)
+       
         setCurrentCartList(presentedListToModify)
-        setOrders(updatedOrders) 
+        //setOrders(updatedOrders) 
         setModifications(true)
     }
-    
 
-   const qtyEditor = (props) => {
-    return <InputNumber size="1" value={Number(props.rowData['qty'])} name={props.rowData['prodName']}
-        id={props.rowData['SO']} onValueChange={(e) => handleQtyModify(e,props.rowData['qty'])} />
-}
 
     return (
-        <DataTable value={currentCartList} editMode="cell" className="editable-cells-table p-datatable-sm">
-            <Column field="trash" header=""></Column>
-            <Column field="prodName" header="Product" style={{width:'60%'}}></Column>
-            <Column field="qty" header="Qty" editor={(props) => qtyEditor(props)}></Column>
-            <Column field="SO" header="Prev"></Column>
-        </DataTable>
+        <React.Fragment>
+            <OrderGrid>
+        {currentCartList.map(order => 
+            <React.Fragment key={order["prodName"]+"b"}>
+                <button 
+                    className="trashButton"
+                    onClick={e => {handleQtyModify(e,"0")}} 
+                    key={order["prodName"]+"e"} 
+                    name={order["prodName"]}
+                    data-qty={order["qty"]}
+                    id={order["prodName"]}>🗑️</button>
+                <label key={order["prodName"]}>{order["prodName"]}</label>   
+                <input  
+                    type="text" 
+                    size="4"
+                    maxLength="5"
+                    key={order["prodName"]+"c"} 
+                    id={order["prodName"]+"item"} 
+                    name={order["prodName"]}
+                    data-qty={order["qty"]} 
+                    placeholder={order["qty"]} 
+                    onKeyUp={e => {handleQtyModify(e,e.target.value)}}
+                    onBlur={(e) => {
+
+                        e.target.value = ''
+
+                    }}
+                        >
+                </input>
+                <label 
+                    key={order["prodName"]+"d"} 
+                    className="previous">{order["SO"] === order["qty"] ? '' : order["SO"]}
+                </label>
+
+            </React.Fragment>
+        )}
+        </OrderGrid>
+        </React.Fragment>
     );
 };
 

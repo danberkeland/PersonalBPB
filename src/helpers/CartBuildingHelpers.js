@@ -10,7 +10,6 @@ const clonedeep = require('lodash.clonedeep')
 export const buildCartList = (chosen,delivDate,orders) => {
     let BPBDate = convertDatetoBPBDate(delivDate)
     let filteredOrders = clonedeep(orders)
-    console.log(orders)
     let builtCartList = []
     if (filteredOrders){
         builtCartList = filteredOrders.filter(order => order["delivDate"] === BPBDate && order["custName"].match(wildcardRegExp(`${chosen}`)))
@@ -96,25 +95,24 @@ export const setCurrentCartLineToQty = (e,currentCartList,qty) => {
     let newQty = qty
     let indexToFind = e.target.name
     let foundPresentedIndex = currentCartList.findIndex(line => line["prodName"] === indexToFind)
-    let presentedListToModify = [...currentCartList]
+    let presentedListToModify = clonedeep(currentCartList)
     presentedListToModify[foundPresentedIndex]["qty"] = newQty
     return presentedListToModify
 }
 
 
-export const updateCurrentLineInOrdersWithQty = (e,chosen, delivDate, orders, ponote, route, isWhole, qty) => {
-    let newQty = qty
+export const updateCurrentLineInOrdersWithQty = (e,chosen, delivDate, orders, ponote, route, isWhole) => {
+    let newQty = e.target.value
     let indexToFind = e.target.name
-    console.log(e.target.id)
     let oldValue = e.target.id
     let updatedOrders = clonedeep(orders)
     let foundOrdersIndex = updatedOrders.findIndex(line => line["prodName"] === indexToFind &&
         line["custName"] === chosen && line["delivDate"] === convertDatetoBPBDate(delivDate))
     if(foundOrdersIndex>=0){
-        updatedOrders[foundOrdersIndex]["qty"] = newQty
+        updatedOrders[foundOrdersIndex]["qty"] = newQty.toString()
     } else {
         let orderToAdd = {
-            "qty": newQty,
+            "qty": newQty.toString(),
             "prodName": indexToFind,
             "custName": chosen.name, 
             "PONote": ponote, 

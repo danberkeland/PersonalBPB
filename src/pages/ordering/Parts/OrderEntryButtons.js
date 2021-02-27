@@ -60,7 +60,7 @@ function OrderEntryButtons() {
      // BUILD PRESENT LIST
     // Build Orders List based on delivDate and Chosen
     let orderList = buildCurrentOrder(chosen,delivDate,orders,standing)
-    setModifications(true)
+    
 
     orderList = orderList.map(order => ["0",order[1],order[2],order[3],order[4],order[0], orderTypeWhole,convertDatetoBPBDate(delivDate)]) 
     let currentOrderList = orderList.concat(orders)
@@ -148,7 +148,8 @@ function OrderEntryButtons() {
 
   return (         
     <OrderButtons>
-      <Button label="Add/Update" icon="pi pi-plus" className="p-button-raised p-button-rounded p-button-success" />
+      <Button label="Add/Update" icon="pi pi-plus" 
+        className={modifications ? "p-button-raised p-button-rounded p-button-danger" : "p-button-raised p-button-rounded p-button-success"} />
       <Button label="Clear" icon="pi pi-trash" className="p-button-raised p-button-rounded p-button-info" />
       <Button label="Cart" icon="pi pi-shopping-cart" className="p-button-raised p-button-rounded p-button-secondary" />
       <Button label="Whole" icon="pi pi-dollar" className="p-button-raised p-button-rounded p-button-secondary" />

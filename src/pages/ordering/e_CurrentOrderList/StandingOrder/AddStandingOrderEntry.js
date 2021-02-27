@@ -53,7 +53,7 @@ const AddCartEntryItem = () => {
             }
         }
         setStanding(newStandingList)
-        setModifications(true)
+        
         setPickedProduct('');
     }
 

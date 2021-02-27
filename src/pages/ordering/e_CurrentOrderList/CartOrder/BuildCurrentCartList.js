@@ -16,6 +16,7 @@ import { buildCurrentOrder,
     filterOutZeros, 
     setCurrentCartLineToQty, 
     updateCurrentLineInOrdersWithQty,
+    checkForMods
 } from '../../../../helpers/CartBuildingHelpers'
 
 
@@ -56,7 +57,7 @@ const BuildCurrentCartList = () => {
 
         let currentOrderList = buildCurrentOrder(chosen.name,delivDate,orders,standing)
         let noZerosOrderList = filterOutZeros(currentOrderList)
-        console.log(currentOrderList)
+        setModifications(checkForMods(noZerosOrderList))
         setCurrentCartList(noZerosOrderList)
 
     }, [chosen, delivDate, orders, setCurrentCartList, standing])
@@ -69,7 +70,7 @@ const BuildCurrentCartList = () => {
        
         setCurrentCartList(presentedListToModify)
         setOrders(updatedOrders) 
-        setModifications(true)
+        
     }
 
 

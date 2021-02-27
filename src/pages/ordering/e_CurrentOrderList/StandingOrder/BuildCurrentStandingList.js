@@ -40,7 +40,7 @@ const BuildCurrentStandingList = () => {
         
         let standListToModify = clearSelectedStandItem(e,standArray)
         setStandArray(standListToModify)
-        setModifications(true)
+        
 
         let updatedStandorHold = clonedeep(standList ? standing : holding)   
         let updatedWeeklyList = createUpdateWeeklyList(e, updatedStandorHold, chosen)

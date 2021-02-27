@@ -44,7 +44,7 @@ const AddCartEntryItem = () => {
     const { products } = useContext(ProductsContext)
     const { orders, setOrders } = useContext(OrdersContext)
     const { chosen, delivDate, route, ponote } = useContext(CurrentDataContext)
-    const { orderTypeWhole }= useContext(ToggleContext)
+    const { orderTypeWhole, setModifications }= useContext(ToggleContext)
 
     const [ pickedProduct, setPickedProduct ] = useState();
     const [ productList, setProductList ] = useState();
@@ -78,6 +78,7 @@ const AddCartEntryItem = () => {
         setOrders(newOrderList)
         document.getElementById("addedProdQty").value = '';
         setPickedProduct('');
+        
     }
 
     

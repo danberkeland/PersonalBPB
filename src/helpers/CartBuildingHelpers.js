@@ -187,4 +187,22 @@ export const addUpdatesToOrders = (chosen, delivDate, ordersToUpdate, ordersToMo
 }
 
 
+export const checkForMods = (noZerosOrderList) => {
+    let qty
+    let SO
+    console.log(noZerosOrderList)
+    if (noZerosOrderList.length>0){
+        qty = noZerosOrderList.map(order => Number(order["qty"]))
+        SO = noZerosOrderList.map(order => Number(order["SO"]))
+        qty = qty.reduce((acc,red) => acc + red)
+        SO = SO.reduce((acc,red) => acc + red)
 
+        if (qty===SO){
+            return false
+        } else {
+            return true
+        }
+        
+    }
+   
+}

@@ -6,7 +6,17 @@ import { OrdersContext } from '../../../dataContexts/OrdersContext';
 import { StandingContext } from '../../../dataContexts/StandingContext';
 import { HoldingContext } from '../../../dataContexts/HoldingContext';
 
+import { Button } from 'primereact/button';
+
 import { createOrderUpdatesClip, createStandHoldClip } from '../../../helpers/sortDataHelpers'
+
+import styled from 'styled-components'
+
+const RecentButton = styled.div`
+  display: flex;
+  margin: 20px 0;
+  
+  `
 
 
 require('dotenv').config()
@@ -68,9 +78,9 @@ const RecentOrderListButtons = () => {
 
   return (
       <React.Fragment>      
-        <div>
-        <button className = "recentOrderListButton" onClick={handleUpload}>Upload</button>
-        </div>
+        <RecentButton>
+        <Button label="Upload" icon="pi pi-upload" className="p-button-raised p-button-rounded p-button-success" />
+        </RecentButton>
     </React.Fragment>  
   );
 }

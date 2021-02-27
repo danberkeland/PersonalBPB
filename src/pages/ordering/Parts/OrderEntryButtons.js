@@ -31,7 +31,7 @@ function OrderEntryButtons() {
   
 
   const { route, ponote } = useContext(CurrentDataContext)
-  const { setChosen, delivDate, chosen } = useContext(CurrentDataContext)
+  const { setChosen, delivDate, chosen, currentCartList } = useContext(CurrentDataContext)
   const { orders, setOrders, recentOrders, setRecentOrders } = useContext(OrdersContext)
   const { standing } = useContext(StandingContext)
   const { orderTypeWhole, setOrderTypeWhole,modifications, setModifications, 
@@ -57,18 +57,26 @@ function OrderEntryButtons() {
   
   const handleClear = () => {
 
-     // BUILD PRESENT LIST
-    // Build Orders List based on delivDate and Chosen
-    let orderList = buildCurrentOrder(chosen,delivDate,orders,standing)
-    
+    let orderList = clonedeep(currentCartList)  
+    console.log(orderList)
+    orderList = orderList.map(order => ({
+      "qty": "0",
+      "prodName": order["prodName"],
+      "custName": order["custName"],
+      "PONote": order["PONote"],
+      "route": order["route"],
+      "SO": order["SO"], 
+      "isWhole": orderTypeWhole,
+      "delivDate":convertDatetoBPBDate(delivDate)}
+      ))
 
-    orderList = orderList.map(order => ["0",order[1],order[2],order[3],order[4],order[0], orderTypeWhole,convertDatetoBPBDate(delivDate)]) 
     let currentOrderList = orderList.concat(orders)
+
     for (let i=0; i<currentOrderList.length; ++i ){
         for (let j=i+1; j<currentOrderList.length; ++j){
-            if (currentOrderList[i][1] === currentOrderList[j][1] &&
-              currentOrderList[i][2] === currentOrderList[j][2] &&
-              currentOrderList[i][7] === currentOrderList[j][7]){
+            if (currentOrderList[i]["prodName"] === currentOrderList[j]["prodName"] &&
+              currentOrderList[i]["custName"] === currentOrderList[j]["custName"] &&
+              currentOrderList[i]["delivDate"] === currentOrderList[j]["delivDate"]){
                 currentOrderList.splice(j,1);
             }
         }
@@ -84,23 +92,23 @@ function OrderEntryButtons() {
     setModifications(false)
     // set route if route has changed
     if (orderList.length>0) {
-      if (orderList[0][4]!==route){
-        orderList.map(item => item[4] = route)
+      if (orderList[0]["route"]!==route){
+        orderList.map(item => item["route"] = route)
       }
-      if (orderList[0][3]!==ponote){
-        orderList.map(item => item[3] = ponote)
+      if (orderList[0]["PONote"]!==ponote){
+        orderList.map(item => item["PONote"] = ponote)
       } 
     }    
     // Set SO to equal QTY 
-    orderList.map(item => item[5] = item[0])
+    orderList.map(item => item["SO"] = item["qty"])
     // Add present List to Orders
     let recent = clonedeep(orders)
     let newOrderList = orderList.concat(recent)
         for (let i=0; i<newOrderList.length; ++i ){
             for (let j=i+1; j<newOrderList.length; ++j){
-                if (  newOrderList[i][1] === newOrderList[j][1] &&
-                      newOrderList[i][2] === newOrderList[j][2] &&
-                      newOrderList[i][7] === newOrderList[j][7]){
+                if (  newOrderList[i]["prodName"] === newOrderList[j]["prodName"] &&
+                      newOrderList[i]["custName"] === newOrderList[j]["custName"] &&
+                      newOrderList[i]["delivDate"] === newOrderList[j]["delivDate"]){
                     newOrderList.splice(j,1);
                 }
             }
@@ -113,7 +121,7 @@ function OrderEntryButtons() {
 
 
     // Create item (date, name, whole) to add to recent list
-    let newRecentOrder = [delivDate,chosen,orderTypeWhole,cartList,standList]
+    let newRecentOrder = [delivDate,chosen.name,orderTypeWhole,cartList,standList]
     let stringRecentOrder = JSON.stringify(newRecentOrder)
     const currentRecentOrders = [...recentOrders]
     let stringCurrentRecentOrders = JSON.stringify(currentRecentOrders)
@@ -148,11 +156,14 @@ function OrderEntryButtons() {
 
   return (         
     <OrderButtons>
-      <Button label="Add/Update" icon="pi pi-plus" 
+      <Button label="Add/Update" icon="pi pi-plus" disabled={chosen==='  '} onClick={handleAddUpdate}
         className={modifications ? "p-button-raised p-button-rounded p-button-danger" : "p-button-raised p-button-rounded p-button-success"} />
-      <Button label="Clear" icon="pi pi-trash" className="p-button-raised p-button-rounded p-button-info" />
-      <Button label="Cart" icon="pi pi-shopping-cart" className="p-button-raised p-button-rounded p-button-secondary" />
-      <Button label="Whole" icon="pi pi-dollar" className="p-button-raised p-button-rounded p-button-secondary" />
+      <Button label="Clear" icon="pi pi-trash" disabled={!cartList} onClick={handleClear}
+        className="p-button-raised p-button-rounded p-button-info" />
+      <Button label={cartStand} icon="pi pi-shopping-cart" onClick={handleCartStandToggle} 
+        className="p-button-raised p-button-rounded p-button-secondary" />
+      <Button label={type} icon="pi pi-dollar" onClick={handleChangeorderTypeWhole}
+        className="p-button-raised p-button-rounded p-button-secondary" />
       
     </OrderButtons>    
   );

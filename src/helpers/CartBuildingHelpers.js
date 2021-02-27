@@ -70,7 +70,6 @@ export const buildCurrentOrder = (chosen,delivDate,orders,standing) => {
 
 
 export const filterOutZeros = (currentOrderList) => {
-    console.log(currentOrderList)
     let filteredZeros = currentOrderList.filter(order => ((Number(order["qty"])+Number(order["SO"]))>0))
     return filteredZeros
 }
@@ -190,7 +189,6 @@ export const addUpdatesToOrders = (chosen, delivDate, ordersToUpdate, ordersToMo
 export const checkForMods = (noZerosOrderList) => {
     let qty
     let SO
-    console.log(noZerosOrderList)
     if (noZerosOrderList.length>0){
         qty = noZerosOrderList.map(order => Number(order["qty"]))
         SO = noZerosOrderList.map(order => Number(order["SO"]))

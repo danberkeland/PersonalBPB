@@ -8,6 +8,8 @@ import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { RadioButton } from 'primereact/radiobutton';
 
+import { tomorrow } from "../../../helpers/dateTimeHelpers"
+
 
 
 import styled from 'styled-components'
@@ -64,7 +66,7 @@ const CurrentOrderInfo = () => {
 
   const {cartList, standList, orderTypeWhole } = useContext(ToggleContext)
   const { customers } = useContext(CustomerContext)
-  const { chosen, setRoute, ponote, setPonote, setChosen, delivDate, currentCartList } = useContext(CurrentDataContext)
+  const { chosen, setRoute, ponote, setPonote, setChosen, delivDate, setDelivDate, currentCartList } = useContext(CurrentDataContext)
 
   const [ customerGroup, setCustomerGroup ] = useState(customers)
   const [ delivStatus, setDelivStatus ] = useState('slopick')
@@ -93,10 +95,18 @@ const CurrentOrderInfo = () => {
     }, [currentCartList])
 
     
+    const handleChosen = (chosen) => {
+      setChosen(chosen)
+      setDelivDate(tomorrow())
+    }
+
     const changeDate = (date) => {
-      let currentDate = new Date(date);
-      var fd = currentDate.toDateString();
-      return fd;
+      let fd = new Date(date)
+      fd.setMinutes(fd.getMinutes()+fd.getTimezoneOffset()) 
+      let returnDate = fd.toDateString()
+      
+      return returnDate
+      
     }
 
   return (   
@@ -117,7 +127,7 @@ const CurrentOrderInfo = () => {
             <Dropdown id="customers" 
               value={chosen} options={customerGroup} 
               optionLabel="name" placeholder="Select a customer"
-              onChange={(e) => setChosen(e.value)}/>     
+              onChange={(e) => handleChosen(e.value)}/>     
             
             <RadioButton value="deliv" name="delivery" 
               onChange={(e) => setDelivStatus(e.value)} checked={delivStatus === 'deliv'}/>

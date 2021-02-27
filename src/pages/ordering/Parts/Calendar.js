@@ -65,6 +65,7 @@ const Calendar = () => {
 
     const handleDateSelect = (selectInfo) => {
         document.getElementById("orderCommand").focus()
+        console.log(selectInfo.dateStr)
         setDelivDate(selectInfo.dateStr)
     }
 

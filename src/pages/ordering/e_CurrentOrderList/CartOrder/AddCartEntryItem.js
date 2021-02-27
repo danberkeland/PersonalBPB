@@ -91,7 +91,7 @@ const AddCartEntryItem = () => {
                 <InputText id="addedProdQty" size="10" disabled={chosen!=='  ' ? false : true}/>
                 <label htmlFor="qty">Quantity</label>
             </span>
-            <Button label="ADD" icon="pi pi-plus" onClick={() => handleAdd()}/>
+            <Button label="ADD" disabled={chosen==='  ' || pickedProduct===''} icon="pi pi-plus" onClick={() => handleAdd()}/>
         </AddProductButtons>
     );
 };

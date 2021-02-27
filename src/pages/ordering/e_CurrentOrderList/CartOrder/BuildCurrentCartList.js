@@ -63,23 +63,12 @@ const BuildCurrentCartList = () => {
 
 
 
-    const handleQtyModify = (e,qty) => {
-
-        if(isNaN(e.target.value)){
-            e.target.value = ''
-            swal ({
-                text: "Only Numbers Please",
-                icon: "warning",
-                buttons: false,
-                timer: 2000
-              })
-            return
-        }
-        let presentedListToModify = setCurrentCartLineToQty(e,currentCartList,qty)
-        //let updatedOrders = updateCurrentLineInOrdersWithQty(e,chosen, delivDate, orders, ponote, route, orderTypeWhole, qty)
+    const handleQtyModify = (prodName,qty,SO) => {
+        let presentedListToModify = setCurrentCartLineToQty(prodName,currentCartList,qty)
+        let updatedOrders = updateCurrentLineInOrdersWithQty(prodName,chosen, delivDate, orders, ponote, route, orderTypeWhole, qty, SO)
        
         setCurrentCartList(presentedListToModify)
-        //setOrders(updatedOrders) 
+        setOrders(updatedOrders) 
         setModifications(true)
     }
 
@@ -96,7 +85,8 @@ const BuildCurrentCartList = () => {
                 <TrashCan>
                 <Button icon="pi pi-trash" 
                     className="p-button-raised p-button-rounded p-button-warning p-button-sm"
-                    onClick={e => {handleQtyModify(e,"0")}}
+                    value="0"
+                    onClick={e => {handleQtyModify(order["prodName"],"0",order["SO"])}}
                     key={order["prodName"]+"e"} 
                     name={order["prodName"]}
                     data-qty={order["qty"]}
@@ -113,7 +103,7 @@ const BuildCurrentCartList = () => {
                     name={order["prodName"]}
                     data-qty={order["qty"]} 
                     placeholder={order["qty"]} 
-                    onKeyUp={e => {handleQtyModify(e,e.target.value)}}
+                    onKeyUp={e => {handleQtyModify(order["prodName"],e.target.value, order["SO"])}}
                     onBlur={(e) => {
 
                         e.target.value = ''

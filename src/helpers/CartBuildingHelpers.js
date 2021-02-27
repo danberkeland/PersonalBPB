@@ -23,7 +23,6 @@ export const buildStandList = (chosen,delivDate,standing) => {
     let filteredStanding = clonedeep(standing)
     let builtStandList =[]
     builtStandList = filteredStanding.filter(standing => standing["dayNum"] === standingDate && standing["custName"].match(wildcardRegExp(`${chosen}`)) )
-    
     let convertedStandList = convertStandListtoStandArray(builtStandList, delivDate)
     return convertedStandList
 }
@@ -56,7 +55,7 @@ export const compileOrderList = (cartList,standList) => {
             }
         }
     }
-    sortAtoZDataByIndex(orderList,1)
+    sortAtoZDataByIndex(orderList,"prodName")
     return orderList
 }
 
@@ -65,12 +64,14 @@ export const buildCurrentOrder = (chosen,delivDate,orders,standing) => {
     let cartList = buildCartList(chosen,delivDate,orders)
     let standList = buildStandList(chosen, delivDate, standing)
     let currentOrderList = compileOrderList(cartList,standList)
+    
     return currentOrderList
 }
 
 
 export const filterOutZeros = (currentOrderList) => {
-    let filteredZeros = currentOrderList.filter(order => (Number(order["qty"])+Number(order["SO"])>0))
+    console.log(currentOrderList)
+    let filteredZeros = currentOrderList.filter(order => ((Number(order["qty"])+Number(order["SO"]))>0))
     return filteredZeros
 }
 
@@ -91,33 +92,33 @@ export const addNewInfoToOrders = (currentOrderList, orders) => {
 }
 
 
-export const setCurrentCartLineToQty = (e,currentCartList,qty) => {
+export const setCurrentCartLineToQty = (prodName,currentCartList,qty) => {
     let newQty = qty
-    let indexToFind = e.target.name
+    let indexToFind = prodName
+   
     let foundPresentedIndex = currentCartList.findIndex(line => line["prodName"] === indexToFind)
     let presentedListToModify = clonedeep(currentCartList)
+   
     presentedListToModify[foundPresentedIndex]["qty"] = newQty
     return presentedListToModify
 }
 
 
-export const updateCurrentLineInOrdersWithQty = (e,chosen, delivDate, orders, ponote, route, isWhole) => {
-    let newQty = e.target.value
-    let indexToFind = e.target.name
-    let oldValue = e.target.id
+export const updateCurrentLineInOrdersWithQty = (prodName ,chosen, delivDate, orders, ponote, route, isWhole, qty, SO) => {
+
     let updatedOrders = clonedeep(orders)
-    let foundOrdersIndex = updatedOrders.findIndex(line => line["prodName"] === indexToFind &&
-        line["custName"] === chosen && line["delivDate"] === convertDatetoBPBDate(delivDate))
+    let foundOrdersIndex = updatedOrders.findIndex(line => line["prodName"] === prodName &&
+        line["custName"] === chosen.name && line["delivDate"] === convertDatetoBPBDate(delivDate))
     if(foundOrdersIndex>=0){
-        updatedOrders[foundOrdersIndex]["qty"] = newQty.toString()
+        updatedOrders[foundOrdersIndex]["qty"] = qty.toString()
     } else {
         let orderToAdd = {
-            "qty": newQty.toString(),
-            "prodName": indexToFind,
+            "qty": qty.toString(),
+            "prodName": prodName,
             "custName": chosen.name, 
             "PONote": ponote, 
             "route": route, 
-            "SO": oldValue, 
+            "SO": SO, 
             "isWhole": isWhole, 
             "delivDate": convertDatetoBPBDate(delivDate)}
         updatedOrders.push(orderToAdd)

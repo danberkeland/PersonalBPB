@@ -63,7 +63,7 @@ const AddCartEntryItem = () => {
 
     const handleAdd = () => {
         let qty = document.getElementById("addedProdQty").value
-        console.log(pickedProduct)
+       
         let newOrder ={
             "qty": qty, 
             "prodName": pickedProduct.name,

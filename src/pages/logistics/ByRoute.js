@@ -60,7 +60,6 @@ const ByCustomer = () => {
             let newCol = {field: prod[0], header: prod[1], width: {width:'30px'}}
             columns.push(newCol)
         }
-        console.log(columns)
         return columns
         
     }

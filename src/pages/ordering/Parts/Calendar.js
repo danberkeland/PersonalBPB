@@ -25,9 +25,9 @@ const Calendar = () => {
 
     useEffect(() => {
 
-        let backToStandingArray = CreateStandingArray(standing,chosen.name);
-        let cartDateArray = CreateCartDateArray(orders,chosen.name);
-        let cartBlankDateArray = CreateBlankCartDateArray(orders,chosen.name);
+        let backToStandingArray = CreateStandingArray(standing,chosen);
+        let cartDateArray = CreateCartDateArray(orders,chosen);
+        let cartBlankDateArray = CreateBlankCartDateArray(orders,chosen);
         
 
         let standingEvents = {title: '',

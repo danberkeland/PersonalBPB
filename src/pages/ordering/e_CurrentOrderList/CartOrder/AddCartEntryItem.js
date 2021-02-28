@@ -42,7 +42,7 @@ const AddCartEntryItem = () => {
     
 
     useEffect(() => {
-        let availableProducts = findAvailableProducts(products, currentCartList, chosen.name, delivDate)
+        let availableProducts = findAvailableProducts(products, currentCartList, chosen, delivDate)
         setProductList(availableProducts)
         },[products, orders, chosen, delivDate ]);
 
@@ -58,7 +58,7 @@ const AddCartEntryItem = () => {
         let newOrder ={
             "qty": qty, 
             "prodName": pickedProduct.name,
-            "custName": chosen.name, 
+            "custName": chosen, 
             "PONote": ponote, 
             "route": route, 
             "SO": "0", 

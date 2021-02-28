@@ -64,7 +64,6 @@ const BuildCurrentStandingList = () => {
         let [Stand, Hold] = checkStandHoldStatus(standing, holding, chosen)
         setStandList(Stand)   
         let buildStandArray = createStandListArray(standing, holding, Stand, Hold, chosen)
-        console.log(buildStandArray)
         setStandArray(buildStandArray)
     },[chosen, holding, standing, setStandList])
 

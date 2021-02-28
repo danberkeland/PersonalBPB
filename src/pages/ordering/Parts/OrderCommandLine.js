@@ -7,7 +7,7 @@ import { StandingContext } from '../../../dataContexts/StandingContext';
 import { ProductsContext } from '../../../dataContexts/ProductsContext';
 import { ToggleContext } from '../../../dataContexts/ToggleContext';
 
-import { todayPlus, daysOfTheWeek } from '../../../helpers/dateTimeHelpers'
+import { todayPlus, daysOfTheWeek, convertDatetoBPBDate } from '../../../helpers/dateTimeHelpers'
 import { 
   buildCurrentOrder, 
   testEntryForProduct, 
@@ -50,18 +50,22 @@ const OrderCommandLine = () => {
       setOrderTypeWhole(false)
       let newRetailCustName = entry.replace("retail ","")
       let newRetailCustList = [...orders]
-      let newRetailCustEntry = ["","",newRetailCustName,"","","",false,""]
+      let newRetailCustEntry = {
+        "name": newRetailCustName,
+        "isWhole":false,
+        "delivDate":convertDatetoBPBDate(delivDate)
+      }
       newRetailCustList.push(newRetailCustEntry)
       setOrders(newRetailCustList)
       setDelivDate(tomorrow)
       setChosen(newRetailCustName);
       return
     } 
-
+  
     for (let cust of customers) {
-      if (entry.includes(cust[2]) || entry.includes(cust[0])) {
-        nextCustomer = cust[2];
-        if (nextCustomer !== ''){
+      if (entry.includes(cust["name"]) || entry.includes(cust["nickname"])) {
+        nextCustomer = cust["name"];
+        if (nextCustomer !== '  '){
           setChosen(nextCustomer)
           setRouteIsOn(true)
           setDelivDate(tomorrow)
@@ -90,8 +94,11 @@ const OrderCommandLine = () => {
 
   const checkForDelivDate = (entry) => {
     let [ today, tomorrow, twoDay ] = todayPlus()
+    console.log(today)
+    console.log(tomorrow)
+    console.log(twoDay)
     let [ Sun, Mon, Tues, Wed, Thurs, Fri, Sat ] = daysOfTheWeek()
-    let dateWords = [ ['today',today],['tomorrow',tomorrow],['twoday',twoDay],
+    let dateWords = [ ['today',today],['tomorrow',tomorrow],['2day',twoDay],['twoday',twoDay],['twoDay',twoDay],
                       ['sun',Sun],['mon',Mon],['tue',Tues],['tues',Tues],['wed',Wed],['thu',Thurs],
                       ['thur',Thurs],['thurs',Thurs],['fri',Fri],['sat',Sat]]
     for (let wordSet of dateWords){
@@ -141,7 +148,7 @@ const OrderCommandLine = () => {
   return (  
     <CommandLine>
     <span className="p-float-label">
-      <InputText id="orderCommand" size="50"/>
+      <InputText id="orderCommand" size="50" onKeyUp={handleInput}/>
       <label htmlFor="orderCommand">Enter Customers, Orders, Dates ...</label>
     </span>
     </CommandLine>

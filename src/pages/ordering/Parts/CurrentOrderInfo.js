@@ -10,9 +10,12 @@ import { RadioButton } from 'primereact/radiobutton';
 
 import { tomorrow } from "../../../helpers/dateTimeHelpers"
 
+import { createRetailOrderCustomers } from "../../../helpers/sortDataHelpers"
+
 
 
 import styled from 'styled-components'
+import { OrdersContext } from '../../../dataContexts/OrdersContext';
 
 const CurrentInfo = styled.div`
     width: 100%;
@@ -65,6 +68,7 @@ const CurrentInfo = styled.div`
 const CurrentOrderInfo = () => {
 
   const {cartList, standList, orderTypeWhole } = useContext(ToggleContext)
+  const { orders } = useContext(OrdersContext)
   const { customers } = useContext(CustomerContext)
   const { chosen, setRoute, ponote, setPonote, setChosen, delivDate, setDelivDate, currentCartList } = useContext(CurrentDataContext)
 
@@ -77,9 +81,9 @@ const CurrentOrderInfo = () => {
 
   
 
-    useEffect(() => {
-      setCustomerGroup(customers)
-    },[ customers ])
+  useEffect(() => {
+    orderTypeWhole ? setCustomerGroup(customers) : setCustomerGroup(createRetailOrderCustomers(orders))
+},[ customers, orderTypeWhole, orders ])
 
 
     useEffect(() => {
@@ -126,8 +130,8 @@ const CurrentOrderInfo = () => {
 
             <Dropdown id="customers" 
               value={chosen} options={customerGroup} 
-              optionLabel="name" placeholder="Select a customer"
-              onChange={(e) => handleChosen(e.value)}/>     
+              optionLabel="name" placeholder={chosen==='  ' ? "Select a Customer ..." : chosen }
+              onChange={(e) => handleChosen(e.value.name)}/>     
             
             <RadioButton value="deliv" name="delivery" 
               onChange={(e) => setDelivStatus(e.value)} checked={delivStatus === 'deliv'}/>

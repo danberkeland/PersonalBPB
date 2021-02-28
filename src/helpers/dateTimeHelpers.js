@@ -25,13 +25,17 @@ export const convertDatetoStandingDate = (entry) => {
 
 export const todayPlus = () => {
     let today = new Date()
+    today.setMinutes(today.getMinutes()-today.getTimezoneOffset()) 
     let todaySend = today.toISOString().split('T')[0]
 
     let tomorrow = new Date()
-    tomorrow.setDate(today.getDate()+1)
+    tomorrow.setMinutes(tomorrow.getMinutes()-tomorrow.getTimezoneOffset()) 
+    tomorrow.setDate(tomorrow.getDate()+1)
     let tomorrowSend = tomorrow.toISOString().split('T')[0]
 
     let twoDay = new Date()
+    twoDay.setMinutes(twoDay.getMinutes()-twoDay.getTimezoneOffset()) 
+    twoDay.setDate(twoDay.getDate()+2)
     let twoDaySend = twoDay.toISOString().split('T')[0]
 
     return [todaySend, tomorrowSend, twoDaySend ]
@@ -40,6 +44,7 @@ export const todayPlus = () => {
 export const daysOfTheWeek = () => {
     let timeDelta = 0
     let today = new Date()
+    today.setMinutes(today.getMinutes()-today.getTimezoneOffset()) 
     let dayOfWeek = Number(today.getDay())
     for (let i=0; i<7; i++){
         if (dayOfWeek === i){
@@ -83,6 +88,7 @@ export const daysOfTheWeek = () => {
 
 export const tomorrow = () => {
     let today = new Date()
+    today.setMinutes(today.getMinutes()-today.getTimezoneOffset()) 
     let tomorrow = new Date()
     tomorrow.setDate(today.getDate()+1)
 

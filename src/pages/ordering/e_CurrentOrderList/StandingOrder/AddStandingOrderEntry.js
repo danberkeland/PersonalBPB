@@ -46,13 +46,13 @@ const AddCartEntryItem = () => {
     },[standList])
 
     useEffect(() => {
-        let availableProducts = findAvailableProducts(products, orders, chosen.name, delivDate)
+        let availableProducts = findAvailableProducts(products, orders, chosen, delivDate)
         setProductList(availableProducts)
         },[products, orders, chosen, delivDate ]);
 
 
     const handleChange = e => {
-        setPickedProduct(e.target.value)
+        setPickedProduct(e.target.value.name)
 
     } 
 
@@ -60,7 +60,12 @@ const AddCartEntryItem = () => {
         let newStandingList = clonedeep(standing)
         if (pickedProduct !=="" && pickedProduct){
             for (let i=1; i<8; i++){
-                let newOrder =[i.toString(),"na","0","na","na","na","na",pickedProduct,chosen] 
+                let newOrder =({
+                    "dayNum": i.toString(),
+                    "qty": "0",
+                    "prodName": pickedProduct,
+                    "custName": chosen
+                }) 
                 newStandingList.push(newOrder)
             }
         }
@@ -76,23 +81,35 @@ const AddCartEntryItem = () => {
         let standID = clonedeep(standList)
 
         if(standID){
-            let currentStandListClip = currentStandList.filter(stand => stand[8] === chosen)
+            let currentStandListClip = currentStandList.filter(stand => stand["custName"] === chosen)
             let clipToManipulate = clonedeep(currentStandListClip)
             let timeStamp = new Date().toISOString()
             let zeroCurrentStand = clipToManipulate.map(stand => 
-                [stand[0],"na","0","na",timeStamp,"na","na",stand[7],stand[8]])
-            let reducedStandList = await currentStandList.filter(stand => stand[8] !== chosen)
+                ({
+                    "dayNum": stand["dayNum"],
+                    "qty": "0",
+                    "timeStamp": timeStamp,
+                    "prodName": stand["prodName"],
+                    "custName": stand["custName"]})
+            )
+            let reducedStandList = await currentStandList.filter(stand => stand["custName"] !== chosen)
             let sendStand = reducedStandList.concat(zeroCurrentStand)
             let sendHold = currentHoldList.concat(currentStandListClip)
             setStanding(sendStand)
             setHolding(sendHold)
         } else {
-            let currentHoldListClip = await currentHoldList.filter(hold => hold[8] === chosen)
+            let currentHoldListClip = await currentHoldList.filter(hold => hold["custName"] === chosen)
             let clipToManipulate = clonedeep(currentHoldListClip)
             let timeStamp = new Date().toISOString()
             let zeroCurrentHold = Array.from(clipToManipulate, stand => 
-                [stand[0],"na","0","na",timeStamp,"na","na",stand[7],stand[8]])
-            let reducedHoldList = await currentHoldList.filter(hold => hold[8] !== chosen)
+                ({
+                    "dayNum": stand["dayNum"],
+                    "qty": "0",
+                    "timeStamp": timeStamp,
+                    "prodName": stand["prodName"],
+                    "custName": stand["custName"]})
+            )
+            let reducedHoldList = await currentHoldList.filter(hold => hold["custName"] !== chosen)
             let sendHold = reducedHoldList.concat(zeroCurrentHold)
             let sendStand = currentStandList.concat(currentHoldListClip)
             setHolding(sendHold)
@@ -104,9 +121,12 @@ const AddCartEntryItem = () => {
     return (
 
         <AddProductButtons>
-            <Dropdown options={productList} optionLabel="name" placeholder="Select a product"
-                name="products" value={pickedProduct} onChange={handleChange} disabled={chosen!=='  ' ? false : true}/>
-            <Button label="ADD" disabled={chosen==='  ' || pickedProduct===''} icon="pi pi-plus" onClick={handleStandHold}/>
+
+            <Dropdown options={productList} optionLabel="name" 
+                placeholder={pickedProduct==='' ? "Select a Product ..." : pickedProduct }
+                value={pickedProduct} 
+                onChange={handleChange} disabled={chosen!=='  ' ? false : true}/>
+            <Button label="ADD" disabled={chosen==='  ' || pickedProduct===''} icon="pi pi-plus" onClick={handleAdd}/>
         
             <Button className={!standList ? "p-button-raised p-button-rounded p-button-danger" : "p-button-raised p-button-rounded p-button-success"} 
                 onClick={handleStandHold} label={standHold.current}/>

@@ -10,7 +10,7 @@ export const checkStandHoldStatus = (standing,holding,chosen) => {
     let holdingToCheck = clonedeep(holding)
     // check for standing, if no, check for holding, if no return
     
-    let standingToCount = standingToCheck.filter(stand => stand["custName"] === chosen.name)
+    let standingToCount = standingToCheck.filter(stand => stand["custName"] === chosen)
     if (standingToCount.length>0){
         standingToCount = standingToCount.map(stand => Number(stand["qty"]))
         let sum = standingToCount.reduce((a,b) => {
@@ -48,7 +48,7 @@ export const createStandListArray = (standing, holding, Stand, Hold, chosen) => 
         let pullStand = clonedeep(standing)
         for (let pull of pullStand){
             // search index of item in buildArray
-            if (pull["custName"] === chosen.name){
+            if (pull["custName"] === chosen){
                 let ind = buildStandArray.findIndex(stand => stand[0] === pull["prodName"])
                 if (ind>=0){
                     buildStandArray[ind][Number(pull["dayNum"])] = pull["qty"]
@@ -65,7 +65,7 @@ export const createStandListArray = (standing, holding, Stand, Hold, chosen) => 
         let pullHold = clonedeep(holding)
         for (let pull of pullHold){
             // search index of item in buildArray
-            if (pull["custName"] === chosen.name){
+            if (pull["custName"] === chosen){
                 let ind = buildStandArray.findIndex(stand => stand[0] === pull["prodName"])
                 if (ind>=0){
                     buildStandArray[ind][Number(pull["dayNum"])] = pull["qty"]
@@ -96,7 +96,7 @@ export const createUpdateWeeklyList = (e, updatedStandorHold, chosen) => {
     let indexToFind = e.target.name
     for (let i = 1; i<8; ++i){
         let ind = updatedStandorHold.findIndex(stand => stand["dayNum"] === i.toString() && 
-            stand["prodName"] === indexToFind && stand["custName"] === chosen.name)
+            stand["prodName"] === indexToFind && stand["custName"] === chosen)
         if (ind>=0){
             updatedStandorHold[ind]["qty"] = "0";
         } 
@@ -125,7 +125,7 @@ export const createUpdateWeeklyStandList = (e, updatedStandorHold, chosen) => {
     intTarg = intTarg.split('_')
     let updatedStanding = clonedeep(updatedStandorHold)
     let ind = updatedStanding.findIndex(stand => stand["dayNum"] === intTarg[1] 
-        && stand["prodName"] === indexToFind && stand["custName"] === chosen.name)
+        && stand["prodName"] === indexToFind && stand["custName"] === chosen)
     if(ind>=0){
         updatedStanding[ind]["qty"] = newQty
     } else {
@@ -134,7 +134,7 @@ export const createUpdateWeeklyStandList = (e, updatedStandorHold, chosen) => {
             "qty": e.target.value,
             "timeStamp": timeStamp.toString(),
             "prodName": e.target.name,
-            "custName": chosen.name
+            "custName": chosen
         }
         updatedStanding.push(newStand)
     }

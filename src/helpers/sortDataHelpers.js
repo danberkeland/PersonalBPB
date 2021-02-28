@@ -3,7 +3,6 @@ import { convertDatetoBPBDate } from './dateTimeHelpers'
 import { buildCartList, buildStandList, compileOrderList } from './CartBuildingHelpers'
 
 import { cloneDeep } from 'lodash';
-import { DayCellContent } from '@fullcalendar/react';
 
 
 
@@ -30,7 +29,7 @@ export const addAnEmptyRowToTop = (data) => {
 }
 
 export const createRetailOrderCustomers = orders => {
-    let special = orders.filter(order => order[6] === false)
+    let special = orders.filter(order => order["isWhole"] === false)
     special = special.map(order => ["","",order[2],""])
     let unique = special.map(ar => JSON.stringify(ar))
         .filter((itm, idx, arr) => arr.indexOf(itm) === idx)

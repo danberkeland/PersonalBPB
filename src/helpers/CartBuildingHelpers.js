@@ -107,14 +107,14 @@ export const updateCurrentLineInOrdersWithQty = (prodName ,chosen, delivDate, or
 
     let updatedOrders = clonedeep(orders)
     let foundOrdersIndex = updatedOrders.findIndex(line => line["prodName"] === prodName &&
-        line["custName"] === chosen.name && line["delivDate"] === convertDatetoBPBDate(delivDate))
+        line["custName"] === chosen && line["delivDate"] === convertDatetoBPBDate(delivDate))
     if(foundOrdersIndex>=0){
         updatedOrders[foundOrdersIndex]["qty"] = qty.toString()
     } else {
         let orderToAdd = {
             "qty": qty.toString(),
             "prodName": prodName,
-            "custName": chosen.name, 
+            "custName": chosen, 
             "PONote": ponote, 
             "route": route, 
             "SO": SO, 
@@ -140,8 +140,17 @@ export const createOrdersToUpdate = (products, enteredProducts, chosen, ponote, 
     let ordersToUpdate = [];
     for (let product of products){
       for (let enteredItem of enteredProducts){
-        if (product[2] === enteredItem[1]){
-          let newOrder = [enteredItem[0],product[1], chosen, ponote, route, "0", orderTypeWhole, convertDatetoBPBDate(delivDate)] // [ qty, prod, cust, po, route, so, ty ]
+        if (product["nickName"] === enteredItem[1]){
+          let newOrder = {
+              "qty": enteredItem[0],
+              "prodName": product["name"], 
+              "custName": chosen, 
+              "PONote": ponote, 
+              "route": route, 
+              "SO": "0", 
+              "isWhole": orderTypeWhole, 
+              "delivDate": convertDatetoBPBDate(delivDate)
+            }
           ordersToUpdate.push(newOrder)
         }
       }
@@ -154,15 +163,15 @@ export const buildOrdersToModify = (orders, chosen, delivDate, ordersToUpdate, c
     let ordersToModify = [...orders]
     for (let orderToUpdate of ordersToUpdate){
       for (let custOrder of custOrderList){
-        if (orderToUpdate[1] === custOrder[1]){
+        if (orderToUpdate["prodName"] === custOrder["prodName"]){
         
-          let index = ordersToModify.findIndex(order => order[1] === custOrder[1] &&
-                order[2] === chosen && order[7] === convertDatetoBPBDate(delivDate));
+          let index = ordersToModify.findIndex(order => order["prodName"] === custOrder["prodName"] &&
+                order["custName"] === chosen && order["delivDate"] === convertDatetoBPBDate(delivDate));
           if (index>=0){
-            ordersToModify[index][0] = orderToUpdate[0] 
+            ordersToModify[index]["qty"] = orderToUpdate["qty"] 
                  
           } else{
-            orderToUpdate[5] = custOrder[5]
+            orderToUpdate["SO"] = custOrder["SO"]
             ordersToModify.push(orderToUpdate)
             
           }
@@ -175,8 +184,8 @@ export const buildOrdersToModify = (orders, chosen, delivDate, ordersToUpdate, c
 export const addUpdatesToOrders = (chosen, delivDate, ordersToUpdate, ordersToModify) => {
     for (let ord of ordersToUpdate){
         
-        let index = ordersToModify.findIndex(order => order[1] === ord[1] &&
-          order[2] === chosen && order[7] === convertDatetoBPBDate(delivDate));
+        let index = ordersToModify.findIndex(order => order["prodName"] === ord["prodName"] &&
+          order["custName"] === chosen && order["delivDate"] === convertDatetoBPBDate(delivDate));
         if (index<0){
           ordersToModify.push(ord)
         

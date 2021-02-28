@@ -15,6 +15,23 @@ import {
     createUpdateWeeklyStandList 
     } from '../../../../helpers/StandBuildingHelpers';
 
+
+import styled from 'styled-components'
+
+
+const OrderGrid = styled.div`
+    width: 100%;
+    font-size: 1em;
+    border-radius: 10px;
+    padding: 20px;
+    border: none;
+    display: grid;
+    grid-template-columns: 5fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr .5fr;
+    align-self: center;
+    row-gap: 10px;
+    `
+
+
 const clonedeep = require('lodash.clonedeep')
 
 const BuildCurrentStandingList = () => {
@@ -31,6 +48,7 @@ const BuildCurrentStandingList = () => {
         let [Stand, Hold] = checkStandHoldStatus(standing, holding, chosen)
         setStandList(Stand)   
         let buildStandArray = createStandListArray(standing, holding, Stand, Hold, chosen)
+        console.log(buildStandArray)
         setStandArray(buildStandArray)
     },[chosen, holding, standing, setStandList])
 
@@ -72,7 +90,16 @@ const BuildCurrentStandingList = () => {
 
     return (
         <React.Fragment> 
-            
+        <OrderGrid>
+        <label>PRODUCT</label>
+            <label>S</label>
+            <label>M</label>
+            <label>T</label>
+            <label>W</label>
+            <label>T</label>
+            <label>F</label>
+            <label>S</label>
+            <label></label>
             {standArray ? standArray.map(order =>
                 (<React.Fragment key={order[0]+"frag"}>
                     <label key={order[0]+"prod"}>{order[0]}</label>
@@ -95,7 +122,7 @@ const BuildCurrentStandingList = () => {
                     <button className="trashButton" key={order[0]+"rem"} name={order[0]} onClick={e => handleRemove(e,"0")}>🗑️</button>
                 </React.Fragment>)) : ''}
            
-           
+        </OrderGrid>    
         </React.Fragment>
         
     )

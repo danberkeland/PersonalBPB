@@ -79,12 +79,15 @@ export const findCurrentPonote =(chosen, delivDate, orders) => {
 
 export const findAvailableProducts = (products, orders, chosen, delivDate) => {
     let availableProducts = [...products]
-    for (let prod of orders) {
-        let prodPull = prod[0]==="0" && prod[2] === chosen && 
-        prod[7] === convertDatetoBPBDate(delivDate) ? prod[1] : ''
-        availableProducts = availableProducts.filter(availProd => availProd[1] !== prodPull)
+    /*
+    if (orders){
+        for (let order of orders) {
+            let prodPull = order["qty"]==="0" && order["custName"] === chosen && 
+            order["delivDate"] === convertDatetoBPBDate(delivDate) ? order["prodName"] : ''
+            availableProducts = availableProducts.filter(availProd => availProd["name"] !== prodPull)
+        }
     }
-    availableProducts.unshift(['','','','','','','','','','','','','','','','','','','']);
+    */
     return availableProducts
 }
 

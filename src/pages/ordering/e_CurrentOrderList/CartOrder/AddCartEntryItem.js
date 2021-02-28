@@ -34,7 +34,7 @@ const AddCartEntryItem = () => {
 
     const { products } = useContext(ProductsContext)
     const { orders, setOrders } = useContext(OrdersContext)
-    const { chosen, delivDate, route, ponote } = useContext(CurrentDataContext)
+    const { chosen, delivDate, route, ponote, currentCartList } = useContext(CurrentDataContext)
     const { orderTypeWhole, setModifications }= useContext(ToggleContext)
 
     const [ pickedProduct, setPickedProduct ] = useState();
@@ -42,7 +42,7 @@ const AddCartEntryItem = () => {
     
 
     useEffect(() => {
-        let availableProducts = findAvailableProducts(products, orders, chosen.name, delivDate)
+        let availableProducts = findAvailableProducts(products, currentCartList, chosen.name, delivDate)
         setProductList(availableProducts)
         },[products, orders, chosen, delivDate ]);
 
@@ -76,7 +76,7 @@ const AddCartEntryItem = () => {
 
     return (
         <AddProductButtons>
-            <Dropdown options={products} optionLabel="name" placeholder="Select a product"
+            <Dropdown options={productList} optionLabel="name" placeholder="Select a product"
                 name="products" value={pickedProduct} onChange={handleChange} disabled={chosen!=='  ' ? false : true}/>
             <span className="p-float-label">
                 <InputText id="addedProdQty" size="10" disabled={chosen!=='  ' ? false : true}/>

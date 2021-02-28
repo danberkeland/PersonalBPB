@@ -1,6 +1,5 @@
 import React, { useState, useContext, useEffect, useRef } from 'react';
 
-import { v4 as uuidv4 } from 'uuid';
 
 import { CurrentDataContext } from '../../../../dataContexts/CurrentDataContext';
 import { OrdersContext } from '../../../../dataContexts/OrdersContext';
@@ -11,7 +10,6 @@ import { ToggleContext } from '../../../../dataContexts/ToggleContext';
 
 import { Button } from 'primereact/button';
 import { Dropdown } from 'primereact/dropdown';
-import { InputText } from 'primereact/inputtext';
 
 import { findAvailableProducts } from '../../../../helpers/sortDataHelpers';
 
@@ -36,7 +34,7 @@ const AddCartEntryItem = () => {
     const { holding, setHolding } = useContext(HoldingContext)
     const { orders } = useContext(OrdersContext)
     const { chosen, delivDate } = useContext(CurrentDataContext)
-    const { standList, setModifications } = useContext(ToggleContext)
+    const { standList } = useContext(ToggleContext)
 
     const [ pickedProduct, setPickedProduct ] = useState();
     const [ productList, setProductList ] = useState();
@@ -48,7 +46,7 @@ const AddCartEntryItem = () => {
     },[standList])
 
     useEffect(() => {
-        let availableProducts = findAvailableProducts(products, orders, chosen, delivDate)
+        let availableProducts = findAvailableProducts(products, orders, chosen.name, delivDate)
         setProductList(availableProducts)
         },[products, orders, chosen, delivDate ]);
 
@@ -103,19 +101,10 @@ const AddCartEntryItem = () => {
         }
     }
 
-    const ho = {
-        backgroundColor: "red"
-      }
-
-    const so = {
-        backgroundColor: "green"
-      }
-
-
     return (
 
         <AddProductButtons>
-            <Dropdown options={products} optionLabel="name" placeholder="Select a product"
+            <Dropdown options={productList} optionLabel="name" placeholder="Select a product"
                 name="products" value={pickedProduct} onChange={handleChange} disabled={chosen!=='  ' ? false : true}/>
             <Button label="ADD" disabled={chosen==='  ' || pickedProduct===''} icon="pi pi-plus" onClick={handleStandHold}/>
         

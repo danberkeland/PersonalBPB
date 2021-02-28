@@ -58,7 +58,6 @@ function OrderEntryButtons() {
   const handleClear = () => {
 
     let orderList = clonedeep(currentCartList)  
-    console.log(orderList)
     orderList = orderList.map(order => ({
       "qty": "0",
       "prodName": order["prodName"],

@@ -26,7 +26,6 @@ import styled from 'styled-components'
 const CommandLine = styled.span`
     display: grid;
     justify-self: stretch;
-
     `
  
 const OrderCommandLine = () => {
@@ -94,9 +93,6 @@ const OrderCommandLine = () => {
 
   const checkForDelivDate = (entry) => {
     let [ today, tomorrow, twoDay ] = todayPlus()
-    console.log(today)
-    console.log(tomorrow)
-    console.log(twoDay)
     let [ Sun, Mon, Tues, Wed, Thurs, Fri, Sat ] = daysOfTheWeek()
     let dateWords = [ ['today',today],['tomorrow',tomorrow],['2day',twoDay],['twoday',twoDay],['twoDay',twoDay],
                       ['sun',Sun],['mon',Mon],['tue',Tues],['tues',Tues],['wed',Wed],['thu',Thurs],

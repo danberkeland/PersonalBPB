@@ -2,9 +2,9 @@ import React, { useContext } from 'react';
 
 
 import Calendar from '../ordering/Parts/Calendar'
-import DeliveryDate from '../../reusableComponents/deliveryDate'
+
 import ByRoute from './ByRoute'
-import Routes from '../../reusableComponents/routes'
+
 
 import { CustomerContext, CustomerLoad } from '../../dataContexts/CustomerContext'
 import { OrdersContext, OrdersLoad } from '../../dataContexts/OrdersContext'
@@ -34,8 +34,7 @@ function Logistics() {
         <div className = "logisticsDisplayContainer">
           <div id="orderCommand" />
             <div className = "logisticsInfoSearch">
-                <DeliveryDate />
-                <Routes />
+               
                 <button>Print</button>
                 <button>Refresh</button>
             </div>  

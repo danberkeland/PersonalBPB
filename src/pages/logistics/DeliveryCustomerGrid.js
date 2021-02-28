@@ -3,7 +3,6 @@ import React, { useContext } from 'react';
 
 import Calendar from '../ordering/Parts/Calendar'
 import ByCustomer from './ByCustomer.js'
-import Routes from '../../reusableComponents/routes';
 
 import { CustomerContext, CustomerLoad } from '../../dataContexts/CustomerContext'
 import { OrdersContext, OrdersLoad } from '../../dataContexts/OrdersContext'

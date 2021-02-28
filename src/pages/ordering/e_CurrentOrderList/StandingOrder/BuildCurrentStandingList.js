@@ -14,7 +14,8 @@ import {
     clearSelectedStandItem, 
     createUpdateWeeklyList,
     setCurrentStandLineToQty,
-    createUpdateWeeklyStandList 
+    createUpdateWeeklyStandList,
+    checkForStandMods 
     } from '../../../../helpers/StandBuildingHelpers';
 
 
@@ -63,20 +64,23 @@ const BuildCurrentStandingList = () => {
     useEffect(() => {
         let [Stand, Hold] = checkStandHoldStatus(standing, holding, chosen)
         setStandList(Stand)   
-        let buildStandArray = createStandListArray(standing, holding, Stand, Hold, chosen)
+        let buildStandArray = createStandListArray(standing, holding, Stand, Hold, chosen) 
+        setModifications(checkForStandMods(buildStandArray))
         setStandArray(buildStandArray)
     },[chosen, holding, standing, setStandList])
 
 
 
-    const handleRemove = (e) => {
+    const handleRemove = (index) => {
         
-        let standListToModify = clearSelectedStandItem(e,standArray)
+        let standListToModify = clearSelectedStandItem(index,standArray)
+        console.log(standListToModify)
         setStandArray(standListToModify)
+        setModifications(true)
         
 
         let updatedStandorHold = clonedeep(standList ? standing : holding)   
-        let updatedWeeklyList = createUpdateWeeklyList(e, updatedStandorHold, chosen)
+        let updatedWeeklyList = createUpdateWeeklyList(index, updatedStandorHold, chosen)
         standList ? setStanding(updatedWeeklyList) : setHolding(updatedWeeklyList)        
     }
 
@@ -94,8 +98,7 @@ const BuildCurrentStandingList = () => {
 
         let StandListToModify = setCurrentStandLineToQty(e,standArray,qty)
         setStandArray(StandListToModify)
-        setModifications(true)
-
+        
         let updatedStandorHold = clonedeep(standList ? standing : holding)   
         let updatedWeeklyStandList = createUpdateWeeklyStandList(e, updatedStandorHold, chosen)
         standList ? setStanding(updatedWeeklyStandList) : setHolding(updatedWeeklyStandList)            
@@ -149,7 +152,7 @@ const BuildCurrentStandingList = () => {
                     </StandInput>
     
                     <Button icon="pi pi-trash" className="p-button-outlined p-button-rounded p-button-help p-button-sm" 
-                        key={order[0]+"rem"} name={order[0]} onClick={e => handleRemove(e,"0")}></Button>
+                        key={order[0]+"rem"} name={order[0]} onClick={e => handleRemove(order[0])}></Button>
                 </React.Fragment>)) : ''}
            
         </OrderGrid>    

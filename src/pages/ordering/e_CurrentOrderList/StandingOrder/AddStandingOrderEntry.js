@@ -63,6 +63,7 @@ const AddCartEntryItem = () => {
                 let newOrder =({
                     "dayNum": i.toString(),
                     "qty": "0",
+                    "SO": "0",
                     "prodName": pickedProduct,
                     "custName": chosen
                 }) 
@@ -88,6 +89,7 @@ const AddCartEntryItem = () => {
                 ({
                     "dayNum": stand["dayNum"],
                     "qty": "0",
+                    "SO": "0",
                     "timeStamp": timeStamp,
                     "prodName": stand["prodName"],
                     "custName": stand["custName"]})
@@ -105,6 +107,7 @@ const AddCartEntryItem = () => {
                 ({
                     "dayNum": stand["dayNum"],
                     "qty": "0",
+                    "SO": "0",
                     "timeStamp": timeStamp,
                     "prodName": stand["prodName"],
                     "custName": stand["custName"]})

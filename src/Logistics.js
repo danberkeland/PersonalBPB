@@ -1,10 +1,8 @@
 import React, { useContext } from 'react';
 
 
-import Calendar from './reusableComponents/calendar'
-import DeliveryDate from './reusableComponents/deliveryDate'
 import ByCustomer from './pages/logistics/ByCustomer'
-import Routes from './reusableComponents/routes'
+
 
 import { CustomerContext, CustomerLoad } from './dataContexts/CustomerContext'
 import { OrdersContext, OrdersLoad } from './dataContexts/OrdersContext'
@@ -29,13 +27,12 @@ function Logistics() {
         {!custLoaded ? <CustomerLoad /> : ''}
         {!ordersLoaded ? <OrdersLoad /> : ''}
         <div className = "calendarContainer">
-          <Calendar />
+         
         </div>
         <div className = "logisticsDisplayContainer">
           <div id="orderCommand" />
             <div className = "logisticsInfoSearch">
-                <DeliveryDate />
-                <Routes />
+                
                 <button>Print</button>
                 <button>Refresh</button>
             </div>  

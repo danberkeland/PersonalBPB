@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 
 
 import { ProgressSpinner } from 'primereact/progressspinner';
@@ -9,24 +9,37 @@ import { ProductsContext } from './dataContexts/ProductsContext';
 import { StandingContext } from './dataContexts/StandingContext';
 import { HoldingContext } from './dataContexts/HoldingContext';
 
+import styled from 'styled-components'
 
+const LoaderSetup = styled.div`
+    width: 100%;
+    margin: 45vh 45%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 200;
+    `
+
+const LoaderBack = styled.div`
+    width: 100%;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 199;
+    background-color:rgba(65, 64, 99, .5);
+    `
 
 const Loader = () => {
 
-    let { isLoading, setIsLoading } = useContext(ToggleContext)
-    let { custLoaded, fullCustLoaded } = useContext(CustomerContext)
-    let { ordersLoaded } = useContext(OrdersContext)
-    let { prodLoaded } = useContext(ProductsContext)
-    let { standLoaded } = useContext(StandingContext)
-    let { holdLoaded } = useContext(HoldingContext)
-
-
-   
-
+    let { isLoading } = useContext(ToggleContext)
+    
     return (
-        <React.Fragment>
-            {isLoading ? <div className = "Loader"><div className = "loaderBack"><ProgressSpinner/></div></div> :''}
-        </React.Fragment>
+        
+            <React.Fragment>
+                {isLoading ? <LoaderBack><LoaderSetup><ProgressSpinner/></LoaderSetup></LoaderBack> :''}
+            </React.Fragment>
+        
     )
     
 };

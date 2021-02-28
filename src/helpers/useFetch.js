@@ -75,7 +75,7 @@ export const FilterStandHoldDups = data => {
     let groupedData = data.map(item => [(
         item["dayNum"]+"_"+
         item["prodName"]+"_"+
-        item["custName"]),item["qty"],item["route"],item["timeStamp"]]
+        item["custName"]),item["qty"],item["SO"],item["route"],item["timeStamp"]]
         )
 
     for (let i=0; i<groupedData.length; ++i ){
@@ -89,8 +89,9 @@ export const FilterStandHoldDups = data => {
     let reassembledData = groupedData.map(item => ({
         "dayNum": item[0].split("_")[0],
         "qty": item[1],
-        "route": item[2],
-        "timeStamp": item[3],
+        "SO": item[2],
+        "route": item[3],
+        "timeStamp": item[4],
         "prodName": item[0].split("_")[1],
         "custName": item[0].split("_")[2],
     }))

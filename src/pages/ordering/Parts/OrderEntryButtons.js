@@ -146,13 +146,6 @@ function OrderEntryButtons() {
     setRecentOrders(currentRecentOrders)
   }
   
-  const noMods = {
-    backgroundColor: "green"
-  }
-  
-  const mods = {
-    backgroundColor: "red"
-  }
 
   return (         
     <OrderButtons>

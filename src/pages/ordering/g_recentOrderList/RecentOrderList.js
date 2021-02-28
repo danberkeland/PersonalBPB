@@ -127,7 +127,7 @@ const RecentOrderList = () => {
                                         <Button 
 
                                           icon="pi pi-trash" 
-                                          className="p-button-raised p-button-rounded p-button-warning p-button-sm"
+                                          className="p-button-outlined p-button-rounded p-button-help p-button-sm"
                                           data-date={order[0]}
                                           data-cust={order[1]}
                                           data-whole={order[2]}

@@ -9,8 +9,22 @@ import { HoldingContext } from '../../../../dataContexts/HoldingContext';
 import { ProductsContext } from '../../../../dataContexts/ProductsContext'
 import { ToggleContext } from '../../../../dataContexts/ToggleContext';
 
+import { Button } from 'primereact/button';
+import { Dropdown } from 'primereact/dropdown';
+import { InputText } from 'primereact/inputtext';
+
 import { findAvailableProducts } from '../../../../helpers/sortDataHelpers';
 
+import styled from 'styled-components'
+
+const AddProductButtons = styled.div`
+        display: flex;
+        width: 100%;
+        margin: 20px 0;
+        justify-content: space-around;
+        background-color: lightgrey;
+        padding: 10px 0;
+        `
 
 const clonedeep = require('lodash.clonedeep')
 
@@ -99,18 +113,15 @@ const AddCartEntryItem = () => {
 
 
     return (
-        <div className="addAProductToStanding">
-            <select id = "products" name="products" value={pickedProduct} onChange={handleChange} disabled={chosen ? false : true}>
-            {
-                productList ? productList.map((product) => 
-                    <option key = {uuidv4()} value={product[1]}>{product[1]}</option>
-                ) : ''
-                }; 
-            </select>
-           
-            <button onClick={handleAdd}>ADD</button>
-            <button style={standList ? so : ho } onClick={handleStandHold}>{standHold.current}</button>
-        </div>
+
+        <AddProductButtons>
+            <Dropdown options={products} optionLabel="name" placeholder="Select a product"
+                name="products" value={pickedProduct} onChange={handleChange} disabled={chosen!=='  ' ? false : true}/>
+            <Button label="ADD" disabled={chosen==='  ' || pickedProduct===''} icon="pi pi-plus" onClick={handleStandHold}/>
+        
+            <Button className={!standList ? "p-button-raised p-button-rounded p-button-danger" : "p-button-raised p-button-rounded p-button-success"} 
+                onClick={handleStandHold} label={standHold.current}/>
+        </AddProductButtons>
     );
 };
 

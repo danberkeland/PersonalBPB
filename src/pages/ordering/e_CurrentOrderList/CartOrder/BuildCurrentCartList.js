@@ -85,7 +85,7 @@ const BuildCurrentCartList = () => {
             <React.Fragment key={order["prodName"]+"b"}>
                 <TrashCan>
                 <Button icon="pi pi-trash" 
-                    className="p-button-raised p-button-rounded p-button-warning p-button-sm"
+                    className="p-button-outlined p-button-rounded p-button-help p-button-sm"
                     value="0"
                     onClick={e => {handleQtyModify(order["prodName"],"0",order["SO"])}}
                     key={order["prodName"]+"e"} 

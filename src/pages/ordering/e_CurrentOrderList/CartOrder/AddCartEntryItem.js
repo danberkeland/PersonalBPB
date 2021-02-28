@@ -32,15 +32,6 @@ const AddProductButtons = styled.div`
 
 const AddCartEntryItem = () => {
 
-    const cities = [
-        {name: 'New York', code: 'NY'},
-        {name: 'Rome', code: 'RM'},
-        {name: 'London', code: 'LDN'},
-        {name: 'Istanbul', code: 'IST'},
-        {name: 'Paris', code: 'PRS'}
-        ];
-    
-
     const { products } = useContext(ProductsContext)
     const { orders, setOrders } = useContext(OrdersContext)
     const { chosen, delivDate, route, ponote } = useContext(CurrentDataContext)

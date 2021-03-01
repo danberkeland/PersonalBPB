@@ -114,7 +114,7 @@ function OrderEntryButtons() {
           }
   
     if (newOrderList){
-      document.getElementById('orderCommand').focus()
+      //document.getElementById('orderCommand').focus()
       setOrders(newOrderList)
     }
 

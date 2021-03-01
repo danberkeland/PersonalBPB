@@ -69,34 +69,34 @@ const RecentOrderList = () => {
     setDelivDate(e.target.dataset.date)   
   }
 
-  const handleRemove = async (e) => {
+  const handleRemove = async (date,cust,whole,cart) => {
 
-    if (e.target.dataset.cart === "true") {
+    
+    if (cart) {
         
         let originalOrdersToAddBack = cloneDeep(originalOrders)
         
-        originalOrdersToAddBack = originalOrdersToAddBack.filter(order => order[2] === e.target.dataset.cust &&
-            order[7] === convertDatetoBPBDate(e.target.dataset.date))
+        originalOrdersToAddBack = originalOrdersToAddBack.filter(order => order["custName"] === cust &&
+            order["delivDate"] === convertDatetoBPBDate(date))
 
         let ordersToModify = cloneDeep(orders);
         
-        ordersToModify = ordersToModify.filter(order => order[2] !== e.target.dataset.cust &&
-          order[7] !== convertDatetoBPBDate(e.target.dataset.date))
+        ordersToModify = ordersToModify.filter(order => order["custName"] !== cust &&
+          order["delivDate"] !== convertDatetoBPBDate(date))
 
         let ordersToUpdate = originalOrdersToAddBack.concat(ordersToModify);
-
         setOrders(ordersToUpdate)
         
 
     } else {
         let originalStandingToAddBack = cloneDeep(originalStanding)
 
-        originalStandingToAddBack = originalStandingToAddBack.filter(stand => stand[8] === e.target.dataset.cust)
+        originalStandingToAddBack = originalStandingToAddBack.filter(stand => stand["custName"] === cust)
 
         let standingToModify = cloneDeep(standing);
     
 
-        standingToModify = standingToModify.filter(stand => stand[8] !== e.target.dataset.cust)
+        standingToModify = standingToModify.filter(stand => stand["custName"] !== cust)
 
         let standingToUpdate = originalStandingToAddBack.concat(standingToModify)
 
@@ -108,13 +108,13 @@ const RecentOrderList = () => {
 
       let recentToMod = cloneDeep(recentOrders)
   
-      let ind = await recentToMod.findIndex(recent => recent[0] === e.target.dataset.date &&
-                  recent[1] === e.target.dataset.cust &&
-                  recent[2].toString() === e.target.dataset.whole &&
-                  recent[3].toString() === e.target.dataset.cart)
+      let ind = await recentToMod.findIndex(recent => recent[0] === date &&
+                  recent[1] === cust &&
+                  recent[2].toString() === whole &&
+                  recent[3].toString() === cart)
 
       recentToMod.splice(ind,1)
-      document.getElementById('orderCommand').focus()
+      //document.getElementById('orderCommand').focus()
       setRecentOrders(recentToMod)
       
   }
@@ -132,7 +132,7 @@ const RecentOrderList = () => {
                                           data-cust={order[1]}
                                           data-whole={order[2]}
                                           data-cart={order[3]}
-                                          onClick={e => {handleRemove(e)}} 
+                                          onClick={() => handleRemove(order[0],order[1],order[2],order[3])} 
                                           key={order[0]+"_"+order[1]+"_"+order[2]+"trash"} 
                                           name={order[0]+"_"+order[1]+"_"+order[2]+"_"+order[3]}
                                           id={order[0]+"_"+order[1]+"_"+order[2]}></Button>

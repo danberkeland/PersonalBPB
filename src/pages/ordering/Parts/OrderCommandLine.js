@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 
 import { CurrentDataContext } from '../../../dataContexts/CurrentDataContext';
 import { OrdersContext } from '../../../dataContexts/OrdersContext';
@@ -18,16 +18,22 @@ import {
   } from '../../../helpers/CartBuildingHelpers'
 
 import { InputText } from 'primereact/inputtext';
+import { Button } from 'primereact/button';
 
 import swal from '@sweetalert/with-react';
 
 import styled from 'styled-components'
 
+
 const CommandLine = styled.span`
-    display: grid;
-    justify-self: stretch;
+  display: flex;
     `
- 
+
+const CommandHelp = styled.div`
+  text-align: left;
+`
+
+
 const OrderCommandLine = () => {
 
   const { chosen, setChosen, delivDate, setDelivDate, route, ponote } = useContext(CurrentDataContext)
@@ -39,7 +45,7 @@ const OrderCommandLine = () => {
   
   let tomorrow = todayPlus()[1]
 
-
+  const op = useRef(null);
 
   const checkForCustomer = (entry, customers) => {
 
@@ -142,14 +148,37 @@ const OrderCommandLine = () => {
     return
   };
 
+
+  const lookingForHelp = () => {
+    
+    const el =document.createElement('div')
+    el.innerHTML = "<div style='text-align: left'><h3>How to use the Command Line</h3><p>This command line lets you use common bakery nicknames to enter orders.</p><p>To find a customer, enter a nickname.  Try 'high' or 'kberg'.  For a full list of customers and nicknames, <a href='/Customers'>CLICK HERE</a></p><p>To enter a new product order, try '5 bag' or '10 bz' or '12 pl'.  You can even put them all in one line like '5 bag 10 bz 12 pl'. For a list of product nicknames, <a href='/Products'>CLICK HERE</a></p><p>To jump to a future date, try 'tomorrow','2day','sun','mon','tues', etc.</p><p>To enter a retail order, type 'retail', then a space, then the customer's name.  For example, 'retail Milos'</p></div>"
+
+    swal ({
+      
+      showConfirmButton: true,
+      confirmButtonText: '<a href="/Customers">Customers</a>',
+      cancelBUttonText: "Products",
+    
+      content: el
+    })
+  }
+
   
   return (  
+    <React.Fragment>
     <CommandLine>
-    <span className="p-float-label">
-      <InputText id="orderCommand" size="50" onKeyUp={handleInput}/>
-      <label htmlFor="orderCommand">Enter Customers, Orders, Dates ...</label>
-    </span>
+      
+        <span className="p-float-label">
+   
+          <InputText id="orderCommand" size="50" onKeyUp={handleInput}/>
+          <label htmlFor="orderCommand">Enter Customers, Orders, Dates ...</label>
+        </span>
+        <Button icon="pi pi-question" className="p-button-outlined p-button-rounded p-button-help p-button-sm"
+          onClick={e => lookingForHelp(e)}/>
     </CommandLine>
+    
+    </React.Fragment>
       
   );
 }

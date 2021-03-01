@@ -26,7 +26,6 @@ export const convertDatetoStandingDate = (entry) => {
 export const todayPlus = () => {
     let today = new Date()
     let todaySend = today.toISOString().split('T')[0]
-    console.log(todaySend)
 
     let tomorrow = new Date()
     tomorrow.setDate(tomorrow.getDate()+1)
@@ -62,7 +61,6 @@ export const daysOfTheWeek = () => {
 
     let Wed = new Date()
     Wed.setDate(today.getDate() + (timeDelta+3)%7)
-    console.log(Wed)
     let WedSend = Wed.toISOString().split('T')[0]
 
     let Thurs = new Date()

@@ -3,19 +3,22 @@ import React, { useContext, useEffect, useState } from 'react';
 import { CustomerContext } from '../../../dataContexts/CustomerContext';
 import { CurrentDataContext } from '../../../dataContexts/CurrentDataContext';
 import { ToggleContext } from '../../../dataContexts/ToggleContext';
+import { OrdersContext } from '../../../dataContexts/OrdersContext';
+import { StandingContext } from '../../../dataContexts/StandingContext';
 
 import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { RadioButton } from 'primereact/radiobutton';
 
 import { tomorrow } from "../../../helpers/dateTimeHelpers"
-
 import { createRetailOrderCustomers } from "../../../helpers/sortDataHelpers"
+import { buildCurrentOrder } from "../../../helpers/CartBuildingHelpers"
 
 
 
 import styled from 'styled-components'
-import { OrdersContext } from '../../../dataContexts/OrdersContext';
+
+
 
 const CurrentInfo = styled.div`
     width: 100%;
@@ -67,13 +70,13 @@ const CurrentInfo = styled.div`
 
 const CurrentOrderInfo = () => {
 
-  const {cartList, standList, orderTypeWhole } = useContext(ToggleContext)
+  const {cartList, standList, orderTypeWhole, setModifications } = useContext(ToggleContext)
   const { orders } = useContext(OrdersContext)
+  const { standing } = useContext(StandingContext)
   const { customers } = useContext(CustomerContext)
-  const { chosen, setRoute, ponote, setPonote, setChosen, delivDate, setDelivDate, currentCartList } = useContext(CurrentDataContext)
+  const { chosen, route, setRoute, ponote, setPonote, setChosen, delivDate, setDelivDate, currentCartList } = useContext(CurrentDataContext)
 
   const [ customerGroup, setCustomerGroup ] = useState(customers)
-  const [ delivStatus, setDelivStatus ] = useState('slopick')
 
 
   let orderType
@@ -83,33 +86,57 @@ const CurrentOrderInfo = () => {
 
   useEffect(() => {
     orderTypeWhole ? setCustomerGroup(customers) : setCustomerGroup(createRetailOrderCustomers(orders))
-},[ customers, orderTypeWhole, orders ])
+  },[ customers, orderTypeWhole, orders ])
 
 
-    useEffect(() => {
-      if (currentCartList.length>0){
-        setDelivStatus(currentCartList[0]["route"])
-        setRoute(currentCartList[0]["route"])
-        if (currentCartList[0]["ponote"]!=="na" && currentCartList[0]["ponote"] !==undefined){
-          setPonote(currentCartList[0]["ponote"])
-        } else {
-          setPonote("")
-        }
-      }
-    }, [currentCartList])
-
-    
-    const handleChosen = (chosen) => {
-      setChosen(chosen)
-      setDelivDate(tomorrow())
+  useEffect(() => {
+    if (currentCartList.length>0){
+      setRoute(currentCartList[0]["route"])
     }
+  },[currentCartList])
 
-    const changeDate = (date) => {
-      let fd = new Date(date)
-      fd.setMinutes(fd.getMinutes()+fd.getTimezoneOffset()) 
-      let returnDate = fd.toDateString()
-      
-      return returnDate
+
+  useEffect(() => {
+    if (currentCartList.length>0){
+      if (currentCartList[0]["PONote"]!=="" && currentCartList[0]["PONote"] !==undefined){
+        setPonote(currentCartList[0]["PONote"])
+      } else {
+        setPonote("")
+      }
+    }
+  },[currentCartList])
+
+
+  useEffect(() => {
+    let currentOrderList = buildCurrentOrder(chosen,delivDate,orders,standing)
+    if (currentCartList.length>0){
+      if (currentOrderList[0]["route"]!==route){
+        setModifications(true)
+      }
+    }
+  },[route])
+
+  
+  useEffect(() => {
+    let currentOrderList = buildCurrentOrder(chosen,delivDate,orders,standing)
+    if (currentCartList.length>0){
+      if (currentOrderList[0]["PONote"]!==ponote){
+        setModifications(true)
+      }
+    }
+  },[ponote])
+    
+  
+  const handleChosen = (chosen) => {
+    setChosen(chosen)
+    setDelivDate(tomorrow())
+  }
+  const changeDate = (date) => {
+    let fd = new Date(date)
+    fd.setMinutes(fd.getMinutes()+fd.getTimezoneOffset()) 
+    let returnDate = fd.toDateString()
+    
+    return returnDate
       
     }
 
@@ -134,15 +161,15 @@ const CurrentOrderInfo = () => {
               onChange={(e) => handleChosen(e.value.name)}/>     
             
             <RadioButton value="deliv" name="delivery" 
-              onChange={(e) => setDelivStatus(e.value)} checked={delivStatus === 'deliv'}/>
+              onChange={(e) => setRoute(e.value)} checked={route === 'deliv'}/>
             <label htmlFor="delivery">Delivery</label>
             
             <RadioButton value="slopick" name="delivery"
-              onChange={(e) => setDelivStatus(e.value)} checked={delivStatus === 'slopick'} />
+              onChange={(e) => setRoute(e.value)} checked={route === 'slopick'} />
             <label htmlFor="pickupSLO">Pick up SLO</label>
             
             <RadioButton value="atownpick" name="delivery" 
-              onChange={(e) => setDelivStatus(e.value)} checked={delivStatus === 'atownpick'}/>
+              onChange={(e) => setRoute(e.value)} checked={route === 'atownpick'}/>
             <label htmlFor="pickupAtown">Pick up Carlton</label>
 
           </FulfillOptions>

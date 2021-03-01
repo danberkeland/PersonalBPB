@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from 'react';
+import React, { useContext } from 'react';
 
 import { CurrentDataContext } from '../../../dataContexts/CurrentDataContext';
 import { OrdersContext } from '../../../dataContexts/OrdersContext';
@@ -29,11 +29,6 @@ const CommandLine = styled.span`
   display: flex;
     `
 
-const CommandHelp = styled.div`
-  text-align: left;
-`
-
-
 const OrderCommandLine = () => {
 
   const { chosen, setChosen, delivDate, setDelivDate, route, ponote } = useContext(CurrentDataContext)
@@ -45,7 +40,6 @@ const OrderCommandLine = () => {
   
   let tomorrow = todayPlus()[1]
 
-  const op = useRef(null);
 
   const checkForCustomer = (entry, customers) => {
 

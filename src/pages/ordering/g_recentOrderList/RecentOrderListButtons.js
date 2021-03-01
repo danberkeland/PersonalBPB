@@ -81,8 +81,10 @@ const RecentOrderListButtons = () => {
       <React.Fragment>      
         <RecentButton>
           {recentOrders.length>0 ? 
-            <Button label="Upload" icon="pi pi-upload" className="p-button-raised p-button-rounded p-button-danger" /> :
-            <Button label="Upload" icon="pi pi-upload" disabled className="p-button-raised p-button-rounded p-button-success" />}
+            <Button label="Upload" icon="pi pi-upload" 
+            className="p-button-raised p-button-rounded p-button-danger" onClick={handleUpload}/> :
+            <Button label="Upload" icon="pi pi-upload" 
+            disabled className="p-button-raised p-button-rounded p-button-success" onClick={handleUpload}/>}
        
         </RecentButton>
     </React.Fragment>  

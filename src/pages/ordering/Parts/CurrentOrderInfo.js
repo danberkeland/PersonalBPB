@@ -92,8 +92,16 @@ const CurrentOrderInfo = () => {
   useEffect(() => {
     if (currentCartList.length>0){
       setRoute(currentCartList[0]["route"])
+    } 
+    let ind=customers.findIndex(cust => cust["name"]===chosen)
+    if (ind>=0){
+      if (customers[ind]["zoneName"]!=="slopick" && customers[ind]["zoneName"]!=="atownpick"){
+      setRoute("deliv")
+      } else {
+        setRoute(customers[ind]["zoneName"])
+      }
     }
-  },[currentCartList])
+  },[currentCartList, chosen])
 
 
   useEffect(() => {
@@ -112,8 +120,8 @@ const CurrentOrderInfo = () => {
     if (currentCartList.length>0){
       if (currentOrderList[0]["route"]!==route){
         setModifications(true)
-      }
-    }
+      } 
+    } 
   },[route])
 
   
@@ -131,6 +139,8 @@ const CurrentOrderInfo = () => {
     setChosen(chosen)
     setDelivDate(tomorrow())
   }
+
+
   const changeDate = (date) => {
     let fd = new Date(date)
     fd.setMinutes(fd.getMinutes()+fd.getTimezoneOffset()) 

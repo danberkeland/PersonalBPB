@@ -111,12 +111,12 @@ export const createOrderUpdatesClip = (orders, originalOrders) => {
     
     for (let i=0; i<orderData.length; ++i ){
         for (let j=0; j<originalOrderData.length; ++j){
-            if (  orderData[i][0] === originalOrderData[j][0] &&
-                orderData[i][1] === originalOrderData[j][1] &&
-                orderData[i][2] === originalOrderData[j][2] &&
-                orderData[i][3] === originalOrderData[j][3] &&
-                orderData[i][4] === originalOrderData[j][4] &&
-                orderData[i][7] === originalOrderData[j][7] 
+            if (  orderData[i]["qty"] === originalOrderData[j]["qty"] &&
+                orderData[i]["prodName"] === originalOrderData[j]["prodName"] &&
+                orderData[i]["custName"] === originalOrderData[j]["custName"] &&
+                orderData[i]["PONote"] === originalOrderData[j]["PONote"] &&
+                orderData[i]["route"] === originalOrderData[j]["route"] &&
+                orderData[i]["delivDate"] === originalOrderData[j]["delivDate"] 
                 ){
                     orderData.splice(i,1);
                 }
@@ -124,7 +124,17 @@ export const createOrderUpdatesClip = (orders, originalOrders) => {
         }
 
     let timeStamp = new Date()
-    let timeStampedData = orderData.map(order => [order[5],order[1],order[2],order[3],order[4],order[5],order[6],order[7],timeStamp])
+    let timeStampedData = orderData.map(order => [
+        order["SO"],
+        order["prodName"],
+        order["custName"],
+        order["PONote"],
+        order["route"],
+        order["SO"],
+        order["isWhole"],
+        order["delivDate"],
+        timeStamp
+    ])
     return timeStampedData
 }
 
@@ -135,10 +145,10 @@ export const createStandHoldClip = (orders, originalOrders) => {
     
     for (let i=0; i<orderData.length; ++i ){
         for (let j=0; j<originalOrderData.length; ++j){
-            if (  orderData[i][0] === originalOrderData[j][0] &&
-                orderData[i][2] === originalOrderData[j][2] &&
-                orderData[i][7] === originalOrderData[j][7] &&
-                orderData[i][8] === originalOrderData[j][8] 
+            if (  orderData[i]["dayNum"] === originalOrderData[j]["dayNum"] &&
+                orderData[i]["qty"] === originalOrderData[j]["qty"] &&
+                orderData[i]["prodName"] === originalOrderData[j]["prodName"] &&
+                orderData[i]["custName"] === originalOrderData[j]["custName"] 
                 ){
                     orderData.splice(i,1);
                 }
@@ -146,6 +156,7 @@ export const createStandHoldClip = (orders, originalOrders) => {
         }
 
     let timeStamp = new Date()
-    let timeStampedData = orderData.map(order => [order[0],order[1],order[2],order[3],timeStamp,order[5],order[6],order[7],order[8]])
+    let timeStampedData = orderData.map(order => [
+        order["dayNum"],"na",order["qty"],"na",timeStamp,"na","na",order["prodName"],order["custName"]])
     return timeStampedData
 }

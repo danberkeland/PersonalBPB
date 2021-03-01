@@ -50,11 +50,13 @@ const OrderCommandLine = () => {
       let newRetailCustName = entry.replace("retail ","")
       let newRetailCustList = [...orders]
       let newRetailCustEntry = {
-        "name": newRetailCustName,
+        "custName": newRetailCustName,
         "isWhole":false,
+        "route":"atownpick",
         "delivDate":convertDatetoBPBDate(delivDate)
       }
       newRetailCustList.push(newRetailCustEntry)
+      console.log(newRetailCustList)
       setOrders(newRetailCustList)
       setDelivDate(tomorrow)
       setChosen(newRetailCustName);

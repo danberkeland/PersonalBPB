@@ -30,13 +30,9 @@ export const addAnEmptyRowToTop = (data) => {
 
 export const createRetailOrderCustomers = orders => {
     let special = orders.filter(order => order["isWhole"] === false)
-    special = special.map(order => ["","",order[2],""])
-    let unique = special.map(ar => JSON.stringify(ar))
-        .filter((itm, idx, arr) => arr.indexOf(itm) === idx)
-        .map(str => JSON.parse(str))
-    if (unique[0] !== ['','','','']){
-        unique.unshift(['','','',''])
-    }
+    special = special.map(order => ({"custName":order["custName"]}))
+    let unique = [...new Set(special.map(spec => spec.custName))]
+    unique = unique.map(uni => ({"name": uni}))
     return unique
 }
 

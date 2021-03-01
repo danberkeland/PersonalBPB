@@ -11,6 +11,7 @@ import { Button } from 'primereact/button';
 import { createOrderUpdatesClip, createStandHoldClip } from '../../../helpers/sortDataHelpers'
 
 import styled from 'styled-components'
+import RecentOrderList from './RecentOrderList';
 
 const RecentButton = styled.div`
   display: flex;
@@ -24,7 +25,7 @@ require('dotenv').config()
 
 const RecentOrderListButtons = () => {
 
-  const { orders, originalOrders, setRecentOrders, setOrdersLoaded } = useContext(OrdersContext)
+  const { orders, originalOrders, recentOrders, setRecentOrders, setOrdersLoaded } = useContext(OrdersContext)
   const { standing, originalStanding, setStandLoaded } = useContext(StandingContext)
   const { holding, originalHolding, setHoldLoaded } = useContext(HoldingContext)
 
@@ -79,7 +80,10 @@ const RecentOrderListButtons = () => {
   return (
       <React.Fragment>      
         <RecentButton>
-        <Button label="Upload" icon="pi pi-upload" className="p-button-raised p-button-rounded p-button-success" />
+          {recentOrders.length>0 ? 
+            <Button label="Upload" icon="pi pi-upload" className="p-button-raised p-button-rounded p-button-danger" /> :
+            <Button label="Upload" icon="pi pi-upload" disabled className="p-button-raised p-button-rounded p-button-success" />}
+       
         </RecentButton>
     </React.Fragment>  
   );

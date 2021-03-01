@@ -152,7 +152,7 @@ const OrderCommandLine = () => {
   const lookingForHelp = () => {
     
     const el =document.createElement('div')
-    el.innerHTML = "<div style='text-align: left'><h3>How to use the Command Line</h3><p>This command line lets you use common bakery nicknames to enter orders.</p><p>To find a customer, enter a nickname.  Try 'high' or 'kberg'.  For a full list of customers and nicknames, <a href='/Customers'>CLICK HERE</a></p><p>To enter a new product order, try '5 bag' or '10 bz' or '12 pl'.  You can even put them all in one line like '5 bag 10 bz 12 pl'. For a list of product nicknames, <a href='/Products'>CLICK HERE</a></p><p>To jump to a future date, try 'tomorrow','2day','sun','mon','tues', etc.</p><p>To enter a retail order, type 'retail', then a space, then the customer's name.  For example, 'retail Milos'</p></div>"
+    el.innerHTML = "<div style='text-align: left'><h3>How to use the Command Line</h3><p>This command line lets you use common bakery nicknames to enter orders.</p><p>To find a customer, enter a nickname.  Try 'high' or 'kberg'.  For a full list of customers and nicknames, <a href='/Customers' target='blank'>CLICK HERE</a></p><p>To enter a new product order, try '5 bag' or '10 bz' or '12 pl'.  You can even put them all in one line like '5 bag 10 bz 12 pl'. For a list of product nicknames, <a href='/Products' target='blank'>CLICK HERE</a></p><p>To jump to a future date, try 'tomorrow','2day','sun','mon','tues', etc.</p><p>To enter a retail order, type 'retail', then a space, then the customer's name.  For example, 'retail Milos'</p></div>"
 
     swal ({
       

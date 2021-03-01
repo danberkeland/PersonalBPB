@@ -5,17 +5,17 @@ import styled from 'styled-components'
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 
-import { CustomerContext, CustomerLoad } from './dataContexts/CustomerContext'
+import { CustomerContext, CustomerLoad } from '../../dataContexts/CustomerContext'
 
 
 
 
 function Customers() {
 
-  const { customer, custLoaded, setCustLoaded } = useContext(CustomerContext)
+  const { customers, custLoaded, setCustLoaded } = useContext(CustomerContext)
 
   useEffect(() => {
-    if (!customer){
+    if (!customers){
         setCustLoaded(false)
     }
   },[])
@@ -32,8 +32,9 @@ function Customers() {
     <React.Fragment>
       {!custLoaded ? <CustomerLoad /> : ''}
         <MainWrapper>
-          <DataTable value={customer} className="p-datatable-striped" selectionMode="single" dataKey="id">
+          <DataTable value={customers} className="p-datatable-striped" selectionMode="single" dataKey="id">
             <Column field="name" header="Customer"sortable filter filterPlaceholder="Search by name"></Column>
+            <Column field="nickname" header="Nickname"sortable filter filterPlaceholder="Search by nickname"></Column>
             <Column field="zoneName" header="Zone" sortable></Column>
             <Column field="email" header="Email"></Column>
             <Column field="phone" header="Phone"></Column>

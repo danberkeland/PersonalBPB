@@ -10,6 +10,7 @@ import { StandingContext } from './dataContexts/StandingContext';
 import { HoldingContext } from './dataContexts/HoldingContext';
 
 import styled from 'styled-components'
+import { useEffect } from 'react/cjs/react.development';
 
 const LoaderSetup = styled.div`
     width: 100%;
@@ -32,7 +33,24 @@ const LoaderBack = styled.div`
 
 const Loader = () => {
 
-    let { isLoading } = useContext(ToggleContext)
+    let { isLoading, setIsLoading } = useContext(ToggleContext)
+
+    let { custLoaded } = useContext(CustomerContext)
+    let { holdLoaded } = useContext(HoldingContext)
+    let { ordersLoaded } = useContext(OrdersContext)
+    let { prodLoaded } = useContext(ProductsContext)
+    let { standLoaded } = useContext(StandingContext)
+
+    useEffect(() => {
+        setIsLoading(true)
+        if (custLoaded === true &&
+            holdLoaded === true &&
+            ordersLoaded === true &&
+            prodLoaded === true &&
+            standLoaded === true){
+                setIsLoading(false)
+            }
+    },[custLoaded, holdLoaded, ordersLoaded, prodLoaded, standLoaded])
     
     return (
         

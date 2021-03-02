@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 
+import swal from '@sweetalert/with-react';
+
 
 export const useFetch = url => {
     const [state, setState] = useState({
@@ -97,4 +99,12 @@ export const FilterStandHoldDups = data => {
     }))
     
     return reassembledData
+}
+
+export const handleLoadingError = () => {
+    swal ({
+        text: " Uh oh!  Looks like there is a problem with the database.  This is usually temporary.  Please try again in a few minutes.",
+        icon: "error",
+        buttons: true,
+      })
 }

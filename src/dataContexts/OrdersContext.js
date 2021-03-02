@@ -1,8 +1,7 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 
-import { useFetch, FilterOrdersDups } from '../helpers/useFetch'
+import { useFetch, FilterOrdersDups, handleLoadingError } from '../helpers/useFetch'
 
-import { ToggleContext } from './ToggleContext';
 
 require('dotenv').config()
 
@@ -36,22 +35,21 @@ export const OrdersProvider = (props) => {
 export const OrdersLoad = () => {
 
     const { setOrders, setOriginalOrders, setOrdersLoaded } = useContext(OrdersContext)
-    const { setIsLoading } = useContext(ToggleContext)
 
     const { data } = useFetch(process.env.REACT_APP_API_ORDERS, []);
 
     
 
     useEffect(() => { 
-        setIsLoading(true) 
         if(data){
             if(data.length>0){
                 let currentData = FilterOrdersDups(data)
                 setOrders(currentData);
                 setOriginalOrders(currentData);
                 setOrdersLoaded(true)
-                setIsLoading(false)
             }
+        } else {
+            handleLoadingError()
         }
     },[data]);
 

@@ -1,9 +1,8 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 
-import { sortAtoZDataByIndex } from '../helpers/sortDataHelpers'
-import { useFetch, FilterStandHoldDups } from '../helpers/useFetch'
+import { useFetch, FilterStandHoldDups, handleLoadingError } from '../helpers/useFetch'
 
-import { ToggleContext } from './ToggleContext';
+
 
 require('dotenv').config()
 
@@ -30,19 +29,18 @@ export const StandingLoad = () => {
     const { data } = useFetch(process.env.REACT_APP_API_STANDING,[]);
 
     const { setStanding, setOriginalStanding, setStandLoaded } = useContext(StandingContext)
-    const { setIsLoading } = useContext(ToggleContext)
     
 
     useEffect(() => { 
-        setIsLoading(true) 
         if(data){
             if(data.length>0){
                 let currentData = FilterStandHoldDups(data)
                 setOriginalStanding(currentData);
                 setStanding(currentData);
                 setStandLoaded(true)
-                setIsLoading(false)
             }
+        } else {
+            handleLoadingError()
         }
     },[data]);
     

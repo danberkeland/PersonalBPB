@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 
 
 import { ProgressSpinner } from 'primereact/progressspinner';
@@ -10,7 +10,6 @@ import { StandingContext } from './dataContexts/StandingContext';
 import { HoldingContext } from './dataContexts/HoldingContext';
 
 import styled from 'styled-components'
-import { useEffect } from 'react/cjs/react.development';
 
 const LoaderSetup = styled.div`
     width: 100%;

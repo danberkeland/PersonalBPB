@@ -55,15 +55,13 @@ const RecentOrderListButtons = () => {
 
 
     fetch(process.env.REACT_APP_API_SENDORDERS, uploadOrders)
-      .then(response => response.status===200 ? setOrdersLoaded(false): '')
-      
-      
+      .then(response => response.status===200 ? setOrdersLoaded(false): '') 
 
     fetch(process.env.REACT_APP_API_SENDSTANDING, uploadStanding)
-    .then(response => response.status===200 ? setStandLoaded(false): '')
+      .then(response => response.status===200 ? setStandLoaded(false): '')
 
     fetch(process.env.REACT_APP_API_SENDHOLDING, uploadHolding)
-    .then(response => response.status===200 ? setHoldLoaded(false): '')
+      .then(response => response.status===200 ? setHoldLoaded(false): '')
 
 
     

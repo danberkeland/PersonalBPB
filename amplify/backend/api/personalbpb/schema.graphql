@@ -1,39 +1,6 @@
-type Products @model @auth(rules: [{allow: public}]) {
-  id: ID!
-  earliestAvailable: AWSTime!
-  prodName: String!
-  nickName: String!
-  packGroup: String
-  packSize: Int!
-  doughType: String
-  freezerThaw: Boolean
-  packGroupOrder: Int
-}
-
-type Customers @model @auth(rules: [{allow: public}]) {
+type Customer @model @auth(rules: [{allow: public}]) {
   id: ID!
   nickName: String!
   custName: String!
-  zoneName: String!
-  timeStamp: AWSTimestamp!
-  billAddr1: String
-  billAddr2: String
-  billAddrCity: String
-  billAddrZip: String
-  billEmail: AWSEmail
-  firstName: String
-  lastName: String
-  phone: AWSPhone
-  toBePrinted: Boolean
-  ToBeEmailed: Boolean
-  Net: String
-  Invoicing: String
-  Wholesale: String!
-  prodsNotAllowed: [String]
-  earliestDelivery: AWSTime!
-  webpageURL: AWSURL
-  picURL: AWSURL
-  gMaps: String
-  specialInstructions: String
 }
  

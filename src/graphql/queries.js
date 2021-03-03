@@ -1,28 +1,111 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const getTodo = /* GraphQL */ `
-  query GetTodo($id: ID!) {
-    getTodo(id: $id) {
+export const getProducts = /* GraphQL */ `
+  query GetProducts($id: ID!) {
+    getProducts(id: $id) {
       id
-      name
-      description
+      earliestAvailable
+      prodName
+      nickName
+      packGroup
+      packSize
+      doughType
+      freezerThaw
+      packGroupOrder
       createdAt
       updatedAt
     }
   }
 `;
-export const listTodos = /* GraphQL */ `
-  query ListTodos(
-    $filter: ModelTodoFilterInput
+export const listProductss = /* GraphQL */ `
+  query ListProductss(
+    $filter: ModelProductsFilterInput
     $limit: Int
     $nextToken: String
   ) {
-    listTodos(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    listProductss(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        name
-        description
+        earliestAvailable
+        prodName
+        nickName
+        packGroup
+        packSize
+        doughType
+        freezerThaw
+        packGroupOrder
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getCustomers = /* GraphQL */ `
+  query GetCustomers($id: ID!) {
+    getCustomers(id: $id) {
+      id
+      nickName
+      custName
+      zoneName
+      timeStamp
+      billAddr1
+      billAddr2
+      billAddrCity
+      billAddrZip
+      billEmail
+      firstName
+      lastName
+      phone
+      toBePrinted
+      ToBeEmailed
+      Net
+      Invoicing
+      Wholesale
+      prodsNotAllowed
+      earliestDelivery
+      webpageURL
+      picURL
+      gMaps
+      specialInstructions
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listCustomerss = /* GraphQL */ `
+  query ListCustomerss(
+    $filter: ModelCustomersFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listCustomerss(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        nickName
+        custName
+        zoneName
+        timeStamp
+        billAddr1
+        billAddr2
+        billAddrCity
+        billAddrZip
+        billEmail
+        firstName
+        lastName
+        phone
+        toBePrinted
+        ToBeEmailed
+        Net
+        Invoicing
+        Wholesale
+        prodsNotAllowed
+        earliestDelivery
+        webpageURL
+        picURL
+        gMaps
+        specialInstructions
         createdAt
         updatedAt
       }

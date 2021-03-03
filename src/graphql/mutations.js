@@ -1,43 +1,166 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const createTodo = /* GraphQL */ `
-  mutation CreateTodo(
-    $input: CreateTodoInput!
-    $condition: ModelTodoConditionInput
+export const createProducts = /* GraphQL */ `
+  mutation CreateProducts(
+    $input: CreateProductsInput!
+    $condition: ModelProductsConditionInput
   ) {
-    createTodo(input: $input, condition: $condition) {
+    createProducts(input: $input, condition: $condition) {
       id
-      name
-      description
+      earliestAvailable
+      prodName
+      nickName
+      packGroup
+      packSize
+      doughType
+      freezerThaw
+      packGroupOrder
       createdAt
       updatedAt
     }
   }
 `;
-export const updateTodo = /* GraphQL */ `
-  mutation UpdateTodo(
-    $input: UpdateTodoInput!
-    $condition: ModelTodoConditionInput
+export const updateProducts = /* GraphQL */ `
+  mutation UpdateProducts(
+    $input: UpdateProductsInput!
+    $condition: ModelProductsConditionInput
   ) {
-    updateTodo(input: $input, condition: $condition) {
+    updateProducts(input: $input, condition: $condition) {
       id
-      name
-      description
+      earliestAvailable
+      prodName
+      nickName
+      packGroup
+      packSize
+      doughType
+      freezerThaw
+      packGroupOrder
       createdAt
       updatedAt
     }
   }
 `;
-export const deleteTodo = /* GraphQL */ `
-  mutation DeleteTodo(
-    $input: DeleteTodoInput!
-    $condition: ModelTodoConditionInput
+export const deleteProducts = /* GraphQL */ `
+  mutation DeleteProducts(
+    $input: DeleteProductsInput!
+    $condition: ModelProductsConditionInput
   ) {
-    deleteTodo(input: $input, condition: $condition) {
+    deleteProducts(input: $input, condition: $condition) {
       id
-      name
-      description
+      earliestAvailable
+      prodName
+      nickName
+      packGroup
+      packSize
+      doughType
+      freezerThaw
+      packGroupOrder
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createCustomers = /* GraphQL */ `
+  mutation CreateCustomers(
+    $input: CreateCustomersInput!
+    $condition: ModelCustomersConditionInput
+  ) {
+    createCustomers(input: $input, condition: $condition) {
+      id
+      nickName
+      custName
+      zoneName
+      timeStamp
+      billAddr1
+      billAddr2
+      billAddrCity
+      billAddrZip
+      billEmail
+      firstName
+      lastName
+      phone
+      toBePrinted
+      ToBeEmailed
+      Net
+      Invoicing
+      Wholesale
+      prodsNotAllowed
+      earliestDelivery
+      webpageURL
+      picURL
+      gMaps
+      specialInstructions
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateCustomers = /* GraphQL */ `
+  mutation UpdateCustomers(
+    $input: UpdateCustomersInput!
+    $condition: ModelCustomersConditionInput
+  ) {
+    updateCustomers(input: $input, condition: $condition) {
+      id
+      nickName
+      custName
+      zoneName
+      timeStamp
+      billAddr1
+      billAddr2
+      billAddrCity
+      billAddrZip
+      billEmail
+      firstName
+      lastName
+      phone
+      toBePrinted
+      ToBeEmailed
+      Net
+      Invoicing
+      Wholesale
+      prodsNotAllowed
+      earliestDelivery
+      webpageURL
+      picURL
+      gMaps
+      specialInstructions
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteCustomers = /* GraphQL */ `
+  mutation DeleteCustomers(
+    $input: DeleteCustomersInput!
+    $condition: ModelCustomersConditionInput
+  ) {
+    deleteCustomers(input: $input, condition: $condition) {
+      id
+      nickName
+      custName
+      zoneName
+      timeStamp
+      billAddr1
+      billAddr2
+      billAddrCity
+      billAddrZip
+      billEmail
+      firstName
+      lastName
+      phone
+      toBePrinted
+      ToBeEmailed
+      Net
+      Invoicing
+      Wholesale
+      prodsNotAllowed
+      earliestDelivery
+      webpageURL
+      picURL
+      gMaps
+      specialInstructions
       createdAt
       updatedAt
     }

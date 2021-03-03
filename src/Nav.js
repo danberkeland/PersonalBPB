@@ -1,10 +1,9 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 
 import { Menubar } from 'primereact/menubar';
 import { TabMenu } from 'primereact/tabmenu';
+import { AmplifySignOut } from '@aws-amplify/ui-react'
 
-
-import swal from '@sweetalert/with-react';
 
 import 'primereact/resources/themes/bootstrap4-light-purple/theme.css';
 import 'primereact/resources/primereact.min.css';
@@ -13,8 +12,15 @@ import 'primeicons/primeicons.css';
 import styled from 'styled-components'
 
 const BackGround = styled.div`
+      display: flex;
       width: 100%;
-      background-color: white
+      background-color: white;
+   `
+
+const TopBar = styled.div`
+      display: grid;
+      grid-template-columns: 10fr 1fr;
+      background-color: white;
    `
 
 function Nav() {
@@ -76,7 +82,10 @@ function Nav() {
 
   return (
       <div className = "card">
+         <TopBar>
          <Menubar model={items} />
+         <AmplifySignOut /> 
+         </TopBar>
          <BackGround>
          <TabMenu model={
            selectedMenu === "prod" ? proditems :
@@ -86,11 +95,10 @@ function Nav() {
            selectedMenu === "items" ? itemitems :
            selectedMenu === "billing" ? billingitems :
            selectedMenu === "settings" ? settingsitems :
-           selectedMenu === "" ? noitems :
-
-           ''
-           } />
+           selectedMenu === "" ? noitems : ''
+           } /> 
          </BackGround>
+         
       </div>          
   );
 }

@@ -64,8 +64,8 @@ const OrderCommandLine = () => {
     } 
   
     for (let cust of customers) {
-      if (entry.includes(cust["name"]) || entry.includes(cust["nickname"])) {
-        nextCustomer = cust["name"];
+      if (entry.includes(cust["custName"]) || entry.includes(cust["nickName"])) {
+        nextCustomer = cust["custName"];
         if (nextCustomer !== '  '){
           setChosen(nextCustomer)
           setRouteIsOn(true)

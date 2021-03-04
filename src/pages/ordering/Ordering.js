@@ -5,6 +5,7 @@ import CurrentOrderInfo from './Parts/CurrentOrderInfo'
 import CurrentOrderList from './Parts/CurrentOrderList'
 import OrderCommandLine from './Parts/OrderCommandLine'
 import OrderEntryButtons from './Parts/OrderEntryButtons'
+import ExportToDatabaseButtons from './Parts/ExportToDatabaseButtons'
 import RecentOrderList from './g_recentOrderList';
 
 import { CustomerContext, CustomerLoad } from '../../dataContexts/CustomerContext'
@@ -57,6 +58,7 @@ function Ordering() {
           <Calendar />
         </BasicContainer>
         <BasicContainer>
+          <ExportToDatabaseButtons />
           <OrderCommandLine />   
           <CurrentOrderInfo />  
           <CurrentOrderList />  

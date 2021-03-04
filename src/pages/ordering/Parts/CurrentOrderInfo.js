@@ -93,7 +93,7 @@ const CurrentOrderInfo = () => {
     if (currentCartList.length>0){
       setRoute(currentCartList[0]["route"])
     } 
-    let ind=customers.findIndex(cust => cust["name"]===chosen)
+    let ind=customers.findIndex(cust => cust["custName"]===chosen)
     if (ind>=0){
       if (customers[ind]["zoneName"]!=="slopick" && customers[ind]["zoneName"]!=="atownpick"){
       setRoute("deliv")
@@ -167,8 +167,8 @@ const CurrentOrderInfo = () => {
 
             <Dropdown id="customers" 
               value={chosen} options={customerGroup} 
-              optionLabel="name" placeholder={chosen==='  ' ? "Select a Customer ..." : chosen }
-              onChange={(e) => handleChosen(e.value.name)}/>     
+              optionLabel="custName" placeholder={chosen==='  ' ? "Select a Customer ..." : chosen }
+              onChange={(e) => handleChosen(e.value.custName)}/>     
             
             <RadioButton value="deliv" name="delivery" 
               onChange={(e) => setRoute(e.value)} checked={route === 'deliv'}/>

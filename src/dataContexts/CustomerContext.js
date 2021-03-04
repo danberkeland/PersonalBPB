@@ -1,11 +1,16 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 
-import { useFetch, handleLoadingError } from '../helpers/useFetch'
+import { listCustomers } from '../graphql/queries'
 
+import { API, graphqlOperation } from 'aws-amplify';
 
-require('dotenv').config()
 
 export const CustomerContext = createContext();
+
+const sortAtoZDataByIndex = (data,index) => {
+    data.sort(function(a,b){return a[index]>b[index] ? 1 : -1;})
+    return data
+}
 
 
 export const CustomerProvider = (props) => {
@@ -30,21 +35,22 @@ export const CustomerLoad = () => {
 
     const { setCustomer, setCustLoaded } = useContext(CustomerContext)
 
-    
-    let { data } = useFetch(process.env.REACT_APP_API_GETOBJCUSTOMER,[]);
+    useEffect(() => {
+        fetchCustomers()
+      },[])
 
 
-    useEffect(() => { 
-        if(data){
-            if(data.length>0){
-                setCustomer(data);
-                setCustLoaded(true)
-            }
-        } else {
-            handleLoadingError()
+    const fetchCustomers = async () => {
+        try{
+          const custData = await API.graphql(graphqlOperation(listCustomers))
+          const custList = custData.data.listCustomers.items;
+          sortAtoZDataByIndex(custList,"custName")
+          setCustomer(custList)
+          setCustLoaded(true)
+        } catch (error){
+          console.log('error on fetching Cust List', error)
         }
-    },[data]);
-    
+      }
   
 
     return (

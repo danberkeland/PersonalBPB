@@ -26,7 +26,6 @@ function Customers() {
     try{
       const custData = await API.graphql(graphqlOperation(listCustomers))
       const custList = custData.data.listCustomers.items;
-      console.log('cust list', custList)
       setCust(custList)
     } catch (error){
       console.log('error on fetching Cust List', error)

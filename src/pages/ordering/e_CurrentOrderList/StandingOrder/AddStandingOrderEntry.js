@@ -52,7 +52,7 @@ const AddCartEntryItem = () => {
 
 
     const handleChange = e => {
-        setPickedProduct(e.target.value.name)
+        setPickedProduct(e.target.value.prodName)
 
     } 
 
@@ -125,7 +125,7 @@ const AddCartEntryItem = () => {
 
         <AddProductButtons>
 
-            <Dropdown options={productList} optionLabel="name" 
+            <Dropdown options={productList} optionLabel="prodName" 
                 placeholder={pickedProduct==='' ? "Select a Product ..." : pickedProduct }
                 value={pickedProduct} 
                 onChange={handleChange} disabled={chosen!=='  ' ? false : true}/>

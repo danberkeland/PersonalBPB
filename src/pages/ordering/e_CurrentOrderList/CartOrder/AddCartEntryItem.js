@@ -57,7 +57,7 @@ const AddCartEntryItem = () => {
        
         let newOrder ={
             "qty": qty, 
-            "prodName": pickedProduct.name,
+            "prodName": pickedProduct.prodName,
             "custName": chosen, 
             "PONote": ponote, 
             "route": route, 
@@ -76,7 +76,7 @@ const AddCartEntryItem = () => {
 
     return (
         <AddProductButtons>
-            <Dropdown options={productList} optionLabel="name" placeholder="Select a product"
+            <Dropdown options={productList} optionLabel="prodName" placeholder="Select a product"
                 name="products" value={pickedProduct} onChange={handleChange} disabled={chosen!=='  ' ? false : true}/>
             <span className="p-float-label">
                 <InputText id="addedProdQty" size="10" disabled={chosen!=='  ' ? false : true}/>

@@ -1,8 +1,6 @@
 
 import React, { useContext, useEffect } from 'react';
 
-import swal from '@sweetalert/with-react';
-
 import { Button } from 'primereact/button';
 
 import { CurrentDataContext } from '../../../../dataContexts/CurrentDataContext';

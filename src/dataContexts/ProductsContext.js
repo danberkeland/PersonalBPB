@@ -1,20 +1,27 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 
-import { useFetch,handleLoadingError } from '../helpers/useFetch'
+import { listProducts } from '../graphql/queries'
+
+import { API, graphqlOperation } from 'aws-amplify';
+
+import { sortAtoZDataByIndex } from '../helpers/sortDataHelpers'
 
 
-require('dotenv').config()
+
 
 export const ProductsContext = createContext();
-
 
 export const ProductsProvider = (props) => {
 
     const [products, setProducts] = useState([]);
     const [ prodLoaded, setProdLoaded ] = useState(false)
-
+    
+    
     return (
-        <ProductsContext.Provider value={{ products, setProducts, prodLoaded, setProdLoaded }}>
+        <ProductsContext.Provider value={{ 
+            products, setProducts, 
+            prodLoaded, setProdLoaded
+            }}>
             {props.children}
         </ProductsContext.Provider>
     );   
@@ -24,25 +31,30 @@ export const ProductsProvider = (props) => {
 
 export const ProductsLoad = () => {
 
-    const { data } = useFetch(process.env.REACT_APP_API_PRODUCTS,[]);
-
     const { setProducts, setProdLoaded } = useContext(ProductsContext)
 
-    useEffect(() => { 
-        if(data){
-            if(data.length>0){
-                setProducts(data);
-                setProdLoaded(true)
-            }
-        } else {
-            handleLoadingError()
+    useEffect(() => {
+        fetchProducts()
+      },[])
+
+
+    const fetchProducts = async () => {
+        try{
+          const prodData = await API.graphql(graphqlOperation(listProducts))
+          const prodList = prodData.data.listProducts.items;
+          sortAtoZDataByIndex(prodList,"prodName")
+          setProducts(prodList)
+          setProdLoaded(true)
+        } catch (error){
+          console.log('error on fetching Cust List', error)
         }
-    },[data]);
-    
-    
+      }
+  
+
     return (
         <React.Fragment>
         </React.Fragment>
     )
     
 };
+

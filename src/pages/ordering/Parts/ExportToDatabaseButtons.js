@@ -103,9 +103,9 @@ const handleUpdateHolding = () => {}
 
   return (         
     <OrderButtons>
-      <Button label="ExportCustomers" icon="pi pi-upload" onClick={handleUpdateCustomers}
+      <Button disabled label="ExportCustomers" icon="pi pi-upload" onClick={handleUpdateCustomers}
         className={"p-button-raised p-button-rounded p-button-success"} />
-      <Button label="ExportProducts" icon="pi pi-upload" onClick={handleUpdateProducts}
+      <Button disabled label="ExportProducts" icon="pi pi-upload" onClick={handleUpdateProducts}
         className={"p-button-raised p-button-rounded p-button-success"} />
       <Button label="ExportOrders" icon="pi pi-upload" onClick={handleUpdateOrders}
         className={"p-button-raised p-button-rounded p-button-success"} />

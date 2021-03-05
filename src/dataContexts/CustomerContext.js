@@ -4,14 +4,12 @@ import { listCustomers } from '../graphql/queries'
 
 import { API, graphqlOperation } from 'aws-amplify';
 
+import { sortAtoZDataByIndex } from '../helpers/sortDataHelpers'
+
+
+
 
 export const CustomerContext = createContext();
-
-const sortAtoZDataByIndex = (data,index) => {
-    data.sort(function(a,b){return a[index]>b[index] ? 1 : -1;})
-    return data
-}
-
 
 export const CustomerProvider = (props) => {
 

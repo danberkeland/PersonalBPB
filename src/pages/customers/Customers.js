@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 
 import styled from 'styled-components'
 
@@ -6,8 +6,11 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 
 import { CustomerContext, CustomerLoad } from '../../dataContexts/CustomerContext'
-import Amplify, { API, graphqlOperation } from 'aws-amplify';
-import { listCustomers } from '../../graphql/queries';
+import { ProductsContext } from '../../dataContexts/ProductsContext'
+import { OrdersContext } from '../../dataContexts/OrdersContext';
+import { StandingContext } from '../../dataContexts/StandingContext';
+import { HoldingContext } from '../../dataContexts/HoldingContext';
+
 
 
 
@@ -15,22 +18,24 @@ import { listCustomers } from '../../graphql/queries';
 function Customers() {
 
   const { customers, custLoaded, setCustLoaded } = useContext(CustomerContext)
+  const { setProdLoaded } = useContext(ProductsContext)
+  let { setHoldLoaded } = useContext(HoldingContext)
+  let { setOrdersLoaded } = useContext(OrdersContext)
+  let { setStandLoaded } = useContext(StandingContext)
 
-  const [ cust, setCust ] =useState([])
 
   useEffect(() => {
-    fetchCustomers()
+  
+    if (!customers){
+        setCustLoaded(false)
+    }
+    setProdLoaded(true)
+    setHoldLoaded(true)
+    setOrdersLoaded(true)
+    setStandLoaded(true)
   },[])
 
-  const fetchCustomers = async () => {
-    try{
-      const custData = await API.graphql(graphqlOperation(listCustomers))
-      const custList = custData.data.listCustomers.items;
-      setCust(custList)
-    } catch (error){
-      console.log('error on fetching Cust List', error)
-    }
-  }
+  
 
 
   const MainWrapper = styled.div`
@@ -43,8 +48,9 @@ function Customers() {
 
   return (
     <React.Fragment>
+       {!custLoaded ? <CustomerLoad /> : ''}
         <MainWrapper>
-          <DataTable value={cust} className="p-datatable-striped" selectionMode="single" dataKey="id">
+          <DataTable value={customers} className="p-datatable-striped" selectionMode="single" dataKey="id">
             <Column field="custName" header="Customer"sortable filter filterPlaceholder="Search by name"></Column>
             <Column field="nickName" header="Nickname"sortable filter filterPlaceholder="Search by nickname"></Column>
           </DataTable>

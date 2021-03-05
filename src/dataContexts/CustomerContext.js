@@ -35,11 +35,13 @@ export const CustomerLoad = () => {
 
     useEffect(() => {
         fetchCustomers()
-      },[])
+    },[])
+
 
 
     const fetchCustomers = async () => {
         try{
+          console.log("got here")
           const custData = await API.graphql(graphqlOperation(listCustomers))
           const custList = custData.data.listCustomers.items;
           sortAtoZDataByIndex(custList,"custName")

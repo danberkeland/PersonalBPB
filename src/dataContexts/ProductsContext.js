@@ -40,7 +40,7 @@ export const ProductsLoad = () => {
 
     const fetchProducts = async () => {
         try{
-          const prodData = await API.graphql(graphqlOperation(listProducts))
+          const prodData = await API.graphql(graphqlOperation(listProducts, {limit: '500'}))
           const prodList = prodData.data.listProducts.items;
           sortAtoZDataByIndex(prodList,"prodName")
           setProducts(prodList)

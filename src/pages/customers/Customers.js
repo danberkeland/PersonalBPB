@@ -8,6 +8,9 @@ import { ScrollPanel } from 'primereact/scrollpanel';
 import { InputText } from "primereact/inputtext";
 import { InputMask } from 'primereact/inputmask';
 import { Dropdown } from 'primereact/dropdown';
+import { SelectButton } from 'primereact/selectbutton';
+
+
 
 import { CustomerContext, CustomerLoad } from '../../dataContexts/CustomerContext'
 import { ProductsContext } from '../../dataContexts/ProductsContext'
@@ -25,6 +28,9 @@ const cities = [
 ];
 
 
+
+
+
 function Customers() {
 
   const [ selectedCustomer, setSelectedCustomer ] = useState(null)
@@ -36,6 +42,7 @@ function Customers() {
   let { setStandLoaded } = useContext(StandingContext)
 
   
+  const options = ['Yes', 'No'];
 
   const handleSelection = e => {
     setSelectedCustomer(e.value)
@@ -56,7 +63,7 @@ function Customers() {
 
   const MainWrapper = styled.div`
     display: grid;
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: 1fr .66fr .66fr .66fr;
     height: 100vh;
     `
 
@@ -71,23 +78,31 @@ function Customers() {
 
     const DescripWrapper = styled.div`
       font-family: 'Montserrat', sans-serif;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+      display: flex;
+      flex-direction: column;
       justify-items: start;
       align-content: flex-start;
-      row-gap: 50px;
       width: 100%;
       background: #ffffff;
     `
 
     const GroupBox = styled.div`
-      border: 1px solid grey;
-      width: 80%;
-      height: auto;
+      display: flex;
+      flex-direction: column;
+      align-content: flex-start;
+      border: 1px solid lightgrey;
+      width: 95%;
       margin: 5px 10px;
-      padding: 10px;
+      padding: 5px 20px;
       `
-      
+    
+    const YesNoBox = styled.div`
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-around;
+      padding: 5px;
+      `
 
   
   return (
@@ -120,52 +135,17 @@ function Customers() {
                   <label htmlFor="custName"> Username</label><br />
                 </span> 
                 <InputText id="custName" placeholder={selectedCustomer.custName} />
-              </div>
+              </div><br />
 
               <div className="p-inputgroup">
                 <span className="p-inputgroup-addon">
                   <label htmlFor="nickName"> Nickname</label><br />
                 </span>
                 <InputText id="nickName" placeholder={selectedCustomer.nickName} />
-              </div>
+              </div><br />
 
             </GroupBox>
       
-
-
-            <GroupBox id="Contact">
-              <h2><i className="pi pi-user"></i> Contact</h2>
-
-              <div className="p-inputgroup">
-                <span className="p-inputgroup-addon">
-                  <label htmlFor="firstName"> First Name</label><br />  
-                </span>
-                <InputText id="firstName" placeholder={selectedCustomer.firstName} />
-              </div>
-              <div className="p-inputgroup">
-                <span className="p-inputgroup-addon">
-                  <label htmlFor="lastName"> Last Name</label><br />  
-                </span>
-                <InputText id="lastName" placeholder={selectedCustomer.lastName} />
-              </div>
-              <div className="p-inputgroup">
-                <span className="p-inputgroup-addon">
-                  <label htmlFor="email"> Email</label><br />
-                </span>
-                <InputText id="email" placeholder={selectedCustomer.email} />
-              </div>
-    
-              <div className="p-inputgroup">
-                <span className="p-inputgroup-addon">
-                  <label htmlFor="phone"> Phone</label><br />    
-                </span>
-                <InputMask mask="999-999-9999" id="phone" placeholder={selectedCustomer.phone} />
-              </div>
-
-            </GroupBox>
-
-
-
             <GroupBox id="Location">
               <h2><i className="pi pi-user"></i> Location</h2>
 
@@ -174,70 +154,101 @@ function Customers() {
                   <label htmlFor="zoneName">Zone</label><br />     
                 </span>
                 <Dropdown optionLabel="name" options={cities} placeholder="Select a Zone"/>
-              </div>
+              </div><br />
 
               <div className="p-inputgroup">
                 <span className="p-inputgroup-addon">
                   <label htmlFor="addr1">Address</label><br />     
                 </span>
                 <InputText id="addr1" placeholder={selectedCustomer.addr1} />
-              </div>
+              </div><br />
 
               <div className="p-inputgroup">
                 <span className="p-inputgroup-addon">
                   <label htmlFor="addr2">Address</label><br />     
                 </span>
                 <InputText id="addr2" placeholder={selectedCustomer.addr2} />
-              </div>
+              </div><br />
 
               <div className="p-inputgroup">
                 <span className="p-inputgroup-addon">
                   <label htmlFor="city">City</label><br />     
                 </span>
                 <InputText id="city" placeholder={selectedCustomer.city} />
-              </div>
+              </div><br />
 
               <div className="p-inputgroup">
                 <span className="p-inputgroup-addon">
                   <label htmlFor="zip">Zip</label><br />     
                 </span>
                 <InputText id="zip" placeholder={selectedCustomer.zip} />
-              </div>
+              </div><br />
 
             </GroupBox>
 
+          </DescripWrapper>
+
+          <DescripWrapper>
+
+          <GroupBox id="Contact">
+              <h2><i className="pi pi-user"></i> Contact</h2>
+
+              <div className="p-inputgroup">
+                <span className="p-inputgroup-addon">
+                  <label htmlFor="firstName"> First Name</label><br />  
+                </span>
+                <InputText id="firstName" placeholder={selectedCustomer.firstName} />
+              </div><br />
+              <div className="p-inputgroup">
+                <span className="p-inputgroup-addon">
+                  <label htmlFor="lastName"> Last Name</label><br />  
+                </span>
+                <InputText id="lastName" placeholder={selectedCustomer.lastName} />
+              </div><br />
+              <div className="p-inputgroup">
+                <span className="p-inputgroup-addon">
+                  <label htmlFor="email"> Email</label><br />
+                </span>
+                <InputText id="email" placeholder={selectedCustomer.email} />
+              </div><br />
+    
+              <div className="p-inputgroup">
+                <span className="p-inputgroup-addon">
+                  <label htmlFor="phone"> Phone</label><br />    
+                </span>
+                <InputMask mask="999-999-9999" id="phone" placeholder={selectedCustomer.phone} />
+              </div><br />
+
+            </GroupBox>
+            
 
 
             <GroupBox>
               <h2><i className="pi pi-user"></i> Billing</h2>
 
-              <div className="p-inputgroup">
-                <span className="p-inputgroup-addon">
-            
-                </span>
-                <InputText placeholder={selectedCustomer.toBePrinted} />
-              </div>
+              <YesNoBox>
+                <label htmlFor="paperInvoice">Paper Invoice</label>
+                  <SelectButton value="Yes" id="paperInvoice" options={options}/>
+              </YesNoBox>
+
+              <YesNoBox>
+                <label htmlFor="emailInvoice">Email Invoice</label>
+                  <SelectButton value="Yes" id="emailInvoice" options={options}/>
+              </YesNoBox>
 
               <div className="p-inputgroup">
                 <span className="p-inputgroup-addon">
-           
+                  <label htmlFor="terms">Terms</label>
                 </span>
-                <InputText placeholder={selectedCustomer.toBeEmailed} />
-              </div>
+                <Dropdown optionLabel="name" options={cities} placeholder="Select a Zone"/>
+              </div><br />
 
               <div className="p-inputgroup">
                 <span className="p-inputgroup-addon">
-            
+                  <label htmlFor="terms">Invoicing</label>
                 </span>
-                <InputText placeholder={selectedCustomer.Terms} />
-              </div>
-
-              <div className="p-inputgroup">
-                <span className="p-inputgroup-addon">
-            
-                </span>
-                <InputText placeholder={selectedCustomer.Invoicing} />
-              </div>
+                <Dropdown optionLabel="name" options={cities} placeholder="Select a Zone"/>
+              </div><br />
             </GroupBox>
           </DescripWrapper>
         </React.Fragment>

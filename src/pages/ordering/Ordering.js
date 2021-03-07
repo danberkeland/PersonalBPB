@@ -14,6 +14,7 @@ import { ProductsContext, ProductsLoad } from '../../dataContexts/ProductsContex
 import { StandingContext, StandingLoad } from '../../dataContexts/StandingContext'
 import { HoldingContext, HoldingLoad } from '../../dataContexts/HoldingContext'
 import { CurrentDataContext } from '../../dataContexts/CurrentDataContext'
+import { ToggleContext } from '../../dataContexts/ToggleContext'
 
 import styled from 'styled-components'
 
@@ -46,16 +47,22 @@ function Ordering(props) {
   const { ordersLoaded } = useContext(OrdersContext)
   const { holdLoaded } = useContext(HoldingContext)
   const { setChosen } = useContext(CurrentDataContext)
+  const { setCartList } = useContext(ToggleContext)
 
   useEffect(() => {
     if(props.location.search){
-    setChosen(props.location.search.split('=')[1].replace(/%20/g," ").replace(/%27/g,"'"))
+    setChosen(props.location.search.split('&')[1].split('=')[1].replace(/%20/g," ").replace(/%27/g,"'"))
+    if(props.location.search.split('&')[0].split('=')[1].replace(/%20/g," ").replace(/%27/g,"'")==="true"){
+    setCartList(true)
+    } else {
+      setCartList(false)
+    }
   }
   },[])
 
   
 
-  return (
+  return ( 
       <MainWindow>     
         {!ordersLoaded ? <OrdersLoad /> : ''}
         {!custLoaded ? <CustomerLoad /> : ''}

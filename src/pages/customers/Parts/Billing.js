@@ -33,8 +33,9 @@ const YesNoBox = styled.div`
 
 const Billing = ({ selectedCustomer, setSelectedCustomer }) => {
 
-    const options = ['Yes', 'No'];
-
+    const options = ['Y', 'N'];
+    console.log(selectedCustomer.toBeEmailed)
+    console.log(selectedCustomer.toBePrinted)
 
     const setDropDownValue = value => {
         let custToUpdate = clonedeep(selectedCustomer)
@@ -52,12 +53,12 @@ const Billing = ({ selectedCustomer, setSelectedCustomer }) => {
 
         <YesNoBox>
             <label htmlFor="paperInvoice">Paper Invoice</label>
-            <SelectButton value="Yes" id="paperInvoice" options={options}/>
+            <SelectButton value={selectedCustomer.toBePrinted} id="paperInvoice" options={options}/>
         </YesNoBox>
 
         <YesNoBox>
             <label htmlFor="emailInvoice">Email Invoice</label>
-            <SelectButton value="Yes" id="emailInvoice" options={options}/>
+            <SelectButton value={selectedCustomer.toBeEmailed} id="emailInvoice" options={options}/>
         </YesNoBox>
 
         <div className="p-inputgroup">

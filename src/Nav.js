@@ -5,7 +5,7 @@ import { TabMenu } from 'primereact/tabmenu';
 import { AmplifySignOut } from '@aws-amplify/ui-react'
 
 
-import 'primereact/resources/themes/bootstrap4-light-purple/theme.css';
+import 'primereact/resources/themes/saga-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 

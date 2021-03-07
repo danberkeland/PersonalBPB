@@ -1,6 +1,7 @@
 import React from 'react';
 
 import styled from 'styled-components'
+import 'primereact/resources/themes/saga-blue/theme.css';
 
 import { Button } from 'primereact/button';
 
@@ -15,7 +16,11 @@ const ButtonBox = styled.div`
     `
 
 const handleOrderClick = (e, selectedCustomer) => {
-    e && window.open('./Ordering?selectedCustomer='+selectedCustomer.custName)
+    e && window.open('./Ordering?cartList=true&selectedCustomer='+selectedCustomer.custName)
+}
+
+const handleStandClick = (e, selectedCustomer) => {
+    e && window.open('./Ordering?cartList=false&selectedCustomer='+selectedCustomer.custName)
 }
 
 const Buttons = ({ selectedCustomer }) => {
@@ -31,7 +36,7 @@ const Buttons = ({ selectedCustomer }) => {
             className={"p-button-raised p-button-rounded p-button-warning"} /><br /><br />
         <Button id="order" label="Tomorrow's Order" icon="pi pi-shopping-cart" onClick={e => {handleOrderClick(e, selectedCustomer)}}
             className={"p-button-raised p-button-rounded p-button-info"} /><br />
-        <Button label="Edit Standing Order" icon="pi pi-calendar" 
+        <Button label="Edit Standing Order" icon="pi pi-calendar" onClick={e => {handleStandClick(e, selectedCustomer)}}
             className={"p-button-raised p-button-rounded p-button-info"} /><br />
     </ButtonBox>    
   );

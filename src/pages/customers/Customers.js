@@ -18,6 +18,34 @@ import Billing from './Parts/Billing'
 import Buttons from './Parts/Buttons'
 
 
+const MainWrapper = styled.div`
+  display: grid;
+  grid-template-columns: 1fr .66fr .66fr .66fr;
+  height: 100vh;
+  `
+
+
+const DescripWrapper = styled.div`
+  font-family: 'Montserrat', sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-items: start;
+  align-content: flex-start;
+  width: 100%;
+  background: #ffffff;
+  `
+
+const GroupBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-content: flex-start;
+  border: 1px solid lightgrey;
+  width: 95%;
+  margin: 5px 10px;
+  padding: 5px 20px;
+  `
+
+
 
 function Customers() {
 
@@ -41,33 +69,7 @@ function Customers() {
     setStandLoaded(true)
   },[])
 
-  const MainWrapper = styled.div`
-    display: grid;
-    grid-template-columns: 1fr .66fr .66fr .66fr;
-    height: 100vh;
-    `
-
-
-  const DescripWrapper = styled.div`
-    font-family: 'Montserrat', sans-serif;
-    display: flex;
-    flex-direction: column;
-    justify-items: start;
-    align-content: flex-start;
-    width: 100%;
-    background: #ffffff;
-    `
-
-  const GroupBox = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-content: flex-start;
-    border: 1px solid lightgrey;
-    width: 95%;
-    margin: 5px 10px;
-    padding: 5px 20px;
-    `
-
+  
     
   return (
     <React.Fragment>
@@ -101,6 +103,7 @@ function Customers() {
           <DescripWrapper>
             <Buttons />
           </DescripWrapper>
+
         </React.Fragment>
         }
       </MainWrapper>

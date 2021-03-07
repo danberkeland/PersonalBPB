@@ -9,17 +9,24 @@ const clonedeep = require('lodash.clonedeep')
 
 
 const terms = [
-  {terms: "0",},
-  {terms: "15"},
-  {terms: "30"}
+    {terms: "0",},
+    {terms: "15"},
+    {terms: "30"}
 ]
 
 const invoicing = [
-  {invoicing: "daily"},
-  {invoicing: "weekly"},
-  {invoicing: "monthly"}
+    {invoicing: "daily"},
+    {invoicing: "weekly"},
+    {invoicing: "monthly"}
 ]
 
+const YesNoBox = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    padding: 5px;
+    `
 
 
 
@@ -27,15 +34,6 @@ const invoicing = [
 const Billing = ({ selectedCustomer, setSelectedCustomer }) => {
 
     const options = ['Yes', 'No'];
-
-
-    const YesNoBox = styled.div`
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-around;
-      padding: 5px;
-      `
 
 
     const setDropDownValue = value => {

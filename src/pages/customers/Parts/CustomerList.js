@@ -9,7 +9,13 @@ import { ScrollPanel } from 'primereact/scrollpanel';
 
 import { CustomerContext } from '../../../dataContexts/CustomerContext'
 
-
+const ListWrapper = styled.div`
+    font-family: 'Montserrat', sans-serif;
+    margin: auto;
+    width: 100%;
+    height: 100vh;
+    background: #ffffff;
+    `
 
 const CustomerList = ({ selectedCustomer, setSelectedCustomer }) => {
 
@@ -19,16 +25,6 @@ const CustomerList = ({ selectedCustomer, setSelectedCustomer }) => {
     const handleSelection = e => {
         setSelectedCustomer(e.value)
     }
-
-
-  const ListWrapper = styled.div`
-    font-family: 'Montserrat', sans-serif;
-    margin: auto;
-    width: 100%;
-    height: 100vh;
-    background: #ffffff;
-    `
-
   
   return (
     

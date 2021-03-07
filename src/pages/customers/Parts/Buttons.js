@@ -5,19 +5,17 @@ import styled from 'styled-components'
 import { Button } from 'primereact/button';
 
 
+const ButtonBox = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-content: flex-start;
+    width: 80%;
+    margin: 5px 10px;
+    padding: 5px 20px;
+    `
+
 const Buttons = () => {
 
-  
-    const ButtonBox = styled.div`
-      display: flex;
-      flex-direction: column;
-      align-content: flex-start;
-      width: 80%;
-      margin: 5px 10px;
-      padding: 5px 20px;
-      `
-
-  
   return (
    
     <ButtonBox>

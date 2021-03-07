@@ -9,6 +9,7 @@ import { InputText } from "primereact/inputtext";
 import { InputMask } from 'primereact/inputmask';
 import { Dropdown } from 'primereact/dropdown';
 import { SelectButton } from 'primereact/selectbutton';
+import { Button } from 'primereact/button';
 
 
 
@@ -18,14 +19,22 @@ import { OrdersContext } from '../../dataContexts/OrdersContext';
 import { StandingContext } from '../../dataContexts/StandingContext';
 import { HoldingContext } from '../../dataContexts/HoldingContext';
 
+import { sortAtoZDataByIndex } from '../../helpers/sortDataHelpers'
 
-const cities = [
-  {name: 'New York', code: 'NY'},
-  {name: 'Rome', code: 'RM'},
-  {name: 'London', code: 'LDN'},
-  {name: 'Istanbul', code: 'IST'},
-  {name: 'Paris', code: 'PRS'}
-];
+const clonedeep = require('lodash.clonedeep')
+
+
+const terms = [
+  {name: '15', value: '15'},
+  {name: '30', value: '30'},
+  {name: '0', value: '0'}
+]
+
+const invoicing = [
+  {name: 'daily', value: 'daily'},
+  {name: 'weekly', value: 'weekly'},
+  {name: 'monthly', value: 'monthly'}
+]
 
 
 
@@ -34,6 +43,7 @@ const cities = [
 function Customers() {
 
   const [ selectedCustomer, setSelectedCustomer ] = useState(null)
+  const [ zoneGroup, setZoneGroup ] = useState([])
 
   const { customers, custLoaded, setCustLoaded } = useContext(CustomerContext)
   const { setProdLoaded } = useContext(ProductsContext)
@@ -46,9 +56,24 @@ function Customers() {
 
   const handleSelection = e => {
     setSelectedCustomer(e.value)
-    console.log(e.value)
   }
 
+  useEffect(() => {
+    if (customers.length>0){
+      let zoneGroup = clonedeep(customers)
+      zoneGroup = zoneGroup.map(cust => cust["zoneName"])
+      for (let i=0; i<zoneGroup.length; ++i ){
+        for (let j=i+1; j<zoneGroup.length; ++j){
+          while(zoneGroup[i] === zoneGroup[j]){
+              zoneGroup.splice(j,1);
+          }
+        }
+      }
+      zoneGroup = zoneGroup.map(zone => ({"zoneName": zone}))
+      zoneGroup = sortAtoZDataByIndex(zoneGroup,"zoneName")
+      setZoneGroup(zoneGroup)
+  }
+  },[customers])
 
   useEffect(() => {
   
@@ -95,6 +120,16 @@ function Customers() {
       margin: 5px 10px;
       padding: 5px 20px;
       `
+
+    const ButtonBox = styled.div`
+      display: flex;
+      flex-direction: column;
+      align-content: flex-start;
+      width: 80%;
+      margin: 5px 10px;
+      padding: 5px 20px;
+      `
+
     
     const YesNoBox = styled.div`
       display: flex;
@@ -153,7 +188,8 @@ function Customers() {
                 <span className="p-inputgroup-addon">
                   <label htmlFor="zoneName">Zone</label><br />     
                 </span>
-                <Dropdown optionLabel="name" options={cities} placeholder="Select a Zone"/>
+                <Dropdown id="zoneName" optionLabel="zoneName" options={zoneGroup} 
+                  placeholder={selectedCustomer ? selectedCustomer.zoneName : "Select a Zone"}/>
               </div><br />
 
               <div className="p-inputgroup">
@@ -240,16 +276,30 @@ function Customers() {
                 <span className="p-inputgroup-addon">
                   <label htmlFor="terms">Terms</label>
                 </span>
-                <Dropdown optionLabel="name" options={cities} placeholder="Select a Zone"/>
+                <Dropdown id="terms" optionLabel="name" options={terms} 
+                placeholder={selectedCustomer ? selectedCustomer.terms : "Select Terms"}/>
               </div><br />
 
               <div className="p-inputgroup">
                 <span className="p-inputgroup-addon">
-                  <label htmlFor="terms">Invoicing</label>
+                  <label htmlFor="invoicing">Invoicing</label>
                 </span>
-                <Dropdown optionLabel="name" options={cities} placeholder="Select a Zone"/>
+                <Dropdown id="invoicing" optionLabel="name" options={invoicing} 
+                placeholder={selectedCustomer ? selectedCustomer.invoicing : "Invoicing Preference"}/>
               </div><br />
             </GroupBox>
+          </DescripWrapper>
+          <DescripWrapper>
+            <ButtonBox>
+              <Button label="Add a Customer" icon="pi pi-plus" 
+                className={"p-button-raised p-button-rounded"} /><br />
+              <Button label="Update Customer" icon="pi pi-user-edit" 
+                className={"p-button-raised p-button-rounded p-button-success"} /><br /><br />
+              <Button label="Tomorrows's Order" icon="pi pi-shopping-cart" 
+                className={"p-button-raised p-button-rounded p-button-info"} /><br />
+              <Button label="Edit Standing Order" icon="pi pi-calendar" 
+                className={"p-button-raised p-button-rounded p-button-info"} /><br />
+            </ButtonBox>
           </DescripWrapper>
         </React.Fragment>
         }

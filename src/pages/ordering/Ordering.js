@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 
 import Calendar from './Parts/Calendar'
 import CurrentOrderInfo from './Parts/CurrentOrderInfo'
@@ -13,6 +13,7 @@ import { OrdersContext, OrdersLoad } from '../../dataContexts/OrdersContext'
 import { ProductsContext, ProductsLoad } from '../../dataContexts/ProductsContext'
 import { StandingContext, StandingLoad } from '../../dataContexts/StandingContext'
 import { HoldingContext, HoldingLoad } from '../../dataContexts/HoldingContext'
+import { CurrentDataContext } from '../../dataContexts/CurrentDataContext'
 
 import styled from 'styled-components'
 
@@ -37,15 +38,23 @@ const MainWindow = styled.div`
 
 
 
-function Ordering() {
+function Ordering(props) {
 
   const { standLoaded } = useContext(StandingContext)
   const { prodLoaded } = useContext(ProductsContext)
   const { custLoaded } = useContext(CustomerContext)
   const { ordersLoaded } = useContext(OrdersContext)
   const { holdLoaded } = useContext(HoldingContext)
+  const { setChosen } = useContext(CurrentDataContext)
+
+  useEffect(() => {
+    if(props.location.search){
+    setChosen(props.location.search.split('=')[1].replace(/%20/g," ").replace(/%27/g,"'"))
+  }
+  },[])
 
   
+
   return (
       <MainWindow>     
         {!ordersLoaded ? <OrdersLoad /> : ''}

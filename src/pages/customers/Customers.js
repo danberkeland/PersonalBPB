@@ -101,7 +101,7 @@ function Customers() {
           </DescripWrapper>
 
           <DescripWrapper>
-            <Buttons />
+            <Buttons selectedCustomer={selectedCustomer}/>
           </DescripWrapper>
 
         </React.Fragment>

@@ -43,7 +43,6 @@ export const CustomerLoad = () => {
         try{
           const custData = await API.graphql(graphqlOperation(listCustomers, {limit: '500'}))
           const custList = custData.data.listCustomers.items;
-          console.log(custData.data.listCustomers.items)
           sortAtoZDataByIndex(custList,"custName")
           setCustomer(custList)
           setCustLoaded(true)

@@ -14,7 +14,11 @@ const ButtonBox = styled.div`
     padding: 5px 20px;
     `
 
-const Buttons = () => {
+const handleOrderClick = (e, selectedCustomer) => {
+    e && window.open('./Ordering?selectedCustomer='+selectedCustomer.custName)
+}
+
+const Buttons = ({ selectedCustomer }) => {
 
   return (
    
@@ -25,7 +29,7 @@ const Buttons = () => {
             className={"p-button-raised p-button-rounded p-button-success"} /><br />
         <Button label="Delete Customer" icon="pi pi-user-minus" 
             className={"p-button-raised p-button-rounded p-button-warning"} /><br /><br />
-        <Button label="Tomorrows's Order" icon="pi pi-shopping-cart" 
+        <Button id="order" label="Tomorrow's Order" icon="pi pi-shopping-cart" onClick={e => {handleOrderClick(e, selectedCustomer)}}
             className={"p-button-raised p-button-rounded p-button-info"} /><br />
         <Button label="Edit Standing Order" icon="pi pi-calendar" 
             className={"p-button-raised p-button-rounded p-button-info"} /><br />

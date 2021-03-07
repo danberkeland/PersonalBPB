@@ -25,15 +25,15 @@ const clonedeep = require('lodash.clonedeep')
 
 
 const terms = [
-  {name: '15', value: '15'},
-  {name: '30', value: '30'},
-  {name: '0', value: '0'}
+  {terms: "0",},
+  {terms: "15"},
+  {terms: "30"}
 ]
 
 const invoicing = [
-  {name: 'daily', value: 'daily'},
-  {name: 'weekly', value: 'weekly'},
-  {name: 'monthly', value: 'monthly'}
+  {invoicing: "daily"},
+  {invoicing: "weekly"},
+  {invoicing: "monthly"}
 ]
 
 
@@ -139,6 +139,25 @@ function Customers() {
       padding: 5px;
       `
 
+  const setValue = value => {
+    if (value.code==="Enter"){
+      console.log(value.target)
+      let custToUpdate = clonedeep(selectedCustomer)
+      custToUpdate[value.target.id] = value.target.value
+      setSelectedCustomer(custToUpdate)
+    }
+  }
+
+  const setDropDownValue = value => {
+    let custToUpdate = clonedeep(selectedCustomer)
+    console.log(value)
+    let attr = value.target.id
+    custToUpdate[attr] = value.value[attr]
+    setSelectedCustomer(custToUpdate)
+   
+    
+  }
+
   
   return (
     <React.Fragment>
@@ -169,26 +188,26 @@ function Customers() {
                 <span className="p-inputgroup-addon">
                   <label htmlFor="custName"> Username</label><br />
                 </span> 
-                <InputText id="custName" placeholder={selectedCustomer.custName} />
+                <InputText id="custName" placeholder={selectedCustomer.custName} disabled />
               </div><br />
 
               <div className="p-inputgroup">
                 <span className="p-inputgroup-addon">
                   <label htmlFor="nickName"> Nickname</label><br />
                 </span>
-                <InputText id="nickName" placeholder={selectedCustomer.nickName} />
+                <InputText id="nickName" placeholder={selectedCustomer.nickName}  disabled />
               </div><br />
 
             </GroupBox>
       
             <GroupBox id="Location">
-              <h2><i className="pi pi-user"></i> Location</h2>
+              <h2><i className="pi pi-map"></i> Location</h2>
 
               <div className="p-inputgroup">
                 <span className="p-inputgroup-addon">
                   <label htmlFor="zoneName">Zone</label><br />     
                 </span>
-                <Dropdown id="zoneName" optionLabel="zoneName" options={zoneGroup} 
+                <Dropdown id="zoneName" optionLabel="zoneName" options={zoneGroup} onChange={setDropDownValue}
                   placeholder={selectedCustomer ? selectedCustomer.zoneName : "Select a Zone"}/>
               </div><br />
 
@@ -196,28 +215,28 @@ function Customers() {
                 <span className="p-inputgroup-addon">
                   <label htmlFor="addr1">Address</label><br />     
                 </span>
-                <InputText id="addr1" placeholder={selectedCustomer.addr1} />
+                <InputText id="addr1" placeholder={selectedCustomer.addr1} onKeyUp={setValue}/>
               </div><br />
 
               <div className="p-inputgroup">
                 <span className="p-inputgroup-addon">
                   <label htmlFor="addr2">Address</label><br />     
                 </span>
-                <InputText id="addr2" placeholder={selectedCustomer.addr2} />
+                <InputText id="addr2" placeholder={selectedCustomer.addr2} onKeyUp={setValue} />
               </div><br />
 
               <div className="p-inputgroup">
                 <span className="p-inputgroup-addon">
                   <label htmlFor="city">City</label><br />     
                 </span>
-                <InputText id="city" placeholder={selectedCustomer.city} />
+                <InputText id="city" placeholder={selectedCustomer.city} onKeyUp={setValue} />
               </div><br />
 
               <div className="p-inputgroup">
                 <span className="p-inputgroup-addon">
                   <label htmlFor="zip">Zip</label><br />     
                 </span>
-                <InputText id="zip" placeholder={selectedCustomer.zip} />
+                <InputText id="zip" placeholder={selectedCustomer.zip} onKeyUp={setValue}/>
               </div><br />
 
             </GroupBox>
@@ -227,32 +246,32 @@ function Customers() {
           <DescripWrapper>
 
           <GroupBox id="Contact">
-              <h2><i className="pi pi-user"></i> Contact</h2>
+              <h2><i className="pi pi-phone"></i> Contact</h2>
 
               <div className="p-inputgroup">
                 <span className="p-inputgroup-addon">
                   <label htmlFor="firstName"> First Name</label><br />  
                 </span>
-                <InputText id="firstName" placeholder={selectedCustomer.firstName} />
+                <InputText id="firstName" placeholder={selectedCustomer.firstName} onKeyUp={setValue} />
               </div><br />
               <div className="p-inputgroup">
                 <span className="p-inputgroup-addon">
                   <label htmlFor="lastName"> Last Name</label><br />  
                 </span>
-                <InputText id="lastName" placeholder={selectedCustomer.lastName} />
+                <InputText id="lastName" placeholder={selectedCustomer.lastName} onKeyUp={setValue}/>
               </div><br />
               <div className="p-inputgroup">
                 <span className="p-inputgroup-addon">
                   <label htmlFor="email"> Email</label><br />
                 </span>
-                <InputText id="email" placeholder={selectedCustomer.email} />
+                <InputText id="email" placeholder={selectedCustomer.email} onKeyUp={setValue}/>
               </div><br />
     
               <div className="p-inputgroup">
                 <span className="p-inputgroup-addon">
                   <label htmlFor="phone"> Phone</label><br />    
                 </span>
-                <InputMask mask="999-999-9999" id="phone" placeholder={selectedCustomer.phone} />
+                <InputMask mask="999-999-9999" id="phone" placeholder={selectedCustomer.phone} onKeyUp={setValue}/>
               </div><br />
 
             </GroupBox>
@@ -260,7 +279,7 @@ function Customers() {
 
 
             <GroupBox>
-              <h2><i className="pi pi-user"></i> Billing</h2>
+              <h2><i className="pi pi-money-bill"></i> Billing</h2>
 
               <YesNoBox>
                 <label htmlFor="paperInvoice">Paper Invoice</label>
@@ -276,7 +295,7 @@ function Customers() {
                 <span className="p-inputgroup-addon">
                   <label htmlFor="terms">Terms</label>
                 </span>
-                <Dropdown id="terms" optionLabel="name" options={terms} 
+                <Dropdown id="terms" optionLabel="terms" options={terms} onChange={setDropDownValue}
                 placeholder={selectedCustomer ? selectedCustomer.terms : "Select Terms"}/>
               </div><br />
 
@@ -284,7 +303,7 @@ function Customers() {
                 <span className="p-inputgroup-addon">
                   <label htmlFor="invoicing">Invoicing</label>
                 </span>
-                <Dropdown id="invoicing" optionLabel="name" options={invoicing} 
+                <Dropdown id="invoicing" optionLabel="invoicing" options={invoicing} onChange={setDropDownValue}
                 placeholder={selectedCustomer ? selectedCustomer.invoicing : "Invoicing Preference"}/>
               </div><br />
             </GroupBox>
@@ -294,7 +313,9 @@ function Customers() {
               <Button label="Add a Customer" icon="pi pi-plus" 
                 className={"p-button-raised p-button-rounded"} /><br />
               <Button label="Update Customer" icon="pi pi-user-edit" 
-                className={"p-button-raised p-button-rounded p-button-success"} /><br /><br />
+                className={"p-button-raised p-button-rounded p-button-success"} /><br />
+              <Button label="Delete Customer" icon="pi pi-user-minus" 
+                className={"p-button-raised p-button-rounded p-button-warning"} /><br /><br />
               <Button label="Tomorrows's Order" icon="pi pi-shopping-cart" 
                 className={"p-button-raised p-button-rounded p-button-info"} /><br />
               <Button label="Edit Standing Order" icon="pi pi-calendar" 

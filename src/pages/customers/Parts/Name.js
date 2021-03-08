@@ -17,7 +17,7 @@ const Name = ({ selectedCustomer, setSelectedCustomer }) => {
                     <label htmlFor="custName"> Username</label><br />
                 </span> 
 
-            <InputText id="custName" placeholder={selectedCustomer.custName} 
+            <InputText id="custName" placeholder={selectedCustomer.custName} disabled
               onKeyUp={e => e.code==="Enter" && setSelectedCustomer(setValue(e, selectedCustomer))} 
               onBlur={e => setSelectedCustomer(fixValue(e, selectedCustomer))}/>
 
@@ -28,7 +28,7 @@ const Name = ({ selectedCustomer, setSelectedCustomer }) => {
                     <label htmlFor="nickName"> Nickname</label><br />
                 </span>
 
-            <InputText id="nickName" placeholder={selectedCustomer.nickName} 
+            <InputText id="nickName" placeholder={selectedCustomer.nickName} disabled 
               onKeyUp={e => e.code==="Enter" && setSelectedCustomer(setValue(e, selectedCustomer))} 
               onBlur={e => setSelectedCustomer(fixValue(e, selectedCustomer))}/>
               

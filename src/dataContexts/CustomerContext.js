@@ -41,10 +41,13 @@ export const CustomerLoad = () => {
 
     const fetchCustomers = async () => {
         try{
-          const custData = await API.graphql(graphqlOperation(listCustomers, {limit: '500'}))
+          const custData = await API.graphql(graphqlOperation(listCustomers, {
+                limit: '500'
+                }))
           const custList = custData.data.listCustomers.items;
           sortAtoZDataByIndex(custList,"custName")
-          setCustomer(custList)
+          let noDelete = custList.filter(cust => cust["_deleted"]!==true)
+          setCustomer(noDelete)
           setCustLoaded(true)
         } catch (error){
           console.log('error on fetching Cust List', error)

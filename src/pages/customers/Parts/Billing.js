@@ -34,8 +34,6 @@ const YesNoBox = styled.div`
 const Billing = ({ selectedCustomer, setSelectedCustomer }) => {
 
     const options = ['Y', 'N'];
-    console.log(selectedCustomer.toBeEmailed)
-    console.log(selectedCustomer.toBePrinted)
 
     const setDropDownValue = value => {
         let custToUpdate = clonedeep(selectedCustomer)

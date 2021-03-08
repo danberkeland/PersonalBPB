@@ -17,9 +17,17 @@ const Contact = ({ selectedCustomer, setSelectedCustomer }) => {
       console.log(value.target)
       let custToUpdate = clonedeep(selectedCustomer)
       custToUpdate[value.target.id] = value.target.value
+      document.getElementById(value.target.id).value=''
       setSelectedCustomer(custToUpdate)
     }
   }
+
+  const fixValue = value => {
+    let custToUpdate = clonedeep(selectedCustomer)
+    custToUpdate[value.target.id] = value.target.value
+    document.getElementById(value.target.id).value=''
+    setSelectedCustomer(custToUpdate)
+}
 
   
   return (
@@ -31,13 +39,13 @@ const Contact = ({ selectedCustomer, setSelectedCustomer }) => {
             <span className="p-inputgroup-addon">
                 <label htmlFor="firstName"> First Name</label><br />  
             </span>
-            <InputText id="firstName" placeholder={selectedCustomer.firstName} onKeyUp={setValue} />
+            <InputText id="firstName" placeholder={selectedCustomer.firstName} onKeyUp={setValue} onBlur={fixValue}/>
         </div><br />
         <div className="p-inputgroup">
             <span className="p-inputgroup-addon">
                 <label htmlFor="lastName"> Last Name</label><br />  
             </span>
-            <InputText id="lastName" placeholder={selectedCustomer.lastName} onKeyUp={setValue}/>
+            <InputText id="lastName" placeholder={selectedCustomer.lastName} onKeyUp={setValue} onBlur={fixValue}/>
         </div><br />
         <div className="p-inputgroup">
             <span className="p-inputgroup-addon">

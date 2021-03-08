@@ -44,6 +44,7 @@ const Location = ({ selectedCustomer, setSelectedCustomer }) => {
       console.log(value.target)
       let custToUpdate = clonedeep(selectedCustomer)
       custToUpdate[value.target.id] = value.target.value
+      document.getElementById(value.target.id).value=''
       setSelectedCustomer(custToUpdate)
     }
   }
@@ -54,9 +55,14 @@ const Location = ({ selectedCustomer, setSelectedCustomer }) => {
     let attr = value.target.id
     custToUpdate[attr] = value.value[attr]
     setSelectedCustomer(custToUpdate)
-   
-    
   }
+
+  const fixValue = value => {
+    let custToUpdate = clonedeep(selectedCustomer)
+    custToUpdate[value.target.id] = value.target.value
+    document.getElementById(value.target.id).value=''
+    setSelectedCustomer(custToUpdate)
+}
 
   
   return (
@@ -74,25 +80,25 @@ const Location = ({ selectedCustomer, setSelectedCustomer }) => {
           <span className="p-inputgroup-addon">
             <label htmlFor="addr1">Address</label><br />     
           </span>
-          <InputText id="addr1" placeholder={selectedCustomer.addr1} onKeyUp={setValue}/>
+          <InputText id="addr1" placeholder={selectedCustomer.addr1} onKeyUp={setValue} onBlur={fixValue}/>
         </div><br />   
         <div className="p-inputgroup">
           <span className="p-inputgroup-addon">
             <label htmlFor="addr2">Address</label><br />     
           </span>
-          <InputText id="addr2" placeholder={selectedCustomer.addr2} onKeyUp={setValue} />
+          <InputText id="addr2" placeholder={selectedCustomer.addr2} onKeyUp={setValue} onBlur={fixValue}/>
         </div><br />
         <div className="p-inputgroup">
           <span className="p-inputgroup-addon">
             <label htmlFor="city">City</label><br />     
           </span>
-          <InputText id="city" placeholder={selectedCustomer.city} onKeyUp={setValue} />
+          <InputText id="city" placeholder={selectedCustomer.city} onKeyUp={setValue} onBlur={fixValue}/>
         </div><br />  
         <div className="p-inputgroup">
           <span className="p-inputgroup-addon">
             <label htmlFor="zip">Zip</label><br />     
           </span>
-          <InputText id="zip" placeholder={selectedCustomer.zip} onKeyUp={setValue}/>
+          <InputText id="zip" placeholder={selectedCustomer.zip} onKeyUp={setValue} onBlur={fixValue}/>
         </div><br />   
     </React.Fragment>         
   );

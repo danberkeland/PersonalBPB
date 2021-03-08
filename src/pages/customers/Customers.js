@@ -81,7 +81,7 @@ function Customers() {
 
           <DescripWrapper>
             <GroupBox id="Name">
-              <Name selectedCustomer={selectedCustomer}/>
+              <Name selectedCustomer={selectedCustomer} setSelectedCustomer={setSelectedCustomer}/>
             </GroupBox>
       
             <GroupBox id="Location">
@@ -95,17 +95,19 @@ function Customers() {
               <Contact selectedCustomer={selectedCustomer} setSelectedCustomer={setSelectedCustomer}/>
             </GroupBox>
             
-            <GroupBox>
+            <GroupBox id="Billing"> 
               <Billing selectedCustomer={selectedCustomer} setSelectedCustomer={setSelectedCustomer}/>
             </GroupBox>
           </DescripWrapper>
+        
+          </React.Fragment>
+      }
 
           <DescripWrapper>
-            <Buttons selectedCustomer={selectedCustomer}/>
+            <Buttons selectedCustomer={selectedCustomer} setSelectedCustomer={setSelectedCustomer}/>
           </DescripWrapper>
 
-        </React.Fragment>
-        }
+        
       </MainWrapper>
     </React.Fragment>         
   );

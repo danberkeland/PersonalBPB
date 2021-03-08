@@ -18,11 +18,14 @@ const Name = ({ selectedCustomer, setSelectedCustomer }) => {
       }
 
     const fixValue = value => {
-        let custToUpdate = clonedeep(selectedCustomer)
-        custToUpdate[value.target.id] = value.target.value
-        document.getElementById(value.target.id).value=''
-        setSelectedCustomer(custToUpdate)
+      let custToUpdate = clonedeep(selectedCustomer)
+      if (value.target.value !==''){
+      custToUpdate[value.target.id] = value.target.value
+      }
+      document.getElementById(value.target.id).value=''
+      setSelectedCustomer(custToUpdate)
     }
+    
 
     return (
         <React.Fragment>

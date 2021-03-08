@@ -24,10 +24,13 @@ const Contact = ({ selectedCustomer, setSelectedCustomer }) => {
 
   const fixValue = value => {
     let custToUpdate = clonedeep(selectedCustomer)
+    if (value.target.value !==''){
     custToUpdate[value.target.id] = value.target.value
+    }
     document.getElementById(value.target.id).value=''
     setSelectedCustomer(custToUpdate)
-}
+  }
+
 
   
   return (

@@ -4,35 +4,12 @@ import React from 'react';
 import { InputText } from "primereact/inputtext";
 import { InputMask } from 'primereact/inputmask';
 
-
-const clonedeep = require('lodash.clonedeep')
+import { setValue, fixValue } from '../../../helpers/customerHelpers'
 
 
 
 const Contact = ({ selectedCustomer, setSelectedCustomer }) => {
 
-
-  const setValue = value => {
-    if (value.code==="Enter"){
-      console.log(value.target)
-      let custToUpdate = clonedeep(selectedCustomer)
-      custToUpdate[value.target.id] = value.target.value
-      document.getElementById(value.target.id).value=''
-      setSelectedCustomer(custToUpdate)
-    }
-  }
-
-  const fixValue = value => {
-    let custToUpdate = clonedeep(selectedCustomer)
-    if (value.target.value !==''){
-    custToUpdate[value.target.id] = value.target.value
-    }
-    document.getElementById(value.target.id).value=''
-    setSelectedCustomer(custToUpdate)
-  }
-
-
-  
   return (
     <React.Fragment>
    
@@ -42,26 +19,42 @@ const Contact = ({ selectedCustomer, setSelectedCustomer }) => {
             <span className="p-inputgroup-addon">
                 <label htmlFor="firstName"> First Name</label><br />  
             </span>
-            <InputText id="firstName" placeholder={selectedCustomer.firstName} onKeyUp={setValue} onBlur={fixValue}/>
+
+            <InputText id="firstName" placeholder={selectedCustomer.firstName} 
+              onKeyUp={e => e.code==="Enter" && setSelectedCustomer(setValue(e, selectedCustomer))} 
+              onBlur={e => setSelectedCustomer(fixValue(e, selectedCustomer))}/>
+
         </div><br />
         <div className="p-inputgroup">
             <span className="p-inputgroup-addon">
                 <label htmlFor="lastName"> Last Name</label><br />  
             </span>
-            <InputText id="lastName" placeholder={selectedCustomer.lastName} onKeyUp={setValue} onBlur={fixValue}/>
+
+            <InputText id="lastName" placeholder={selectedCustomer.lastName} 
+              onKeyUp={e => e.code==="Enter" && setSelectedCustomer(setValue(e, selectedCustomer))} 
+              onBlur={e => setSelectedCustomer(fixValue(e, selectedCustomer))}/>
+
         </div><br />
         <div className="p-inputgroup">
             <span className="p-inputgroup-addon">
                 <label htmlFor="email"> Email</label><br />
             </span>
-            <InputText id="email" placeholder={selectedCustomer.email} onKeyUp={setValue}/>
+
+            <InputText id="email" placeholder={selectedCustomer.email} 
+              onKeyUp={e => e.code==="Enter" && setSelectedCustomer(setValue(e, selectedCustomer))} 
+              onBlur={e => setSelectedCustomer(fixValue(e, selectedCustomer))}/>
+
         </div><br />
     
         <div className="p-inputgroup">
             <span className="p-inputgroup-addon">
                 <label htmlFor="phone"> Phone</label><br />    
             </span>
-            <InputMask mask="999-999-9999" id="phone" placeholder={selectedCustomer.phone} onKeyUp={setValue}/>
+
+            <InputMask mask="999-999-9999" id="phone" placeholder={selectedCustomer.phone} 
+              onKeyUp={e => e.code==="Enter" && setSelectedCustomer(setValue(e, selectedCustomer))} 
+              onBlur={e => setSelectedCustomer(fixValue(e, selectedCustomer))}/>
+              
         </div><br />
 
     </React.Fragment>         

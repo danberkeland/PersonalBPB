@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { Dropdown } from 'primereact/dropdown';
 import { SelectButton } from 'primereact/selectbutton';
 
-const clonedeep = require('lodash.clonedeep')
+import { setDropDownValue } from '../../../helpers/customerHelpers'
 
 
 const terms = [
@@ -13,6 +13,8 @@ const terms = [
     {terms: "15"},
     {terms: "30"}
 ]
+
+const options = ['Y', 'N'];
 
 const invoicing = [
     {invoicing: "daily"},
@@ -29,19 +31,7 @@ const YesNoBox = styled.div`
     `
 
 
-
-
 const Billing = ({ selectedCustomer, setSelectedCustomer }) => {
-
-    const options = ['Y', 'N'];
-
-    const setDropDownValue = value => {
-        let custToUpdate = clonedeep(selectedCustomer)
-        console.log(value)
-        let attr = value.target.id
-        custToUpdate[attr] = value.value[attr]
-        setSelectedCustomer(custToUpdate)  
-    }
 
   
   return (
@@ -63,7 +53,8 @@ const Billing = ({ selectedCustomer, setSelectedCustomer }) => {
             <span className="p-inputgroup-addon">
                 <label htmlFor="terms">Terms</label>
             </span>
-            <Dropdown id="terms" optionLabel="terms" options={terms} onChange={setDropDownValue}
+            <Dropdown id="terms" optionLabel="terms" options={terms} 
+                onChange={e => setSelectedCustomer(setDropDownValue(e))}
                 placeholder={selectedCustomer ? selectedCustomer.terms : "Select Terms"}/>
         </div><br />
 
@@ -71,7 +62,8 @@ const Billing = ({ selectedCustomer, setSelectedCustomer }) => {
             <span className="p-inputgroup-addon">
                 <label htmlFor="invoicing">Invoicing</label>
             </span>
-            <Dropdown id="invoicing" optionLabel="invoicing" options={invoicing} onChange={setDropDownValue}
+            <Dropdown id="invoicing" optionLabel="invoicing" options={invoicing} 
+                onChange={e => setSelectedCustomer(setDropDownValue(e))}
                 placeholder={selectedCustomer ? selectedCustomer.invoicing : "Invoicing Preference"}/>
         </div><br />
            

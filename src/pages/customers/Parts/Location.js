@@ -5,7 +5,7 @@ import { Dropdown } from 'primereact/dropdown';
 
 import { CustomerContext } from '../../../dataContexts/CustomerContext'
 
-import { setValue, fixValue, setDropDownValue, getZoneGroup } from '../../../helpers/customerHelpers'
+import { setValue, fixValue, setDropDownValue, getZoneGroup } from '../../../helpers/formHelpers'
 
 
 

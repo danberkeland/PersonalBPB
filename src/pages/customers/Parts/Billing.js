@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { Dropdown } from 'primereact/dropdown';
 import { SelectButton } from 'primereact/selectbutton';
 
-import { setDropDownValue, setYesNoValue } from '../../../helpers/customerHelpers'
+import { setDropDownValue, setYesNoValue } from '../../../helpers/formHelpers'
 
 
 const terms = [

@@ -1,41 +1,41 @@
-import { sortAtoZDataByIndex } from '../helpers/sortDataHelpers'
+import { sortAtoZDataByIndex } from './sortDataHelpers'
 
 const clonedeep = require('lodash.clonedeep')
 
 
-export const setValue = (value, selectedCustomer) => {
+export const setValue = (value, selected) => {
     if (value.code==="Enter"){
         console.log(value.target)
-        let custToUpdate = clonedeep(selectedCustomer)
-        custToUpdate[value.target.id] = value.target.value
+        let itemToUpdate = clonedeep(selected)
+        itemToUpdate[value.target.id] = value.target.value
         document.getElementById(value.target.id).value=''
-        return custToUpdate
+        return itemToUpdate
     }
   }
 
-export const fixValue = (value, selectedCustomer) => {
-    let custToUpdate = clonedeep(selectedCustomer)
+export const fixValue = (value, selected) => {
+    let itemToUpdate = clonedeep(selected)
     if (value.target.value !==''){
-        custToUpdate[value.target.id] = value.target.value
+        itemToUpdate[value.target.id] = value.target.value
     }
     document.getElementById(value.target.id).value=''
-    return custToUpdate
+    return itemToUpdate
     }
 
 
-export const setDropDownValue = (value, selectedCustomer) => {
-    let custToUpdate = clonedeep(selectedCustomer)
+export const setDropDownValue = (value, selected) => {
+    let itemToUpdate = clonedeep(selected)
     let attr = value.target.id
-    custToUpdate[attr] = value.value[attr]
-    return custToUpdate  
+    itemToUpdate[attr] = value.value[attr]
+    return itemToUpdate  
     }
 
 
-export const setYesNoValue = (value, selectedCustomer) => {
-    let custToUpdate = clonedeep(selectedCustomer)
+export const setYesNoValue = (value, selected) => {
+    let itemToUpdate = clonedeep(selected)
     let attr = value.target.id
-    custToUpdate[attr] = value.value
-    return custToUpdate  
+    itemToUpdate[attr] = value.value
+    return itemToUpdate  
     }
 
 

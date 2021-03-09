@@ -2,7 +2,7 @@ import React from 'react';
 
 import { InputText } from "primereact/inputtext";
 
-import { setValue, fixValue } from '../../../helpers/customerHelpers'
+import { setValue, fixValue } from '../../../helpers/formHelpers'
 
 
 const Name = ({ selectedCustomer, setSelectedCustomer }) => {

@@ -4,7 +4,7 @@ import React from 'react';
 import { InputText } from "primereact/inputtext";
 import { InputMask } from 'primereact/inputmask';
 
-import { setValue, fixValue } from '../../../helpers/customerHelpers'
+import { setValue, fixValue } from '../../../helpers/formHelpers'
 
 
 

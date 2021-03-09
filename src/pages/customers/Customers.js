@@ -20,7 +20,7 @@ import Buttons from './Parts/Buttons'
 
 const MainWrapper = styled.div`
   display: grid;
-  grid-template-columns: 1fr .66fr .66fr .66fr;
+  grid-template-columns: 1fr 1fr 1fr .5fr;
   height: 100vh;
   `
 

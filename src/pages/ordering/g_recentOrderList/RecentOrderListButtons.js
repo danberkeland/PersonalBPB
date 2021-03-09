@@ -13,6 +13,11 @@ import { createOrderUpdatesClip, createStandHoldClip } from '../../../helpers/so
 import styled from 'styled-components'
 import RecentOrderList from './RecentOrderList';
 
+import { createOrder } from '../../../graphql/mutations'
+
+import { API, graphqlOperation } from 'aws-amplify';
+
+
 const RecentButton = styled.div`
   display: flex;
   margin: 20px 0;
@@ -35,35 +40,41 @@ const RecentOrderListButtons = () => {
     let holdingData = createStandHoldClip(holding, originalHolding)
     // need to trigger reload of orders from API
 
-    const uploadOrders = {
-      method: 'POST',
-      headers: { 'Content-Type':'application/json'},
-      body: JSON.stringify(orderData)
-    };
-
-    const uploadStanding = {
-      method: 'POST',
-      headers: { 'Content-Type':'application/json'},
-      body: JSON.stringify(standingData)
-    };
-
-    const uploadHolding = {
-      method: 'POST',
-      headers: { 'Content-Type':'application/json'},
-      body: JSON.stringify(holdingData)
-    };
 
 
-    fetch(process.env.REACT_APP_API_SENDORDERS, uploadOrders)
-      .then(response => response.status===200 ? setOrdersLoaded(false): '') 
+    const updateOrder = async () => {
+      
+      for (let ord of orderData) {
+        let updateDetails = {
+          qty: ord["qty"],
+          prodName: ord["prodName"],
+          custName: ord["custName"],
+          PONote: ord["PONote"],
+          route: ord["route"],
+          SO: ord["SO"],
+          isWhole: ord["isWhole"],
+          delivDate: ord["delivDate"],
+          timeStamp: ord["timeStamp"]
+        };
+        console.log(updateDetails)
+        try{
+          const ordData = await API.graphql(graphqlOperation(createOrder, {input: {...updateDetails}}))
+          swal ({
+            text: `Orders have been updated.`,
+            icon: "success",
+            buttons: false,
+            timer: 2000
+        })
+        setOrdersLoaded(false)
 
-    fetch(process.env.REACT_APP_API_SENDSTANDING, uploadStanding)
-      .then(response => response.status===200 ? setStandLoaded(false): '')
+        } catch (error){
+          console.log('error on fetching Cust List', error)
+        }
+      }
+    }
 
-    fetch(process.env.REACT_APP_API_SENDHOLDING, uploadHolding)
-      .then(response => response.status===200 ? setHoldLoaded(false): '')
 
-
+    updateOrder() 
     
     setRecentOrders([])
     swal ({

@@ -121,17 +121,17 @@ export const createOrderUpdatesClip = (orders, originalOrders) => {
         }
 
     let timeStamp = new Date()
-    let timeStampedData = orderData.map(order => [
-        order["SO"],
-        order["prodName"],
-        order["custName"],
-        order["PONote"],
-        order["route"],
-        order["SO"],
-        order["isWhole"],
-        order["delivDate"],
-        timeStamp
-    ])
+    let timeStampedData = orderData.map(order => ({
+        qty: order["SO"],
+        prodName: order["prodName"],
+        custName: order["custName"],
+        PONote: order["PONote"],
+        route: order["route"],
+        SO: order["SO"],
+        isWhole: order["isWhole"],
+        delivDate: order["delivDate"],
+        timeStamp: timeStamp
+    }))
     return timeStampedData
 }
 
@@ -153,7 +153,13 @@ export const createStandHoldClip = (orders, originalOrders) => {
         }
 
     let timeStamp = new Date()
-    let timeStampedData = orderData.map(order => [
-        order["dayNum"],"na",order["qty"],"na",timeStamp,"na","na",order["prodName"],order["custName"]])
+    let timeStampedData = orderData.map(order => ({
+        dayNum: order["dayNum"],
+        qty: order["qty"],
+        SO: order["qty"],
+        timeStamp: timeStamp,
+        prodName: order["prodName"],
+        custName: order["custName"]
+    }))
     return timeStampedData
 }

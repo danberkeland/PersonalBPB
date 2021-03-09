@@ -84,8 +84,8 @@ const BuildCurrentCartList = () => {
                 <TrashCan>
                 <Button icon="pi pi-trash" 
                     className="p-button-outlined p-button-rounded p-button-help p-button-sm"
-                    value="0"
-                    onClick={e => {handleQtyModify(order["prodName"],"0",order["SO"])}}
+                    value={0}
+                    onClick={e => {handleQtyModify(order["prodName"],0,order["SO"])}}
                     key={order["prodName"]+"e"} 
                     name={order["prodName"]}
                     data-qty={order["qty"]}
@@ -102,10 +102,10 @@ const BuildCurrentCartList = () => {
                     name={order["prodName"]}
                     data-qty={order["qty"]} 
                     placeholder={order["qty"]} 
-                    onKeyUp={e => {handleQtyModify(order["prodName"],e.target.value, order["SO"])}}
+                    onKeyUp={e => {handleQtyModify(order["prodName"],Number(e.target.value), order["SO"])}}
                     onBlur={(e) => {
 
-                        e.target.value = ''
+                        e.target.value = null
 
                     }}
                         >

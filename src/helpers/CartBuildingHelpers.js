@@ -109,10 +109,10 @@ export const updateCurrentLineInOrdersWithQty = (prodName ,chosen, delivDate, or
     let foundOrdersIndex = updatedOrders.findIndex(line => line["prodName"] === prodName &&
         line["custName"] === chosen && line["delivDate"] === convertDatetoBPBDate(delivDate))
     if(foundOrdersIndex>=0){
-        updatedOrders[foundOrdersIndex]["qty"] = qty.toString()
+        updatedOrders[foundOrdersIndex]["qty"] = qty
     } else {
         let orderToAdd = {
-            "qty": qty.toString(),
+            "qty": qty,
             "prodName": prodName,
             "custName": chosen, 
             "PONote": ponote, 

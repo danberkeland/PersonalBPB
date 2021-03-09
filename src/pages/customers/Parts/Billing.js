@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { Dropdown } from 'primereact/dropdown';
 import { SelectButton } from 'primereact/selectbutton';
 
-import { setDropDownValue } from '../../../helpers/customerHelpers'
+import { setDropDownValue, setYesNoValue } from '../../../helpers/customerHelpers'
 
 
 const terms = [
@@ -41,12 +41,16 @@ const Billing = ({ selectedCustomer, setSelectedCustomer }) => {
 
         <YesNoBox>
             <label htmlFor="paperInvoice">Paper Invoice</label>
-            <SelectButton value={selectedCustomer.toBePrinted} id="paperInvoice" options={options}/>
+            <SelectButton value={selectedCustomer.toBePrinted} 
+                id="toBePrinted" options={options} 
+                onChange={(e) => setSelectedCustomer(setYesNoValue(e,selectedCustomer))}/>
         </YesNoBox>
 
         <YesNoBox>
             <label htmlFor="emailInvoice">Email Invoice</label>
-            <SelectButton value={selectedCustomer.toBeEmailed} id="emailInvoice" options={options}/>
+            <SelectButton value={selectedCustomer.toBeEmailed} 
+                id="toBeEmailed" options={options} 
+                onChange={(e) => setSelectedCustomer(setYesNoValue(e,selectedCustomer))}/>
         </YesNoBox>
 
         <div className="p-inputgroup">
@@ -54,7 +58,7 @@ const Billing = ({ selectedCustomer, setSelectedCustomer }) => {
                 <label htmlFor="terms">Terms</label>
             </span>
             <Dropdown id="terms" optionLabel="terms" options={terms} 
-                onChange={e => setSelectedCustomer(setDropDownValue(e))}
+                onChange={e => setSelectedCustomer(setDropDownValue(e,selectedCustomer))}
                 placeholder={selectedCustomer ? selectedCustomer.terms : "Select Terms"}/>
         </div><br />
 
@@ -63,7 +67,7 @@ const Billing = ({ selectedCustomer, setSelectedCustomer }) => {
                 <label htmlFor="invoicing">Invoicing</label>
             </span>
             <Dropdown id="invoicing" optionLabel="invoicing" options={invoicing} 
-                onChange={e => setSelectedCustomer(setDropDownValue(e))}
+                onChange={e => setSelectedCustomer(setDropDownValue(e,selectedCustomer))}
                 placeholder={selectedCustomer ? selectedCustomer.invoicing : "Invoicing Preference"}/>
         </div><br />
            

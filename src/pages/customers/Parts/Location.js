@@ -31,7 +31,7 @@ const Location = ({ selectedCustomer, setSelectedCustomer }) => {
             <label htmlFor="zoneName">Zone</label><br />     
           </span>
           <Dropdown id="zoneName" optionLabel="zoneName" options={zoneGroup} 
-            onChange={e => setSelectedCustomer(setDropDownValue(e))}
+            onChange={e => setSelectedCustomer(setDropDownValue(e,selectedCustomer))}
             placeholder={selectedCustomer ? selectedCustomer.zoneName : "Select a Zone"}/>
         </div><br />   
         <div className="p-inputgroup">

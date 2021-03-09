@@ -31,6 +31,14 @@ export const setDropDownValue = (value, selectedCustomer) => {
     }
 
 
+export const setYesNoValue = (value, selectedCustomer) => {
+    let custToUpdate = clonedeep(selectedCustomer)
+    let attr = value.target.id
+    custToUpdate[attr] = value.value
+    return custToUpdate  
+    }
+
+
 export const getZoneGroup = (customers) => {
     if (customers.length>0){
         let zoneGroup = clonedeep(customers)

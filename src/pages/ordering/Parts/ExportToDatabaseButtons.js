@@ -7,7 +7,7 @@ import { ToggleContext } from '../../../dataContexts/ToggleContext';
 import { CustomerContext } from '../../../dataContexts/CustomerContext';
 import { ProductsContext } from '../../../dataContexts/ProductsContext';
 
-import { createCustomer, createProduct } from '../../../graphql/mutations'
+import { createCustomer, createProduct, createOrder } from '../../../graphql/mutations'
 
 import Amplify, { API, graphqlOperation } from 'aws-amplify';
 
@@ -93,7 +93,26 @@ const handleUpdateProducts = async () => {
   
 }
 
-const handleUpdateOrders = () => {}
+const handleUpdateOrders = async () => {
+  for (let ord of orders){
+
+    let ordDetails = {
+      qty: ord["qty"],
+      custName: ord["custName"],
+      prodName: ord["prodName"],
+      PONote: ord["PONote"],
+      route: ord["route"],
+      SO: ord["SO"],
+      isWhole: ord["isWhole"],
+      delivDate: ord["delivDate"],
+      timeStamp: ord["timeStamp"]
+    }
+    
+    const ordData = await API.graphql(graphqlOperation(createOrder, {input: ordDetails}))
+    console.log(ordData.data)
+    
+    }
+}
 
 const handleUpdateStanding = () => {}
 
@@ -107,7 +126,7 @@ const handleUpdateHolding = () => {}
         className={"p-button-raised p-button-rounded p-button-success"} />
       <Button disabled label="ExportProducts" icon="pi pi-upload" onClick={handleUpdateProducts}
         className={"p-button-raised p-button-rounded p-button-success"} />
-      <Button label="ExportOrders" icon="pi pi-upload" onClick={handleUpdateOrders}
+      <Button disabled label="ExportOrders" icon="pi pi-upload" onClick={handleUpdateOrders}
         className={"p-button-raised p-button-rounded p-button-success"} />
       <Button label="ExportHolding" icon="pi pi-upload" onClick={handleUpdateHolding}
         className={"p-button-raised p-button-rounded p-button-success"} />

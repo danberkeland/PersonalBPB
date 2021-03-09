@@ -1,6 +1,10 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 
-import { useFetch, FilterOrdersDups, handleLoadingError } from '../helpers/useFetch'
+import { FilterOrdersDups } from '../helpers/useFetch'
+
+import { listOrders } from '../graphql/queries'
+
+import { API, graphqlOperation } from 'aws-amplify';
 
 
 require('dotenv').config()
@@ -36,24 +40,35 @@ export const OrdersLoad = () => {
 
     const { setOrders, setOriginalOrders, setOrdersLoaded } = useContext(OrdersContext)
 
-    const { data } = useFetch(process.env.REACT_APP_API_ORDERS, []);
+    useEffect(() => {
+        fetchOrders()
+    },[])
 
-    
 
-    useEffect(() => { 
-        if(data){
-            if(data.length>0){
-                let currentData = FilterOrdersDups(data)
-                setOrders(currentData);
-                setOriginalOrders(currentData);
-                setOrdersLoaded(true)
-            }
-        } else {
-            handleLoadingError()
+
+    const fetchOrders = async () => {
+        try{
+          const ordData = await API.graphql(graphqlOperation(listOrders, {
+                limit: '5000'
+                }))
+          const ordList = ordData.data.listOrders.items;
+          let noDelete = ordList.filter(cust => cust["_deleted"]!==true)
+          let currentData = FilterOrdersDups(noDelete)
+          setOrders(currentData)
+          setOrdersLoaded(true)
+          setOriginalOrders(currentData);
+        } catch (error){
+          console.log('error on fetching Cust List', error)
         }
-    },[data]);
+      }
+  
 
-    
+
+
+
+
+
+
 
     return (
         <React.Fragment>

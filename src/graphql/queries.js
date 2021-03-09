@@ -20,9 +20,6 @@ export const getCustomer = /* GraphQL */ `
       toBeEmailed
       terms
       invoicing
-      _version
-      _deleted
-      _lastChangedAt
       createdAt
       updatedAt
     }
@@ -52,55 +49,10 @@ export const listCustomers = /* GraphQL */ `
         toBeEmailed
         terms
         invoicing
-        _version
-        _deleted
-        _lastChangedAt
         createdAt
         updatedAt
       }
       nextToken
-      startedAt
-    }
-  }
-`;
-export const syncCustomers = /* GraphQL */ `
-  query SyncCustomers(
-    $filter: ModelCustomerFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncCustomers(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        id
-        nickName
-        custName
-        zoneName
-        addr1
-        addr2
-        city
-        zip
-        email
-        firstName
-        lastName
-        phone
-        toBePrinted
-        toBeEmailed
-        terms
-        invoicing
-        _version
-        _deleted
-        _lastChangedAt
-        createdAt
-        updatedAt
-      }
-      nextToken
-      startedAt
     }
   }
 `;
@@ -115,9 +67,6 @@ export const getProduct = /* GraphQL */ `
       doughType
       freezerThaw
       packGroupOrder
-      _version
-      _deleted
-      _lastChangedAt
       createdAt
       updatedAt
     }
@@ -139,47 +88,53 @@ export const listProducts = /* GraphQL */ `
         doughType
         freezerThaw
         packGroupOrder
-        _version
-        _deleted
-        _lastChangedAt
         createdAt
         updatedAt
       }
       nextToken
-      startedAt
     }
   }
 `;
-export const syncProducts = /* GraphQL */ `
-  query SyncProducts(
-    $filter: ModelProductFilterInput
+export const getOrder = /* GraphQL */ `
+  query GetOrder($id: ID!) {
+    getOrder(id: $id) {
+      id
+      qty
+      prodName
+      custName
+      PONote
+      route
+      SO
+      isWhole
+      delivDate
+      timeStamp
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listOrders = /* GraphQL */ `
+  query ListOrders(
+    $filter: ModelOrderFilterInput
     $limit: Int
     $nextToken: String
-    $lastSync: AWSTimestamp
   ) {
-    syncProducts(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
+    listOrders(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
+        qty
         prodName
-        nickName
-        packGroup
-        packSize
-        doughType
-        freezerThaw
-        packGroupOrder
-        _version
-        _deleted
-        _lastChangedAt
+        custName
+        PONote
+        route
+        SO
+        isWhole
+        delivDate
+        timeStamp
         createdAt
         updatedAt
       }
       nextToken
-      startedAt
     }
   }
 `;

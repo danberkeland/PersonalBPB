@@ -20,9 +20,6 @@ export const onCreateCustomer = /* GraphQL */ `
       toBeEmailed
       terms
       invoicing
-      _version
-      _deleted
-      _lastChangedAt
       createdAt
       updatedAt
     }
@@ -47,9 +44,6 @@ export const onUpdateCustomer = /* GraphQL */ `
       toBeEmailed
       terms
       invoicing
-      _version
-      _deleted
-      _lastChangedAt
       createdAt
       updatedAt
     }
@@ -74,9 +68,6 @@ export const onDeleteCustomer = /* GraphQL */ `
       toBeEmailed
       terms
       invoicing
-      _version
-      _deleted
-      _lastChangedAt
       createdAt
       updatedAt
     }
@@ -93,9 +84,6 @@ export const onCreateProduct = /* GraphQL */ `
       doughType
       freezerThaw
       packGroupOrder
-      _version
-      _deleted
-      _lastChangedAt
       createdAt
       updatedAt
     }
@@ -112,9 +100,6 @@ export const onUpdateProduct = /* GraphQL */ `
       doughType
       freezerThaw
       packGroupOrder
-      _version
-      _deleted
-      _lastChangedAt
       createdAt
       updatedAt
     }
@@ -131,9 +116,60 @@ export const onDeleteProduct = /* GraphQL */ `
       doughType
       freezerThaw
       packGroupOrder
-      _version
-      _deleted
-      _lastChangedAt
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateOrder = /* GraphQL */ `
+  subscription OnCreateOrder {
+    onCreateOrder {
+      id
+      qty
+      prodName
+      custName
+      PONote
+      route
+      SO
+      isWhole
+      delivDate
+      timeStamp
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateOrder = /* GraphQL */ `
+  subscription OnUpdateOrder {
+    onUpdateOrder {
+      id
+      qty
+      prodName
+      custName
+      PONote
+      route
+      SO
+      isWhole
+      delivDate
+      timeStamp
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteOrder = /* GraphQL */ `
+  subscription OnDeleteOrder {
+    onDeleteOrder {
+      id
+      qty
+      prodName
+      custName
+      PONote
+      route
+      SO
+      isWhole
+      delivDate
+      timeStamp
       createdAt
       updatedAt
     }

@@ -27,4 +27,17 @@ type Product @model @auth(rules: [{allow: public}]) {
   freezerThaw: String
   packGroupOrder: String
 }
+
+type Order @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  qty: String!
+  prodName: String!
+  custName: String
+  PONote: String
+  route: String
+  SO: String
+  isWhole: String
+  delivDate: String
+  timeStamp: String
+}
  

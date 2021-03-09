@@ -1,6 +1,11 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 
-import { useFetch, FilterStandHoldDups, handleLoadingError } from '../helpers/useFetch'
+import { FilterStandHoldDups } from '../helpers/useFetch'
+
+import { listHoldings } from '../graphql/queries'
+
+import { API, graphqlOperation } from 'aws-amplify';
+
 
 
 require('dotenv').config()
@@ -25,25 +30,32 @@ export const HoldingProvider = (props) => {
 
 export const HoldingLoad = () => {
 
-    const { data } = useFetch(process.env.REACT_APP_API_HOLDING,[]);
 
     const { setHolding, setOriginalHolding, setHoldLoaded } = useContext(HoldingContext)
 
-    useEffect(() => { 
-        if(data){
-            if(data.length>0){
-                let currentData = FilterStandHoldDups(data)
-                setOriginalHolding(currentData);
-                setHolding(currentData);
-                setHoldLoaded(true)
-            } 
-        } else {
-            handleLoadingError()
-        }
-    },[data]);
-    
+    useEffect(() => {
+        fetchHolding()
+    },[])
 
-    
+
+
+    const fetchHolding = async () => {
+        try{
+            const holdData = await API.graphql(graphqlOperation(listHoldings, {
+                limit: '5000'
+                }))
+            const holdList = holdData.data.listHoldings.items;
+            let noDelete = holdList.filter(hold => hold["_deleted"]!==true)
+            let currentData = FilterStandHoldDups(noDelete)
+            setOriginalHolding(currentData);
+            setHolding(currentData);
+            setHoldLoaded(true)
+        } catch (error){
+          console.log('error on fetching Cust List', error)
+        }
+      }
+  
+
 
     return (
         <React.Fragment>

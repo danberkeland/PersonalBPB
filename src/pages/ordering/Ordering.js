@@ -74,7 +74,7 @@ function Ordering(props) {
           <Calendar />
         </BasicContainer>
         <BasicContainer>
-          <ExportToDatabaseButtons />
+         
           <OrderCommandLine />   
           <CurrentOrderInfo />  
           <CurrentOrderList />  

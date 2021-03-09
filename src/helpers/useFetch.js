@@ -75,11 +75,11 @@ export const FilterDupsByIndex = (data,ind) => {
 
 export const FilterStandHoldDups = data => {
     let groupedData = data.map(item => [(
-        item["dayNum"]+"_"+
+        item["dayNum"].toString()+"_"+
         item["prodName"]+"_"+
-        item["custName"]),item["qty"],item["SO"],item["route"],item["timeStamp"]]
+        item["custName"]),item["qty"],item["SO"],item["timeStamp"]]
         )
-
+        console.log(groupedData)
     for (let i=0; i<groupedData.length; ++i ){
         for (let j=i+1; j<groupedData.length; ++j){
             while (groupedData[i][0] === groupedData[j][0]){
@@ -92,8 +92,7 @@ export const FilterStandHoldDups = data => {
         "dayNum": item[0].split("_")[0],
         "qty": item[1],
         "SO": item[2],
-        "route": item[3],
-        "timeStamp": item[4],
+        "timeStamp": item[3],
         "prodName": item[0].split("_")[1],
         "custName": item[0].split("_")[2],
     }))

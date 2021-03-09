@@ -40,4 +40,58 @@ type Order @model @auth(rules: [{allow: public}]) {
   delivDate: String
   timeStamp: String
 }
+
+type Standing @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  dayNum: Int
+  qty: Int
+  timeStamp: String
+  prodName: String
+  custName: String
+  SO: Int
+}
+
+type Holding @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  dayNum: Int
+  qty: Int
+  timeStamp: String
+  prodName: String
+  custName: String
+  SO: Int
+}
+
+type Route @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  routeName: String
+  routeStart: Int
+  routeTime: Int
+  RouteDepart: String
+  RouteArrive: String
+  RouteServe: String
+  RouteSched: String
+}
+
+type Zone @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  zoneNum: Int
+  zoneName: String
+  zoneFee: Int
+}
+
+type AltPricing @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  custName: String
+  prodName: String
+  price: Int
+}
+
+type Closure @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  custName: String
+  firstDate: String
+  lastDate: String
+}
+
+
  

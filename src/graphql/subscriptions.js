@@ -175,3 +175,249 @@ export const onDeleteOrder = /* GraphQL */ `
     }
   }
 `;
+export const onCreateStanding = /* GraphQL */ `
+  subscription OnCreateStanding {
+    onCreateStanding {
+      id
+      dayNum
+      qty
+      timeStamp
+      prodName
+      custName
+      SO
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateStanding = /* GraphQL */ `
+  subscription OnUpdateStanding {
+    onUpdateStanding {
+      id
+      dayNum
+      qty
+      timeStamp
+      prodName
+      custName
+      SO
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteStanding = /* GraphQL */ `
+  subscription OnDeleteStanding {
+    onDeleteStanding {
+      id
+      dayNum
+      qty
+      timeStamp
+      prodName
+      custName
+      SO
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateHolding = /* GraphQL */ `
+  subscription OnCreateHolding {
+    onCreateHolding {
+      id
+      dayNum
+      qty
+      timeStamp
+      prodName
+      custName
+      SO
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateHolding = /* GraphQL */ `
+  subscription OnUpdateHolding {
+    onUpdateHolding {
+      id
+      dayNum
+      qty
+      timeStamp
+      prodName
+      custName
+      SO
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteHolding = /* GraphQL */ `
+  subscription OnDeleteHolding {
+    onDeleteHolding {
+      id
+      dayNum
+      qty
+      timeStamp
+      prodName
+      custName
+      SO
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateRoute = /* GraphQL */ `
+  subscription OnCreateRoute {
+    onCreateRoute {
+      id
+      routeName
+      routeStart
+      routeTime
+      RouteDepart
+      RouteArrive
+      RouteServe
+      RouteSched
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateRoute = /* GraphQL */ `
+  subscription OnUpdateRoute {
+    onUpdateRoute {
+      id
+      routeName
+      routeStart
+      routeTime
+      RouteDepart
+      RouteArrive
+      RouteServe
+      RouteSched
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteRoute = /* GraphQL */ `
+  subscription OnDeleteRoute {
+    onDeleteRoute {
+      id
+      routeName
+      routeStart
+      routeTime
+      RouteDepart
+      RouteArrive
+      RouteServe
+      RouteSched
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateZone = /* GraphQL */ `
+  subscription OnCreateZone {
+    onCreateZone {
+      id
+      zoneNum
+      zoneName
+      zoneFee
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateZone = /* GraphQL */ `
+  subscription OnUpdateZone {
+    onUpdateZone {
+      id
+      zoneNum
+      zoneName
+      zoneFee
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteZone = /* GraphQL */ `
+  subscription OnDeleteZone {
+    onDeleteZone {
+      id
+      zoneNum
+      zoneName
+      zoneFee
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateAltPricing = /* GraphQL */ `
+  subscription OnCreateAltPricing {
+    onCreateAltPricing {
+      id
+      custName
+      prodName
+      price
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateAltPricing = /* GraphQL */ `
+  subscription OnUpdateAltPricing {
+    onUpdateAltPricing {
+      id
+      custName
+      prodName
+      price
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteAltPricing = /* GraphQL */ `
+  subscription OnDeleteAltPricing {
+    onDeleteAltPricing {
+      id
+      custName
+      prodName
+      price
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateClosure = /* GraphQL */ `
+  subscription OnCreateClosure {
+    onCreateClosure {
+      id
+      custName
+      firstDate
+      lastDate
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateClosure = /* GraphQL */ `
+  subscription OnUpdateClosure {
+    onUpdateClosure {
+      id
+      custName
+      firstDate
+      lastDate
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteClosure = /* GraphQL */ `
+  subscription OnDeleteClosure {
+    onDeleteClosure {
+      id
+      custName
+      firstDate
+      lastDate
+      createdAt
+      updatedAt
+    }
+  }
+`;

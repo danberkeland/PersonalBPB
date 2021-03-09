@@ -3,11 +3,12 @@ import React, { useContext } from 'react';
 import { CurrentDataContext } from '../../../dataContexts/CurrentDataContext';
 import { OrdersContext } from '../../../dataContexts/OrdersContext';
 import { StandingContext } from '../../../dataContexts/StandingContext';
+import { HoldingContext } from '../../../dataContexts/HoldingContext';
 import { ToggleContext } from '../../../dataContexts/ToggleContext';
 import { CustomerContext } from '../../../dataContexts/CustomerContext';
 import { ProductsContext } from '../../../dataContexts/ProductsContext';
 
-import { createCustomer, createProduct, createOrder } from '../../../graphql/mutations'
+import { createCustomer, createProduct, createOrder, createStanding, createHolding } from '../../../graphql/mutations'
 
 import Amplify, { API, graphqlOperation } from 'aws-amplify';
 
@@ -36,6 +37,7 @@ function ExportToDatabaseButtons() {
   const { setChosen, delivDate, chosen, currentCartList } = useContext(CurrentDataContext)
   const { orders, setOrders, recentOrders, setRecentOrders } = useContext(OrdersContext)
   const { standing } = useContext(StandingContext)
+  const { holding } = useContext(HoldingContext)
   const { customers } = useContext(CustomerContext)
   const { products } = useContext(ProductsContext)
   const { orderTypeWhole, setOrderTypeWhole,modifications, setModifications, 
@@ -114,9 +116,41 @@ const handleUpdateOrders = async () => {
     }
 }
 
-const handleUpdateStanding = () => {}
+const handleUpdateStanding = async () => {
+  for (let stand of standing){
 
-const handleUpdateHolding = () => {}
+    let standDetails = {
+      qty: stand["qty"],
+      custName: stand["custName"],
+      prodName: stand["prodName"],
+      dayNum: stand["dayNum"],
+      SO: stand["SO"],
+      timeStamp: stand["timeStamp"]
+    }
+    
+    const standData = await API.graphql(graphqlOperation(createStanding, {input: standDetails}))
+    console.log(standData.data)
+    
+    }
+}
+
+const handleUpdateHolding = async () => {
+  for (let hold of holding){
+
+    let holdDetails = {
+      qty: hold["qty"],
+      custName: hold["custName"],
+      prodName: hold["prodName"],
+      dayNum: hold["dayNum"],
+      SO: hold["SO"],
+      timeStamp: hold["timeStamp"]
+    }
+    
+    const holdData = await API.graphql(graphqlOperation(createHolding, {input: holdDetails}))
+    console.log(holdData.data)
+    
+    }
+}
  
   
 

@@ -202,3 +202,303 @@ export const deleteOrder = /* GraphQL */ `
     }
   }
 `;
+export const createStanding = /* GraphQL */ `
+  mutation CreateStanding(
+    $input: CreateStandingInput!
+    $condition: ModelStandingConditionInput
+  ) {
+    createStanding(input: $input, condition: $condition) {
+      id
+      dayNum
+      qty
+      timeStamp
+      prodName
+      custName
+      SO
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateStanding = /* GraphQL */ `
+  mutation UpdateStanding(
+    $input: UpdateStandingInput!
+    $condition: ModelStandingConditionInput
+  ) {
+    updateStanding(input: $input, condition: $condition) {
+      id
+      dayNum
+      qty
+      timeStamp
+      prodName
+      custName
+      SO
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteStanding = /* GraphQL */ `
+  mutation DeleteStanding(
+    $input: DeleteStandingInput!
+    $condition: ModelStandingConditionInput
+  ) {
+    deleteStanding(input: $input, condition: $condition) {
+      id
+      dayNum
+      qty
+      timeStamp
+      prodName
+      custName
+      SO
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createHolding = /* GraphQL */ `
+  mutation CreateHolding(
+    $input: CreateHoldingInput!
+    $condition: ModelHoldingConditionInput
+  ) {
+    createHolding(input: $input, condition: $condition) {
+      id
+      dayNum
+      qty
+      timeStamp
+      prodName
+      custName
+      SO
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateHolding = /* GraphQL */ `
+  mutation UpdateHolding(
+    $input: UpdateHoldingInput!
+    $condition: ModelHoldingConditionInput
+  ) {
+    updateHolding(input: $input, condition: $condition) {
+      id
+      dayNum
+      qty
+      timeStamp
+      prodName
+      custName
+      SO
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteHolding = /* GraphQL */ `
+  mutation DeleteHolding(
+    $input: DeleteHoldingInput!
+    $condition: ModelHoldingConditionInput
+  ) {
+    deleteHolding(input: $input, condition: $condition) {
+      id
+      dayNum
+      qty
+      timeStamp
+      prodName
+      custName
+      SO
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createRoute = /* GraphQL */ `
+  mutation CreateRoute(
+    $input: CreateRouteInput!
+    $condition: ModelRouteConditionInput
+  ) {
+    createRoute(input: $input, condition: $condition) {
+      id
+      routeName
+      routeStart
+      routeTime
+      RouteDepart
+      RouteArrive
+      RouteServe
+      RouteSched
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateRoute = /* GraphQL */ `
+  mutation UpdateRoute(
+    $input: UpdateRouteInput!
+    $condition: ModelRouteConditionInput
+  ) {
+    updateRoute(input: $input, condition: $condition) {
+      id
+      routeName
+      routeStart
+      routeTime
+      RouteDepart
+      RouteArrive
+      RouteServe
+      RouteSched
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteRoute = /* GraphQL */ `
+  mutation DeleteRoute(
+    $input: DeleteRouteInput!
+    $condition: ModelRouteConditionInput
+  ) {
+    deleteRoute(input: $input, condition: $condition) {
+      id
+      routeName
+      routeStart
+      routeTime
+      RouteDepart
+      RouteArrive
+      RouteServe
+      RouteSched
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createZone = /* GraphQL */ `
+  mutation CreateZone(
+    $input: CreateZoneInput!
+    $condition: ModelZoneConditionInput
+  ) {
+    createZone(input: $input, condition: $condition) {
+      id
+      zoneNum
+      zoneName
+      zoneFee
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateZone = /* GraphQL */ `
+  mutation UpdateZone(
+    $input: UpdateZoneInput!
+    $condition: ModelZoneConditionInput
+  ) {
+    updateZone(input: $input, condition: $condition) {
+      id
+      zoneNum
+      zoneName
+      zoneFee
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteZone = /* GraphQL */ `
+  mutation DeleteZone(
+    $input: DeleteZoneInput!
+    $condition: ModelZoneConditionInput
+  ) {
+    deleteZone(input: $input, condition: $condition) {
+      id
+      zoneNum
+      zoneName
+      zoneFee
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createAltPricing = /* GraphQL */ `
+  mutation CreateAltPricing(
+    $input: CreateAltPricingInput!
+    $condition: ModelAltPricingConditionInput
+  ) {
+    createAltPricing(input: $input, condition: $condition) {
+      id
+      custName
+      prodName
+      price
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateAltPricing = /* GraphQL */ `
+  mutation UpdateAltPricing(
+    $input: UpdateAltPricingInput!
+    $condition: ModelAltPricingConditionInput
+  ) {
+    updateAltPricing(input: $input, condition: $condition) {
+      id
+      custName
+      prodName
+      price
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteAltPricing = /* GraphQL */ `
+  mutation DeleteAltPricing(
+    $input: DeleteAltPricingInput!
+    $condition: ModelAltPricingConditionInput
+  ) {
+    deleteAltPricing(input: $input, condition: $condition) {
+      id
+      custName
+      prodName
+      price
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createClosure = /* GraphQL */ `
+  mutation CreateClosure(
+    $input: CreateClosureInput!
+    $condition: ModelClosureConditionInput
+  ) {
+    createClosure(input: $input, condition: $condition) {
+      id
+      custName
+      firstDate
+      lastDate
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateClosure = /* GraphQL */ `
+  mutation UpdateClosure(
+    $input: UpdateClosureInput!
+    $condition: ModelClosureConditionInput
+  ) {
+    updateClosure(input: $input, condition: $condition) {
+      id
+      custName
+      firstDate
+      lastDate
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteClosure = /* GraphQL */ `
+  mutation DeleteClosure(
+    $input: DeleteClosureInput!
+    $condition: ModelClosureConditionInput
+  ) {
+    deleteClosure(input: $input, condition: $condition) {
+      id
+      custName
+      firstDate
+      lastDate
+      createdAt
+      updatedAt
+    }
+  }
+`;

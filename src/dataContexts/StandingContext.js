@@ -1,7 +1,10 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 
-import { useFetch, FilterStandHoldDups, handleLoadingError } from '../helpers/useFetch'
+import { FilterStandHoldDups } from '../helpers/useFetch'
 
+import { listStandings } from '../graphql/queries'
+
+import { API, graphqlOperation } from 'aws-amplify';
 
 
 require('dotenv').config()
@@ -26,24 +29,30 @@ export const StandingProvider = (props) => {
 
 export const StandingLoad = () => {
 
-    const { data } = useFetch(process.env.REACT_APP_API_STANDING,[]);
-
     const { setStanding, setOriginalStanding, setStandLoaded } = useContext(StandingContext)
-    
 
-    useEffect(() => { 
-        if(data){
-            if(data.length>0){
-                let currentData = FilterStandHoldDups(data)
-                setOriginalStanding(currentData);
-                setStanding(currentData);
-                setStandLoaded(true)
-            }
-        } else {
-            handleLoadingError()
+    useEffect(() => {
+        fetchStanding()
+    },[])
+
+
+
+    const fetchStanding = async () => {
+        try{
+            const standData = await API.graphql(graphqlOperation(listStandings, {
+                limit: '5000'
+                }))
+            const standList = standData.data.listStandings.items;
+            let noDelete = standList.filter(stand => stand["_deleted"]!==true)
+            let currentData = FilterStandHoldDups(noDelete)
+            setOriginalStanding(currentData);
+            setStanding(currentData);
+            setStandLoaded(true)
+        } catch (error){
+          console.log('error on fetching Cust List', error)
         }
-    },[data]);
-    
+      }
+  
 
 
     return (

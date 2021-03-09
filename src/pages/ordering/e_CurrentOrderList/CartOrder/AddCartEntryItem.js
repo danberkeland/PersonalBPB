@@ -53,7 +53,7 @@ const AddCartEntryItem = () => {
     } 
 
     const handleAdd = () => {
-        let qty = document.getElementById("addedProdQty").value
+        let qty = Number(document.getElementById("addedProdQty").value)
        
         let newOrder ={
             "qty": qty, 
@@ -61,13 +61,13 @@ const AddCartEntryItem = () => {
             "custName": chosen, 
             "PONote": ponote, 
             "route": route, 
-            "SO": "0", 
+            "SO": 0, 
             "isWhole": orderTypeWhole, 
             "delivDate": convertDatetoBPBDate(delivDate)
         }
         let newOrderList = decideWhetherToAddOrModify(orders, newOrder, delivDate)
         setOrders(newOrderList)
-        document.getElementById("addedProdQty").value = '';
+        document.getElementById("addedProdQty").value = null;
         setPickedProduct('');
         
     }

@@ -79,24 +79,23 @@ export const FilterStandHoldDups = data => {
         item["prodName"]+"_"+
         item["custName"]),item["qty"],item["SO"],item["timeStamp"]]
         )
-        console.log(groupedData)
+    
     for (let i=0; i<groupedData.length; ++i ){
-        for (let j=i+1; j<groupedData.length; ++j){
+        for (let j=i+1; j<groupedData.length-1; ++j){
             while (groupedData[i][0] === groupedData[j][0]){
                 groupedData.splice(j,1);
             }
         }
     }
-
+    
     let reassembledData = groupedData.map(item => ({
-        "dayNum": item[0].split("_")[0],
+        "dayNum": Number(item[0].split("_")[0]),
         "qty": item[1],
         "SO": item[2],
         "timeStamp": item[3],
         "prodName": item[0].split("_")[1],
         "custName": item[0].split("_")[2],
-    }))
-    
+    })) 
     return reassembledData
 }
 

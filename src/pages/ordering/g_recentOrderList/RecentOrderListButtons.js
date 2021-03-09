@@ -11,9 +11,8 @@ import { Button } from 'primereact/button';
 import { createOrderUpdatesClip, createStandHoldClip } from '../../../helpers/sortDataHelpers'
 
 import styled from 'styled-components'
-import RecentOrderList from './RecentOrderList';
 
-import { createOrder } from '../../../graphql/mutations'
+import { createOrder, createHolding, createStanding } from '../../../graphql/mutations'
 
 import { API, graphqlOperation } from 'aws-amplify';
 
@@ -68,13 +67,71 @@ const RecentOrderListButtons = () => {
         setOrdersLoaded(false)
 
         } catch (error){
-          console.log('error on fetching Cust List', error)
+          console.log('error on creating Orders', error)
+        }
+      }
+    }
+
+    const updateHolding = async () => {
+      
+      for (let hold of holdingData) {
+        let updateDetails = {
+          dayNum: hold["dayNum"],
+          qty: hold["qty"],
+          timeStamp: hold["timeStamp"],
+          prodName: hold["prodName"],
+          custName: hold["custName"],
+          SO: hold["qty"]
+        };
+        console.log(updateDetails)
+        try{
+          const holdData = await API.graphql(graphqlOperation(createHolding, {input: {...updateDetails}}))
+          swal ({
+            text: `Holding Orders have been updated.`,
+            icon: "success",
+            buttons: false,
+            timer: 2000
+        })
+        setHoldLoaded(false)
+
+        } catch (error){
+          console.log('error on creating Holding Order', error)
+        }
+      }
+    }
+
+    const updateStanding = async () => {
+      
+      for (let stand of standingData) {
+        let updateDetails = {
+          dayNum: stand["dayNum"],
+          qty: stand["qty"],
+          timeStamp: stand["timeStamp"],
+          prodName: stand["prodName"],
+          custName: stand["custName"],
+          SO: stand["qty"]
+        };
+        console.log(updateDetails)
+        try{
+          const standData = await API.graphql(graphqlOperation(createStanding, {input: {...updateDetails}}))
+          swal ({
+            text: `Standing Orders have been updated.`,
+            icon: "success",
+            buttons: false,
+            timer: 2000
+        })
+        setStandLoaded(false)
+
+        } catch (error){
+          console.log('error on creating Holding Order', error)
         }
       }
     }
 
 
-    updateOrder() 
+    updateOrder()
+    updateStanding()
+    updateHolding() 
     
     setRecentOrders([])
     swal ({

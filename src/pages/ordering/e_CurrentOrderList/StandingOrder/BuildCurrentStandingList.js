@@ -87,7 +87,7 @@ const BuildCurrentStandingList = () => {
 
     const handleQtyModify = (e,qty) => {
         if(isNaN(e.target.value)){
-            e.target.value = ''
+            e.target.value = null
             swal ({
                 text: "Only Numbers Please",
                 icon: "warning",
@@ -124,31 +124,31 @@ const BuildCurrentStandingList = () => {
 
                     <StandInput type="text" key={order[0]+"sun"} size="3" style={Number(order[1])>0 ? entryNotZero : entryZero }
                         maxLength="3" id={order[0]+"_1"} name={order[0]} placeholder={order[1]} data-day="1" 
-                        onKeyUp={e => {handleQtyModify(e,e.target.value)}} onBlur={(e) => {e.target.value = ''}}>
+                        onKeyUp={e => {handleQtyModify(e,Number(e.target.value))}} onBlur={(e) => {e.target.value = null}}>
                     </StandInput>
                     <StandInput type="text" key={order[0]+"mon"} size="3" style={Number(order[2])>0 ? entryNotZero : entryZero }
                         maxLength="3" id={order[0]+"_2"} name={order[0]} placeholder={order[2]} data-day="2" 
-                        onKeyUp={e => {handleQtyModify(e,e.target.value)}} onBlur={(e) => {e.target.value = ''}}>
+                        onKeyUp={e => {handleQtyModify(e,Number(e.target.value))}} onBlur={(e) => {e.target.value = ''}}>
                     </StandInput>
                     <StandInput type="text" key={order[0]+"tues"} size="3" style={Number(order[3])>0 ? entryNotZero : entryZero }
                         maxLength="3" id={order[0]+"_3"} name={order[0]} placeholder={order[3]} data-day="3" 
-                        onKeyUp={e => {handleQtyModify(e,e.target.value)}} onBlur={(e) => {e.target.value = ''}}>
+                        onKeyUp={e => {handleQtyModify(e,Number(e.target.value))}} onBlur={(e) => {e.target.value = ''}}>
                     </StandInput>
                     <StandInput type="text" key={order[0]+"wed"} size="3" style={Number(order[4])>0 ? entryNotZero : entryZero }
                         maxLength="3" id={order[0]+"_4"} name={order[0]} placeholder={order[4]} data-day="4" 
-                        onKeyUp={e => {handleQtyModify(e,e.target.value)}} onBlur={(e) => {e.target.value = ''}}>
+                        onKeyUp={e => {handleQtyModify(e,Number(e.target.value))}} onBlur={(e) => {e.target.value = ''}}>
                     </StandInput>
                     <StandInput type="text" key={order[0]+"thurs"} size="3" style={Number(order[5])>0 ? entryNotZero : entryZero } 
                         maxLength="3" id={order[0]+"_5"} name={order[0]} placeholder={order[5]} data-day="5" 
-                        onKeyUp={e => {handleQtyModify(e,e.target.value)}} onBlur={(e) => {e.target.value = ''}}>
+                        onKeyUp={e => {handleQtyModify(e,Number(e.target.value))}} onBlur={(e) => {e.target.value = ''}}>
                     </StandInput>
                     <StandInput type="text" key={order[0]+"fri"} size="3" style={Number(order[6])>0 ? entryNotZero : entryZero } 
                         maxLength="3" id={order[0]+"_6"} name={order[0]} placeholder={order[6]} data-day="6" 
-                        onKeyUp={e => {handleQtyModify(e,e.target.value)}} onBlur={(e) => {e.target.value = ''}}>
+                        onKeyUp={e => {handleQtyModify(e,Number(e.target.value))}} onBlur={(e) => {e.target.value = ''}}>
                     </StandInput>
                     <StandInput type="text" key={order[0]+"sat"} size="3" style={Number(order[7])>0 ? entryNotZero : entryZero }
                         maxLength="3" id={order[0]+"_7"} name={order[0]} placeholder={order[7]} data-day="7" 
-                        onKeyUp={e => {handleQtyModify(e,e.target.value)}} onBlur={(e) => {e.target.value = ''}}>
+                        onKeyUp={e => {handleQtyModify(e,Number(e.target.value))}} onBlur={(e) => {e.target.value = ''}}>
                     </StandInput>
     
                     <Button icon="pi pi-trash" className="p-button-outlined p-button-rounded p-button-help p-button-sm" 

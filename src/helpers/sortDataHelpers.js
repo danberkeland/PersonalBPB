@@ -11,6 +11,11 @@ export const sortAtoZDataByIndex = (data,index) => {
     return data
 }
 
+export const sortZtoADataByIndex = (data,index) => {
+    data.sort(function(a,b){return a[index]<b[index] ? 1 : -1;})
+    return data
+}
+
 
 
 
@@ -154,9 +159,9 @@ export const createStandHoldClip = (orders, originalOrders) => {
 
     let timeStamp = new Date()
     let timeStampedData = orderData.map(order => ({
-        dayNum: order["dayNum"],
-        qty: order["qty"],
-        SO: order["qty"],
+        dayNum: Number(order["dayNum"]),
+        qty: Number(order["qty"]),
+        SO: Number(order["qty"]),
         timeStamp: timeStamp,
         prodName: order["prodName"],
         custName: order["custName"]

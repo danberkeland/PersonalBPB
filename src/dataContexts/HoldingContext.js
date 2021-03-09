@@ -2,6 +2,8 @@ import React, { useState, createContext, useContext, useEffect } from 'react';
 
 import { FilterStandHoldDups } from '../helpers/useFetch'
 
+import { sortAtoZDataByIndex, sortZtoADataByIndex } from '../helpers/sortDataHelpers'
+
 import { listHoldings } from '../graphql/queries'
 
 import { API, graphqlOperation } from 'aws-amplify';
@@ -46,8 +48,14 @@ export const HoldingLoad = () => {
                 }))
             const holdList = holdData.data.listHoldings.items;
             let noDelete = holdList.filter(hold => hold["_deleted"]!==true)
-            let currentData = FilterStandHoldDups(noDelete)
+            
+            
+            let sortedData = sortZtoADataByIndex(noDelete,"timeStamp")
+            let currentData = FilterStandHoldDups(sortedData)
+            console.log(currentData)
+           
             setOriginalHolding(currentData);
+           
             setHolding(currentData);
             setHoldLoaded(true)
         } catch (error){

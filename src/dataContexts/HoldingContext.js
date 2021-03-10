@@ -52,7 +52,7 @@ export const HoldingLoad = () => {
             
             let sortedData = sortZtoADataByIndex(noDelete,"timeStamp")
             let currentData = FilterStandHoldDups(sortedData)
-            console.log(currentData)
+         
            
             setOriginalHolding(currentData);
            

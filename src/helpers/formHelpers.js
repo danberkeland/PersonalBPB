@@ -5,7 +5,7 @@ const clonedeep = require('lodash.clonedeep')
 
 export const setValue = (value, selected) => {
     if (value.code==="Enter"){
-        console.log(value.target)
+
         let itemToUpdate = clonedeep(selected)
         itemToUpdate[value.target.id] = value.target.value
         document.getElementById(value.target.id).value=''

@@ -67,7 +67,7 @@ const handleUpdateCustomers = async () => {
     }
     
     const custData = await API.graphql(graphqlOperation(createCustomer, {input: custDetails}))
-    console.log(custData.data)
+    
     
     }
       
@@ -88,7 +88,7 @@ const handleUpdateProducts = async () => {
     }
     
     const prodData = await API.graphql(graphqlOperation(createProduct, {input: prodDetails}))
-    console.log(prodData.data)
+    
     
     }
       
@@ -111,7 +111,7 @@ const handleUpdateOrders = async () => {
     }
     
     const ordData = await API.graphql(graphqlOperation(createOrder, {input: ordDetails}))
-    console.log(ordData.data)
+
     
     }
 }
@@ -129,7 +129,7 @@ const handleUpdateStanding = async () => {
     }
     
     const standData = await API.graphql(graphqlOperation(createStanding, {input: standDetails}))
-    console.log(standData.data)
+    
     
     }
 }
@@ -147,7 +147,7 @@ const handleUpdateHolding = async () => {
     }
     
     const holdData = await API.graphql(graphqlOperation(createHolding, {input: holdDetails}))
-    console.log(holdData.data)
+   
     
     }
 }

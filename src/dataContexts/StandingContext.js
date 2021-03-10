@@ -2,7 +2,7 @@ import React, { useState, createContext, useContext, useEffect } from 'react';
 
 import { FilterStandHoldDups } from '../helpers/useFetch'
 
-import { sortAtoZDataByIndex, sortZtoADataByIndex } from '../helpers/sortDataHelpers'
+import { sortAtoZDataByIndex } from '../helpers/sortDataHelpers'
 
 import { listStandings } from '../graphql/queries'
 
@@ -48,7 +48,7 @@ export const StandingLoad = () => {
             let noDelete = standList.filter(stand => stand["_deleted"]!==true)
             
             
-            let sortedData = sortZtoADataByIndex(noDelete,"timeStamp")
+            let sortedData = sortAtoZDataByIndex(noDelete,"timeStamp")
             let currentData = FilterStandHoldDups(sortedData)
            
            
@@ -57,7 +57,7 @@ export const StandingLoad = () => {
             setStanding(currentData);
             setStandLoaded(true)
         } catch (error){
-          console.log('error on fetching Cust List', error)
+          console.log('error on fetching Standing List', error)
         }
       }
   

@@ -46,7 +46,7 @@ export const ProductsLoad = () => {
           setProducts(prodList)
           setProdLoaded(true)
         } catch (error){
-          console.log('error on fetching Cust List', error)
+          console.log('error on fetching Product List', error)
         }
       }
   

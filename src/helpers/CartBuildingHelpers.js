@@ -19,7 +19,7 @@ export const buildCartList = (chosen,delivDate,orders) => {
 
 
 export const buildStandList = (chosen,delivDate,standing) => {
-    let standingDate = convertDatetoStandingDate(delivDate);  
+    let standingDate = Number(convertDatetoStandingDate(delivDate));  
     let filteredStanding = clonedeep(standing)
     let builtStandList =[]
     builtStandList = filteredStanding.filter(standing => standing["dayNum"] === standingDate && standing["custName"].match(wildcardRegExp(`${chosen}`)) )
@@ -30,7 +30,7 @@ export const buildStandList = (chosen,delivDate,standing) => {
 
 const convertStandListtoStandArray = (builtStandList, delivDate) => {
     let convertedStandList = builtStandList.map(order => ({   
-        "qty": order["qty"],
+        "qty": Number(order["qty"]),
         "prodName": order["prodName"],
         "custName": order["custName"],
         "PONote": "na",
@@ -38,7 +38,7 @@ const convertStandListtoStandArray = (builtStandList, delivDate) => {
         "isWhole": true,
         "delivDate": convertDatetoBPBDate(delivDate),
         "timeStamp": order["timeStamp"],
-        "SO": order["qty"]
+        "SO": Number(order["qty"])
     }))
     return convertedStandList
 }
@@ -49,7 +49,7 @@ export const compileOrderList = (cartList,standList) => {
 
     // Remove old cart order from orders if it exists
     for (let i=0; i<orderList.length; ++i ){
-        for (let j=i+1; j<orderList.length; ++j){
+        for (let j=i+1; j<orderList.length-1; ++j){
             if (orderList[i]["prodName"] === orderList[j]["prodName"]){
                 orderList.splice(j,1);
             }
@@ -142,12 +142,12 @@ export const createOrdersToUpdate = (products, enteredProducts, chosen, ponote, 
       for (let enteredItem of enteredProducts){
         if (product["nickName"] === enteredItem[1]){
           let newOrder = {
-              "qty": enteredItem[0],
-              "prodName": product["name"], 
+              "qty": Number(enteredItem[0]),
+              "prodName": product["prodName"], 
               "custName": chosen, 
               "PONote": ponote, 
               "route": route, 
-              "SO": "0", 
+              "SO": 0, 
               "isWhole": orderTypeWhole, 
               "delivDate": convertDatetoBPBDate(delivDate)
             }

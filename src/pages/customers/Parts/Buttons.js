@@ -130,7 +130,7 @@ const Buttons = ({ selectedCustomer, setSelectedCustomer }) => {
 
         try{
           const custData = await API.graphql(graphqlOperation(updateCustomer, {input: {...updateDetails}}))
-          console.log(custData.data.updateCustomer.custName)
+        
           swal ({
             text: `${custData.data.updateCustomer.custName} has been updated.`,
             icon: "success",
@@ -174,7 +174,6 @@ const Buttons = ({ selectedCustomer, setSelectedCustomer }) => {
             const custData = await API.graphql(graphqlOperation(deleteCustomer, {input: {...deleteDetails}}));
             setCustLoaded(false)
             setSelectedCustomer()
-            console.log(custData.data)
         } catch (error) {
             console.log('error on fetching Cust List', error)
         }

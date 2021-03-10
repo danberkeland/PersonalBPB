@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 
 import swal from '@sweetalert/with-react';
 
+const clonedeep = require('lodash.clonedeep')
+
 
 export const useFetch = url => {
     const [state, setState] = useState({
@@ -30,28 +32,28 @@ export const FilterOrdersDups = data => {
     let groupedData = data.map(item => [(
         item["prodName"]+"_"+
         item["custName"]+"_"+
-        item["PONote"]+"_"+
-        item["route"]+"_"+
-        item["delivDate"]),item["qty"],item["SO"],item["isWhole"],item["timeStamp"]]
+        item["delivDate"]),item["qty"],item["SO"],item["isWhole"],item["timeStamp"],item["PONote"],item["route"]]
         )
+    
+
 
     for (let i=0; i<groupedData.length; ++i ){
-        for (let j=i+1; j<groupedData.length; ++j){
+        for (let j=i+1; j<groupedData.length-1; ++j){
             while(groupedData[i][0] === groupedData[j][0]){
                 groupedData.splice(j,1);
             }
         }
     }
-
-    let reassembledData = groupedData.map(item => ({
+    let newGroupedData = clonedeep(groupedData)
+    let reassembledData = newGroupedData.map(item => ({
         "qty": item[1],
         "prodName": item[0].split("_")[0],
         "custName": item[0].split("_")[1],
-        "PONote": item[0].split("_")[2],
-        "route": item[0].split("_")[3],
+        "PONote": item[5],
+        "route": item[6],
         "SO": item[2],
-        "isWhole": item[3] === "TRUE" ? true : false,
-        "delivDate": item[0].split("_")[4],
+        "isWhole": item[3],
+        "delivDate": item[0].split("_")[2],
         "timeStamp": item[4]
     }))
     return reassembledData

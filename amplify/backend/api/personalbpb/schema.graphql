@@ -30,13 +30,13 @@ type Product @model @auth(rules: [{allow: public}]) {
 
 type Order @model @auth(rules: [{allow: public}]) {
   id: ID!
-  qty: String!
+  qty: Int
   prodName: String!
   custName: String
   PONote: String
   route: String
-  SO: String
-  isWhole: String
+  SO: Int
+  isWhole: Boolean
   delivDate: String
   timeStamp: String
 }

@@ -55,7 +55,7 @@ const RecentOrderListButtons = () => {
           delivDate: ord["delivDate"],
           timeStamp: ord["timeStamp"]
         };
-        console.log(updateDetails)
+       
         try{
           const ordData = await API.graphql(graphqlOperation(createOrder, {input: {...updateDetails}}))
           swal ({
@@ -83,7 +83,7 @@ const RecentOrderListButtons = () => {
           custName: hold["custName"],
           SO: hold["qty"]
         };
-        console.log(updateDetails)
+ 
         try{
           const holdData = await API.graphql(graphqlOperation(createHolding, {input: {...updateDetails}}))
           swal ({
@@ -111,7 +111,7 @@ const RecentOrderListButtons = () => {
           custName: stand["custName"],
           SO: stand["qty"]
         };
-        console.log(updateDetails)
+      
         try{
           const standData = await API.graphql(graphqlOperation(createStanding, {input: {...updateDetails}}))
           swal ({

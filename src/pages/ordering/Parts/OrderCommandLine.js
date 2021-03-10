@@ -56,7 +56,7 @@ const OrderCommandLine = () => {
         "delivDate":convertDatetoBPBDate(delivDate)
       }
       newRetailCustList.push(newRetailCustEntry)
-      console.log(newRetailCustList)
+     
       setOrders(newRetailCustList)
       setDelivDate(tomorrow)
       setChosen(newRetailCustName);

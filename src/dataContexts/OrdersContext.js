@@ -2,6 +2,8 @@ import React, { useState, createContext, useContext, useEffect } from 'react';
 
 import { FilterOrdersDups } from '../helpers/useFetch'
 
+import { sortAtoZDataByIndex, sortZtoADataByIndex } from '../helpers/sortDataHelpers'
+
 import { listOrders } from '../graphql/queries'
 
 import { API, graphqlOperation } from 'aws-amplify';
@@ -48,17 +50,21 @@ export const OrdersLoad = () => {
 
     const fetchOrders = async () => {
         try{
-          const ordData = await API.graphql(graphqlOperation(listOrders, {
-                limit: '5000'
-                }))
-          const ordList = ordData.data.listOrders.items;
-          let noDelete = ordList.filter(cust => cust["_deleted"]!==true)
-          let currentData = FilterOrdersDups(noDelete)
-          setOrders(currentData)
-          setOrdersLoaded(true)
-          setOriginalOrders(currentData);
-        } catch (error){
-          console.log('error on fetching Cust List', error)
+            const ordData = await API.graphql(graphqlOperation(listOrders, {
+                  limit: '5000'
+                  }))
+            const ordList = ordData.data.listOrders.items;
+                
+            let noDelete = ordList.filter(cust => cust["_deleted"]!==true)
+            let sortedData = sortAtoZDataByIndex(noDelete,"timeStamp")
+            sortedData = sortAtoZDataByIndex(sortedData, "prodName")
+                
+            let currentData = FilterOrdersDups(sortedData)
+            setOrders(currentData)
+            setOrdersLoaded(true)
+            setOriginalOrders(currentData);
+        }  catch (error){
+            console.log('error on fetching Orders List', error)
         }
       }
   

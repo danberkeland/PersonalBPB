@@ -74,7 +74,6 @@ const BuildCurrentStandingList = () => {
     const handleRemove = (index) => {
         
         let standListToModify = clearSelectedStandItem(index,standArray)
-        console.log(standListToModify)
         setStandArray(standListToModify)
         setModifications(true)
         

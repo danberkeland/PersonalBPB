@@ -18,23 +18,23 @@ export const buildCartList = (chosen,delivDate,orders) => {
 }
 
 
-export const buildStandList = (chosen,delivDate,standing) => {
+export const buildStandList = (chosen,delivDate,standing, route, ponote) => {
     let standingDate = Number(convertDatetoStandingDate(delivDate));  
     let filteredStanding = clonedeep(standing)
     let builtStandList =[]
     builtStandList = filteredStanding.filter(standing => standing["dayNum"] === standingDate && standing["custName"].match(wildcardRegExp(`${chosen}`)) )
-    let convertedStandList = convertStandListtoStandArray(builtStandList, delivDate)
+    let convertedStandList = convertStandListtoStandArray(builtStandList, delivDate, route, ponote)
     return convertedStandList
 }
 
 
-const convertStandListtoStandArray = (builtStandList, delivDate) => {
+const convertStandListtoStandArray = (builtStandList, delivDate, route, ponote) => {
     let convertedStandList = builtStandList.map(order => ({   
         "qty": Number(order["qty"]),
         "prodName": order["prodName"],
         "custName": order["custName"],
-        "PONote": "na",
-        "route": order["route"],
+        "PONote": ponote,
+        "route": route,
         "isWhole": true,
         "delivDate": convertDatetoBPBDate(delivDate),
         "timeStamp": order["timeStamp"],
@@ -46,23 +46,26 @@ const convertStandListtoStandArray = (builtStandList, delivDate) => {
 
 export const compileOrderList = (cartList,standList) => {
     let orderList = cartList.concat(standList)
+    
 
     // Remove old cart order from orders if it exists
     for (let i=0; i<orderList.length; ++i ){
-        for (let j=i+1; j<orderList.length-1; ++j){
+        for (let j=i+1; j<orderList.length; ++j){
             if (orderList[i]["prodName"] === orderList[j]["prodName"]){
                 orderList.splice(j,1);
             }
         }
     }
+
+    
     sortAtoZDataByIndex(orderList,"prodName")
     return orderList
 }
 
 
-export const buildCurrentOrder = (chosen,delivDate,orders,standing) => {
+export const buildCurrentOrder = (chosen,delivDate,orders,standing, route, ponote) => {
     let cartList = buildCartList(chosen,delivDate,orders)
-    let standList = buildStandList(chosen, delivDate, standing)
+    let standList = buildStandList(chosen, delivDate, standing, route, ponote)
     let currentOrderList = compileOrderList(cartList,standList)
     
     return currentOrderList

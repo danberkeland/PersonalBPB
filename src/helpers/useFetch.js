@@ -38,7 +38,7 @@ export const FilterOrdersDups = data => {
 
 
     for (let i=0; i<groupedData.length; ++i ){
-        for (let j=i+1; j<groupedData.length-1; ++j){
+        for (let j=i+1; j<groupedData.length; ++j){
             while(groupedData[i][0] === groupedData[j][0]){
                 groupedData.splice(j,1);
             }
@@ -64,7 +64,7 @@ export const FilterDupsByIndex = (data,ind) => {
 
 
     for (let i=0; i<data.length; ++i ){
-        for (let j=i+1; j<data.length; ++j){
+        for (let j=i+1; j<data.length-1; ++j){
             while (data[i][ind] === data[j][ind]){
                 data.splice(j,1);
             }

@@ -8,6 +8,8 @@ import Ordering from './pages/ordering/Ordering'
 import DeliveryRouteGrid from './pages/logistics/DeliveryRouteGrid'
 import DeliveryCustomerGrid from './pages/logistics/DeliveryCustomerGrid'
 import DeliveryProductGrid from './pages/logistics/DeliveryProductGrid'
+import EditRoutes from './pages/settings/editRoutes/editRoutes'
+import EditZones from './pages/settings/editZones/editZones'
 import BPBS from './BPBS'
 import BPBN from './BPBN'
 import Croix from './Croix'
@@ -16,8 +18,6 @@ import Products from './pages/products/Products'
 import Billing from './Billing'
 import Admin from './Admin'
 import Loader from './Loader'
-
-import Nav from './Nav'
 
 
 function AppRoutes() {
@@ -31,6 +31,8 @@ function AppRoutes() {
           <Route path="/logistics/byRoute" component={DeliveryRouteGrid} />  
           <Route path="/logistics/byCustomer" component={DeliveryCustomerGrid} />  
           <Route path="/logistics/byProduct" component={DeliveryProductGrid} />  
+          <Route path="/settings/editRoutes" component={EditRoutes} />
+          <Route path="settings/editZones" component={EditZones} />
           <Route path="/bpbs" component={BPBS} />
           <Route path="/bpbn" component={BPBN} />
           <Route path="/croix" component={Croix} />

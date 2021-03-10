@@ -74,7 +74,8 @@ function Nav() {
    ];
 
    const settingsitems = [
-      {label: 'Settings'},
+      {label: 'Edit Zones', command:()=>{ window.location="/settings/editZones"; }},
+      {label: 'Edit Routes', command:()=>{ window.location="/settings/editRoutes"; }}
    ];
 
 

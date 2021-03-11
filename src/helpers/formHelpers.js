@@ -3,6 +3,18 @@ import { sortAtoZDataByIndex } from './sortDataHelpers'
 const clonedeep = require('lodash.clonedeep')
 
 
+export const setPickValue = (value, selected) => {
+  
+
+        let itemToUpdate = clonedeep(selected)
+        console.log(value)
+        itemToUpdate["RouteServe"] = value.target
+        
+        return itemToUpdate
+    
+  }
+
+
 export const setValue = (value, selected) => {
     if (value.code==="Enter"){
 
@@ -27,6 +39,7 @@ export const setDropDownValue = (value, selected) => {
     let itemToUpdate = clonedeep(selected)
     let attr = value.target.id
     itemToUpdate[attr] = value.value[attr]
+    console.log(value.value[attr])
     return itemToUpdate  
     }
 

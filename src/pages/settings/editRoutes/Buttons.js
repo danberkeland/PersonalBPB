@@ -41,7 +41,7 @@ const Buttons = ({ selectedRoute, setSelectedRoute }) => {
                 routeTime: 0,
                 RouteDepart: '',
                 RouteArrive: '',
-                RouteServe: '',
+                RouteServe: ["High","Pismo"],
                 RouteSched: '',
             };
             createRte(addDetails, routeName)
@@ -66,10 +66,10 @@ const Buttons = ({ selectedRoute, setSelectedRoute }) => {
             routeName: selectedRoute["routeName"],
             routeStart: selectedRoute["routeStart"],
             routeTime: selectedRoute["routeTime"],
-            RouteDepart: selectedRoute["routeDepart"],
-            RouteArrive: selectedRoute["routeArrive"],
-            RouteServe: selectedRoute["routeServe"],
-            RouteSched: selectedRoute["routeSched"],
+            RouteDepart: selectedRoute["RouteDepart"],
+            RouteArrive: selectedRoute["RouteArrive"],
+            RouteServe: selectedRoute["RouteServe"],
+            RouteSched: selectedRoute["RouteSched"],
             _version: selectedRoute["_version"]
         };
 

@@ -16,7 +16,7 @@ import Buttons from './Buttons'
 
 const MainWrapper = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr .5fr;
+  grid-template-columns: 1fr  2fr 1fr;
   height: 100vh;
   `
 
@@ -45,7 +45,7 @@ const GroupBox = styled.div`
 
 function EditRoutes() {
 
-  const [ selectedRoute, setSelectedRoute ] = useState(1)
+  const [ selectedRoute, setSelectedRoute ] = useState()
   const [ routes, setRoutes ] = useState(null)
 
   const { setCustLoaded } = useContext(CustomerContext)

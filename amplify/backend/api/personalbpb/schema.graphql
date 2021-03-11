@@ -68,7 +68,7 @@ type Route @model @auth(rules: [{allow: public}]) {
   routeTime: Float
   RouteDepart: String
   RouteArrive: String
-  RouteServe: String
+  RouteServe: [String]
   RouteSched: String
 }
 

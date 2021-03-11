@@ -45,39 +45,29 @@ const GroupBox = styled.div`
 
 function EditZones() {
 
-  const [ selectedZone, setSelectedZone ] = useState(null)
+  const [ selectedZone, setSelectedZone ] = useState(1)
+  const [ zones, setZones ] = useState(null)
 
-  const { customers, custLoaded, setCustLoaded } = useContext(CustomerContext)
+  const { setCustLoaded } = useContext(CustomerContext)
   const { setProdLoaded } = useContext(ProductsContext)
   let { setHoldLoaded } = useContext(HoldingContext)
   let { setOrdersLoaded } = useContext(OrdersContext)
   let { setStandLoaded } = useContext(StandingContext)
 
   
-  useEffect(() => {
   
-    if (!customers){
-        setCustLoaded(false)
-    }
-    setProdLoaded(true)
-    setHoldLoaded(true)
-    setOrdersLoaded(true)
-    setStandLoaded(true)
-  },[])
-
   
     
   return (
     <React.Fragment>
-       {!custLoaded ? <CustomerLoad /> : ''}
       <MainWrapper>
-        <ZoneList selectedZone={selectedZone} setSelectedZone={setSelectedZone}/>
+        <ZoneList selectedZone={selectedZone} setSelectedZone={setSelectedZone} zones={zones} setZones={setZones}/>
         {selectedZone && 
         <React.Fragment>
 
           <DescripWrapper>
             <GroupBox id="Info">
-              <Info selectedZone={selectedZone} setSelectedZone={setSelectedZone}/>
+              
             </GroupBox>
           </DescripWrapper>
         

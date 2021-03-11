@@ -56,9 +56,8 @@ function EditRoutes() {
   
   useEffect(() => {
   
-    if (!customers){
-        setCustLoaded(false)
-    }
+    
+    setCustLoaded(true)
     setProdLoaded(true)
     setHoldLoaded(true)
     setOrdersLoaded(true)
@@ -69,7 +68,6 @@ function EditRoutes() {
     
   return (
     <React.Fragment>
-       {!custLoaded ? <CustomerLoad /> : ''}
       <MainWrapper>
         <RouteList selectedRoute={selectedRoute} setSelectedRoute={setSelectedRoute}/>
         {selectedRoute && 
@@ -77,7 +75,7 @@ function EditRoutes() {
 
           <DescripWrapper>
             <GroupBox id="Info">
-              <Info selectedRoute={selectedRoute} setSelectedCustomer={setSelectedRoute}/>
+             
             </GroupBox>
           </DescripWrapper>
         

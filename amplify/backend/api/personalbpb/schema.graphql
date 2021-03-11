@@ -69,7 +69,7 @@ type Route @model @auth(rules: [{allow: public}]) {
   RouteDepart: String
   RouteArrive: String
   RouteServe: [String]
-  RouteSched: String
+  RouteSched: [String]
 }
 
 type Zone @model @auth(rules: [{allow: public}]) {

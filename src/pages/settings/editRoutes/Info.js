@@ -17,6 +17,8 @@ import { API, graphqlOperation } from 'aws-amplify';
 
 import { sortAtoZDataByIndex } from '../../../helpers/sortDataHelpers'
 
+const clonedeep = require('lodash.clonedeep')
+
 
 const DuoWrapper = styled.div`
   display: grid;
@@ -58,7 +60,10 @@ const Info = ({ selectedRoute, setSelectedRoute, routes, setRoutes }) => {
             selectedDays.push(e.value);
         else
             selectedDays.splice(selectedDays.indexOf(e.value), 1);
-
+        
+        let itemToUpdate = clonedeep(selectedRoute)
+        itemToUpdate["RouteSched"] = selectedDays
+        setSelectedRoute(itemToUpdate)
         setDays(selectedDays);
 }
 
@@ -75,16 +80,19 @@ const Info = ({ selectedRoute, setSelectedRoute, routes, setRoutes }) => {
       setTarget(selectedRoute["RouteServe"])
     },[selectedRoute])
 
+    useEffect(() => {
+      setDays(selectedRoute["RouteSched"])
+    },[selectedRoute])
+
 
     useEffect(() => {
       let parsedZones = []
       if (fullZones.current){
         parsedZones = fullZones.current.filter(full => !selectedRoute["RouteServe"].includes(full))
-      }
-    
-      
+      }     
       setSource(parsedZones)
     },[fullZones.current])
+
 
 
 

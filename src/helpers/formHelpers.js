@@ -7,9 +7,7 @@ export const setPickValue = (value, selected) => {
   
 
         let itemToUpdate = clonedeep(selected)
-        console.log(value)
-        itemToUpdate["RouteServe"] = value.target
-        
+        itemToUpdate["RouteServe"] = value.target   
         return itemToUpdate
     
   }
@@ -39,7 +37,6 @@ export const setDropDownValue = (value, selected) => {
     let itemToUpdate = clonedeep(selected)
     let attr = value.target.id
     itemToUpdate[attr] = value.value[attr]
-    console.log(value.value[attr])
     return itemToUpdate  
     }
 

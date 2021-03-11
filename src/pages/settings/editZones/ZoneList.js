@@ -28,7 +28,7 @@ const ZoneList = ({ selectedZone, setSelectedZone, zones, setZones }) => {
 
     useEffect(() => {
         fetchZones()
-    },[])
+    },[zones])
 
 
 

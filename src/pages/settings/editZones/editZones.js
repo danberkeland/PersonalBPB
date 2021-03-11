@@ -73,21 +73,18 @@ function EditZones() {
 
           <DescripWrapper>
             <GroupBox id="Info">
-              
+              <Info selectedZone={selectedZone} setSelectedZone={setSelectedZone} zones={zones} setZones={setZones}/>
             </GroupBox>
           </DescripWrapper>
-        
+
           </React.Fragment>
       }
-
           <DescripWrapper>
-            <Buttons selectedZone={selectedZone} setSelectedRoute={setSelectedZone}/>
+            <Buttons selectedZone={selectedZone} setSelectedZone={setSelectedZone} zones={zones} setZones={setZones}/>
           </DescripWrapper>
-
         
       </MainWrapper>
     </React.Fragment>         
   );
 }
-
 export default EditZones;

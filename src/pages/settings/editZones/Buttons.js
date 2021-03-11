@@ -52,6 +52,7 @@ const Buttons = ({ selectedZone, setSelectedZone }) => {
         } catch (error){
             console.log('error on fetching Zone List', error)
         }
+        
     }
 
        

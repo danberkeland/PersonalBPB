@@ -54,7 +54,13 @@ function EditZones() {
   let { setOrdersLoaded } = useContext(OrdersContext)
   let { setStandLoaded } = useContext(StandingContext)
 
-  
+  useEffect(() => {
+    setCustLoaded(true)
+    setProdLoaded(true)
+    setHoldLoaded(true)
+    setOrdersLoaded(true)
+    setStandLoaded(true)
+  },[])
   
   
     

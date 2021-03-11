@@ -32,7 +32,7 @@ function AppRoutes() {
           <Route path="/logistics/byCustomer" component={DeliveryCustomerGrid} />  
           <Route path="/logistics/byProduct" component={DeliveryProductGrid} />  
           <Route path="/settings/editRoutes" component={EditRoutes} />
-          <Route path="settings/editZones" component={EditZones} />
+          <Route path="/settings/editZones" component={EditZones} />
           <Route path="/bpbs" component={BPBS} />
           <Route path="/bpbn" component={BPBN} />
           <Route path="/croix" component={Croix} />

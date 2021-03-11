@@ -64,8 +64,8 @@ type Holding @model @auth(rules: [{allow: public}]) {
 type Route @model @auth(rules: [{allow: public}]) {
   id: ID!
   routeName: String
-  routeStart: Int
-  routeTime: Int
+  routeStart: Float
+  routeTime: Float
   RouteDepart: String
   RouteArrive: String
   RouteServe: String

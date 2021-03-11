@@ -1,4 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
+
+import { ToggleContext } from '../../../dataContexts/ToggleContext';
+
 
 import { listZones } from '../../../graphql/queries'
 
@@ -25,26 +28,33 @@ const ListWrapper = styled.div`
 
 const ZoneList = ({ selectedZone, setSelectedZone, zones, setZones }) => {
 
+    let { setIsLoading } = useContext(ToggleContext)
+
 
     useEffect(() => {
+        setIsLoading(true)
         fetchZones()
+        setIsLoading(false)
     },[zones])
 
 
 
     const fetchZones = async () => {
-        try{
+        
+        try{    
           const zoneData = await API.graphql(graphqlOperation(listZones, {
                 limit: '50'
                 }))
           const zoneList = zoneData.data.listZones.items;
-          sortAtoZDataByIndex(zoneList,"zoneName")
+          sortAtoZDataByIndex(zoneList,"zoneNum")
           let noDelete = zoneList.filter(zone => zone["_deleted"]!==true)
           
           setZones(noDelete)
+          
         } catch (error){
           console.log('error on fetching Cust List', error)
         }
+        
       }
 
 

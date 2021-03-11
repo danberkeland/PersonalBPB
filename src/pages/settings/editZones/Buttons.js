@@ -120,9 +120,9 @@ const Buttons = ({ selectedZone, setSelectedZone }) => {
         <ButtonBox>
             <Button label="Add a Zone" icon="pi pi-plus" onClick={handleAddZone}
                 className={"p-button-raised p-button-rounded"} /><br />
-            {selectedZone && <React.Fragment><Button label="Update Zone" icon="pi pi-user-edit" onClick={updateZne}
+            {selectedZone && <React.Fragment><Button label="Update Zone" icon="pi pi-map" onClick={updateZne}
                 className={"p-button-raised p-button-rounded p-button-success"} /><br /></React.Fragment>}
-            {selectedZone && <React.Fragment><Button label="Delete Zone" icon="pi pi-user-minus" onClick={deleteZoneWarn}
+            {selectedZone && <React.Fragment><Button label="Delete Zone" icon="pi pi-minus" onClick={deleteZoneWarn}
                 className={"p-button-raised p-button-rounded p-button-warning"} /><br /><br /></React.Fragment>}
         </ButtonBox>    
   );

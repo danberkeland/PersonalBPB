@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components'
 
 
-import { CustomerContext, CustomerLoad } from '../../../dataContexts/CustomerContext'
+import { CustomerContext } from '../../../dataContexts/CustomerContext'
 import { OrdersContext } from '../../../dataContexts/OrdersContext';
 import { ProductsContext } from '../../../dataContexts/ProductsContext';
 import { StandingContext } from '../../../dataContexts/StandingContext';
@@ -45,51 +45,46 @@ const GroupBox = styled.div`
 
 function EditRoutes() {
 
-  const [ selectedRoute, setSelectedRoute ] = useState(null)
+  const [ selectedRoute, setSelectedRoute ] = useState(1)
+  const [ routes, setRoutes ] = useState(null)
 
-  const { customers, custLoaded, setCustLoaded } = useContext(CustomerContext)
+  const { setCustLoaded } = useContext(CustomerContext)
   const { setProdLoaded } = useContext(ProductsContext)
   let { setHoldLoaded } = useContext(HoldingContext)
   let { setOrdersLoaded } = useContext(OrdersContext)
   let { setStandLoaded } = useContext(StandingContext)
 
-  
   useEffect(() => {
-  
-    
     setCustLoaded(true)
     setProdLoaded(true)
     setHoldLoaded(true)
     setOrdersLoaded(true)
     setStandLoaded(true)
   },[])
-
+  
   
     
   return (
     <React.Fragment>
       <MainWrapper>
-        <RouteList selectedRoute={selectedRoute} setSelectedRoute={setSelectedRoute}/>
+        <RouteList selectedRoute={selectedRoute} setSelectedRoute={setSelectedRoute} routes={routes} setRoutes={setRoutes}/>
         {selectedRoute && 
         <React.Fragment>
 
           <DescripWrapper>
             <GroupBox id="Info">
-             
+              <Info selectedRoute={selectedRoute} setSelectedRoute={setSelectedRoute} routes={routes} setRoutes={setRoutes}/>
             </GroupBox>
           </DescripWrapper>
-        
+
           </React.Fragment>
       }
-
           <DescripWrapper>
-            <Buttons selectedRoute={selectedRoute} setSelectedRoute={setSelectedRoute}/>
+            <Buttons selectedRoute={selectedRoute} setSelectedRoute={setSelectedRoute} routes={routes} setRoutes={setRoutes}/>
           </DescripWrapper>
-
         
       </MainWrapper>
     </React.Fragment>         
   );
 }
-
 export default EditRoutes;

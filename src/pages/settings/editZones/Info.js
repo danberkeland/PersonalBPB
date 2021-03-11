@@ -10,7 +10,7 @@ const Info = ({ selectedZone, setSelectedZone }) => {
     
     return (
         <React.Fragment>
-            <h2><i className="pi pi-user"></i> Zone Info</h2>
+            <h2><i className="pi pi-map"></i> Zone Info</h2>
 
             <div className="p-inputgroup">
                 <span className="p-inputgroup-addon">

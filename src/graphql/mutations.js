@@ -115,6 +115,16 @@ export const updateProduct = /* GraphQL */ `
       doughType
       freezerThaw
       packGroupOrder
+      readyTime
+      bakedWhere
+      wholePrice
+      retailPrice
+      isWhole
+      depends
+      weight
+      descrip
+      picURL
+      squareID
       createdAt
       updatedAt
     }
@@ -134,6 +144,16 @@ export const deleteProduct = /* GraphQL */ `
       doughType
       freezerThaw
       packGroupOrder
+      readyTime
+      bakedWhere
+      wholePrice
+      retailPrice
+      isWhole
+      depends
+      weight
+      descrip
+      picURL
+      squareID
       createdAt
       updatedAt
     }

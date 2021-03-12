@@ -67,6 +67,16 @@ export const getProduct = /* GraphQL */ `
       doughType
       freezerThaw
       packGroupOrder
+      readyTime
+      bakedWhere
+      wholePrice
+      retailPrice
+      isWhole
+      depends
+      weight
+      descrip
+      picURL
+      squareID
       createdAt
       updatedAt
     }
@@ -88,6 +98,16 @@ export const listProducts = /* GraphQL */ `
         doughType
         freezerThaw
         packGroupOrder
+        readyTime
+        bakedWhere
+        wholePrice
+        retailPrice
+        isWhole
+        depends
+        weight
+        descrip
+        picURL
+        squareID
         createdAt
         updatedAt
       }

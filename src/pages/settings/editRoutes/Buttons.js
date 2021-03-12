@@ -52,7 +52,7 @@ const Buttons = ({ selectedRoute, setSelectedRoute }) => {
     const createRte = async (addDetails) => {
         try {
             await API.graphql(graphqlOperation(createRoute, {input: {...addDetails}}))
-
+            setSelectedRoute()
         } catch (error){
             console.log('error on fetching Route List', error)
         }

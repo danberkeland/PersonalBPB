@@ -91,7 +91,7 @@ const Info = ({ selectedRoute, setSelectedRoute, routes, setRoutes }) => {
         parsedZones = fullZones.current.filter(full => !selectedRoute["RouteServe"].includes(full))
       }     
       setSource(parsedZones)
-    },[fullZones.current])
+    },[selectedRoute])
 
 
 

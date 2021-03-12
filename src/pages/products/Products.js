@@ -48,8 +48,7 @@ function Products() {
           <DataTable value={products} className="p-datatable-striped" selectionMode="single" dataKey="id">
             <Column field="prodName" header="Product"sortable filter filterPlaceholder="Search by name"></Column>
             <Column field="nickName" header="Nickname"sortable filter filterPlaceholder="Search by nickname"></Column>
-            <Column field="packSize" header="Pack Size" sortable></Column>
-            <Column field="doughType" header="Dough Type" sortable></Column>
+            
           </DataTable>
       </MainWrapper> 
     </React.Fragment>         

@@ -24,19 +24,18 @@ const CustomerList = ({ selectedCustomer, setSelectedCustomer }) => {
   };
 
   return (
-    <ListWrapper>
-      <ScrollPanel style={{ width: "100%", height: "100vh" }}>
+    <React.Fragment>
+      {!prodLoaded ? <ProductsLoad /> : ""}
+      <MainWrapper>
         <DataTable
-          value={customers}
+          value={products}
           className="p-datatable-striped"
-          selection={selectedCustomer}
-          onSelectionChange={handleSelection}
           selectionMode="single"
           dataKey="id"
         >
           <Column
-            field="custName"
-            header="Customer"
+            field="prodName"
+            header="Product"
             sortable
             filter
             filterPlaceholder="Search by name"
@@ -49,8 +48,8 @@ const CustomerList = ({ selectedCustomer, setSelectedCustomer }) => {
             filterPlaceholder="Search by nickname"
           ></Column>
         </DataTable>
-      </ScrollPanel>
-    </ListWrapper>
+      </MainWrapper>
+    </React.Fragment>
   );
 };
 

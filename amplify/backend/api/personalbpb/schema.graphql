@@ -15,6 +15,13 @@ type Customer @model @auth(rules: [{allow: public}]) {
   toBeEmailed: String
   terms: String
   invoicing: String
+  prodsNotAllowed: [String]
+  latestFirstDeliv: Int
+  latestFinalDeliv: Int
+  webpageURL: String
+  picURL: String
+  gMap: String
+  specialInstructions: String
 }
 
 type Product @model @auth(rules: [{allow: public}]) {

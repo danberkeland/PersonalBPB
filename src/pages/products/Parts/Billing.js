@@ -11,7 +11,8 @@ import {
   setYesNoValue,
 } from "../../../helpers/formHelpers";
 
-const options = ["Y", "N"];
+const options = [{label:"Yes", value:true},
+{label:"No", value:false}];
 
 const YesNoBox = styled.div`
   display: flex;
@@ -36,7 +37,7 @@ const Billing = ({ selectedProduct, setSelectedProduct }) => {
         <InputText
           id="wholePrice"
           placeholder={selectedProduct.wholePrice}
-          disabled
+          
           onKeyUp={(e) =>
             e.code === "Enter" &&
             setSelectedProduct(setValue(e, selectedProduct))
@@ -55,7 +56,7 @@ const Billing = ({ selectedProduct, setSelectedProduct }) => {
         <InputText
           id="retailPrice"
           placeholder={selectedProduct.retailPrice}
-          disabled
+          
           onKeyUp={(e) =>
             e.code === "Enter" &&
             setSelectedProduct(setValue(e, selectedProduct))

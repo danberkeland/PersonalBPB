@@ -23,6 +23,13 @@ export const createCustomer = /* GraphQL */ `
       toBeEmailed
       terms
       invoicing
+      prodsNotAllowed
+      latestFirstDeliv
+      latestFinalDeliv
+      webpageURL
+      picURL
+      gMap
+      specialInstructions
       createdAt
       updatedAt
     }
@@ -50,6 +57,13 @@ export const updateCustomer = /* GraphQL */ `
       toBeEmailed
       terms
       invoicing
+      prodsNotAllowed
+      latestFirstDeliv
+      latestFinalDeliv
+      webpageURL
+      picURL
+      gMap
+      specialInstructions
       createdAt
       updatedAt
     }
@@ -77,6 +91,13 @@ export const deleteCustomer = /* GraphQL */ `
       toBeEmailed
       terms
       invoicing
+      prodsNotAllowed
+      latestFirstDeliv
+      latestFinalDeliv
+      webpageURL
+      picURL
+      gMap
+      specialInstructions
       createdAt
       updatedAt
     }
@@ -96,6 +117,16 @@ export const createProduct = /* GraphQL */ `
       doughType
       freezerThaw
       packGroupOrder
+      readyTime
+      bakedWhere
+      wholePrice
+      retailPrice
+      isWhole
+      depends
+      weight
+      descrip
+      picURL
+      squareID
       createdAt
       updatedAt
     }

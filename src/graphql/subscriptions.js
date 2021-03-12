@@ -20,6 +20,13 @@ export const onCreateCustomer = /* GraphQL */ `
       toBeEmailed
       terms
       invoicing
+      prodsNotAllowed
+      latestFirstDeliv
+      latestFinalDeliv
+      webpageURL
+      picURL
+      gMap
+      specialInstructions
       createdAt
       updatedAt
     }
@@ -44,6 +51,13 @@ export const onUpdateCustomer = /* GraphQL */ `
       toBeEmailed
       terms
       invoicing
+      prodsNotAllowed
+      latestFirstDeliv
+      latestFinalDeliv
+      webpageURL
+      picURL
+      gMap
+      specialInstructions
       createdAt
       updatedAt
     }
@@ -68,6 +82,13 @@ export const onDeleteCustomer = /* GraphQL */ `
       toBeEmailed
       terms
       invoicing
+      prodsNotAllowed
+      latestFirstDeliv
+      latestFinalDeliv
+      webpageURL
+      picURL
+      gMap
+      specialInstructions
       createdAt
       updatedAt
     }
@@ -84,6 +105,16 @@ export const onCreateProduct = /* GraphQL */ `
       doughType
       freezerThaw
       packGroupOrder
+      readyTime
+      bakedWhere
+      wholePrice
+      retailPrice
+      isWhole
+      depends
+      weight
+      descrip
+      picURL
+      squareID
       createdAt
       updatedAt
     }
@@ -100,6 +131,16 @@ export const onUpdateProduct = /* GraphQL */ `
       doughType
       freezerThaw
       packGroupOrder
+      readyTime
+      bakedWhere
+      wholePrice
+      retailPrice
+      isWhole
+      depends
+      weight
+      descrip
+      picURL
+      squareID
       createdAt
       updatedAt
     }
@@ -116,6 +157,16 @@ export const onDeleteProduct = /* GraphQL */ `
       doughType
       freezerThaw
       packGroupOrder
+      readyTime
+      bakedWhere
+      wholePrice
+      retailPrice
+      isWhole
+      depends
+      weight
+      descrip
+      picURL
+      squareID
       createdAt
       updatedAt
     }

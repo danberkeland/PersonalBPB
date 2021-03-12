@@ -33,13 +33,13 @@ type Product @model @auth(rules: [{allow: public}]) {
   doughType: String
   freezerThaw: Boolean
   packGroupOrder: Int
-  readyTime: Int
+  readyTime: Float
   bakedWhere: [String]
-  wholePrice: Int
-  retailPrice: Int
+  wholePrice: Float
+  retailPrice: Float
   isWhole: Boolean
-  depends: [String]
-  weight: Int
+  depends: String
+  weight: Float
   descrip: String
   picURL: String
   squareID: String

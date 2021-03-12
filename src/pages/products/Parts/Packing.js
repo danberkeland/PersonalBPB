@@ -13,7 +13,8 @@ import {
   setDropDownValue,
 } from "../../../helpers/formHelpers";
 
-const options = ["Y", "N"];
+const options = [{label:"Yes", value:true},
+{label:"No", value:false}];
 
 const groups = [
   { packGroup: "baked pastries" },

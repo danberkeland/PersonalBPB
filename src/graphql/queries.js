@@ -20,6 +20,13 @@ export const getCustomer = /* GraphQL */ `
       toBeEmailed
       terms
       invoicing
+      prodsNotAllowed
+      latestFirstDeliv
+      latestFinalDeliv
+      webpageURL
+      picURL
+      gMap
+      specialInstructions
       createdAt
       updatedAt
     }
@@ -49,6 +56,13 @@ export const listCustomers = /* GraphQL */ `
         toBeEmailed
         terms
         invoicing
+        prodsNotAllowed
+        latestFirstDeliv
+        latestFinalDeliv
+        webpageURL
+        picURL
+        gMap
+        specialInstructions
         createdAt
         updatedAt
       }

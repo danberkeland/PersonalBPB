@@ -29,10 +29,20 @@ type Product @model @auth(rules: [{allow: public}]) {
   prodName: String!
   nickName: String!
   packGroup: String
-  packSize: String
+  packSize: Int
   doughType: String
-  freezerThaw: String
-  packGroupOrder: String
+  freezerThaw: Boolean
+  packGroupOrder: Int
+  readyTime: Int
+  bakedWhere: [String]
+  wholePrice: Int
+  retailPrice: Int
+  isWhole: Boolean
+  depends: [String]
+  weight: Int
+  descrip: String
+  picURL: String
+  squareID: String
 }
 
 type Order @model @auth(rules: [{allow: public}]) {

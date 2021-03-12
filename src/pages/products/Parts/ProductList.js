@@ -6,7 +6,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { ScrollPanel } from "primereact/scrollpanel";
 
-import { CustomerContext } from "../../../dataContexts/CustomerContext";
+import { ProductsContext } from "../../../dataContexts/ProductsContext";
 
 const ListWrapper = styled.div`
   font-family: "Montserrat", sans-serif;
@@ -16,20 +16,21 @@ const ListWrapper = styled.div`
   background: #ffffff;
 `;
 
-const CustomerList = ({ selectedCustomer, setSelectedCustomer }) => {
-  const { customers } = useContext(CustomerContext);
+const ProductList = ({ selectedProduct, setSelectedProduct }) => {
+  const { products } = useContext(ProductsContext);
 
   const handleSelection = (e) => {
-    setSelectedCustomer(e.value);
+    setSelectedProduct(e.value);
   };
 
   return (
-    <React.Fragment>
-      {!prodLoaded ? <ProductsLoad /> : ""}
-      <MainWrapper>
+    <ListWrapper>
+      <ScrollPanel style={{ width: "100%", height: "100vh" }}>
         <DataTable
           value={products}
           className="p-datatable-striped"
+          selection={selectedProduct}
+          onSelectionChange={handleSelection}
           selectionMode="single"
           dataKey="id"
         >
@@ -48,9 +49,9 @@ const CustomerList = ({ selectedCustomer, setSelectedCustomer }) => {
             filterPlaceholder="Search by nickname"
           ></Column>
         </DataTable>
-      </MainWrapper>
-    </React.Fragment>
+      </ScrollPanel>
+    </ListWrapper>
   );
 };
 
-export default CustomerList;
+export default ProductList;

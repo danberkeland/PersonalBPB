@@ -13,8 +13,9 @@ import { HoldingContext } from "../../dataContexts/HoldingContext";
 
 import ProductList from "./Parts/ProductList";
 import Name from "./Parts/Name";
-import Location from "./Parts/Location";
-import Contact from "./Parts/Contact";
+import Description from "./Parts/Description";
+import Packing from "./Parts/Packing";
+import Baking from "./Parts/Baking";
 import Billing from "./Parts/Billing";
 import Buttons from "./Parts/Buttons";
 
@@ -81,17 +82,8 @@ function Products() {
                 />
               </GroupBox>
 
-              <GroupBox id="Location">
-                <Location
-                  selectedProduct={selectedProduct}
-                  setSelectedProduct={setSelectedProduct}
-                />
-              </GroupBox>
-            </DescripWrapper>
-
-            <DescripWrapper>
-              <GroupBox id="Contact">
-                <Contact
+              <GroupBox id="Description">
+                <Description
                   selectedProduct={selectedProduct}
                   setSelectedProduct={setSelectedProduct}
                 />
@@ -99,6 +91,22 @@ function Products() {
 
               <GroupBox id="Billing">
                 <Billing
+                  selectedProduct={selectedProduct}
+                  setSelectedProduct={setSelectedProduct}
+                />
+              </GroupBox>
+            </DescripWrapper>
+
+            <DescripWrapper>
+              <GroupBox id="Packing">
+                <Packing
+                  selectedProduct={selectedProduct}
+                  setSelectedProduct={setSelectedProduct}
+                />
+              </GroupBox>
+
+              <GroupBox id="Baking">
+                <Baking
                   selectedProduct={selectedProduct}
                   setSelectedProduct={setSelectedProduct}
                 />

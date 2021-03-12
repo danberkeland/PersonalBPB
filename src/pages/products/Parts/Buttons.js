@@ -159,11 +159,11 @@ const Buttons = ({ selectedProduct, setSelectedProduct }) => {
   const deleteProd = async () => {
     const deleteDetails = {
       id: selectedProduct["id"],
-      _version: selectedProduct["_version"],
+      _version: selectedProduct["_version"]
     };
-
+    console.log(deleteDetails)
     try {
-      const prodData = await API.graphql(
+      await API.graphql(
         graphqlOperation(deleteProduct, { input: { ...deleteDetails } })
       );
       setProdLoaded(false);

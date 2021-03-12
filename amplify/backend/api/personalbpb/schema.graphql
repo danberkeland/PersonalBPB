@@ -16,8 +16,8 @@ type Customer @model @auth(rules: [{allow: public}]) {
   terms: String
   invoicing: String
   prodsNotAllowed: [String]
-  latestFirstDeliv: Int
-  latestFinalDeliv: Int
+  latestFirstDeliv: Float
+  latestFinalDeliv: Float
   webpageURL: String
   picURL: String
   gMap: String

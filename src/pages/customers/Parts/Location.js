@@ -113,6 +113,40 @@ const Location = ({ selectedCustomer, setSelectedCustomer }) => {
         />
       </div>
       <br />
+      <div className="p-inputgroup">
+        <span className="p-inputgroup-addon">
+          <label htmlFor="latestFirstDeliv">Latest First Delivery (0-24)</label>
+          <br />
+        </span>
+
+        <InputText
+          id="latestFirstDeliv"
+          placeholder={selectedCustomer.latestFirstDeliv}
+          onKeyUp={(e) =>
+            e.code === "Enter" &&
+            setSelectedCustomer(setValue(e, selectedCustomer))
+          }
+          onBlur={(e) => setSelectedCustomer(fixValue(e, selectedCustomer))}
+        />
+      </div>
+      <br />
+      <div className="p-inputgroup">
+        <span className="p-inputgroup-addon">
+          <label htmlFor="latestFinalDeliv">Latest Final Delivery (0-24)</label>
+          <br />
+        </span>
+
+        <InputText
+          id="zip"
+          placeholder={selectedCustomer.latestFinalDeliv}
+          onKeyUp={(e) =>
+            e.code === "Enter" &&
+            setSelectedCustomer(setValue(e, selectedCustomer))
+          }
+          onBlur={(e) => setSelectedCustomer(fixValue(e, selectedCustomer))}
+        />
+      </div>
+      <br />
     </React.Fragment>
   );
 };

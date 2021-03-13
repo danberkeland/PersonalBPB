@@ -20,6 +20,10 @@ const groups = [
   { packGroup: "baked pastries" },
   { packGroup: "frozen pastries" },
   { packGroup: "rustic breads" },
+  { packGroup: "brioche products" },
+  { packGroup: "sandwich breads" },
+  { packGroup: "rolls" },
+  { packGroup: "focaccia" },
 ];
 
 const YesNoBox = styled.div`

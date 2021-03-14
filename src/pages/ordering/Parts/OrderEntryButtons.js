@@ -60,98 +60,11 @@ function OrderEntryButtons() {
   };
 
   const handleClear = () => {
-    let orderList = clonedeep(currentCartList);
-    orderList = orderList.map((order) => ({
-      qty: "0",
-      prodName: order["prodName"],
-      custName: order["custName"],
-      PONote: order["PONote"],
-      route: order["route"],
-      SO: order["SO"],
-      isWhole: orderTypeWhole,
-      delivDate: convertDatetoBPBDate(delivDate),
-    }));
-
-    let currentOrderList = orderList.concat(orders);
-
-    for (let i = 0; i < currentOrderList.length; ++i) {
-      for (let j = i + 1; j < currentOrderList.length; ++j) {
-        if (
-          currentOrderList[i]["prodName"] === currentOrderList[j]["prodName"] &&
-          currentOrderList[i]["custName"] === currentOrderList[j]["custName"] &&
-          currentOrderList[i]["delivDate"] === currentOrderList[j]["delivDate"]
-        ) {
-          currentOrderList.splice(j, 1);
-        }
-      }
-    }
-    setOrders(currentOrderList);
+   
   };
 
   const handleAddUpdate = () => {
-    let orderList = buildCurrentOrder(chosen, delivDate, orders, standing);
-    setModifications(false);
-    // set route if route has changed
-    if (orderList.length > 0) {
-      if (orderList[0]["route"] !== route) {
-        orderList.map((item) => (item["route"] = route));
-      }
-      if (orderList[0]["PONote"] !== ponote) {
-        orderList.map((item) => (item["PONote"] = ponote));
-      }
-    }
-    // Set SO to equal QTY
-    orderList.map((item) => (item["SO"] = item["qty"]));
-    // Add present List to Orders
-    let recent = clonedeep(orders);
-    let newOrderList = orderList.concat(recent);
-    for (let i = 0; i < newOrderList.length; ++i) {
-      for (let j = i + 1; j < newOrderList.length; ++j) {
-        if (
-          newOrderList[i]["prodName"] === newOrderList[j]["prodName"] &&
-          newOrderList[i]["custName"] === newOrderList[j]["custName"] &&
-          newOrderList[i]["delivDate"] === newOrderList[j]["delivDate"]
-        ) {
-          newOrderList.splice(j, 1);
-        }
-      }
-    }
-
-    if (newOrderList) {
-      //document.getElementById('orderCommand').focus()
-      setOrders(newOrderList);
-    }
-
-    // Create item (date, name, whole) to add to recent list
-    let newRecentOrder = [
-      delivDate,
-      chosen,
-      orderTypeWhole,
-      cartList,
-      standList,
-    ];
-    let stringRecentOrder = JSON.stringify(newRecentOrder);
-    const currentRecentOrders = [...recentOrders];
-    let stringCurrentRecentOrders = JSON.stringify(currentRecentOrders);
-
-    // If item already exists, send update message
-    if (stringCurrentRecentOrders.indexOf(stringRecentOrder) !== -1) {
-      swal({
-        text: "Order Updated",
-        icon: "success",
-        buttons: false,
-        timer: 2000,
-      });
-    } else {
-      currentRecentOrders.push(newRecentOrder);
-      swal({
-        text: "Order Updated",
-        icon: "success",
-        buttons: false,
-        timer: 2000,
-      });
-    }
-    setRecentOrders(currentRecentOrders);
+    
   };
 
   return (

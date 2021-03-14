@@ -5,6 +5,7 @@ import { CurrentDataContext } from "../../../dataContexts/CurrentDataContext";
 import { ToggleContext } from "../../../dataContexts/ToggleContext";
 import { OrdersContext } from "../../../dataContexts/OrdersContext";
 import { StandingContext } from "../../../dataContexts/StandingContext";
+import { HoldingContext } from "../../../dataContexts/HoldingContext";
 
 import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
@@ -64,11 +65,19 @@ const so = {
 };
 
 const CurrentOrderInfo = () => {
-  const { cartList, standList, orderTypeWhole, setModifications } = useContext(
-    ToggleContext
-  );
+  const {
+    cartList,
+    standList,
+    setStandList,
+    orderTypeWhole,
+    setModifications,
+  } = useContext(ToggleContext);
+
+  const [orderType, setOrderType] = useState();
+
   const { orders } = useContext(OrdersContext);
   const { standing } = useContext(StandingContext);
+  const { holding } = useContext(HoldingContext);
   const { customers } = useContext(CustomerContext);
   const {
     chosen,
@@ -84,12 +93,17 @@ const CurrentOrderInfo = () => {
 
   const [customerGroup, setCustomerGroup] = useState(customers);
 
-  let orderType;
-  cartList
-    ? (orderType = "Cart")
-    : standList
-    ? (orderType = "Standing")
-    : (orderType = "Holding");
+  useEffect(() => {
+    if (cartList) {
+      setOrderType("Cart");
+    } else {
+      if (standList) {
+        setOrderType("Stand");
+      } else {
+        setOrderType("Hold");
+      }
+    }
+  }, [cartList, standList]);
 
   useEffect(() => {
     orderTypeWhole
@@ -98,62 +112,56 @@ const CurrentOrderInfo = () => {
   }, [customers, orderTypeWhole, orders]);
 
   useEffect(() => {
-    if (currentCartList.length > 0) {
-      setRoute(currentCartList[0]["route"]);
-    }
-    let ind = customers.findIndex((cust) => cust["custName"] === chosen);
-    if (ind >= 0) {
-      if (
-        customers[ind]["zoneName"] !== "slopick" &&
-        customers[ind]["zoneName"] !== "atownpick"
-      ) {
-        setRoute("deliv");
-      } else {
-        setRoute(customers[ind]["zoneName"]);
+    for (let cust of customerGroup) {
+      if (cust["custName"] === chosen) {
+        switch (cust["zoneName"]) {
+          case "slopick":
+            setRoute("Pick up SLO");
+            break;
+          case "atownpick":
+            setRoute("Pick up Carlton");
+            break;
+          default:
+            setRoute("deliv");
+        }
       }
     }
-  }, [currentCartList, chosen]);
 
-  useEffect(() => {
-    if (currentCartList.length > 0) {
-      if (
-        currentCartList[0]["PONote"] !== "" &&
-        currentCartList[0]["PONote"] !== undefined
-      ) {
-        setPonote(currentCartList[0]["PONote"]);
-      } else {
-        setPonote("");
-      }
-    }
-  }, [currentCartList]);
-
-  useEffect(() => {
-    let currentOrderList = buildCurrentOrder(
-      chosen,
-      delivDate,
-      orders,
-      standing
+    let orderCheck = orders.filter(
+      (ord) => ord["custName"] === chosen && ord["delivDate"] === delivDate
     );
-    if (currentCartList.length > 0) {
-      if (currentOrderList[0]["route"] !== route) {
-        setModifications(true);
+    if (orderCheck.length > 0) {
+      switch (orderCheck[0]["zoneName"]) {
+        case "slopick":
+          setRoute("Pick up SLO");
+          break;
+        case "atownpick":
+          setRoute("Pick up Carlton");
+          break;
+        default:
+          setRoute("deliv");
       }
     }
-  }, [route]);
+  }, [chosen, delivDate]);
 
   useEffect(() => {
-    let currentOrderList = buildCurrentOrder(
-      chosen,
-      delivDate,
-      orders,
-      standing
+    setPonote("");
+    let orderCheck = orders.filter(
+      (ord) => ord["custName"] === chosen && ord["delivDate"] === delivDate
     );
-    if (currentCartList.length > 0) {
-      if (currentOrderList[0]["PONote"] !== ponote) {
-        setModifications(true);
+    if (orderCheck.length > 0) {
+      switch (orderCheck[0]["PONote"]) {
+        case "slopick":
+          setRoute("Pick up SLO");
+          break;
+        case "atownpick":
+          setRoute("Pick up Carlton");
+          break;
+        default:
+          setRoute("deliv");
       }
     }
-  }, [ponote]);
+  }, [chosen, delivDate]);
 
   const handleChosen = (chosen) => {
     setChosen(chosen);
@@ -203,18 +211,18 @@ const CurrentOrderInfo = () => {
           <label htmlFor="delivery">Delivery</label>
 
           <RadioButton
-            value="slopick"
+            value="Pick up SLO"
             name="delivery"
             onChange={(e) => setRoute(e.value)}
-            checked={route === "slopick"}
+            checked={route === "Pick up SLO"}
           />
           <label htmlFor="pickupSLO">Pick up SLO</label>
 
           <RadioButton
-            value="atownpick"
+            value="Pick up Carlton"
             name="delivery"
             onChange={(e) => setRoute(e.value)}
-            checked={route === "atownpick"}
+            checked={route === "Pick up Carlton"}
           />
           <label htmlFor="pickupAtown">Pick up Carlton</label>
         </FulfillOptions>

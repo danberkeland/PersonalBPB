@@ -1,49 +1,21 @@
 
 const clonedeep = require("lodash.clonedeep");
 
-export const checkStandHoldStatus = (standing, holding, chosen) => {
-  let Stand = false;
-  let Hold = false;
-  let standingToCheck = clonedeep(standing);
+export const checkStandHoldStatus = (holding, chosen) => {
+  let Stand = true;
   let holdingToCheck = clonedeep(holding);
-  // check for standing, if no, check for holding, if no return
-
-  let standingToCount = standingToCheck.filter(
-    (stand) => stand["custName"] === chosen
-  );
-  if (standingToCount.length > 0) {
-    standingToCount = standingToCount.map((stand) => Number(stand["qty"]));
-    let sum = standingToCount.reduce((a, b) => {
-      return a + b;
-    }, 0);
-    if (sum > 0) {
-      Stand = true;
-    }
-  }
 
   let holdingToCount = holdingToCheck.filter(
     (hold) => hold["custName"] === chosen
   );
   if (holdingToCount.length > 0) {
-    holdingToCount = holdingToCount.map((hold) => Number(hold["qty"]));
-    let sum = holdingToCount.reduce((a, b) => {
-      return a + b;
-    }, 0);
-    if (sum > 0) {
-      Hold = true;
-    }
+    Stand = false;
   }
 
-  return [Stand, Hold];
+  return Stand;
 };
 
-export const createStandListArray = (
-  standing,
-  holding,
-  Stand,
-  Hold,
-  chosen
-) => {
+export const createStandListArray = (standing, holding, Stand, chosen) => {
   let buildStandArray = [];
   if (Stand) {
     let pullStand = clonedeep(standing);
@@ -80,8 +52,7 @@ export const createStandListArray = (
         }
       }
     }
-  }
-  if (Hold) {
+  } else {
     let pullHold = clonedeep(holding);
     for (let pull of pullHold) {
       // search index of item in buildArray

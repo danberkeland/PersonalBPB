@@ -5,7 +5,6 @@ import CurrentOrderInfo from "./Parts/CurrentOrderInfo";
 import CurrentOrderList from "./Parts/CurrentOrderList";
 import OrderCommandLine from "./Parts/OrderCommandLine";
 import OrderEntryButtons from "./Parts/OrderEntryButtons";
-import RecentOrderList from "./g_recentOrderList";
 
 import {
   CustomerContext,
@@ -32,7 +31,7 @@ const MainWindow = styled.div`
   height: 100%;
   margin: auto;
   display: grid;
-  grid-template-columns: 0.8fr 1.4fr 0.6fr;
+  grid-template-columns: 1fr 2fr
 `;
 
 const BasicContainer = styled.div`
@@ -94,9 +93,7 @@ function Ordering(props) {
         <CurrentOrderList />
         <OrderEntryButtons />
       </BasicContainer>
-      <BasicContainer>
-        <RecentOrderList />
-      </BasicContainer>
+      
     </MainWindow>
   );
 }

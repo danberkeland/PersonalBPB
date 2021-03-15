@@ -51,11 +51,9 @@ export const HoldingLoad = () => {
             
             
             let sortedData = sortAtoZDataByIndex(noDelete,"timeStamp")
-            let currentData = FilterStandHoldDups(sortedData)
-         
            
-            setOriginalHolding(currentData);
-            setHolding(currentData);
+         
+            setHolding(sortedData);
             setHoldLoaded(true)
         } catch (error){
           console.log('error on fetching Hold List', error)

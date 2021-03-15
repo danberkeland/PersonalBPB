@@ -53,10 +53,12 @@ const BuildCurrentCartList = () => {
 
     useEffect(() => {
 
-        let currentOrderList = buildCurrentOrder(chosen,delivDate,orders,standing,route,ponote)  
-        let noZerosOrderList = filterOutZeros(currentOrderList)
-        setModifications(checkForMods(noZerosOrderList))
-        setCurrentCartList(noZerosOrderList)
+        let currentOrderList = buildCurrentOrder(chosen,delivDate,orders,standing,route,ponote) 
+        
+        setCurrentCartList(currentOrderList)
+        
+       
+        
 
     }, [chosen, delivDate, orders, standing, route, ponote])
 

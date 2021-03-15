@@ -1,4 +1,3 @@
-
 import {
   convertDatetoBPBDate,
   convertDatetoStandingDate,
@@ -6,6 +5,8 @@ import {
 import { sortAtoZDataByIndex } from "../helpers/sortDataHelpers";
 
 import { wildcardRegExp } from "wildcard-regex";
+
+const { DateTime } = require("luxon");
 
 const clonedeep = require("lodash.clonedeep");
 
@@ -20,17 +21,15 @@ export const buildCartList = (chosen, delivDate, orders) => {
         order["custName"].match(wildcardRegExp(`${chosen}`))
     );
   }
+
   return builtCartList;
 };
 
 export const buildStandList = (chosen, delivDate, standing, route, ponote) => {
-  let standingDate = Number(convertDatetoStandingDate(delivDate));
   let filteredStanding = clonedeep(standing);
   let builtStandList = [];
-  builtStandList = filteredStanding.filter(
-    (standing) =>
-      standing["dayNum"] === standingDate &&
-      standing["custName"].match(wildcardRegExp(`${chosen}`))
+  builtStandList = filteredStanding.filter((standing) =>
+    standing["custName"].match(wildcardRegExp(`${chosen}`))
   );
   let convertedStandList = convertStandListtoStandArray(
     builtStandList,
@@ -47,8 +46,16 @@ const convertStandListtoStandArray = (
   route,
   ponote
 ) => {
+  let dateSplit = delivDate.split("-");
+  let dayOfWeek = DateTime.local(
+    Number(dateSplit[0]),
+    Number(dateSplit[1]),
+    Number(dateSplit[2]) + 3
+  ).weekdayShort;
   let convertedStandList = builtStandList.map((order) => ({
-    qty: Number(order["qty"]),
+    id: order["id"],
+    version: order["_version"],
+    qty: order[dayOfWeek],
     prodName: order["prodName"],
     custName: order["custName"],
     PONote: ponote,
@@ -56,7 +63,7 @@ const convertStandListtoStandArray = (
     isWhole: true,
     delivDate: convertDatetoBPBDate(delivDate),
     timeStamp: order["timeStamp"],
-    SO: Number(order["qty"]),
+    SO: order[dayOfWeek],
   }));
   return convertedStandList;
 };

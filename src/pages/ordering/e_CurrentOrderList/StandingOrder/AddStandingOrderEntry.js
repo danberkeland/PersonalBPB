@@ -25,12 +25,12 @@ const AddProductButtons = styled.div`
 
 const clonedeep = require("lodash.clonedeep");
 
-const AddCartEntryItem = () => {
+const AddStandingOrderEntryItem = () => {
   const { products } = useContext(ProductsContext);
   const { standing, setStanding } = useContext(StandingContext);
   const { holding, setHolding } = useContext(HoldingContext);
   const { orders } = useContext(OrdersContext);
-  const { chosen, delivDate } = useContext(CurrentDataContext);
+  const { chosen, delivDate, standArray, setStandArray } = useContext(CurrentDataContext);
   const { standList, setStandList } = useContext(ToggleContext);
 
   const [pickedProduct, setPickedProduct] = useState();
@@ -57,58 +57,33 @@ const AddCartEntryItem = () => {
   };
 
   const handleAdd = () => {
-    let listToWorkWith = standList ? standing : holding;
-    let newList = clonedeep(listToWorkWith);
+    let newList = clonedeep(standArray);
 
     if (pickedProduct !== "" && pickedProduct) {
-      for (let i = 1; i < 8; i++) {
+      
         let newOrder = {
-          dayNum: i.toString(),
-          qty: "0",
-          SO: "0",
           prodName: pickedProduct,
           custName: chosen,
+          Sun: 0,
+          Mon: 0,
+          Tue: 0,
+          Wed: 0,
+          Thu: 0,
+          Fri: 0,
+          Sat: 0,
         };
         newList.push(newOrder);
-      }
+      
     }
-    standList ? setStanding(newList) : setHolding(newList);
+    setStandArray(newList);
 
     setPickedProduct("");
   };
 
   const handleStandHold = () => {
-    let currentStandList = clonedeep(standing);
-    let currentHoldList = clonedeep(holding);
-
-    if (standList) {
-      let currentStandListClip = currentStandList.filter(
-        (stand) => stand["custName"] === chosen
-      );
-
-      let reducedStandList = currentStandList.filter(
-        (stand) => stand["custName"] !== chosen
-      );
-
-      let sendHold = currentHoldList.concat(currentStandListClip);
-
-      setStanding(reducedStandList);
-      setHolding(sendHold);
-      setStandList(false);
-    } else {
-      let currentHoldListClip = currentHoldList.filter(
-        (hold) => hold["custName"] === chosen
-      );
-
-      let reducedHoldList = currentHoldList.filter(
-        (hold) => hold["custName"] !== chosen
-      );
-      let sendStand = currentStandList.concat(currentHoldListClip);
-
-      setHolding(reducedHoldList);
-      setStanding(sendStand);
-      setStandList(true);
-    }
+    
+      setStandList(!standList);
+    
   };
 
   return (
@@ -143,4 +118,4 @@ const AddCartEntryItem = () => {
   );
 };
 
-export default AddCartEntryItem;
+export default AddStandingOrderEntryItem;

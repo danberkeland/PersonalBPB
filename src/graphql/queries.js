@@ -176,12 +176,16 @@ export const getStanding = /* GraphQL */ `
   query GetStanding($id: ID!) {
     getStanding(id: $id) {
       id
-      dayNum
-      qty
       timeStamp
       prodName
       custName
-      SO
+      Sun
+      Mon
+      Tue
+      Wed
+      Thu
+      Fri
+      Sat
       createdAt
       updatedAt
     }
@@ -196,12 +200,16 @@ export const listStandings = /* GraphQL */ `
     listStandings(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        dayNum
-        qty
         timeStamp
         prodName
         custName
-        SO
+        Sun
+        Mon
+        Tue
+        Wed
+        Thu
+        Fri
+        Sat
         createdAt
         updatedAt
       }
@@ -213,12 +221,16 @@ export const getHolding = /* GraphQL */ `
   query GetHolding($id: ID!) {
     getHolding(id: $id) {
       id
-      dayNum
-      qty
       timeStamp
       prodName
       custName
-      SO
+      Sun
+      Mon
+      Tue
+      Wed
+      Thu
+      Fri
+      Sat
       createdAt
       updatedAt
     }
@@ -233,12 +245,16 @@ export const listHoldings = /* GraphQL */ `
     listHoldings(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        dayNum
-        qty
         timeStamp
         prodName
         custName
-        SO
+        Sun
+        Mon
+        Tue
+        Wed
+        Thu
+        Fri
+        Sat
         createdAt
         updatedAt
       }

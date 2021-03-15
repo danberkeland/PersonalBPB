@@ -14,6 +14,7 @@ export const CurrentDataProvider = (props) => {
     const [ route, setRoute ] = useState()
     const [ currentCartList, setCurrentCartList ] = useState([])
     const [ calendarEvents, setCalendarEvents ] = useState({})
+    const [ standArray, setStandArray ] = useState([])
 
     return (
         <CurrentDataContext.Provider 
@@ -22,7 +23,8 @@ export const CurrentDataProvider = (props) => {
                         ponote, setPonote,
                         route, setRoute,
                         currentCartList, setCurrentCartList,
-                        calendarEvents, setCalendarEvents
+                        calendarEvents, setCalendarEvents,
+                        standArray, setStandArray
                         }}>
             {props.children}
         </CurrentDataContext.Provider>

@@ -260,12 +260,16 @@ export const createStanding = /* GraphQL */ `
   ) {
     createStanding(input: $input, condition: $condition) {
       id
-      dayNum
-      qty
       timeStamp
       prodName
       custName
-      SO
+      Sun
+      Mon
+      Tue
+      Wed
+      Thu
+      Fri
+      Sat
       createdAt
       updatedAt
     }
@@ -278,12 +282,16 @@ export const updateStanding = /* GraphQL */ `
   ) {
     updateStanding(input: $input, condition: $condition) {
       id
-      dayNum
-      qty
       timeStamp
       prodName
       custName
-      SO
+      Sun
+      Mon
+      Tue
+      Wed
+      Thu
+      Fri
+      Sat
       createdAt
       updatedAt
     }
@@ -296,12 +304,16 @@ export const deleteStanding = /* GraphQL */ `
   ) {
     deleteStanding(input: $input, condition: $condition) {
       id
-      dayNum
-      qty
       timeStamp
       prodName
       custName
-      SO
+      Sun
+      Mon
+      Tue
+      Wed
+      Thu
+      Fri
+      Sat
       createdAt
       updatedAt
     }
@@ -314,12 +326,16 @@ export const createHolding = /* GraphQL */ `
   ) {
     createHolding(input: $input, condition: $condition) {
       id
-      dayNum
-      qty
       timeStamp
       prodName
       custName
-      SO
+      Sun
+      Mon
+      Tue
+      Wed
+      Thu
+      Fri
+      Sat
       createdAt
       updatedAt
     }
@@ -332,12 +348,16 @@ export const updateHolding = /* GraphQL */ `
   ) {
     updateHolding(input: $input, condition: $condition) {
       id
-      dayNum
-      qty
       timeStamp
       prodName
       custName
-      SO
+      Sun
+      Mon
+      Tue
+      Wed
+      Thu
+      Fri
+      Sat
       createdAt
       updatedAt
     }
@@ -350,12 +370,16 @@ export const deleteHolding = /* GraphQL */ `
   ) {
     deleteHolding(input: $input, condition: $condition) {
       id
-      dayNum
-      qty
       timeStamp
       prodName
       custName
-      SO
+      Sun
+      Mon
+      Tue
+      Wed
+      Thu
+      Fri
+      Sat
       createdAt
       updatedAt
     }

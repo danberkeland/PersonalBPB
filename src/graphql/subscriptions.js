@@ -230,12 +230,16 @@ export const onCreateStanding = /* GraphQL */ `
   subscription OnCreateStanding {
     onCreateStanding {
       id
-      dayNum
-      qty
       timeStamp
       prodName
       custName
-      SO
+      Sun
+      Mon
+      Tue
+      Wed
+      Thu
+      Fri
+      Sat
       createdAt
       updatedAt
     }
@@ -245,12 +249,16 @@ export const onUpdateStanding = /* GraphQL */ `
   subscription OnUpdateStanding {
     onUpdateStanding {
       id
-      dayNum
-      qty
       timeStamp
       prodName
       custName
-      SO
+      Sun
+      Mon
+      Tue
+      Wed
+      Thu
+      Fri
+      Sat
       createdAt
       updatedAt
     }
@@ -260,12 +268,16 @@ export const onDeleteStanding = /* GraphQL */ `
   subscription OnDeleteStanding {
     onDeleteStanding {
       id
-      dayNum
-      qty
       timeStamp
       prodName
       custName
-      SO
+      Sun
+      Mon
+      Tue
+      Wed
+      Thu
+      Fri
+      Sat
       createdAt
       updatedAt
     }
@@ -275,12 +287,16 @@ export const onCreateHolding = /* GraphQL */ `
   subscription OnCreateHolding {
     onCreateHolding {
       id
-      dayNum
-      qty
       timeStamp
       prodName
       custName
-      SO
+      Sun
+      Mon
+      Tue
+      Wed
+      Thu
+      Fri
+      Sat
       createdAt
       updatedAt
     }
@@ -290,12 +306,16 @@ export const onUpdateHolding = /* GraphQL */ `
   subscription OnUpdateHolding {
     onUpdateHolding {
       id
-      dayNum
-      qty
       timeStamp
       prodName
       custName
-      SO
+      Sun
+      Mon
+      Tue
+      Wed
+      Thu
+      Fri
+      Sat
       createdAt
       updatedAt
     }
@@ -305,12 +325,16 @@ export const onDeleteHolding = /* GraphQL */ `
   subscription OnDeleteHolding {
     onDeleteHolding {
       id
-      dayNum
-      qty
       timeStamp
       prodName
       custName
-      SO
+      Sun
+      Mon
+      Tue
+      Wed
+      Thu
+      Fri
+      Sat
       createdAt
       updatedAt
     }

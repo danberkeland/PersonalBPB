@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from "react";
+import React, { useEffect, useContext } from "react";
 
 import swal from "@sweetalert/with-react";
 
@@ -10,11 +10,6 @@ import { HoldingContext } from "../../../../dataContexts/HoldingContext";
 import { CurrentDataContext } from "../../../../dataContexts/CurrentDataContext";
 import {
   checkStandHoldStatus,
-  createStandListArray,
-  clearSelectedStandItem,
-  createUpdateWeeklyList,
-  setCurrentStandLineToQty,
-  createUpdateWeeklyStandList,
   checkForStandMods,
 } from "../../../../helpers/StandBuildingHelpers";
 
@@ -50,55 +45,57 @@ const entryZero = {
 const clonedeep = require("lodash.clonedeep");
 
 const BuildCurrentStandingList = () => {
-  const [standArray, setStandArray] = useState();
-
-  const { standing, setStanding } = useContext(StandingContext);
-  const { holding, setHolding } = useContext(HoldingContext);
-  const { standList, setStandList, setModifications } = useContext(
+  const { standing } = useContext(StandingContext);
+  const { holding } = useContext(HoldingContext);
+  const { setStandList, setModifications } = useContext(
     ToggleContext
   );
-  const { chosen } = useContext(CurrentDataContext);
+  const { chosen, standArray, setStandArray } = useContext(CurrentDataContext);
 
   useEffect(() => {
-      let Stand = checkStandHoldStatus(holding,chosen)
-      setStandList(Stand)
-      let buildStandArray = createStandListArray(standing,holding,Stand,chosen)
-      setModifications(checkForStandMods(buildStandArray))
-      setStandArray(buildStandArray)
-  },[chosen,holding,standing])
-  
-
-  const handleRemove = (index) => {
-        
-    let standListToModify = clearSelectedStandItem(index,standArray)
-    setStandArray(standListToModify)
-    setModifications(true)
-    
-
-    let updatedStandorHold = clonedeep(standList ? standing : holding)   
-    let updatedWeeklyList = createUpdateWeeklyList(index, updatedStandorHold, chosen)
-    standList ? setStanding(updatedWeeklyList) : setHolding(updatedWeeklyList)        
-}
-
-const handleQtyModify = (e,qty) => {
-    if(isNaN(e.target.value)){
-        e.target.value = null
-        swal ({
-            text: "Only Numbers Please",
-            icon: "warning",
-            buttons: false,
-            timer: 2000
-          })
+    let Stand = checkStandHoldStatus(holding, chosen);
+    setStandList(Stand);
+    let buildStandArray;
+    if (Stand) {
+      buildStandArray = standing.filter(
+        (stand) => stand["custName"] === chosen
+      );
+    } else {
+      buildStandArray = holding.filter((hold) => hold["custName"] === chosen);
     }
 
-    let StandListToModify = setCurrentStandLineToQty(e,standArray,qty)
-    setStandArray(StandListToModify)
-    
-    let updatedStandorHold = clonedeep(standList ? standing : holding)   
-    let updatedWeeklyStandList = createUpdateWeeklyStandList(e, updatedStandorHold, chosen)
-    standList ? setStanding(updatedWeeklyStandList) : setHolding(updatedWeeklyStandList)            
-}
+    setModifications(checkForStandMods(buildStandArray));
+    setStandArray(buildStandArray);
+  }, [chosen, holding, standing]);
 
+  const handleRemove = (index) => {
+    let adjustedStanding = standing.filter(
+      (stand) => stand["prodName"] !== index
+    );
+    setStandArray(adjustedStanding);
+    setModifications(true);
+  };
+
+  const handleQtyModify = (e, qty) => {
+    if (isNaN(e.target.value)) {
+      e.target.value = null;
+      swal({
+        text: "Only Numbers Please",
+        icon: "warning",
+        buttons: false,
+        timer: 2000,
+      });
+    }
+    let day = e.target.dataset.day;
+    let prod = e.target.name;
+    let arrayToModify = clonedeep(standArray);
+    let ind = arrayToModify.findIndex((array) => array["prodName"] === prod);
+    arrayToModify[ind][day] = qty;
+
+    setStandArray(arrayToModify);
+
+    setModifications(true);
+  };
 
   return (
     <React.Fragment>
@@ -114,19 +111,21 @@ const handleQtyModify = (e,qty) => {
         <label></label>
         {standArray
           ? standArray.map((order) => (
-              <React.Fragment key={order[0] + "frag"}>
-                <label key={order[0] + "prod"}>{order[0]}</label>
+              <React.Fragment key={order["prodName"] + "frag"}>
+                <label key={order["prodName"] + "prod"}>
+                  {order["prodName"]}
+                </label>
 
                 <StandInput
                   type="text"
-                  key={order[0] + "sun"}
+                  key={order["prodName"] + "Sun"}
                   size="3"
-                  style={Number(order[1]) > 0 ? entryNotZero : entryZero}
+                  style={Number(order["Sun"]) > 0 ? entryNotZero : entryZero}
                   maxLength="3"
-                  id={order[0] + "_1"}
-                  name={order[0]}
-                  placeholder={order[1]}
-                  data-day="1"
+                  id={order["prodName"] + "_1"}
+                  name={order["prodName"]}
+                  placeholder={order["Sun"]}
+                  data-day="Sun"
                   onKeyUp={(e) => {
                     handleQtyModify(e, Number(e.target.value));
                   }}
@@ -136,14 +135,14 @@ const handleQtyModify = (e,qty) => {
                 ></StandInput>
                 <StandInput
                   type="text"
-                  key={order[0] + "mon"}
+                  key={order["prodName"] + "Mon"}
                   size="3"
-                  style={Number(order[2]) > 0 ? entryNotZero : entryZero}
+                  style={Number(order["Mon"]) > 0 ? entryNotZero : entryZero}
                   maxLength="3"
-                  id={order[0] + "_2"}
-                  name={order[0]}
-                  placeholder={order[2]}
-                  data-day="2"
+                  id={order["prodName"] + "_2"}
+                  name={order["prodName"]}
+                  placeholder={order["Mon"]}
+                  data-day="Mon"
                   onKeyUp={(e) => {
                     handleQtyModify(e, Number(e.target.value));
                   }}
@@ -153,14 +152,14 @@ const handleQtyModify = (e,qty) => {
                 ></StandInput>
                 <StandInput
                   type="text"
-                  key={order[0] + "tues"}
+                  key={order["prodName"] + "Tue"}
                   size="3"
-                  style={Number(order[3]) > 0 ? entryNotZero : entryZero}
+                  style={Number(order["Tue"]) > 0 ? entryNotZero : entryZero}
                   maxLength="3"
-                  id={order[0] + "_3"}
-                  name={order[0]}
-                  placeholder={order[3]}
-                  data-day="3"
+                  id={order["prodName"] + "_3"}
+                  name={order["prodName"]}
+                  placeholder={order["Tue"]}
+                  data-day="Tue"
                   onKeyUp={(e) => {
                     handleQtyModify(e, Number(e.target.value));
                   }}
@@ -170,14 +169,14 @@ const handleQtyModify = (e,qty) => {
                 ></StandInput>
                 <StandInput
                   type="text"
-                  key={order[0] + "wed"}
+                  key={order["prodName"] + "Wed"}
                   size="3"
-                  style={Number(order[4]) > 0 ? entryNotZero : entryZero}
+                  style={Number(order["Wed"]) > 0 ? entryNotZero : entryZero}
                   maxLength="3"
-                  id={order[0] + "_4"}
-                  name={order[0]}
-                  placeholder={order[4]}
-                  data-day="4"
+                  id={order["prodName"] + "_4"}
+                  name={order["prodName"]}
+                  placeholder={order["Wed"]}
+                  data-day="Wed"
                   onKeyUp={(e) => {
                     handleQtyModify(e, Number(e.target.value));
                   }}
@@ -187,14 +186,14 @@ const handleQtyModify = (e,qty) => {
                 ></StandInput>
                 <StandInput
                   type="text"
-                  key={order[0] + "thurs"}
+                  key={order["prodName"] + "Thu"}
                   size="3"
-                  style={Number(order[5]) > 0 ? entryNotZero : entryZero}
+                  style={Number(order["Thu"]) > 0 ? entryNotZero : entryZero}
                   maxLength="3"
-                  id={order[0] + "_5"}
-                  name={order[0]}
-                  placeholder={order[5]}
-                  data-day="5"
+                  id={order["prodName"] + "_5"}
+                  name={order["prodName"]}
+                  placeholder={order["Thu"]}
+                  data-day="Thu"
                   onKeyUp={(e) => {
                     handleQtyModify(e, Number(e.target.value));
                   }}
@@ -204,14 +203,14 @@ const handleQtyModify = (e,qty) => {
                 ></StandInput>
                 <StandInput
                   type="text"
-                  key={order[0] + "fri"}
+                  key={order["prodName"] + "Fri"}
                   size="3"
-                  style={Number(order[6]) > 0 ? entryNotZero : entryZero}
+                  style={Number(order["Fri"]) > 0 ? entryNotZero : entryZero}
                   maxLength="3"
-                  id={order[0] + "_6"}
-                  name={order[0]}
-                  placeholder={order[6]}
-                  data-day="6"
+                  id={order["prodName"] + "_6"}
+                  name={order["prodName"]}
+                  placeholder={order["Fri"]}
+                  data-day="Fri"
                   onKeyUp={(e) => {
                     handleQtyModify(e, Number(e.target.value));
                   }}
@@ -221,14 +220,14 @@ const handleQtyModify = (e,qty) => {
                 ></StandInput>
                 <StandInput
                   type="text"
-                  key={order[0] + "sat"}
+                  key={order["prodName"] + "Sat"}
                   size="3"
-                  style={Number(order[7]) > 0 ? entryNotZero : entryZero}
+                  style={Number(order["Sat"]) > 0 ? entryNotZero : entryZero}
                   maxLength="3"
-                  id={order[0] + "_7"}
-                  name={order[0]}
-                  placeholder={order[7]}
-                  data-day="7"
+                  id={order["prodName"] + "_7"}
+                  name={order["prodName"]}
+                  placeholder={order["Sat"]}
+                  data-day="Sat"
                   onKeyUp={(e) => {
                     handleQtyModify(e, Number(e.target.value));
                   }}
@@ -240,9 +239,9 @@ const handleQtyModify = (e,qty) => {
                 <Button
                   icon="pi pi-trash"
                   className="p-button-outlined p-button-rounded p-button-help p-button-sm"
-                  key={order[0] + "rem"}
-                  name={order[0]}
-                  onClick={(e) => handleRemove(order[0])}
+                  key={order["prodName"] + "rem"}
+                  name={order["prodName"]}
+                  onClick={(e) => handleRemove(order["prodName"])}
                 ></Button>
               </React.Fragment>
             ))

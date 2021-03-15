@@ -20,7 +20,7 @@ const ProductList = ({ selectedProduct, setSelectedProduct }) => {
   const { products } = useContext(ProductsContext);
 
   const handleSelection = (e) => {
-    console.log(e.value)
+    
     setSelectedProduct(e.value);
   };
 

@@ -3,12 +3,14 @@ import React from 'react';
 import BuildCurrentStandingList from './BuildCurrentStandingList'
 
 
-const StandingOrderEntry = () => {
+const StandingOrderEntry = ({ standArray, setStandArray }) => {
+
+    
 
     return (
         <React.Fragment> 
             
-            <BuildCurrentStandingList />
+            <BuildCurrentStandingList standArray={standArray} setStandArray={setStandArray}/>
 
         </React.Fragment>
         

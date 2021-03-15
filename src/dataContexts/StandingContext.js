@@ -49,12 +49,9 @@ export const StandingLoad = () => {
             
             
             let sortedData = sortAtoZDataByIndex(noDelete,"timeStamp")
-            let currentData = FilterStandHoldDups(sortedData)
+            
            
-           
-            setOriginalStanding(currentData);
-           
-            setStanding(currentData);
+            setStanding(sortedData);
             setStandLoaded(true)
         } catch (error){
           console.log('error on fetching Standing List', error)

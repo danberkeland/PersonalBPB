@@ -59,10 +59,10 @@ export const OrdersLoad = () => {
             let sortedData = sortAtoZDataByIndex(noDelete,"timeStamp")
             sortedData = sortAtoZDataByIndex(sortedData, "prodName")
                 
-            let currentData = FilterOrdersDups(sortedData)
-            setOrders(currentData)
+          
+            setOrders(sortedData)
             setOrdersLoaded(true)
-            setOriginalOrders(currentData);
+            setOriginalOrders(sortedData);
         }  catch (error){
             console.log('error on fetching Orders List', error)
         }

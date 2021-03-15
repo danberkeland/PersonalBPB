@@ -60,22 +60,30 @@ type Order @model @auth(rules: [{allow: public}]) {
 
 type Standing @model @auth(rules: [{allow: public}]) {
   id: ID!
-  dayNum: Int
-  qty: Int
   timeStamp: String
   prodName: String
   custName: String
-  SO: Int
+  Sun: Int
+  Mon: Int
+  Tue: Int
+  Wed: Int
+  Thu: Int
+  Fri: Int
+  Sat: Int
 }
 
 type Holding @model @auth(rules: [{allow: public}]) {
   id: ID!
-  dayNum: Int
-  qty: Int
   timeStamp: String
   prodName: String
   custName: String
-  SO: Int
+  Sun: Int
+  Mon: Int
+  Tue: Int
+  Wed: Int
+  Thu: Int
+  Fri: Int
+  Sat: Int
 }
 
 type Route @model @auth(rules: [{allow: public}]) {

@@ -29,7 +29,7 @@ export const buildStandList = (chosen, delivDate, standing, route, ponote) => {
   let filteredStanding = clonedeep(standing);
   let builtStandList = [];
   builtStandList = filteredStanding.filter((standing) =>
-    standing["custName"].match(wildcardRegExp(`${chosen}`))
+    standing["custName"]===chosen
   );
   let convertedStandList = convertStandListtoStandArray(
     builtStandList,
@@ -50,7 +50,7 @@ const convertStandListtoStandArray = (
   let dayOfWeek = DateTime.local(
     Number(dateSplit[0]),
     Number(dateSplit[1]),
-    Number(dateSplit[2]) + 3
+    Number(dateSplit[2])
   ).weekdayShort;
   let convertedStandList = builtStandList.map((order) => ({
     id: order["id"],

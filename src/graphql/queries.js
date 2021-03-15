@@ -179,6 +179,7 @@ export const getStanding = /* GraphQL */ `
       timeStamp
       prodName
       custName
+      isStand
       Sun
       Mon
       Tue
@@ -203,6 +204,7 @@ export const listStandings = /* GraphQL */ `
         timeStamp
         prodName
         custName
+        isStand
         Sun
         Mon
         Tue

@@ -63,6 +63,7 @@ type Standing @model @auth(rules: [{allow: public}]) {
   timeStamp: String
   prodName: String
   custName: String
+  isStand: Boolean
   Sun: Int
   Mon: Int
   Tue: Int

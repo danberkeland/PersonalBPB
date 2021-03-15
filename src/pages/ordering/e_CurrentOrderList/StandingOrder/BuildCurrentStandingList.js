@@ -53,20 +53,21 @@ const BuildCurrentStandingList = () => {
   const { chosen, standArray, setStandArray } = useContext(CurrentDataContext);
 
   useEffect(() => {
-    let Stand = checkStandHoldStatus(holding, chosen);
-    setStandList(Stand);
-    let buildStandArray;
-    if (Stand) {
-      buildStandArray = standing.filter(
-        (stand) => stand["custName"] === chosen
-      );
+    let Stand = standing.filter(stand => stand["custName"]===chosen)
+    if (Stand.length>0){
+      Stand = Stand[0]["isStand"]
     } else {
-      buildStandArray = holding.filter((hold) => hold["custName"] === chosen);
+      Stand = true
     }
 
-    setModifications(checkForStandMods(buildStandArray));
+    
+    setStandList(Stand);
+    let buildStandArray = standing.filter(
+        (stand) => stand["isStand"] === Stand && stand["custName"]===chosen
+      );
+      
     setStandArray(buildStandArray);
-  }, [chosen, holding, standing]);
+  }, [chosen, standing]);
 
   const handleRemove = (index) => {
     let adjustedStanding = standing.filter(

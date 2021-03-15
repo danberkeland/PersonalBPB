@@ -52,11 +52,11 @@ const BuildCurrentCartList = () => {
 
 
     useEffect(() => {
-
+        if (chosen!=='  '){
         let currentOrderList = buildCurrentOrder(chosen,delivDate,orders,standing,route,ponote) 
         
         setCurrentCartList(currentOrderList)
-        
+    }
        
         
 

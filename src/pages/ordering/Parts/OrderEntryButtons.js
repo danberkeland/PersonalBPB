@@ -16,7 +16,7 @@ import {
   deleteOrder,
   createOrder,
   createStanding,
-  updateStanding
+  updateStanding,
 } from "../../../graphql/mutations";
 
 import { API, graphqlOperation } from "aws-amplify";
@@ -135,8 +135,7 @@ function OrderEntryButtons() {
     } else {
       for (let stand of standArray) {
         if (stand["id"]) {
-         
-          if (standList) {
+          
             const updateDetails = {
               prodName: stand["prodName"],
               Mon: stand["Mon"],
@@ -146,42 +145,50 @@ function OrderEntryButtons() {
               Fri: stand["Fri"],
               Sat: stand["Sat"],
               Sun: stand["Sun"],
+              isStand: standList,
               timeStamp: new Date(),
-            };
-
-            if (stand["id"]) {
-              updateDetails.id = stand["id"];
-              updateDetails._version = stand["_version"];
+              id: stand["id"],
+              _version: stand["_version"]
             }
             try {
               await API.graphql(
-                graphqlOperation(updateStanding, { input: { ...updateDetails } })
+                graphqlOperation(updateStanding, {
+                  input: { ...updateDetails },
+                })
               );
             } catch (error) {
-            
               console.log("error on creating Orders", error);
             }
-          } else {
-            // update holding
-          }
+          
         } else {
-          if (standList){
-         
+          const updateDetails = {
+            custName: chosen,
+            prodName: stand["prodName"],
+            Mon: stand["Mon"],
+            Tue: stand["Tue"],
+            Wed: stand["Wed"],
+            Thu: stand["Thu"],
+            Fri: stand["Fri"],
+            Sat: stand["Sat"],
+            Sun: stand["Sun"],
+            isStand: standList,
+            timeStamp: new Date()
+            
+          }
           try {
             await API.graphql(
-              graphqlOperation(createStanding, { input: { ...stand } })
+              graphqlOperation(createStanding, {
+                input: { ...updateDetails },
+              })
             );
           } catch (error) {
             console.log("error on creating Orders", error);
           }
-          } else {
-            // add to holding
-          }
         }
       }
     }
-    setStandLoaded(false)
-    setHoldLoaded(false)
+    setStandLoaded(false);
+    setHoldLoaded(false);
     setOrdersLoaded(false);
   };
 

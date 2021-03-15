@@ -233,6 +233,7 @@ export const onCreateStanding = /* GraphQL */ `
       timeStamp
       prodName
       custName
+      isStand
       Sun
       Mon
       Tue
@@ -252,6 +253,7 @@ export const onUpdateStanding = /* GraphQL */ `
       timeStamp
       prodName
       custName
+      isStand
       Sun
       Mon
       Tue
@@ -271,6 +273,7 @@ export const onDeleteStanding = /* GraphQL */ `
       timeStamp
       prodName
       custName
+      isStand
       Sun
       Mon
       Tue

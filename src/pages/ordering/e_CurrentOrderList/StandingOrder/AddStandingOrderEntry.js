@@ -64,6 +64,7 @@ const AddStandingOrderEntryItem = () => {
         let newOrder = {
           prodName: pickedProduct,
           custName: chosen,
+          isStand: standList ? true : false,
           Sun: 0,
           Mon: 0,
           Tue: 0,
@@ -81,8 +82,9 @@ const AddStandingOrderEntryItem = () => {
   };
 
   const handleStandHold = () => {
-    
-      setStandList(!standList);
+      let newStand = !standList
+      console.log(newStand)
+      setStandList(newStand);
     
   };
 

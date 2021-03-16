@@ -25,11 +25,11 @@ export const buildCartList = (chosen, delivDate, orders) => {
   return builtCartList;
 };
 
-export const buildStandList = (chosen, delivDate, standing, route, ponote) => {
+export const buildStandList = (chosen, delivDate, standing, route, ponote ) => {
   let filteredStanding = clonedeep(standing);
   let builtStandList = [];
   builtStandList = filteredStanding.filter((standing) =>
-    standing["custName"]===chosen
+    standing["custName"]===chosen && standing["isStand"]===true
   );
   let convertedStandList = convertStandListtoStandArray(
     builtStandList,

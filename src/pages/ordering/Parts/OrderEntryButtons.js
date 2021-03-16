@@ -43,6 +43,7 @@ function OrderEntryButtons() {
     delivDate,
     chosen,
     currentCartList,
+    setCurrentCartList,
     standArray,
     setStandArray,
   } = useContext(CurrentDataContext);
@@ -82,7 +83,14 @@ function OrderEntryButtons() {
     setCartList(!cartList);
   };
 
-  const handleClear = () => {};
+  const handleClear = () => {
+    let cartToMod = clonedeep(currentCartList)
+    for (let ord of cartToMod){
+      ord["qty"]=0
+    }
+    setCurrentCartList(cartToMod);
+    setModifications(true)
+  };
 
   const handleAddUpdate = async () => {
     if (cartList) {
@@ -111,6 +119,7 @@ function OrderEntryButtons() {
             };
 
             if (ord["id"]) {
+              console.log(ord)
               updateDetails.id = ord["id"];
               updateDetails._version = ord["_version"];
 

@@ -17,6 +17,7 @@ import { buildCurrentOrder,
     checkForMods
 } from '../../../../helpers/CartBuildingHelpers'
 
+const clonedeep = require("lodash.clonedeep");
 
 const OrderGrid = styled.div`
     width: 100%;
@@ -65,13 +66,14 @@ const BuildCurrentCartList = () => {
 
 
 
-    const handleQtyModify = (prodName,qty,SO) => {
-        let presentedListToModify = setCurrentCartLineToQty(prodName,currentCartList,qty)
-        let updatedOrders = updateCurrentLineInOrdersWithQty(prodName,chosen, delivDate, orders, ponote, route, orderTypeWhole, qty, SO)
-       
-        setCurrentCartList(presentedListToModify)
+    const handleQtyModify = (prodName,qty) => {
+        let cartToMod = clonedeep(currentCartList)
+        let ind = cartToMod.findIndex(cur => cur["prodName"]===prodName)
+        cartToMod[ind]["qty"]=qty
+        
+        setCurrentCartList(cartToMod)
         setModifications(true)
-        setOrders(updatedOrders) 
+        
         
     }
 
@@ -89,7 +91,7 @@ const BuildCurrentCartList = () => {
                 <Button icon="pi pi-trash" 
                     className="p-button-outlined p-button-rounded p-button-help p-button-sm"
                     value={0}
-                    onClick={e => {handleQtyModify(order["prodName"],0,order["SO"])}}
+                    onClick={e => {handleQtyModify(order["prodName"],0)}}
                     key={order["prodName"]+"e"} 
                     name={order["prodName"]}
                     data-qty={order["qty"]}
@@ -106,7 +108,7 @@ const BuildCurrentCartList = () => {
                     name={order["prodName"]}
                     data-qty={order["qty"]} 
                     placeholder={order["qty"]} 
-                    onKeyUp={e => {handleQtyModify(order["prodName"],Number(e.target.value), order["SO"])}}
+                    onKeyUp={e => {handleQtyModify(order["prodName"],Number(e.target.value))}}
                     onBlur={(e) => {
 
                         e.target.value = null

@@ -53,7 +53,7 @@ const convertStandListtoStandArray = (
     Number(dateSplit[2])
   ).weekdayShort;
   let convertedStandList = builtStandList.map((order) => ({
-    id: order["id"],
+    id: null,
     version: order["_version"],
     qty: order[dayOfWeek],
     prodName: order["prodName"],

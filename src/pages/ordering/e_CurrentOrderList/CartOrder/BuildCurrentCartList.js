@@ -54,6 +54,7 @@ const BuildCurrentCartList = () => {
     useEffect(() => {
         if (chosen!=='  '){
         let currentOrderList = buildCurrentOrder(chosen,delivDate,orders,standing,route,ponote) 
+        currentOrderList = currentOrderList.filter(order => order["qty"]!==0)
         
         setCurrentCartList(currentOrderList)
     }
@@ -69,6 +70,7 @@ const BuildCurrentCartList = () => {
         let updatedOrders = updateCurrentLineInOrdersWithQty(prodName,chosen, delivDate, orders, ponote, route, orderTypeWhole, qty, SO)
        
         setCurrentCartList(presentedListToModify)
+        setModifications(true)
         setOrders(updatedOrders) 
         
     }

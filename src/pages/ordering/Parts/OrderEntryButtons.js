@@ -187,6 +187,7 @@ function OrderEntryButtons() {
         }
       }
     }
+    setModifications(false)
     setStandLoaded(false);
     setHoldLoaded(false);
     setOrdersLoaded(false);

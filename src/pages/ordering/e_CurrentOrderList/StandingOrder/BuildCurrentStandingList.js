@@ -70,9 +70,15 @@ const BuildCurrentStandingList = () => {
   }, [chosen, standing]);
 
   const handleRemove = (index) => {
-    let adjustedStanding = standing.filter(
-      (stand) => stand["prodName"] !== index
-    );
+    let ind = standArray.findIndex(stand => stand["prodName"]===index)
+    let adjustedStanding = clonedeep(standArray)
+    adjustedStanding[ind]["Sun"]=0
+    adjustedStanding[ind]["Mon"]=0
+    adjustedStanding[ind]["Tue"]=0
+    adjustedStanding[ind]["Wed"]=0
+    adjustedStanding[ind]["Thu"]=0
+    adjustedStanding[ind]["Fri"]=0
+    adjustedStanding[ind]["Sat"]=0
     setStandArray(adjustedStanding);
     setModifications(true);
   };

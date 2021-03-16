@@ -15,6 +15,7 @@ import BPBN from './BPBN'
 import Croix from './Croix'
 import Customers from './pages/customers/Customers'
 import Products from './pages/products/Products'
+import ByRoute from './pages/logistics/ByRoute/ByRoute'
 import Billing from './Billing'
 import Admin from './Admin'
 import Loader from './Loader'
@@ -28,7 +29,7 @@ function AppRoutes() {
       <div className="bigPicture">
         <Switch>
           <Route path="/ordering" component={Ordering} /> 
-          <Route path="/logistics/byRoute" component={DeliveryRouteGrid} />  
+          <Route path="/logistics/byRoute" component={ByRoute} />  
           <Route path="/logistics/byCustomer" component={DeliveryCustomerGrid} />  
           <Route path="/logistics/byProduct" component={DeliveryProductGrid} />  
           <Route path="/settings/editRoutes" component={EditRoutes} />

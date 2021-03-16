@@ -45,9 +45,12 @@ const OrderCommandLine = () => {
   const { customers } = useContext(CustomerContext);
   const { standing } = useContext(StandingContext);
   const { products } = useContext(ProductsContext);
-  const { orderTypeWhole, setOrderTypeWhole, setRouteIsOn, setModifications } = useContext(
-    ToggleContext
-  );
+  const {
+    orderTypeWhole,
+    setOrderTypeWhole,
+    setRouteIsOn,
+    setModifications,
+  } = useContext(ToggleContext);
 
   let tomorrow = todayPlus()[1];
 
@@ -69,7 +72,7 @@ const OrderCommandLine = () => {
       setOrders(newRetailCustList);
       setDelivDate(tomorrow);
       setChosen(newRetailCustName);
-      setModifications(true)
+      setModifications(true);
       return;
     }
 
@@ -84,7 +87,7 @@ const OrderCommandLine = () => {
           setRouteIsOn(true);
           setDelivDate(tomorrow);
           setOrderTypeWhole(true);
-          setModifications(true)
+          setModifications(true);
           return;
         }
       }
@@ -165,7 +168,7 @@ const OrderCommandLine = () => {
         ordersToModify
       );
       setOrders(addedOrdersToUpdate);
-      setModifications(true)
+      setModifications(true);
     }
   };
 

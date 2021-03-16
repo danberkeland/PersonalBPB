@@ -6,14 +6,10 @@ import { StandingContext } from "../../../dataContexts/StandingContext";
 import { HoldingContext } from "../../../dataContexts/HoldingContext";
 import { ToggleContext } from "../../../dataContexts/ToggleContext";
 
-import {
-  convertDatetoBPBDate,
-  convertDatetoStandingDate,
-} from "../../../helpers/dateTimeHelpers";
+import { convertDatetoBPBDate } from "../../../helpers/dateTimeHelpers";
 
 import {
   updateOrder,
-  deleteOrder,
   createOrder,
   createStanding,
   updateStanding,
@@ -22,8 +18,6 @@ import {
 import { API, graphqlOperation } from "aws-amplify";
 
 import { Button } from "primereact/button";
-
-import swal from "@sweetalert/with-react";
 
 import styled from "styled-components";
 
@@ -84,12 +78,12 @@ function OrderEntryButtons() {
   };
 
   const handleClear = () => {
-    let cartToMod = clonedeep(currentCartList)
-    for (let ord of cartToMod){
-      ord["qty"]=0
+    let cartToMod = clonedeep(currentCartList);
+    for (let ord of cartToMod) {
+      ord["qty"] = 0;
     }
     setCurrentCartList(cartToMod);
-    setModifications(true)
+    setModifications(true);
   };
 
   const handleAddUpdate = async () => {
@@ -119,7 +113,7 @@ function OrderEntryButtons() {
             };
 
             if (ord["id"]) {
-              console.log(ord)
+              console.log(ord);
               updateDetails.id = ord["id"];
               updateDetails._version = ord["_version"];
 
@@ -144,31 +138,29 @@ function OrderEntryButtons() {
     } else {
       for (let stand of standArray) {
         if (stand["id"]) {
-          
-            const updateDetails = {
-              prodName: stand["prodName"],
-              Mon: stand["Mon"],
-              Tue: stand["Tue"],
-              Wed: stand["Wed"],
-              Thu: stand["Thu"],
-              Fri: stand["Fri"],
-              Sat: stand["Sat"],
-              Sun: stand["Sun"],
-              isStand: standList,
-              timeStamp: new Date(),
-              id: stand["id"],
-              _version: stand["_version"]
-            }
-            try {
-              await API.graphql(
-                graphqlOperation(updateStanding, {
-                  input: { ...updateDetails },
-                })
-              );
-            } catch (error) {
-              console.log("error on creating Orders", error);
-            }
-          
+          const updateDetails = {
+            prodName: stand["prodName"],
+            Mon: stand["Mon"],
+            Tue: stand["Tue"],
+            Wed: stand["Wed"],
+            Thu: stand["Thu"],
+            Fri: stand["Fri"],
+            Sat: stand["Sat"],
+            Sun: stand["Sun"],
+            isStand: standList,
+            timeStamp: new Date(),
+            id: stand["id"],
+            _version: stand["_version"],
+          };
+          try {
+            await API.graphql(
+              graphqlOperation(updateStanding, {
+                input: { ...updateDetails },
+              })
+            );
+          } catch (error) {
+            console.log("error on creating Orders", error);
+          }
         } else {
           const updateDetails = {
             custName: chosen,
@@ -181,9 +173,8 @@ function OrderEntryButtons() {
             Sat: stand["Sat"],
             Sun: stand["Sun"],
             isStand: standList,
-            timeStamp: new Date()
-            
-          }
+            timeStamp: new Date(),
+          };
           try {
             await API.graphql(
               graphqlOperation(createStanding, {
@@ -196,7 +187,7 @@ function OrderEntryButtons() {
         }
       }
     }
-    setModifications(false)
+    setModifications(false);
     setStandLoaded(false);
     setHoldLoaded(false);
     setOrdersLoaded(false);

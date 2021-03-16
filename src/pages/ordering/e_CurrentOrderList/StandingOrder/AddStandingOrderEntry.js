@@ -2,8 +2,6 @@ import React, { useState, useContext, useEffect } from "react";
 
 import { CurrentDataContext } from "../../../../dataContexts/CurrentDataContext";
 import { OrdersContext } from "../../../../dataContexts/OrdersContext";
-import { StandingContext } from "../../../../dataContexts/StandingContext";
-import { HoldingContext } from "../../../../dataContexts/HoldingContext";
 import { ProductsContext } from "../../../../dataContexts/ProductsContext";
 import { ToggleContext } from "../../../../dataContexts/ToggleContext";
 
@@ -27,10 +25,10 @@ const clonedeep = require("lodash.clonedeep");
 
 const AddStandingOrderEntryItem = () => {
   const { products } = useContext(ProductsContext);
-  const { standing, setStanding } = useContext(StandingContext);
-  const { holding, setHolding } = useContext(HoldingContext);
   const { orders } = useContext(OrdersContext);
-  const { chosen, delivDate, standArray, setStandArray } = useContext(CurrentDataContext);
+  const { chosen, delivDate, standArray, setStandArray } = useContext(
+    CurrentDataContext
+  );
   const { standList, setStandList } = useContext(ToggleContext);
 
   const [pickedProduct, setPickedProduct] = useState();
@@ -60,21 +58,19 @@ const AddStandingOrderEntryItem = () => {
     let newList = clonedeep(standArray);
 
     if (pickedProduct !== "" && pickedProduct) {
-      
-        let newOrder = {
-          prodName: pickedProduct,
-          custName: chosen,
-          isStand: standList ? true : false,
-          Sun: 0,
-          Mon: 0,
-          Tue: 0,
-          Wed: 0,
-          Thu: 0,
-          Fri: 0,
-          Sat: 0,
-        };
-        newList.push(newOrder);
-      
+      let newOrder = {
+        prodName: pickedProduct,
+        custName: chosen,
+        isStand: standList ? true : false,
+        Sun: 0,
+        Mon: 0,
+        Tue: 0,
+        Wed: 0,
+        Thu: 0,
+        Fri: 0,
+        Sat: 0,
+      };
+      newList.push(newOrder);
     }
     setStandArray(newList);
 
@@ -82,10 +78,9 @@ const AddStandingOrderEntryItem = () => {
   };
 
   const handleStandHold = () => {
-      let newStand = !standList
-      console.log(newStand)
-      setStandList(newStand);
-    
+    let newStand = !standList;
+    console.log(newStand);
+    setStandList(newStand);
   };
 
   return (

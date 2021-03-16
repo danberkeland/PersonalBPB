@@ -1,90 +1,102 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from "react";
 
-import { v4 as uuidv4 } from 'uuid';
+import { CurrentDataContext } from "../../../../dataContexts/CurrentDataContext";
+import { OrdersContext } from "../../../../dataContexts/OrdersContext";
+import { ProductsContext } from "../../../../dataContexts/ProductsContext";
+import { ToggleContext } from "../../../../dataContexts/ToggleContext";
 
-import { CurrentDataContext } from '../../../../dataContexts/CurrentDataContext';
-import { OrdersContext } from '../../../../dataContexts/OrdersContext';
-import { ProductsContext } from '../../../../dataContexts/ProductsContext'
-import { ToggleContext } from '../../../../dataContexts/ToggleContext';
+import { convertDatetoBPBDate } from "../../../../helpers/dateTimeHelpers";
+import {
+  findAvailableProducts,
+  decideWhetherToAddOrModify,
+} from "../../../../helpers/sortDataHelpers";
 
-import { convertDatetoBPBDate } from '../../../../helpers/dateTimeHelpers';
-import { findAvailableProducts,decideWhetherToAddOrModify } from '../../../../helpers/sortDataHelpers';
+import { Button } from "primereact/button";
+import { Dropdown } from "primereact/dropdown";
+import { InputText } from "primereact/inputtext";
 
-import { Button } from 'primereact/button';
-import { Dropdown } from 'primereact/dropdown';
-import { InputText } from 'primereact/inputtext';
-
-
-import styled from 'styled-components'
+import styled from "styled-components";
 
 const AddProductButtons = styled.div`
-        display: flex;
-        width: 100%;
-        margin: 20px 0;
-        justify-content: space-around;
-        background-color: lightgrey;
-        padding: 10px 0;
-        `
-
-
-
-
+  display: flex;
+  width: 100%;
+  margin: 20px 0;
+  justify-content: space-around;
+  background-color: lightgrey;
+  padding: 10px 0;
+`;
 
 const AddCartEntryItem = () => {
+  const { products } = useContext(ProductsContext);
+  const { orders, setOrders } = useContext(OrdersContext);
+  const { chosen, delivDate, route, ponote, currentCartList } = useContext(
+    CurrentDataContext
+  );
+  const { orderTypeWhole } = useContext(ToggleContext);
 
-    const { products } = useContext(ProductsContext)
-    const { orders, setOrders } = useContext(OrdersContext)
-    const { chosen, delivDate, route, ponote, currentCartList } = useContext(CurrentDataContext)
-    const { orderTypeWhole, setModifications }= useContext(ToggleContext)
+  const [pickedProduct, setPickedProduct] = useState();
+  const [productList, setProductList] = useState();
 
-    const [ pickedProduct, setPickedProduct ] = useState();
-    const [ productList, setProductList ] = useState();
-    
-
-    useEffect(() => {
-        let availableProducts = findAvailableProducts(products, currentCartList, chosen, delivDate)
-        setProductList(availableProducts)
-        },[products, orders, chosen, delivDate ]);
-
-
-    const handleChange = e => {
-        setPickedProduct(e.target.value)
-
-    } 
-
-    const handleAdd = () => {
-        let qty = Number(document.getElementById("addedProdQty").value)
-       
-        let newOrder ={
-            "qty": qty, 
-            "prodName": pickedProduct.prodName,
-            "custName": chosen, 
-            "PONote": ponote, 
-            "route": route, 
-            "SO": 0, 
-            "isWhole": orderTypeWhole, 
-            "delivDate": convertDatetoBPBDate(delivDate)
-        }
-        let newOrderList = decideWhetherToAddOrModify(orders, newOrder, delivDate)
-        setOrders(newOrderList)
-        document.getElementById("addedProdQty").value = null;
-        setPickedProduct('');
-        
-    }
-
-    
-
-    return (
-        <AddProductButtons>
-            <Dropdown options={productList} optionLabel="prodName" placeholder="Select a product"
-                name="products" value={pickedProduct} onChange={handleChange} disabled={chosen!=='  ' ? false : true}/>
-            <span className="p-float-label">
-                <InputText id="addedProdQty" size="10" disabled={chosen!=='  ' ? false : true}/>
-                <label htmlFor="qty">Quantity</label>
-            </span>
-            <Button label="ADD" disabled={chosen==='  ' || pickedProduct===''} icon="pi pi-plus" onClick={() => handleAdd()}/>
-        </AddProductButtons>
+  useEffect(() => {
+    let availableProducts = findAvailableProducts(
+      products,
+      currentCartList,
+      chosen,
+      delivDate
     );
+    setProductList(availableProducts);
+  }, [products, orders, chosen, delivDate]);
+
+  const handleChange = (e) => {
+    setPickedProduct(e.target.value);
+  };
+
+  const handleAdd = () => {
+    let qty = Number(document.getElementById("addedProdQty").value);
+
+    let newOrder = {
+      qty: qty,
+      prodName: pickedProduct.prodName,
+      custName: chosen,
+      PONote: ponote,
+      route: route,
+      SO: 0,
+      isWhole: orderTypeWhole,
+      delivDate: convertDatetoBPBDate(delivDate),
+    };
+    let newOrderList = decideWhetherToAddOrModify(orders, newOrder, delivDate);
+    setOrders(newOrderList);
+    document.getElementById("addedProdQty").value = null;
+    setPickedProduct("");
+  };
+
+  return (
+    <AddProductButtons>
+      <Dropdown
+        options={productList}
+        optionLabel="prodName"
+        placeholder="Select a product"
+        name="products"
+        value={pickedProduct}
+        onChange={handleChange}
+        disabled={chosen !== "  " ? false : true}
+      />
+      <span className="p-float-label">
+        <InputText
+          id="addedProdQty"
+          size="10"
+          disabled={chosen !== "  " ? false : true}
+        />
+        <label htmlFor="qty">Quantity</label>
+      </span>
+      <Button
+        label="ADD"
+        disabled={chosen === "  " || pickedProduct === ""}
+        icon="pi pi-plus"
+        onClick={() => handleAdd()}
+      />
+    </AddProductButtons>
+  );
 };
 
-export default AddCartEntryItem
+export default AddCartEntryItem;

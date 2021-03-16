@@ -11,9 +11,11 @@ import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { RadioButton } from "primereact/radiobutton";
 
-import { convertDatetoBPBDate, tomorrow } from "../../../helpers/dateTimeHelpers";
+import {
+  convertDatetoBPBDate,
+  tomorrow,
+} from "../../../helpers/dateTimeHelpers";
 import { createRetailOrderCustomers } from "../../../helpers/sortDataHelpers";
-import { buildCurrentOrder } from "../../../helpers/CartBuildingHelpers";
 
 import styled from "styled-components";
 
@@ -146,14 +148,16 @@ const CurrentOrderInfo = () => {
 
   useEffect(() => {
     setPonote("");
-   
+
     let orderCheck = orders.filter(
-      (ord) => ord["custName"] === chosen && ord["delivDate"] === convertDatetoBPBDate(delivDate)
+      (ord) =>
+        ord["custName"] === chosen &&
+        ord["delivDate"] === convertDatetoBPBDate(delivDate)
     );
-    console.log(orderCheck)
-   
+    console.log(orderCheck);
+
     if (orderCheck.length > 0) {
-      setPonote (orderCheck[0]["PONote"]) 
+      setPonote(orderCheck[0]["PONote"]);
     }
   }, [chosen, delivDate]);
 

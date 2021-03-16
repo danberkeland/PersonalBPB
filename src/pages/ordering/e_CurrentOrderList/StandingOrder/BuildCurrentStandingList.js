@@ -6,12 +6,7 @@ import { Button } from "primereact/button";
 
 import { ToggleContext } from "../../../../dataContexts/ToggleContext";
 import { StandingContext } from "../../../../dataContexts/StandingContext";
-import { HoldingContext } from "../../../../dataContexts/HoldingContext";
 import { CurrentDataContext } from "../../../../dataContexts/CurrentDataContext";
-import {
-  checkStandHoldStatus,
-  checkForStandMods,
-} from "../../../../helpers/StandBuildingHelpers";
 
 import styled from "styled-components";
 
@@ -46,39 +41,35 @@ const clonedeep = require("lodash.clonedeep");
 
 const BuildCurrentStandingList = () => {
   const { standing } = useContext(StandingContext);
-  const { holding } = useContext(HoldingContext);
-  const { setStandList, setModifications } = useContext(
-    ToggleContext
-  );
+  const { setStandList, setModifications } = useContext(ToggleContext);
   const { chosen, standArray, setStandArray } = useContext(CurrentDataContext);
 
   useEffect(() => {
-    let Stand = standing.filter(stand => stand["custName"]===chosen)
-    if (Stand.length>0){
-      Stand = Stand[0]["isStand"]
+    let Stand = standing.filter((stand) => stand["custName"] === chosen);
+    if (Stand.length > 0) {
+      Stand = Stand[0]["isStand"];
     } else {
-      Stand = true
+      Stand = true;
     }
 
-    
     setStandList(Stand);
     let buildStandArray = standing.filter(
-        (stand) => stand["isStand"] === Stand && stand["custName"]===chosen
-      );
-      
+      (stand) => stand["isStand"] === Stand && stand["custName"] === chosen
+    );
+
     setStandArray(buildStandArray);
   }, [chosen, standing]);
 
   const handleRemove = (index) => {
-    let ind = standArray.findIndex(stand => stand["prodName"]===index)
-    let adjustedStanding = clonedeep(standArray)
-    adjustedStanding[ind]["Sun"]=0
-    adjustedStanding[ind]["Mon"]=0
-    adjustedStanding[ind]["Tue"]=0
-    adjustedStanding[ind]["Wed"]=0
-    adjustedStanding[ind]["Thu"]=0
-    adjustedStanding[ind]["Fri"]=0
-    adjustedStanding[ind]["Sat"]=0
+    let ind = standArray.findIndex((stand) => stand["prodName"] === index);
+    let adjustedStanding = clonedeep(standArray);
+    adjustedStanding[ind]["Sun"] = 0;
+    adjustedStanding[ind]["Mon"] = 0;
+    adjustedStanding[ind]["Tue"] = 0;
+    adjustedStanding[ind]["Wed"] = 0;
+    adjustedStanding[ind]["Thu"] = 0;
+    adjustedStanding[ind]["Fri"] = 0;
+    adjustedStanding[ind]["Sat"] = 0;
     setStandArray(adjustedStanding);
     setModifications(true);
   };

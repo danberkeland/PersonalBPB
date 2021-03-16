@@ -1,7 +1,4 @@
-import {
-  convertDatetoBPBDate,
-  convertDatetoStandingDate,
-} from "../helpers/dateTimeHelpers";
+import { convertDatetoBPBDate } from "../helpers/dateTimeHelpers";
 import { sortAtoZDataByIndex } from "../helpers/sortDataHelpers";
 
 import { wildcardRegExp } from "wildcard-regex";
@@ -25,11 +22,12 @@ export const buildCartList = (chosen, delivDate, orders) => {
   return builtCartList;
 };
 
-export const buildStandList = (chosen, delivDate, standing, route, ponote ) => {
+export const buildStandList = (chosen, delivDate, standing, route, ponote) => {
   let filteredStanding = clonedeep(standing);
   let builtStandList = [];
-  builtStandList = filteredStanding.filter((standing) =>
-    standing["custName"]===chosen && standing["isStand"]===true
+  builtStandList = filteredStanding.filter(
+    (standing) =>
+      standing["custName"] === chosen && standing["isStand"] === true
   );
   let convertedStandList = convertStandListtoStandArray(
     builtStandList,
@@ -97,79 +95,6 @@ export const buildCurrentOrder = (
   let currentOrderList = compileOrderList(cartList, standList);
 
   return currentOrderList;
-};
-
-export const filterOutZeros = (currentOrderList) => {
-  let filteredZeros = currentOrderList.filter(
-    (order) => Number(order["qty"]) + Number(order["SO"]) > 0
-  );
-  return filteredZeros;
-};
-
-export const addNewInfoToOrders = (currentOrderList, orders) => {
-  let recent = clonedeep(orders);
-  let newOrderList = currentOrderList.concat(recent);
-  for (let i = 0; i < newOrderList.length; ++i) {
-    for (let j = i + 1; j < newOrderList.length; ++j) {
-      if (
-        newOrderList[i][1] === newOrderList[j][1] &&
-        newOrderList[i][2] === newOrderList[j][2] &&
-        newOrderList[i][7] === newOrderList[j][7]
-      ) {
-        newOrderList.splice(j, 1);
-      }
-    }
-  }
-  return newOrderList;
-};
-
-export const setCurrentCartLineToQty = (prodName, currentCartList, qty) => {
-  let newQty = qty;
-  let indexToFind = prodName;
-
-  let foundPresentedIndex = currentCartList.findIndex(
-    (line) => line["prodName"] === indexToFind
-  );
-  let presentedListToModify = clonedeep(currentCartList);
-
-  presentedListToModify[foundPresentedIndex]["qty"] = newQty;
-  return presentedListToModify;
-};
-
-export const updateCurrentLineInOrdersWithQty = (
-  prodName,
-  chosen,
-  delivDate,
-  orders,
-  ponote,
-  route,
-  isWhole,
-  qty,
-  SO
-) => {
-  let updatedOrders = clonedeep(orders);
-  let foundOrdersIndex = updatedOrders.findIndex(
-    (line) =>
-      line["prodName"] === prodName &&
-      line["custName"] === chosen &&
-      line["delivDate"] === convertDatetoBPBDate(delivDate)
-  );
-  if (foundOrdersIndex >= 0) {
-    updatedOrders[foundOrdersIndex]["qty"] = qty;
-  } else {
-    let orderToAdd = {
-      qty: qty,
-      prodName: prodName,
-      custName: chosen,
-      PONote: ponote,
-      route: route,
-      SO: SO,
-      isWhole: isWhole,
-      delivDate: convertDatetoBPBDate(delivDate),
-    };
-    updatedOrders.push(orderToAdd);
-  }
-  return updatedOrders;
 };
 
 export const testEntryForProduct = (entry) => {
@@ -259,21 +184,4 @@ export const addUpdatesToOrders = (
     }
   }
   return ordersToModify;
-};
-
-export const checkForMods = (noZerosOrderList) => {
-  let qty;
-  let SO;
-  if (noZerosOrderList.length > 0) {
-    qty = noZerosOrderList.map((order) => Number(order["qty"]));
-    SO = noZerosOrderList.map((order) => Number(order["SO"]));
-    qty = qty.reduce((acc, red) => acc + red);
-    SO = SO.reduce((acc, red) => acc + red);
-
-    if (qty === SO) {
-      return false;
-    } else {
-      return true;
-    }
-  }
 };

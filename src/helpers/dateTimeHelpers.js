@@ -16,11 +16,6 @@ export const convertDatetoBPBDateMinusYear = (ISODate) => {
   return day + "/" + mo;
 };
 
-export const convertDatetoStandingDate = (entry) => {
-  let jsDate = new Date(entry);
-  return (((jsDate.getDay() + 1) % 7) + 1).toString();
-};
-
 export const todayPlus = () => {
   let today = DateTime.now().setZone("America/Los_Angeles");
   let todaySend = today.toString().split("T")[0];

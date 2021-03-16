@@ -78,31 +78,10 @@ const Buttons = ({ selectedCustomer, setSelectedCustomer }) => {
 
   const createCust = async (addDetails, nickName, custName) => {
     try {
-      const custData = await API.graphql(
+      await API.graphql(
         graphqlOperation(createCustomer, { input: { ...addDetails } })
       );
-      let id = custData.data.createCustomer.id;
-      let version = custData.data.createCustomer.version;
-
-      const fullDetails = {
-        id: id,
-        _version: version,
-        nickName: nickName,
-        custName: custName,
-        zoneName: "",
-        addr1: "",
-        addr2: "",
-        city: "",
-        zip: "",
-        email: "",
-        firstName: "",
-        lastName: "",
-        phone: "",
-        toBePrinted: "",
-        toBeEmailed: "",
-        terms: "",
-        invoicing: "",
-      };
+      
 
       setCustLoaded(false);
     } catch (error) {
@@ -171,7 +150,7 @@ const Buttons = ({ selectedCustomer, setSelectedCustomer }) => {
     };
 
     try {
-      const custData = await API.graphql(
+      await API.graphql(
         graphqlOperation(deleteCustomer, { input: { ...deleteDetails } })
       );
       setCustLoaded(false);

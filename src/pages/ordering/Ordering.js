@@ -31,7 +31,7 @@ const MainWindow = styled.div`
   height: 100%;
   margin: auto;
   display: grid;
-  grid-template-columns: 1fr 2fr
+  grid-template-columns: 1fr 2fr;
 `;
 
 const BasicContainer = styled.div`
@@ -93,7 +93,6 @@ function Ordering(props) {
         <CurrentOrderList />
         <OrderEntryButtons />
       </BasicContainer>
-      
     </MainWindow>
   );
 }

@@ -64,7 +64,7 @@ export const findNewRoute = (
       order[2] === chosen && order[7] === convertDatetoBPBDate(delivDate)
   );
   let custRoute = customers.find((element) => element[2] === chosen);
-  custRoute ? (newRoute = custRoute[3]) : (newRoute = "Pick up Carlton");
+  custRoute ? (newRoute = custRoute[3]) : (newRoute = "atownpick");
   if (currentRoutes.length > 0) {
     newRoute = currentRoutes[0][4];
   }

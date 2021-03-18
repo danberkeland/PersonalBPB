@@ -13,10 +13,11 @@ import { sortAtoZDataByIndex } from '../../../../helpers/sortDataHelpers'
 
 const RouteGrid = () => {
 
+
     const { orders } = useContext(OrdersContext)
     const { standing } = useContext(StandingContext)
     const { products } = useContext(ProductsContext)
-    const { delivDate, route } = useContext(CurrentDataContext)
+    const { delivDate, route, setRoute } = useContext(CurrentDataContext)
 
     const [ columns, setColumns ] = useState([])
     const [ data, setData ] = useState([])
@@ -31,13 +32,16 @@ const RouteGrid = () => {
    
         for (let i=0; i<orderList.length; ++i ){
             for (let j=i+1; j<orderList.length; ++j){
-                if (orderList[i][1] === orderList[j][1] && 
-                    orderList[i][2] === orderList[j][2] 
+                if (orderList[i]["prodName"] === orderList[j]["prodName"] && 
+                    orderList[i]["custName"] === orderList[j]["custName"] 
                     ){
                     orderList.splice(j,1);
                 }
             }
         }
+        console.log(orderList)
+
+        /*
         orderList = orderList.filter(order => order[4] === route)
 
         let listOfProducts = orderList.map(order => order[1])
@@ -61,12 +65,12 @@ const RouteGrid = () => {
             columns.push(newCol)
         }
         return columns
-        
+        */
     }
 
     const constructData = () => {
 
-        
+        /*
         let cartList = buildCartList("*",delivDate,orders)
         let standList = buildStandList("*", delivDate, standing)
 
@@ -97,7 +101,7 @@ const RouteGrid = () => {
         }
         
         return data
-    
+        */
     }
 
     useEffect(() => {
@@ -111,16 +115,16 @@ const RouteGrid = () => {
     
 
     
-    const dynamicColumns = columns.map((col,i) => {
-        return <Column npmkey={col.field} field={col.field} header={col.header} style={col.width}/>;
-    });
+    //const dynamicColumns = columns.map((col,i) => {
+    //   return <Column npmkey={col.field} field={col.field} header={col.header} style={col.width}/>;
+    //});
 
     return (
         <div>
             <div className="card">
                 <DataTable className="p-datatable-gridlines p-datatable-sm p-datatable-striped" 
                     value={data} resizableColumns columnResizeMode="fit">
-                    {dynamicColumns}
+                    {/*{dynamicColumns}*/}
                 </DataTable>
             </div>
         </div>

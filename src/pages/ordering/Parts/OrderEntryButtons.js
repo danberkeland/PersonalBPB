@@ -98,7 +98,7 @@ function OrderEntryButtons() {
             rte = "atownpick";
             break;
           default:
-            rte = "deliv";
+            rte = route;
 
             const updateDetails = {
               qty: ord["qty"],
@@ -111,9 +111,8 @@ function OrderEntryButtons() {
               delivDate: convertDatetoBPBDate(delivDate),
               timeStamp: new Date(),
             };
-
+            console.log(updateDetails);
             if (ord["id"]) {
-              console.log(ord);
               updateDetails.id = ord["id"];
               updateDetails._version = ord["_version"];
 

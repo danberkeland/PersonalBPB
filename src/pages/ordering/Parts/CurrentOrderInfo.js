@@ -118,10 +118,10 @@ const CurrentOrderInfo = () => {
       if (cust["custName"] === chosen) {
         switch (cust["zoneName"]) {
           case "slopick":
-            setRoute("Pick up SLO");
+            setRoute("slopick");
             break;
           case "atownpick":
-            setRoute("Pick up Carlton");
+            setRoute("atownpick");
             break;
           default:
             setRoute("deliv");
@@ -135,10 +135,10 @@ const CurrentOrderInfo = () => {
     if (orderCheck.length > 0) {
       switch (orderCheck[0]["zoneName"]) {
         case "slopick":
-          setRoute("Pick up SLO");
+          setRoute("slopick");
           break;
         case "atownpick":
-          setRoute("Pick up Carlton");
+          setRoute("atownpick");
           break;
         default:
           setRoute("deliv");
@@ -209,18 +209,18 @@ const CurrentOrderInfo = () => {
           <label htmlFor="delivery">Delivery</label>
 
           <RadioButton
-            value="Pick up SLO"
+            value="slopick"
             name="delivery"
             onChange={(e) => setRoute(e.value)}
-            checked={route === "Pick up SLO"}
+            checked={route === "slopick"}
           />
           <label htmlFor="pickupSLO">Pick up SLO</label>
 
           <RadioButton
-            value="Pick up Carlton"
+            value="atownpick"
             name="delivery"
             onChange={(e) => setRoute(e.value)}
-            checked={route === "Pick up Carlton"}
+            checked={route === "atownpick"}
           />
           <label htmlFor="pickupAtown">Pick up Carlton</label>
         </FulfillOptions>

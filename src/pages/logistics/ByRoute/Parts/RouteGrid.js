@@ -24,13 +24,14 @@ import {
   createListOfCustomers,
   createQtyGrid,
 } from "../../../../helpers/delivGridHelpers";
+import { __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED } from "react";
 
 const RouteGrid = ({ routes }) => {
   const { orders } = useContext(OrdersContext);
   const { customers } = useContext(CustomerContext);
   const { standing } = useContext(StandingContext);
   const { products } = useContext(ProductsContext);
-  const { delivDate, route } = useContext(CurrentDataContext);
+  const { delivDate, route, setRoute } = useContext(CurrentDataContext);
 
   const [columns, setColumns] = useState([]);
   const [data, setData] = useState([]);
@@ -59,8 +60,21 @@ const RouteGrid = ({ routes }) => {
 
     let gridOrderArray = buildGridOrderArray(filterServe, products);
 
+
+    // FINAL LOGIC STARTS HERE
     // Route for Route in reverse - if order zone is included in route
     gridOrderArray = isZoneIncludedInRoute(gridOrderArray, routes);
+
+    // Adjust based on Product not being in place
+
+    // Adjust based on Customer not being open
+
+    // Adjust for route not existing today 
+
+
+    // FINAL LOGIC ENDS HERE
+
+
 
     return gridOrderArray;
   };

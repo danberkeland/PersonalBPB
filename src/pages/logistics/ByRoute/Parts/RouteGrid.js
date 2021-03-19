@@ -13,7 +13,10 @@ import {
   buildStandList,
 } from "../../../../helpers/CartBuildingHelpers";
 
-import { sortAtoZDataByIndex } from "../../../../helpers/sortDataHelpers";
+import {
+  sortZtoADataByIndex,
+  sortAtoZDataByIndex,
+} from "../../../../helpers/sortDataHelpers";
 import { convertDatetoBPBDate } from "../../../../helpers/dateTimeHelpers";
 
 const RouteGrid = ({ routes, setRoutes }) => {
@@ -87,97 +90,108 @@ const RouteGrid = ({ routes, setRoutes }) => {
         ]["readyTime"],
     }));
 
+    sortZtoADataByIndex(routes, "routeStart");
     for (let rte of routes) {
       for (let grd of gridOrderArray) {
-        if (!rte["RouteServe"].includes(grd["zone"])) {
+        if (
+          !rte["RouteServe"].includes(grd["zone"]) &&
+          customers[
+            customers.findIndex((cust) => cust["custName"] === grd["custName"])
+          ]["latestFirstDeliv"] < rte["routeStart"]
+        ) {
           break;
-        }
-
-        else {
+        } else {
           grd["route"] = rte["routeName"];
         }
-
-        
       }
     }
-    console.log(gridOrderArray);
+
+    console.log(gridOrderArray)
+    return gridOrderArray;
   };
 
   const constructColumns = () => {
     let gridInfo = constructGridInfo();
 
-    /*
-        orderList = orderList.filter(order => order[4] === route)
-
-        let listOfProducts = orderList.map(order => order[1])
-        listOfProducts = new Set(listOfProducts)
-        let prodArray = []
-        for (let prod of listOfProducts){
-            for (let item of products){
-                if (prod === item[1]){
-                    let newItem = [prod, item[2],item[4],item[5]]
-                    prodArray.push(newItem)
-                }
-            }
+    let listOfProducts;
+    if (!gridInfo){return}
+    listOfProducts = gridInfo.map((order) => order["prodName"]);
+    listOfProducts = new Set(listOfProducts);
+    let prodArray = [];
+    for (let prod of listOfProducts) {
+      for (let item of products) {
+        if (prod === item["prodName"]) {
+          let newItem = [
+            prod,
+            item["nickName"],
+            item["packGroup"],
+            item["packSize"],
+          ];
+          prodArray.push(newItem);
         }
+      }
+    }
 
-        sortAtoZDataByIndex(prodArray,2)
+    sortAtoZDataByIndex(prodArray, 2);
 
-
-        let columns = [{field: 'customer', header: 'Customer', width: {width:'10%'} }]
-        for (let prod of prodArray){
-            let newCol = {field: prod[0], header: prod[1], width: {width:'30px'}}
-            columns.push(newCol)
-        }
-        return columns
-        */
+    let columns = [
+      { field: "customer", header: "Customer", width: { width: "10%" } },
+    ];
+    for (let prod of prodArray) {
+      let newCol = {
+        field: prod[0],
+        header: prod[1],
+        width: { width: "30px" },
+      };
+      columns.push(newCol);
+    }
+    console.log(columns);
+    return columns;
   };
 
   const constructData = () => {
-    /*
-        let cartList = buildCartList("*",delivDate,orders)
-        let standList = buildStandList("*", delivDate, standing)
+    let gridInfo = constructGridInfo();
 
-        let orderList = cartList.concat(standList)
-   
-        for (let i=0; i<orderList.length; ++i ){
-            for (let j=i+1; j<orderList.length; ++j){
-                if (orderList[i][1] === orderList[j][1] && orderList[i][2] === orderList[j][2]){
-                    orderList.splice(j,1);
-                }
-            }
+    if (!gridInfo) {
+      return;
+    }
+
+    let orderList = gridInfo.filter((order) => order["route"] === route);
+    let listOfCustomers = orderList.map((order) => order["custName"]);
+    listOfCustomers = new Set(listOfCustomers);
+
+    let data = [];
+    for (let cust of listOfCustomers) {
+      let newData = { customer: cust };
+      for (let order of orderList) {
+        if (order["custName"] === cust) {
+          newData[order["prodName"]] = order["qty"];
         }
+      }
 
-        orderList = orderList.filter(order => order[4] === route)
-        let listOfCustomers = orderList.map(order => order[2])
-        listOfCustomers = new Set(listOfCustomers)
-        
-        let data=[]
-        for (let cust of listOfCustomers){
-            let newData = {"customer": cust}
-            for (let order of orderList){
-                if (order[2] === cust){
-                    newData[order[1]] = order[0]
-                }
-            }
+      data.push(newData);
+    }
 
-            data.push(newData)
-        }
-        
-        return data
-        */
+    return data;
   };
 
   useEffect(() => {
     let col = constructColumns();
     let dat = constructData();
-    setColumns(col);
-    setData(dat);
+    setColumns(col ? col : []);
+    setData(dat ? dat : []);
   }, [delivDate, route]);
 
-  //const dynamicColumns = columns.map((col,i) => {
-  //   return <Column npmkey={col.field} field={col.field} header={col.header} style={col.width}/>;
-  //});
+  const dynamicColumns = columns.map((col, i) => {
+    return (
+      <Column
+        npmkey={col.field}
+        field={col.field}
+        header={col.header}
+        style={col.width}
+      />
+    );
+  });
 
   return (
     <div>
@@ -188,7 +202,7 @@ const RouteGrid = ({ routes, setRoutes }) => {
           resizableColumns
           columnResizeMode="fit"
         >
-          {/*{dynamicColumns}*/}
+          {dynamicColumns}
         </DataTable>
       </div>
     </div>

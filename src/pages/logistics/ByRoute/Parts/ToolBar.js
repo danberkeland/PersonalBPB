@@ -12,7 +12,7 @@ const ToolBar = () => {
   const setDate = (date) => {
     const dt2 = DateTime.fromJSDate(date);
     setDelivDate(dt2.toFormat("yyyy-MM-dd"));
-    console.log(dt2.toFormat("yyyy-MM-dd"))
+   
   };
 
   return (

@@ -79,7 +79,7 @@ const AddStandingOrderEntryItem = () => {
 
   const handleStandHold = () => {
     let newStand = !standList;
-    console.log(newStand);
+   
     setStandList(newStand);
   };
 

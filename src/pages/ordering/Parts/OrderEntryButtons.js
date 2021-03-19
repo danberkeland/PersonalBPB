@@ -111,7 +111,7 @@ function OrderEntryButtons() {
               delivDate: convertDatetoBPBDate(delivDate),
               timeStamp: new Date(),
             };
-            console.log(updateDetails);
+            
             if (ord["id"]) {
               updateDetails.id = ord["id"];
               updateDetails._version = ord["_version"];

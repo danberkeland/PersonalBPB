@@ -29,7 +29,7 @@ export const fixValue = (value, selected) => {
 export const setDropDownValue = (value, selected) => {
   let itemToUpdate = clonedeep(selected);
   let attr = value.target.id;
-  console.log(value)
+ 
   itemToUpdate[attr] = value.value[attr];
   return itemToUpdate;
 };

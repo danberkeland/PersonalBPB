@@ -154,7 +154,7 @@ const CurrentOrderInfo = () => {
         ord["custName"] === chosen &&
         ord["delivDate"] === convertDatetoBPBDate(delivDate)
     );
-    console.log(orderCheck);
+   
 
     if (orderCheck.length > 0) {
       setPonote(orderCheck[0]["PONote"]);

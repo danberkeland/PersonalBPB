@@ -51,7 +51,7 @@ const RouteList = ({ routes, setRoutes }) => {
   };
 
   const handleSelection = (e) => {
-    console.log(e.value.routeName)
+   
     setRoute(e.value.routeName)
   };
 

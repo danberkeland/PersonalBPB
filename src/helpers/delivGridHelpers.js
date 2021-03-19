@@ -71,11 +71,15 @@ export const buildGridOrderArray = (filterServe, products) => {
 };
 
 export const isZoneIncludedInRoute = (gridOrderArray, routes) => {
+  console.log(gridOrderArray)
   sortZtoADataByIndex(routes, "routeStart");
   for (let rte of routes) {
+    console.log(rte["routeName"])
     for (let grd of gridOrderArray) {
+     
+      // ADD check for if route exists that day
       if (!rte["RouteServe"].includes(grd["zone"])) {
-        break;
+        continue;
       } else {
         grd["route"] = rte["routeName"];
       }

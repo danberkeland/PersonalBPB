@@ -1,6 +1,9 @@
 import { convertDatetoBPBDate } from "./dateTimeHelpers";
 import { sortZtoADataByIndex, sortAtoZDataByIndex } from "./sortDataHelpers";
 
+const { DateTime } = require("luxon");
+
+
 export const removeDoubles = (orderList) => {
   for (let i = 0; i < orderList.length; ++i) {
     for (let j = i + 1; j < orderList.length; ++j) {
@@ -70,18 +73,24 @@ export const buildGridOrderArray = (filterServe, products) => {
   return gridOrderArray;
 };
 
-export const isZoneIncludedInRoute = (gridOrderArray, routes) => {
-  console.log(gridOrderArray)
+export const isZoneIncludedInRoute = (gridOrderArray, routes, delivDate) => {
   sortZtoADataByIndex(routes, "routeStart");
   for (let rte of routes) {
-    console.log(rte["routeName"])
     for (let grd of gridOrderArray) {
-     
-      // ADD check for if route exists that day
+      let day = DateTime.fromSQL(delivDate);
+      let dayNum = day.weekday;
+      if (dayNum === 7) {
+        dayNum = 0;
+      }
+      dayNum = (dayNum + 1).toString();
+
       if (!rte["RouteServe"].includes(grd["zone"])) {
         continue;
       } else {
-        grd["route"] = rte["routeName"];
+        if (rte["RouteSched"].includes(dayNum)) {
+          console.log(rte["RouteSched"]);
+          grd["route"] = rte["routeName"];
+        }
       }
     }
   }

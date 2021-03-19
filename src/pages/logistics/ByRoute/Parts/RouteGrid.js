@@ -64,7 +64,7 @@ const RouteGrid = ({ routes }) => {
 
     // FINAL LOGIC STARTS HERE
     // Route for Route in reverse - if order zone is included in route
-    gridOrderArray = isZoneIncludedInRoute(gridOrderArray, routes);
+    gridOrderArray = isZoneIncludedInRoute(gridOrderArray, routes, delivDate);
     
     // Adjust based on Product not being in place
 

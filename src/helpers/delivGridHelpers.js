@@ -73,7 +73,7 @@ export const buildGridOrderArray = (filterServe, products) => {
   return gridOrderArray;
 };
 
-export const isZoneIncludedInRoute = (gridOrderArray, routes, delivDate) => {
+export const isZoneIncludedInRoute = (gridOrderArray, routes, delivDate, customers) => {
   sortZtoADataByIndex(routes, "routeStart");
   for (let rte of routes) {
     for (let grd of gridOrderArray) {
@@ -87,8 +87,9 @@ export const isZoneIncludedInRoute = (gridOrderArray, routes, delivDate) => {
       if (!rte["RouteServe"].includes(grd["zone"])) {
         continue;
       } else {
-        if (rte["RouteSched"].includes(dayNum)) {
-          console.log(rte["RouteSched"]);
+        let custOpens = customers[customers.findIndex(cust => cust["custName"]===grd["custName"])]["latestFirstDeliv"]
+        if (rte["RouteSched"].includes(dayNum) &&
+        custOpens>Number(rte["routeStart"])) {
           grd["route"] = rte["routeName"];
         }
       }

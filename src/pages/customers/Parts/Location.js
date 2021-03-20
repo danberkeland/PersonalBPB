@@ -137,7 +137,7 @@ const Location = ({ selectedCustomer, setSelectedCustomer }) => {
         </span>
 
         <InputText
-          id="zip"
+          id="latestFinalDeliv"
           placeholder={selectedCustomer.latestFinalDeliv}
           onKeyUp={(e) =>
             e.code === "Enter" &&

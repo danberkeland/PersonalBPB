@@ -70,6 +70,8 @@ const Buttons = ({ selectedCustomer, setSelectedCustomer }) => {
           toBeEmailed: "",
           terms: "",
           invoicing: "",
+          latestFirstDeliv: 10,
+          latestFinalDeliv: 10
         };
         createCust(addDetails, nickName, custName);
       });
@@ -107,6 +109,8 @@ const Buttons = ({ selectedCustomer, setSelectedCustomer }) => {
       toBeEmailed: selectedCustomer["toBeEmailed"],
       terms: selectedCustomer["terms"],
       invoicing: selectedCustomer["invoicing"],
+      latestFirstDeliv: selectedCustomer["latestFirstDeliv"],
+      latestFinalDeliv: selectedCustomer["latestFinalDeliv"],
       _version: selectedCustomer["_version"],
     };
 

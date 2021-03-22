@@ -82,19 +82,21 @@ export const isZoneIncludedInRoute = (gridOrderArray, routes, delivDate, custome
       if (dayNum === 7) {
         dayNum = 0;
       }
-      dayNum = (dayNum + 1).toString();
+      dayNum = (dayNum + 1);
 
       if (!rte["RouteServe"].includes(grd["zone"])) {
         continue;
       } else {
-        let custOpens = customers[customers.findIndex(cust => cust["custName"]===grd["custName"])]["latestFirstDeliv"]
-        if (rte["RouteSched"].includes(dayNum) &&
-        custOpens>Number(rte["routeStart"])) {
+        
+        if (rte["RouteSched"].includes(dayNum.toString())){
           grd["route"] = rte["routeName"];
+        } else {
+          grd["route"] = "Pick up Carlton"
         }
       }
-    }
+      }
   }
+  
   return gridOrderArray;
 };
 

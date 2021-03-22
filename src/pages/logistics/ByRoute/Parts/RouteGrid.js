@@ -63,16 +63,18 @@ const RouteGrid = ({ routes }) => {
 
 
     // FINAL LOGIC STARTS HERE
-    // Route for Route in reverse - if order zone is included in route
+    // Route for Route in reverse
+    // Does Route exist that day && and is Cust on that route?
     gridOrderArray = isZoneIncludedInRoute(gridOrderArray, routes, delivDate,customers);
     
-    // Adjust based on Product not being in place
+    console.log(gridOrderArray)
+    // Is Product at Location
+    // If not, when can it be there?
 
-    // Adjust based on Customer not being open
+    // If ready before 1st cust hour || ready after last cust hour => yes
+    // else => no
 
     
-
-
     // FINAL LOGIC ENDS HERE
 
 

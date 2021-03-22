@@ -115,7 +115,7 @@ const Location = ({ selectedCustomer, setSelectedCustomer }) => {
       <br />
       <div className="p-inputgroup">
         <span className="p-inputgroup-addon">
-          <label htmlFor="latestFirstDeliv">Latest First Delivery (0-24)</label>
+          <label htmlFor="latestFirstDeliv">Earliest Delivery (0-24)</label>
           <br />
         </span>
 
@@ -132,7 +132,7 @@ const Location = ({ selectedCustomer, setSelectedCustomer }) => {
       <br />
       <div className="p-inputgroup">
         <span className="p-inputgroup-addon">
-          <label htmlFor="latestFinalDeliv">Latest Final Delivery (0-24)</label>
+          <label htmlFor="latestFinalDeliv">Need all before (0-24)</label>
           <br />
         </span>
 

@@ -18,21 +18,22 @@ import {
   zerosDelivFilter,
   filterForZoneService,
   buildGridOrderArray,
-  isZoneIncludedInRoute,
   buildProductArray,
   createColumns,
   createListOfCustomers,
   createQtyGrid,
 } from "../../../../helpers/delivGridHelpers";
 
-const clonedeep = require("lodash.clonedeep");
+import { sortAtoZDataByIndex } from "../../../../helpers/sortDataHelpers";
+
+const { DateTime } = require("luxon");
 
 const RouteGrid = ({ routes }) => {
   const { orders } = useContext(OrdersContext);
   const { customers } = useContext(CustomerContext);
   const { standing } = useContext(StandingContext);
   const { products } = useContext(ProductsContext);
-  const { delivDate, route, setRoute } = useContext(CurrentDataContext);
+  const { delivDate, route } = useContext(CurrentDataContext);
 
   const [columns, setColumns] = useState([]);
   const [data, setData] = useState([]);
@@ -58,31 +59,69 @@ const RouteGrid = ({ routes }) => {
     if (!filterServe) {
       return [];
     }
-    
+
     let gridOrderArray = buildGridOrderArray(filterServe, products);
 
+    sortAtoZDataByIndex(routes, "routeStart");
+    for (let rte of routes) {
+      for (let grd of gridOrderArray) {
+        let day = DateTime.fromSQL(delivDate);
+        let dayNum = day.weekday;
+        if (dayNum === 7) {
+          dayNum = 0;
+        }
+        dayNum = dayNum + 1;
 
-    // FINAL LOGIC STARTS HERE
-    // Route for Route in reverse
-    // Does Route exist that day && and is Cust on that route?
-    gridOrderArray = isZoneIncludedInRoute(gridOrderArray, routes, delivDate,customers);
-    
-    console.log(gridOrderArray)
-    // Is Product at Location
-    // If not, when can it be there?
+        if (!rte["RouteServe"].includes(grd["zone"])) {
+          continue;
+        } else {
+          if (
+            rte["RouteSched"].includes(dayNum.toString()) &&
+            (grd["where"].includes("Mixed") ||
+            grd["where"].includes(
+              routes[
+                routes.findIndex((route) => route["routeName"] === rte["routeName"])
+              ]["RouteDepart"]
+            )) &&
+            (products[
+              products.findIndex((prod) => prod["prodName"] === grd["prodName"])
+            ]["readyTime"] <
+              routes[
+                routes.findIndex((rt) => rt["routeName"] === rte["routeName"])
+              ]["routeStart"] ||
+              products[
+                products.findIndex(
+                  (prod) => prod["prodName"] === grd["prodName"]
+                )
+              ]["readyTime"] >
+                customers[
+                  customers.findIndex(
+                    (cust) => cust["custName"] === grd["custName"]
+                  )
+                ]["latestFinalDeliv"]) &&
 
-    // If ready before 1st cust hour || ready after last cust hour => yes
-    // else => no
-
-    
-    // FINAL LOGIC ENDS HERE
-
+              // Shop is open
+              customers[
+                customers.findIndex(
+                  (cust) => cust["custName"] === grd["custName"]
+                )
+              ]["latestFirstDeliv"]>routes[
+                routes.findIndex((rt) => rt["routeName"] === rte["routeName"])
+              ]["routeStart"]
+          ) {
+            grd["route"] = rte["routeName"];
+          } 
+        }
+      }
+    }
 
     return gridOrderArray;
   };
 
   const constructColumns = () => {
     let gridToEdit = constructGridInfo();
+    gridToEdit = gridToEdit.filter(grd => grd["route"]===route)
+    console.log(gridToEdit)
     let listOfProducts = buildProductArray(gridToEdit, products);
 
     let columns = createColumns(listOfProducts);

@@ -28,6 +28,100 @@ import { sortAtoZDataByIndex } from "../../../../helpers/sortDataHelpers";
 
 const { DateTime } = require("luxon");
 
+const calcDayNum = (delivDate) => {
+  let day = DateTime.fromSQL(delivDate);
+  let dayNum = day.weekday;
+  if (dayNum === 7) {
+    dayNum = 0;
+  }
+  dayNum = dayNum + 1;
+  return dayNum;
+};
+
+const routeRunsThatDay = (rte, dayNum) => {
+  if (rte["RouteSched"].includes(dayNum.toString())) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+const productCanBeInPlace = (grd, routes, rte) => {
+  if (
+    grd["where"].includes("Mixed") ||
+    grd["where"].includes(
+      routes[
+        routes.findIndex((route) => route["routeName"] === rte["routeName"])
+      ]["RouteDepart"]
+    )
+  ) {
+    return true;
+  } else {
+    if (productCanMakeIt(grd, routes, rte)){
+      return true
+    } else {
+      return false
+    }
+  }
+};
+
+const productCanMakeIt = (grd, routes, rte) => {
+  for (let testRte of routes) {
+  
+    if (
+      grd["where"].includes(testRte["RouteDepart"]) &&
+      testRte["RouteArrive"] === rte["RouteDepart"] &&
+      Number(testRte["routeStart"] + testRte["routeTime"]) < Number(rte["routeStart"])
+    ) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
+const productReadyBeforeRouteStarts = (
+  products,
+  customers,
+  routes,
+  grd,
+  rte
+) => {
+  if (
+    products[
+      products.findIndex((prod) => prod["prodName"] === grd["prodName"])
+    ]["readyTime"] <
+      routes[routes.findIndex((rt) => rt["routeName"] === rte["routeName"])][
+        "routeStart"
+      ] ||
+    products[
+      products.findIndex((prod) => prod["prodName"] === grd["prodName"])
+    ]["readyTime"] >
+      customers[
+        customers.findIndex((cust) => cust["custName"] === grd["custName"])
+      ]["latestFinalDeliv"]
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+const customerIsOpen = (customers, grd, routes, rte) => {
+  if (
+    customers[
+      customers.findIndex((cust) => cust["custName"] === grd["custName"])
+    ]["latestFirstDeliv"] >
+    routes[routes.findIndex((rt) => rt["routeName"] === rte["routeName"])][
+      "routeStart"
+    ]
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
 const RouteGrid = ({ routes }) => {
   const { orders } = useContext(OrdersContext);
   const { customers } = useContext(CustomerContext);
@@ -65,52 +159,25 @@ const RouteGrid = ({ routes }) => {
     sortAtoZDataByIndex(routes, "routeStart");
     for (let rte of routes) {
       for (let grd of gridOrderArray) {
-        let day = DateTime.fromSQL(delivDate);
-        let dayNum = day.weekday;
-        if (dayNum === 7) {
-          dayNum = 0;
-        }
-        dayNum = dayNum + 1;
+        let dayNum = calcDayNum(delivDate);
 
         if (!rte["RouteServe"].includes(grd["zone"])) {
           continue;
         } else {
           if (
-            rte["RouteSched"].includes(dayNum.toString()) &&
-            (grd["where"].includes("Mixed") ||
-            grd["where"].includes(
-              routes[
-                routes.findIndex((route) => route["routeName"] === rte["routeName"])
-              ]["RouteDepart"]
-            )) &&
-            (products[
-              products.findIndex((prod) => prod["prodName"] === grd["prodName"])
-            ]["readyTime"] <
-              routes[
-                routes.findIndex((rt) => rt["routeName"] === rte["routeName"])
-              ]["routeStart"] ||
-              products[
-                products.findIndex(
-                  (prod) => prod["prodName"] === grd["prodName"]
-                )
-              ]["readyTime"] >
-                customers[
-                  customers.findIndex(
-                    (cust) => cust["custName"] === grd["custName"]
-                  )
-                ]["latestFinalDeliv"]) &&
-
-              // Shop is open
-              customers[
-                customers.findIndex(
-                  (cust) => cust["custName"] === grd["custName"]
-                )
-              ]["latestFirstDeliv"]>routes[
-                routes.findIndex((rt) => rt["routeName"] === rte["routeName"])
-              ]["routeStart"]
+            routeRunsThatDay(rte, dayNum) &&
+            productCanBeInPlace(grd, routes, rte) &&
+            productReadyBeforeRouteStarts(
+              products,
+              customers,
+              routes,
+              grd,
+              rte
+            ) &&
+            customerIsOpen(customers, grd, routes, rte)
           ) {
             grd["route"] = rte["routeName"];
-          } 
+          }
         }
       }
     }
@@ -120,8 +187,7 @@ const RouteGrid = ({ routes }) => {
 
   const constructColumns = () => {
     let gridToEdit = constructGridInfo();
-    gridToEdit = gridToEdit.filter(grd => grd["route"]===route)
-    console.log(gridToEdit)
+    gridToEdit = gridToEdit.filter((grd) => grd["route"] === route);
     let listOfProducts = buildProductArray(gridToEdit, products);
 
     let columns = createColumns(listOfProducts);

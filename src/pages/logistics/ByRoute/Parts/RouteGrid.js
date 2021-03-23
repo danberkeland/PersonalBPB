@@ -24,7 +24,7 @@ import {
   createQtyGrid,
 } from "../../../../helpers/delivGridHelpers";
 
-import { sortAtoZDataByIndex } from "../../../../helpers/sortDataHelpers";
+import { sortZtoADataByIndex } from "../../../../helpers/sortDataHelpers";
 
 const { DateTime } = require("luxon");
 
@@ -111,10 +111,12 @@ const customerIsOpen = (customers, grd, routes, rte) => {
   if (
     customers[
       customers.findIndex((cust) => cust["custName"] === grd["custName"])
-    ]["latestFirstDeliv"] >
-    routes[routes.findIndex((rt) => rt["routeName"] === rte["routeName"])][
+    ]["latestFirstDeliv"] <
+    (Number(routes[routes.findIndex((rt) => rt["routeName"] === rte["routeName"])][
       "routeStart"
-    ]
+    ]) + Number(routes[routes.findIndex((rt) => rt["routeName"] === rte["routeName"])][
+      "routeTime"
+    ]))
   ) {
     return true;
   } else {
@@ -156,7 +158,7 @@ const RouteGrid = ({ routes }) => {
 
     let gridOrderArray = buildGridOrderArray(filterServe, products);
 
-    sortAtoZDataByIndex(routes, "routeStart");
+    sortZtoADataByIndex(routes, "routeStart");
     for (let rte of routes) {
       for (let grd of gridOrderArray) {
         let dayNum = calcDayNum(delivDate);

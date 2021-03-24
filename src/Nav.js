@@ -53,8 +53,7 @@ function Nav() {
 
    const logitems = [
       {label: 'By Route', command:()=>{ window.location="/logistics/byRoute"; }},
-      {label: 'By Customer', command:()=>{ window.location="/logistics/byCustomer"; }},
-      {label: 'By Product', command:()=>{ window.location="/logistics/byProduct"; }},
+      {label: 'By Filter', command:()=>{ window.location="/logistics/byProduct"; }},
    ];
 
    const orderitems = [

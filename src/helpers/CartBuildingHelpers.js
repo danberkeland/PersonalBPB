@@ -82,6 +82,26 @@ export const compileOrderList = (cartList, standList) => {
   return orderList;
 };
 
+
+export const compileFullOrderList = (cartList, standList) => {
+  let orderList = cartList.concat(standList);
+
+  // Remove old cart order from orders if it exists
+  for (let i = 0; i < orderList.length; ++i) {
+    for (let j = i + 1; j < orderList.length; ++j) {
+      if (
+        orderList[i]["prodName"] === orderList[j]["prodName"] &&
+        orderList[i]["custName"] === orderList[j]["custName"]
+      ) {
+        orderList.splice(j, 1);
+      }
+    }
+  }
+
+  sortAtoZDataByIndex(orderList, "prodName");
+  return orderList;
+};
+
 export const buildCurrentOrder = (
   chosen,
   delivDate,

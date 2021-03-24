@@ -179,11 +179,12 @@ const RouteGrid = ({ routes }) => {
             customerIsOpen(customers, grd, routes, rte)
           ) {
             grd["route"] = rte["routeName"];
-          }
+          } 
+          
         }
       }
     }
-
+    
     return gridOrderArray;
   };
 

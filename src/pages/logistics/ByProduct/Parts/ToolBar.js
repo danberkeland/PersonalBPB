@@ -1,11 +1,11 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 
 import { CurrentDataContext } from "../../../../dataContexts/CurrentDataContext";
 
 import { Calendar } from "primereact/calendar";
 import { OrdersContext } from "../../../../dataContexts/OrdersContext";
 import { StandingContext } from "../../../../dataContexts/StandingContext";
-import { useEffect } from "react/cjs/react.development";
+
 import { buildCartList, buildStandList, compileFullOrderList } from "../../../../helpers/CartBuildingHelpers";
 
 const { DateTime } = require("luxon");

@@ -22,12 +22,12 @@ const MainWrapper = styled.div`
 const DescripWrapper = styled.div`
   font-family: "Montserrat", sans-serif;
   display: flex;
-  margin: 0px 10px;
-  padding: 0px 10px;
+  width: 95%;
+  margin: 10px auto;
   flex-direction: column;
   justify-items: start;
   align-content: flex-start;
-  width: 100%;
+  
   background: #ffffff;
 `;
 

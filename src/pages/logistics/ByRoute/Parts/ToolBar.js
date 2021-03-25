@@ -30,6 +30,7 @@ import { Calendar } from "primereact/calendar";
 import { listRoutes } from "../../../../graphql/queries";
 
 import { API, graphqlOperation } from "aws-amplify";
+import { convertDatetoBPBDate } from "../../../../helpers/dateTimeHelpers";
 
 const { DateTime } = require("luxon");
 
@@ -207,7 +208,7 @@ const ToolBar = ({ setOrderList }) => {
         }
       }
     }
-
+   
     setOrderList(gridOrderArray);
   }, [delivDate]);
 
@@ -222,6 +223,7 @@ const ToolBar = ({ setOrderList }) => {
         <label htmlFor="delivDate">Pick Delivery Date: </label>
         <Calendar
           id="delivDate"
+          placeholder={convertDatetoBPBDate(delivDate)}
           dateFormat="mm/dd/yy"
           onChange={(e) => setDate(e.value)}
         />

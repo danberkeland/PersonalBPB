@@ -31,7 +31,7 @@ const RouteList = ({ orderList, setRouteList, setRoute, routeList }) => {
     let setRtList = new Set(rtList)
     let rtListArray = Array.from(setRtList)
     rtListArray = rtListArray.map(rt => ({route: rt}))
-
+    
     setRouteList(rtListArray)
   }
   },[orderList])

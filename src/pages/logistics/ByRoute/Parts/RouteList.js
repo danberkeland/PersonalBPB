@@ -23,49 +23,35 @@ const ListWrapper = styled.div`
   background: #ffffff;
 `;
 
-const RouteList = ({ routes, setRoutes }) => {
-  let { setIsLoading } = useContext(ToggleContext);
-  const { delivDate, route, setRoute } = useContext(CurrentDataContext)
-
+const RouteList = ({ orderList, setRouteList, setRoute, routeList }) => {
+  
   useEffect(() => {
-    setIsLoading(true);
-    fetchRoutes();
-    setIsLoading(false);
-  }, [routes]);
+    if (orderList){
+    let rtList = orderList.map(ord => ord["route"])
+    let setRtList = new Set(rtList)
+    let rtListArray = Array.from(setRtList)
+    rtListArray = rtListArray.map(rt => ({route: rt}))
 
-  const fetchRoutes = async () => {
-    try {
-      const routeData = await API.graphql(
-        graphqlOperation(listRoutes, {
-          limit: "50",
-        })
-      );
-      const routeList = routeData.data.listRoutes.items;
-      sortAtoZDataByIndex(routeList, "routeStart");
-      let noDelete = routeList.filter((route) => route["_deleted"] !== true);
-
-      setRoutes(noDelete);
-    } catch (error) {
-      console.log("error on fetching Cust List", error);
-    }
-  };
+    setRouteList(rtListArray)
+  }
+  },[orderList])
 
   const handleSelection = (e) => {
    
-    setRoute(e.value.routeName)
+    setRoute(e.value.route)
   };
 
   return (
     <ListWrapper>
       <ScrollPanel style={{ width: "100%", height: "100vh" }}>
         <DataTable
-          value={routes}
+          value={routeList}
           className="p-datatable-striped"
           selectionMode="single"
           onSelectionChange={handleSelection}
           dataKey="id"
         >
-          <Column field="routeName" header="Routes"></Column>
+          <Column field="route" header="Routes"></Column>
         </DataTable>
       </ScrollPanel>
     </ListWrapper>

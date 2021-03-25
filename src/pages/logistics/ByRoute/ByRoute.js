@@ -32,7 +32,9 @@ const DescripWrapper = styled.div`
 `;
 
 function ByRoute() {
-  const [routes, setRoutes] = useState(null);
+  const [ route, setRoute ] = useState();
+  const [ routeList, setRouteList ] = useState();
+  const [ orderList, setOrderList ] = useState();
 
   const { custLoaded, setCustLoaded } = useContext(CustomerContext);
   const { prodLoaded, setProdLoaded } = useContext(ProductsContext);
@@ -57,10 +59,10 @@ function ByRoute() {
       {!standLoaded ? <StandingLoad /> : ""}
 
       <MainWrapper>
-        <RouteList routes={routes} setRoutes={setRoutes} />
+        <RouteList orderList={orderList} setRouteList={setRouteList} setRoute={setRoute} routeList={routeList}/>
         <DescripWrapper>
-          <ToolBar />
-          <RouteGrid routes={routes} setRoutes={setRoutes} />
+          <ToolBar setOrderList={setOrderList}/>
+          <RouteGrid route={route} orderList={orderList}/>
         </DescripWrapper>
       </MainWrapper>
     </React.Fragment>

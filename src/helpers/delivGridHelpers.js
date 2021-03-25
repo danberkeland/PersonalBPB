@@ -30,8 +30,8 @@ export const zerosDelivFilter = (orderList, delivDate, customers) => {
         (cust) => cust["custName"] === ord["custName"]
       );
       if (ind > -1) {
-        let custRoute = customers[ind]["zoneName"];
-        ord["route"] = custRoute;
+        let custZone = customers[ind]["zoneName"];
+        ord["zoneName"] = custZone;
       }
     }
   }
@@ -58,7 +58,7 @@ export const buildGridOrderArray = (filterServe, products) => {
   gridOrderArray = filterServe.map((ord) => ({
     prodName: ord["prodName"],
     custName: ord["custName"],
-    zone: ord["route"],
+    zone: ord["zoneName"],
     route: "",
     qty: ord["qty"],
     where:

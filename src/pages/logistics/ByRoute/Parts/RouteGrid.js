@@ -24,19 +24,14 @@ const RouteGrid = ({ route, orderList }) => {
 
   const [ builtGrid, setBuiltGrid ] = useState()
 
-  useEffect(()=> {
-    
-    if (orderList){
-      let buildGridSetUp = orderList.filter(ord => ord["route"]===route)
-      setBuiltGrid(buildGridSetUp)
-    }
-  },[route,orderList])
-
+  
   
   const constructColumns = () => {
     let columns
-    if(builtGrid){
-    let gridToEdit = builtGrid.filter((grd) => grd["route"] === route);
+    if (orderList){
+    let buildGridSetUp = orderList.filter(ord => ord["route"]===route)
+      
+    let gridToEdit = buildGridSetUp.filter((grd) => grd["route"] === route);
     let listOfProducts = buildProductArray(gridToEdit, products);
 
     columns = createColumns(listOfProducts);
@@ -46,8 +41,10 @@ const RouteGrid = ({ route, orderList }) => {
 
   const constructData = () => {
     let qtyGrid
-    if (builtGrid){
-    let gridToEdit = builtGrid.filter((order) => order["route"] === route);
+    if(orderList){
+    let buildGridSetUp = orderList.filter(ord => ord["route"]===route)
+     
+    let gridToEdit = buildGridSetUp.filter((order) => order["route"] === route);
     let listOfCustomers = createListOfCustomers(gridToEdit, route);
     qtyGrid = createQtyGrid(listOfCustomers, gridToEdit);
   }
@@ -59,7 +56,7 @@ const RouteGrid = ({ route, orderList }) => {
     let dat = constructData();
     setColumns(col ? col : []);
     setData(dat ? dat : []);
-  }, [delivDate, route]);
+  }, [route, orderList]);
 
   const dynamicColumns = columns.map((col, i) => {
     return (

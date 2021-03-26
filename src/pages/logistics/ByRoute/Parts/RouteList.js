@@ -2,22 +2,12 @@ import React, { useEffect, useContext } from "react";
 
 import styled from "styled-components";
 
-import { ToggleContext } from "../../../../dataContexts/ToggleContext";
-import { CurrentDataContext } from "../../../../dataContexts/CurrentDataContext";
 import { OrdersContext } from "../../../../dataContexts/OrdersContext";
 import { StandingContext } from "../../../../dataContexts/StandingContext";
-
-
 
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { ScrollPanel } from "primereact/scrollpanel";
-
-import { listRoutes } from "../../../../graphql/queries";
-
-import { API, graphqlOperation } from "aws-amplify";
-
-import { sortAtoZDataByIndex } from "../../../../helpers/sortDataHelpers";
 
 const ListWrapper = styled.div`
   font-family: "Montserrat", sans-serif;
@@ -28,24 +18,22 @@ const ListWrapper = styled.div`
 `;
 
 const RouteList = ({ orderList, setRouteList, setRoute, routeList }) => {
-
   const { orders } = useContext(OrdersContext);
   const { standing } = useContext(StandingContext);
-  
+
   useEffect(() => {
-    if (orderList){
-    let rtList = orderList.map(ord => ord["route"])
-    let setRtList = new Set(rtList)
-    let rtListArray = Array.from(setRtList)
-    rtListArray = rtListArray.map(rt => ({route: rt}))
-    
-    setRouteList(rtListArray)
-  }
-  },[orderList, orders, standing])
+    if (orderList) {
+      let rtList = orderList.map((ord) => ord["route"]);
+      let setRtList = new Set(rtList);
+      let rtListArray = Array.from(setRtList);
+      rtListArray = rtListArray.map((rt) => ({ route: rt }));
+
+      setRouteList(rtListArray);
+    }
+  }, [orderList, orders, standing]);
 
   const handleSelection = (e) => {
-   
-    setRoute(e.value.route)
+    setRoute(e.value.route);
   };
 
   return (

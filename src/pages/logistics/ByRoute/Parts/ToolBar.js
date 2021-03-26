@@ -36,7 +36,6 @@ import {
   todayPlus,
 } from "../../../../helpers/dateTimeHelpers";
 
-
 const { DateTime } = require("luxon");
 
 const calcDayNum = (delivDate) => {
@@ -178,56 +177,56 @@ const ToolBar = ({ setOrderList }) => {
   };
 
   useEffect(() => {
-    if (orders && standing && customers && products){
-    let buildOrders = buildCartList("*", delivDate, orders);
-    let buildStand = buildStandList("*", delivDate, standing);
-    let fullOrder = compileFullOrderList(buildOrders, buildStand);
-    let ordList = removeDoubles(fullOrder);
-    let noZeroDelivDateOrderList = zerosDelivFilter(
-      ordList,
-      delivDate,
-      customers
-    );
+    if (orders && standing && customers && products) {
+      let buildOrders = buildCartList("*", delivDate, orders);
+      let buildStand = buildStandList("*", delivDate, standing);
+      let fullOrder = compileFullOrderList(buildOrders, buildStand);
+      let ordList = removeDoubles(fullOrder);
+      let noZeroDelivDateOrderList = zerosDelivFilter(
+        ordList,
+        delivDate,
+        customers
+      );
 
-    let gridOrderArray = buildGridOrderArray(
-      noZeroDelivDateOrderList,
-      products
-    );
+      let gridOrderArray = buildGridOrderArray(
+        noZeroDelivDateOrderList,
+        products
+      );
 
-    sortZtoADataByIndex(routes, "routeStart");
-    for (let rte of routes) {
-      for (let grd of gridOrderArray) {
-        let dayNum = calcDayNum(delivDate);
+      sortZtoADataByIndex(routes, "routeStart");
+      for (let rte of routes) {
+        for (let grd of gridOrderArray) {
+          let dayNum = calcDayNum(delivDate);
 
-        if (!rte["RouteServe"].includes(grd["zone"])) {
-          continue;
-        } else {
-          if (
-            routeRunsThatDay(rte, dayNum) &&
-            productCanBeInPlace(grd, routes, rte) &&
-            productReadyBeforeRouteStarts(
-              products,
-              customers,
-              routes,
-              grd,
-              rte
-            ) &&
-            customerIsOpen(customers, grd, routes, rte)
-          ) {
-            grd["route"] = rte["routeName"];
+          if (!rte["RouteServe"].includes(grd["zone"])) {
+            continue;
+          } else {
+            if (
+              routeRunsThatDay(rte, dayNum) &&
+              productCanBeInPlace(grd, routes, rte) &&
+              productReadyBeforeRouteStarts(
+                products,
+                customers,
+                routes,
+                grd,
+                rte
+              ) &&
+              customerIsOpen(customers, grd, routes, rte)
+            ) {
+              grd["route"] = rte["routeName"];
+            }
           }
         }
       }
+
+      setOrderList(gridOrderArray);
     }
-  
-    setOrderList(gridOrderArray);
-  }
   }, [delivDate, orders, standing, customers, products]);
 
   const setDate = (date) => {
     const dt2 = DateTime.fromJSDate(date);
     setDelivDate(dt2.toFormat("yyyy-MM-dd"));
-    setIsLoading(true)
+    setIsLoading(true);
   };
 
   return (

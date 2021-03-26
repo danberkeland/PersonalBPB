@@ -59,7 +59,7 @@ function OrderEntryButtons() {
     setCartList,
     standList,
     setRouteIsOn,
-    setIsLoading
+    setIsLoading,
   } = useContext(ToggleContext);
 
   let type = orderTypeWhole ? "Retail" : "Wholesale";
@@ -88,8 +88,9 @@ function OrderEntryButtons() {
   };
 
   const handleAddUpdate = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     if (cartList) {
+      console.log(currentCartList);
       for (let ord of currentCartList) {
         let rte;
         switch (ord["route"]) {
@@ -101,39 +102,39 @@ function OrderEntryButtons() {
             break;
           default:
             rte = route;
+        }
 
-            const updateDetails = {
-              qty: ord["qty"],
-              prodName: ord["prodName"],
-              custName: chosen,
-              PONote: ponote,
-              route: rte,
-              SO: ord["qty"],
-              isWhole: orderTypeWhole,
-              delivDate: convertDatetoBPBDate(delivDate),
-              timeStamp: new Date(),
-            };
-            
-            if (ord["id"]) {
-              updateDetails.id = ord["id"];
-              updateDetails._version = ord["_version"];
+        const updateDetails = {
+          qty: ord["qty"],
+          prodName: ord["prodName"],
+          custName: chosen,
+          PONote: ponote,
+          route: rte,
+          SO: ord["qty"],
+          isWhole: orderTypeWhole,
+          delivDate: convertDatetoBPBDate(delivDate),
+          timeStamp: new Date(),
+        };
 
-              try {
-                await API.graphql(
-                  graphqlOperation(updateOrder, { input: { ...updateDetails } })
-                );
-              } catch (error) {
-                console.log("error on updating Orders", error);
-              }
-            } else {
-              try {
-                await API.graphql(
-                  graphqlOperation(createOrder, { input: { ...updateDetails } })
-                );
-              } catch (error) {
-                console.log("error on creating Orders", error);
-              }
-            }
+        if (ord["id"]) {
+          updateDetails.id = ord["id"];
+          updateDetails._version = ord["_version"];
+
+          try {
+            await API.graphql(
+              graphqlOperation(updateOrder, { input: { ...updateDetails } })
+            );
+          } catch (error) {
+            console.log("error on updating Orders", error);
+          }
+        } else {
+          try {
+            await API.graphql(
+              graphqlOperation(createOrder, { input: { ...updateDetails } })
+            );
+          } catch (error) {
+            console.log("error on creating Orders", error);
+          }
         }
       }
     } else {

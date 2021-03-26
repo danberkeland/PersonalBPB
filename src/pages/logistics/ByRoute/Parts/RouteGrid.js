@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 
-import { CurrentDataContext } from "../../../../dataContexts/CurrentDataContext";
 import { ProductsContext } from "../../../../dataContexts/ProductsContext";
 import { OrdersContext } from "../../../../dataContexts/OrdersContext";
 import { StandingContext } from "../../../../dataContexts/StandingContext";
@@ -14,44 +13,39 @@ import {
   createQtyGrid,
 } from "../../../../helpers/delivGridHelpers";
 
-
-
 const RouteGrid = ({ route, orderList }) => {
-  
   const { products } = useContext(ProductsContext);
-  const { delivDate } = useContext(CurrentDataContext);
   const { orders } = useContext(OrdersContext);
   const { standing } = useContext(StandingContext);
 
   const [columns, setColumns] = useState([]);
   const [data, setData] = useState([]);
 
-  const [ builtGrid, setBuiltGrid ] = useState()
-
-  
-  
   const constructColumns = () => {
-    let columns
-    if (orderList){
-    let buildGridSetUp = orderList.filter(ord => ord["route"]===route)
-      
-    let gridToEdit = buildGridSetUp.filter((grd) => grd["route"] === route);
-    let listOfProducts = buildProductArray(gridToEdit, products);
+    let columns;
+    if (orderList) {
+      let buildGridSetUp = orderList.filter((ord) => ord["route"] === route);
 
-    columns = createColumns(listOfProducts);
-  }
+      let gridToEdit = buildGridSetUp.filter((grd) => grd["route"] === route);
+      let listOfProducts = buildProductArray(gridToEdit, products);
+
+      columns = createColumns(listOfProducts);
+    }
     return columns;
   };
 
   const constructData = () => {
-    let qtyGrid
-    if(orderList){
-    let buildGridSetUp = orderList.filter(ord => ord["route"]===route)
-     
-    let gridToEdit = buildGridSetUp.filter((order) => order["route"] === route);
-    let listOfCustomers = createListOfCustomers(gridToEdit, route);
-    qtyGrid = createQtyGrid(listOfCustomers, gridToEdit);
-  }
+    let qtyGrid;
+    if (orderList) {
+      console.log(orderList)
+      let buildGridSetUp = orderList.filter((ord) => ord["route"] === route);
+
+      let gridToEdit = buildGridSetUp.filter(
+        (order) => order["route"] === route
+      );
+      let listOfCustomers = createListOfCustomers(gridToEdit, route);
+      qtyGrid = createQtyGrid(listOfCustomers, gridToEdit);
+    }
     return qtyGrid;
   };
 
@@ -71,9 +65,8 @@ const RouteGrid = ({ route, orderList }) => {
         style={col.width}
       />
     );
-  }); 
+  });
 
-  
   return (
     <div>
       <div className="card">

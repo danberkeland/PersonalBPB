@@ -27,32 +27,38 @@ const ProductGrid = () => {
 
   useEffect(() => {
     if (orders && standing && customers && products && delivDate) {
-      let buildOrders = buildCartList("*", delivDate, orders);
-      let buildStand = buildStandList("*", delivDate, standing);
-      let fullOrder = compileFullOrderList(buildOrders, buildStand);
+      try {
+        let buildOrders = buildCartList("*", delivDate, orders);
+        let buildStand = buildStandList("*", delivDate, standing);
+        let fullOrder = compileFullOrderList(buildOrders, buildStand);
 
-      let builtGridSetup = fullOrder.filter((ord) => ord["qty"] !== 0);
-      builtGridSetup.forEach(
-        (grd) =>
-          (grd["zoneName"] =
-            customers[
-              customers.findIndex(
-                (cust) => cust["custName"] === grd["custName"]
-              )
-            ]["zoneName"]) &&
-          (grd["nickName"] =
-            products[
-              products.findIndex((prod) => prod["prodName"] === grd["prodName"])
-            ]["nickName"]) &&
-          (grd["custNick"] =
-            customers[
-              customers.findIndex(
-                (cust) => cust["custName"] === grd["custName"]
-              )
-            ]["nickName"])
-      );
-      setIsLoading(false);
-      setBuiltGrid(builtGridSetup);
+        let builtGridSetup = fullOrder.filter((ord) => ord["qty"] !== 0);
+        builtGridSetup.forEach(
+          (grd) =>
+            (grd["zoneName"] =
+              customers[
+                customers.findIndex(
+                  (cust) => cust["custName"] === grd["custName"]
+                )
+              ]["zoneName"]) &&
+            (grd["nickName"] =
+              products[
+                products.findIndex(
+                  (prod) => prod["prodName"] === grd["prodName"]
+                )
+              ]["nickName"]) &&
+            (grd["custNick"] =
+              customers[
+                customers.findIndex(
+                  (cust) => cust["custName"] === grd["custName"]
+                )
+              ]["nickName"])
+        );
+        setIsLoading(false);
+        setBuiltGrid(builtGridSetup);
+      } catch {
+        console.log("Whoops");
+      }
     }
   }, [delivDate, orders, standing, customers, products]);
 

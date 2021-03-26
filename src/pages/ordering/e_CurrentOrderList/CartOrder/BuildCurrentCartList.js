@@ -63,7 +63,7 @@ const BuildCurrentCartList = () => {
         ponote
       );
       currentOrderList = currentOrderList.filter((order) => order["qty"] !== 0);
-
+        
       setCurrentCartList(currentOrderList);
     }
   }, [chosen, delivDate, orders, standing, route, ponote]);

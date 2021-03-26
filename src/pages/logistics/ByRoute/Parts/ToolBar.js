@@ -178,48 +178,55 @@ const ToolBar = ({ setOrderList }) => {
 
   useEffect(() => {
     if (orders && standing && customers && products) {
-      let buildOrders = buildCartList("*", delivDate, orders);
-      let buildStand = buildStandList("*", delivDate, standing);
-      let fullOrder = compileFullOrderList(buildOrders, buildStand);
-      let ordList = removeDoubles(fullOrder);
-      let noZeroDelivDateOrderList = zerosDelivFilter(
-        ordList,
-        delivDate,
-        customers
-      );
+      try {
+        let buildOrders = buildCartList("*", delivDate, orders);
+        console.log(buildOrders);
+        let buildStand = buildStandList("*", delivDate, standing);
+        console.log(buildStand);
+        // fill in route based on default for customer
+        let fullOrder = compileFullOrderList(buildOrders, buildStand);
+        let ordList = removeDoubles(fullOrder);
+        let noZeroDelivDateOrderList = zerosDelivFilter(
+          ordList,
+          delivDate,
+          customers
+        );
 
-      let gridOrderArray = buildGridOrderArray(
-        noZeroDelivDateOrderList,
-        products
-      );
+        let gridOrderArray = buildGridOrderArray(
+          noZeroDelivDateOrderList,
+          products
+        );
 
-      sortZtoADataByIndex(routes, "routeStart");
-      for (let rte of routes) {
-        for (let grd of gridOrderArray) {
-          let dayNum = calcDayNum(delivDate);
+        sortZtoADataByIndex(routes, "routeStart");
+        for (let rte of routes) {
+          for (let grd of gridOrderArray) {
+            let dayNum = calcDayNum(delivDate);
 
-          if (!rte["RouteServe"].includes(grd["zone"])) {
-            continue;
-          } else {
-            if (
-              routeRunsThatDay(rte, dayNum) &&
-              productCanBeInPlace(grd, routes, rte) &&
-              productReadyBeforeRouteStarts(
-                products,
-                customers,
-                routes,
-                grd,
-                rte
-              ) &&
-              customerIsOpen(customers, grd, routes, rte)
-            ) {
-              grd["route"] = rte["routeName"];
+            if (!rte["RouteServe"].includes(grd["zone"])) {
+              continue;
+            } else {
+              if (
+                routeRunsThatDay(rte, dayNum) &&
+                productCanBeInPlace(grd, routes, rte) &&
+                productReadyBeforeRouteStarts(
+                  products,
+                  customers,
+                  routes,
+                  grd,
+                  rte
+                ) &&
+                customerIsOpen(customers, grd, routes, rte)
+              ) {
+                grd["route"] = rte["routeName"];
+              }
             }
           }
         }
-      }
 
-      setOrderList(gridOrderArray);
+        setOrderList(gridOrderArray);
+      } catch {
+        console.log("Whoops!");
+      }
     }
   }, [delivDate, orders, standing, customers, products]);
 

@@ -90,7 +90,7 @@ function OrderEntryButtons() {
   const handleAddUpdate = async () => {
     setIsLoading(true);
     if (cartList) {
-      console.log(currentCartList);
+      
       for (let ord of currentCartList) {
         let rte;
         switch (ord["route"]) {
@@ -119,7 +119,6 @@ function OrderEntryButtons() {
         if (ord["id"]) {
           updateDetails.id = ord["id"];
           updateDetails._version = ord["_version"];
-
           try {
             await API.graphql(
               graphqlOperation(updateOrder, { input: { ...updateDetails } })

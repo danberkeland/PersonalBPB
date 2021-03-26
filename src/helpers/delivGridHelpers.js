@@ -33,6 +33,15 @@ export const zerosDelivFilter = (orderList, delivDate, customers) => {
         let custZone = customers[ind]["zoneName"];
         ord["zoneName"] = custZone;
       }
+      
+    } else {
+      let ind = customers.findIndex(
+        (cust) => cust["custName"] === ord["custName"]
+      );
+      if (ind > -1) {
+        let custZone = customers[ind]["zoneName"];
+        ord["zoneName"] = ord["route"];
+      }
     }
   }
   return noZeroDelivDateOrderList;

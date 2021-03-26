@@ -37,7 +37,7 @@ const RouteGrid = ({ route, orderList }) => {
   const constructData = () => {
     let qtyGrid;
     if (orderList) {
-      console.log(orderList)
+      
       let buildGridSetUp = orderList.filter((ord) => ord["route"] === route);
 
       let gridToEdit = buildGridSetUp.filter(

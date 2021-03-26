@@ -32,7 +32,7 @@ const DescripWrapper = styled.div`
 `;
 
 function ByRoute() {
-  const [ route, setRoute ] = useState();
+  const [ route, setRoute ] = useState("AM Pastry");
   const [ routeList, setRouteList ] = useState();
   const [ orderList, setOrderList ] = useState();
 

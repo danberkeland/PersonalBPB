@@ -2,12 +2,20 @@ import React, { useContext, useEffect, useState } from "react";
 
 import styled from "styled-components";
 
-import { CustomerContext, CustomerLoad } from "../../../dataContexts/CustomerContext";
-import { ProductsContext, ProductsLoad } from "../../../dataContexts/ProductsContext";
+import {
+  CustomerContext,
+  CustomerLoad,
+} from "../../../dataContexts/CustomerContext";
+import {
+  ProductsContext,
+  ProductsLoad,
+} from "../../../dataContexts/ProductsContext";
 import { OrdersContext, OrdersLoad } from "../../../dataContexts/OrdersContext";
-import { StandingContext, StandingLoad } from "../../../dataContexts/StandingContext";
+import {
+  StandingContext,
+  StandingLoad,
+} from "../../../dataContexts/StandingContext";
 import { HoldingContext } from "../../../dataContexts/HoldingContext";
-
 
 import ProductGrid from "../ByProduct/Parts/ProductGrid";
 import ToolBar from "../ByProduct/Parts/ToolBar";
@@ -31,8 +39,8 @@ const DescripWrapper = styled.div`
 `;
 
 function ByProduct() {
-  const [ product ] = useState('');
-  const [ orderList, setOrderList ] = useState('');
+  const [product] = useState("");
+  const [orderList, setOrderList] = useState("");
 
   const { custLoaded, setCustLoaded } = useContext(CustomerContext);
   const { prodLoaded, setProdLoaded } = useContext(ProductsContext);
@@ -50,7 +58,6 @@ function ByProduct() {
 
   return (
     <React.Fragment>
-
       {!ordersLoaded ? <OrdersLoad /> : ""}
       {!custLoaded ? <CustomerLoad /> : ""}
       {!prodLoaded ? <ProductsLoad /> : ""}
@@ -58,8 +65,8 @@ function ByProduct() {
 
       <MainWrapper>
         <DescripWrapper>
-          <ToolBar setOrderList={setOrderList} product={product}/>
-          <ProductGrid product={product} orderList={orderList}/>
+          <ToolBar setOrderList={setOrderList} product={product} />
+          <ProductGrid product={product} orderList={orderList} />
         </DescripWrapper>
       </MainWrapper>
     </React.Fragment>

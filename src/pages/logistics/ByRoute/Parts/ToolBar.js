@@ -30,7 +30,12 @@ import { Calendar } from "primereact/calendar";
 import { listRoutes } from "../../../../graphql/queries";
 
 import { API, graphqlOperation } from "aws-amplify";
-import { convertDatetoBPBDate } from "../../../../helpers/dateTimeHelpers";
+
+import {
+  convertDatetoBPBDate,
+  todayPlus,
+} from "../../../../helpers/dateTimeHelpers";
+
 
 const { DateTime } = require("luxon");
 
@@ -145,6 +150,11 @@ const ToolBar = ({ setOrderList }) => {
   let { setIsLoading } = useContext(ToggleContext);
 
   useEffect(() => {
+    let [today] = todayPlus();
+    setDelivDate(today);
+  }, []);
+
+  useEffect(() => {
     setIsLoading(true);
     fetchRoutes();
     setIsLoading(false);
@@ -168,6 +178,7 @@ const ToolBar = ({ setOrderList }) => {
   };
 
   useEffect(() => {
+    if (orders && standing && customers && products){
     let buildOrders = buildCartList("*", delivDate, orders);
     let buildStand = buildStandList("*", delivDate, standing);
     let fullOrder = compileFullOrderList(buildOrders, buildStand);
@@ -208,13 +219,15 @@ const ToolBar = ({ setOrderList }) => {
         }
       }
     }
-   
+  
     setOrderList(gridOrderArray);
-  }, [delivDate]);
+  }
+  }, [delivDate, orders, standing, customers, products]);
 
   const setDate = (date) => {
     const dt2 = DateTime.fromJSDate(date);
     setDelivDate(dt2.toFormat("yyyy-MM-dd"));
+    setIsLoading(true)
   };
 
   return (

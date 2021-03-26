@@ -3,40 +3,38 @@ import React, { useContext, useEffect } from "react";
 import { CurrentDataContext } from "../../../../dataContexts/CurrentDataContext";
 
 import { Calendar } from "primereact/calendar";
-import { OrdersContext } from "../../../../dataContexts/OrdersContext";
-import { StandingContext } from "../../../../dataContexts/StandingContext";
 
-import { buildCartList, buildStandList, compileFullOrderList } from "../../../../helpers/CartBuildingHelpers";
+import { ToggleContext } from "../../../../dataContexts/ToggleContext";
+
+import {
+  convertDatetoBPBDate,
+  todayPlus,
+} from "../../../../helpers/dateTimeHelpers";
 
 const { DateTime } = require("luxon");
 
-
-const ToolBar = ({ setOrderList }) => {
+const ToolBar = () => {
   const { delivDate, setDelivDate } = useContext(CurrentDataContext);
-  const { orders } = useContext(OrdersContext);
-  const { standing } = useContext(StandingContext);
+  const { setIsLoading } = useContext(ToggleContext);
 
   useEffect(() => {
-
-    let buildOrders = buildCartList('*', delivDate, orders)
-    let buildStand = buildStandList('*', delivDate, standing)
-    let fullOrder = compileFullOrderList(buildOrders,buildStand)
-    setOrderList(fullOrder)
-  },[delivDate])
+    let [today] = todayPlus();
+    setDelivDate(today);
+  }, []);
 
   const setDate = (date) => {
     const dt2 = DateTime.fromJSDate(date);
     setDelivDate(dt2.toFormat("yyyy-MM-dd"));
-   
+    setIsLoading(true);
   };
 
   return (
     <React.Fragment>
       <div className="p-field p-col-12 p-md-4">
-      
         <label htmlFor="delivDate">Pick Delivery Date: </label>
         <Calendar
           id="delivDate"
+          placeholder={convertDatetoBPBDate(delivDate)}
           dateFormat="mm/dd/yy"
           onChange={(e) => setDate(e.value)}
         />

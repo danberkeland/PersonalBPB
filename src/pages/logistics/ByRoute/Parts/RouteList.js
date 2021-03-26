@@ -4,6 +4,10 @@ import styled from "styled-components";
 
 import { ToggleContext } from "../../../../dataContexts/ToggleContext";
 import { CurrentDataContext } from "../../../../dataContexts/CurrentDataContext";
+import { OrdersContext } from "../../../../dataContexts/OrdersContext";
+import { StandingContext } from "../../../../dataContexts/StandingContext";
+
+
 
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -24,6 +28,9 @@ const ListWrapper = styled.div`
 `;
 
 const RouteList = ({ orderList, setRouteList, setRoute, routeList }) => {
+
+  const { orders } = useContext(OrdersContext);
+  const { standing } = useContext(StandingContext);
   
   useEffect(() => {
     if (orderList){
@@ -34,7 +41,7 @@ const RouteList = ({ orderList, setRouteList, setRoute, routeList }) => {
     
     setRouteList(rtListArray)
   }
-  },[orderList])
+  },[orderList, orders, standing])
 
   const handleSelection = (e) => {
    

@@ -59,6 +59,7 @@ function OrderEntryButtons() {
     setCartList,
     standList,
     setRouteIsOn,
+    setIsLoading
   } = useContext(ToggleContext);
 
   let type = orderTypeWhole ? "Retail" : "Wholesale";
@@ -87,6 +88,7 @@ function OrderEntryButtons() {
   };
 
   const handleAddUpdate = async () => {
+    setIsLoading(true)
     if (cartList) {
       for (let ord of currentCartList) {
         let rte;
@@ -190,6 +192,7 @@ function OrderEntryButtons() {
     setStandLoaded(false);
     setHoldLoaded(false);
     setOrdersLoaded(false);
+    document.getElementById("orderCommand").focus();
   };
 
   return (

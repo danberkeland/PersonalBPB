@@ -4,6 +4,8 @@ import { Column } from "primereact/column";
 
 import { CurrentDataContext } from "../../../../dataContexts/CurrentDataContext";
 import { ProductsContext } from "../../../../dataContexts/ProductsContext";
+import { OrdersContext } from "../../../../dataContexts/OrdersContext";
+import { StandingContext } from "../../../../dataContexts/StandingContext";
 
 import {
   buildProductArray,
@@ -18,6 +20,8 @@ const RouteGrid = ({ route, orderList }) => {
   
   const { products } = useContext(ProductsContext);
   const { delivDate } = useContext(CurrentDataContext);
+  const { orders } = useContext(OrdersContext);
+  const { standing } = useContext(StandingContext);
 
   const [columns, setColumns] = useState([]);
   const [data, setData] = useState([]);
@@ -56,7 +60,7 @@ const RouteGrid = ({ route, orderList }) => {
     let dat = constructData();
     setColumns(col ? col : []);
     setData(dat ? dat : []);
-  }, [route, orderList]);
+  }, [route, orderList, orders, standing]);
 
   const dynamicColumns = columns.map((col, i) => {
     return (

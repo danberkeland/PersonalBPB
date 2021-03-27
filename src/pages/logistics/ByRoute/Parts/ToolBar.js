@@ -180,9 +180,9 @@ const ToolBar = ({ setOrderList }) => {
     if (orders && standing && customers && products) {
       try {
         let buildOrders = buildCartList("*", delivDate, orders);
-        console.log(buildOrders);
+        
         let buildStand = buildStandList("*", delivDate, standing);
-        console.log(buildStand);
+       
         // fill in route based on default for customer
         let fullOrder = compileFullOrderList(buildOrders, buildStand);
         let ordList = removeDoubles(fullOrder);

@@ -1,7 +1,5 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 
-import { FilterStandHoldDups } from '../helpers/useFetch'
-
 import { sortAtoZDataByIndex } from '../helpers/sortDataHelpers'
 
 import { listHoldings } from '../graphql/queries'

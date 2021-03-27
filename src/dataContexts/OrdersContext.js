@@ -1,8 +1,6 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 
-import { FilterOrdersDups } from '../helpers/useFetch'
-
-import { sortAtoZDataByIndex, sortZtoADataByIndex } from '../helpers/sortDataHelpers'
+import { sortAtoZDataByIndex } from '../helpers/sortDataHelpers'
 
 import { listOrders } from '../graphql/queries'
 

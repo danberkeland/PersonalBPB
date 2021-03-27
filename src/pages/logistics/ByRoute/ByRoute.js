@@ -50,6 +50,14 @@ function ByRoute() {
     setStandLoaded(false);
   }, []);
 
+  useEffect(() => {
+    fetch('https://8eo1jrov6a.execute-api.us-east-2.amazonaws.com/done')
+    // Handle success
+    .then(response => response.json())  // convert to json
+    .then(json => console.log(JSON.parse(json)))    //print data to console
+    .catch(err => console.log('Request Failed', err)); // Catch errors
+  },[])
+
   return (
     <React.Fragment>
 

@@ -1,0 +1,42 @@
+import React, { useEffect, useContext } from "react";
+
+import styled from "styled-components";
+
+import BillingGrid from "./Parts/BillingGrid";
+import PublishGateKeeper from "./Parts/PublishGateKeeper";
+import Buttons from "./Parts/Buttons";
+import SelectDate from "./Parts/SelectDate";
+
+import { CustomerContext } from "../../dataContexts/CustomerContext";
+import { ProductsContext } from "../../dataContexts/ProductsContext";
+import { OrdersContext } from "../../dataContexts/OrdersContext";
+import { StandingContext } from "../../dataContexts/StandingContext";
+import { HoldingContext } from "../../dataContexts/HoldingContext";
+
+function Billing() {
+  const { setCustLoaded } = useContext(CustomerContext);
+  const { setProdLoaded } = useContext(ProductsContext);
+  let { setHoldLoaded } = useContext(HoldingContext);
+  let { setOrdersLoaded } = useContext(OrdersContext);
+  let { setStandLoaded } = useContext(StandingContext);
+
+  useEffect(() => {
+    setCustLoaded(true);
+
+    setProdLoaded(true);
+    setHoldLoaded(true);
+    setOrdersLoaded(true);
+    setStandLoaded(true);
+  }, []);
+
+  return (
+    <React.Fragment>
+      <SelectDate />
+      <Buttons />
+      <PublishGateKeeper />
+      <BillingGrid />
+    </React.Fragment>
+  );
+}
+
+export default Billing;

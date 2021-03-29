@@ -14,9 +14,8 @@ import Croix from './Croix'
 import Customers from './pages/customers/Customers'
 import Products from './pages/products/Products'
 import ByRoute from './pages/logistics/ByRoute/ByRoute'
-import ByCustomer from './pages/logistics/ByCustomer/ByCustomer'
 import ByProduct from './pages/logistics/ByProduct/ByProduct'
-import Billing from './Billing'
+import Billing from './pages/billing/Billing'
 import Admin from './Admin'
 import Loader from './Loader'
 
@@ -30,7 +29,6 @@ function AppRoutes() {
         <Switch>
           <Route path="/ordering" component={Ordering} /> 
           <Route path="/logistics/byRoute" component={ByRoute} />  
-          <Route path="/logistics/byCustomer" component={ByCustomer} />  
           <Route path="/logistics/byProduct" component={ByProduct} />  
           <Route path="/settings/editRoutes" component={EditRoutes} />
           <Route path="/settings/editZones" component={EditZones} />

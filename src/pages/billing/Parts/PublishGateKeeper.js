@@ -12,7 +12,7 @@ function PublishGateKeeper() {
 
   return (
     <React.Fragment>
-      <h1>Publish Gatekeeper</h1>
+      
     </React.Fragment>
   );
 }

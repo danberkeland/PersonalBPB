@@ -13,6 +13,16 @@ import { OrdersContext } from "../../dataContexts/OrdersContext";
 import { StandingContext } from "../../dataContexts/StandingContext";
 import { HoldingContext } from "../../dataContexts/HoldingContext";
 
+const BasicContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  border: 1px solid lightgray;
+  padding: 5px 10px;
+  margin: 0px auto;
+  box-sizing: border-box;
+`;
+
 function Billing() {
   const { setCustLoaded } = useContext(CustomerContext);
   const { setProdLoaded } = useContext(ProductsContext);
@@ -31,10 +41,19 @@ function Billing() {
 
   return (
     <React.Fragment>
-      <SelectDate />
+      <BasicContainer>
+        <h2>Billing</h2>
+      </BasicContainer>
+      
+      <BasicContainer>
+        <SelectDate />
+      </BasicContainer>
+     
       <Buttons />
       <PublishGateKeeper />
-      <BillingGrid />
+      <BasicContainer>
+        <BillingGrid />
+      </BasicContainer>
     </React.Fragment>
   );
 }

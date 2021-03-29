@@ -12,7 +12,7 @@ function Buttons() {
 
   return (
     <React.Fragment>
-      <h1>Buttons</h1>
+     
     </React.Fragment>
   );
 }

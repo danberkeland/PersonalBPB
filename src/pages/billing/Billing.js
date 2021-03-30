@@ -16,7 +16,7 @@ import { HoldingContext } from "../../dataContexts/HoldingContext";
 const BasicContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 80%;
+  width: 70%;
   border: 1px solid lightgray;
   padding: 5px 10px;
   margin: 0px auto;
@@ -42,7 +42,7 @@ function Billing() {
   return (
     <React.Fragment>
       <BasicContainer>
-        <h2>Billing</h2>
+        <h1>Billing</h1>
       </BasicContainer>
       
       <BasicContainer>

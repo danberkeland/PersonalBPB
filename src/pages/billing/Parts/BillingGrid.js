@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
+import { InputNumber } from "primereact/inputnumber";
 
 import styled from "styled-components";
 
@@ -44,7 +45,7 @@ const BillingGrid = () => {
         ],
       },
     ]);
-  });
+  },[]);
 
   const expandAll = () => {
     let _expandedRows = {};
@@ -88,15 +89,41 @@ const BillingGrid = () => {
     );
   };
 
+  const calcSumTotal = (data) => {
+    let sum = 0;
+    for (let i of data) {
+      sum = sum + Number(i.qty) * Number(i.rate);
+    }
+
+    return (
+      
+        <div>{sum}</div>
+        
+    );
+ 
+  }
+
+  const changeRate = (data) => {
+    return (
+      <InputNumber placeholder = {data.qty} size="4" mode="currency" currency="USD" locale="en-US"/>
+    )
+  }
+
+  const changeQty = (data) => {
+    return (
+      <InputNumber placeholder = {data.qty} size="4" />
+    )
+  }
+
 
   const rowExpansionTemplate = (data) => {
     return (
       <div className="orders-subtable">
-        <h5>Orders for {data.custName}</h5>
-        <DataTable value={data.orders} footer={calcGrandTotal(data.orders)}>
+        <h2>Invoice for {data.custName}</h2>
+        <DataTable value={data.orders} footer={calcGrandTotal(data.orders)} className="p-datatable-sm">
           <Column field="product" header="Product"></Column>
-          <Column field="qty" header="Quantity"></Column>
-          <Column field="rate" header="Rate"></Column>
+          <Column header="Quantity" body={changeQty}></Column>
+          <Column header="Rate" body={changeRate} ></Column>
           <Column header="Total" body={calcTotal}></Column>
           <Column
             headerStyle={{ width: "4rem" }}
@@ -117,12 +144,13 @@ const BillingGrid = () => {
           onRowToggle={(e) => setExpandedRows(e.data)}
           rowExpansionTemplate={rowExpansionTemplate}
           dataKey="id"
+          className="p-datatable-sm"
           
         >
           <Column expander style={{ width: "3em" }} />
           <Column field="invNum" header="Invoice#" />
           <Column field="custName" header="Customer" />
-          <Column field = "total" header="Total" />
+          <Column header = "total" body={e => calcSumTotal(e.orders)} />
           
           <Column
             headerStyle={{ width: "4rem" }}

@@ -28,50 +28,7 @@ const FooterGrid = styled.div`
 
 const BillingGrid = () => {
   const [expandedRows, setExpandedRows] = useState(null);
-  const [invoices, setInvoices] = useState([
-    {
-      invNum: "1000",
-      custName: "Kreuzberg",
-
-      orders: [
-        {
-          id: "1000",
-          product: "Baguette",
-
-          rate: 1.5,
-          qty: 16,
-        },
-        {
-          id: "1001",
-          product: "Croissant",
-
-          rate: 5.22,
-          qty: 24,
-        },
-      ],
-    },
-    {
-      invNum: "1001",
-      custName: "SLO Provisions",
-
-      orders: [
-        {
-          id: "1000",
-          product: "Baguette",
-
-          rate: 1.5,
-          qty: 16,
-        },
-        {
-          id: "1001",
-          product: "Croissant",
-
-          rate: 5.22,
-          qty: 24,
-        },
-      ],
-    },
-  ]);
+  const [invoices, setInvoices] = useState();
 
   const { delivDate } = useContext(CurrentDataContext);
   const { customers } = useContext(CustomerContext);
@@ -94,7 +51,28 @@ const BillingGrid = () => {
         invNum: 1221,
         orders: [],
       }));
-      invList.forEach((inv, index) => inv.invNum = inv.invNum+index)
+      invList.forEach((inv, index) => (inv.invNum = inv.invNum + index));
+
+      for (let inv of invList) {
+        let orderClip = fullOrder.filter(
+          (ord) => ord["custName"] === inv["custName"]
+        );
+        for (let ord of orderClip) {
+          let ratePull =
+            products[
+              products.findIndex((prod) => prod["prodName"] === ord["prodName"])
+            ].wholePrice;
+          let pushBit = {
+            prodName: ord["prodName"],
+            qty: Number(ord["qty"]),
+            rate: ratePull,
+          };
+          if (pushBit.qty > 0) {
+            inv.orders.push(pushBit);
+          }
+        }
+      }
+      invList=invList.filter(inv => inv.orders.length>0)
       setInvoices(invList);
     } catch {
       console.log("Whoops");
@@ -106,7 +84,9 @@ const BillingGrid = () => {
   };
 
   const calcTotal = (rowData) => {
-    return Number(rowData.qty) * Number(rowData.rate);
+    let sum = Number(rowData.qty) * Number(rowData.rate);
+    sum = formatter.format(sum);
+    return sum;
   };
 
   const calcGrandTotal = (data) => {
@@ -114,6 +94,8 @@ const BillingGrid = () => {
     for (let i of data) {
       sum = sum + Number(i.qty) * Number(i.rate);
     }
+
+    sum = formatter.format(sum);
 
     return (
       <FooterGrid>
@@ -126,19 +108,27 @@ const BillingGrid = () => {
     );
   };
 
+  const formatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  });
+
   const calcSumTotal = (data) => {
     let sum = 0;
     for (let i of data) {
       sum = sum + Number(i.qty) * Number(i.rate);
     }
 
+    sum = formatter.format(sum);
+
     return <div>{sum}</div>;
   };
 
   const changeRate = (data) => {
+    let sum = formatter.format(data.rate);
     return (
       <InputNumber
-        placeholder={data.qty}
+        placeholder={sum}
         size="4"
         mode="currency"
         currency="USD"
@@ -164,9 +154,11 @@ const BillingGrid = () => {
             headerStyle={{ width: "4rem" }}
             body={deleteTemplate}
           ></Column>
-          <Column field="product" header="Product"></Column>
+          <Column field="prodName" header="Product"></Column>
           <Column header="Quantity" body={changeQty}></Column>
-          <Column header="Rate" body={changeRate}></Column>
+          <Column header="Rate" body={changeRate}>
+            {" "}
+          </Column>
           <Column header="Total" body={calcTotal}></Column>
         </DataTable>
       </div>

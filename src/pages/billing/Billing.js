@@ -1,9 +1,9 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 
 import styled from "styled-components";
 
 import BillingGrid from "./Parts/BillingGrid";
-import PublishGateKeeper from "./Parts/PublishGateKeeper";
+
 import Buttons from "./Parts/Buttons";
 import SelectDate from "./Parts/SelectDate";
 
@@ -11,7 +11,13 @@ import { CustomerContext, CustomerLoad } from "../../dataContexts/CustomerContex
 import { ProductsContext, ProductsLoad } from "../../dataContexts/ProductsContext";
 import { OrdersContext, OrdersLoad } from "../../dataContexts/OrdersContext";
 import { StandingContext, StandingLoad } from "../../dataContexts/StandingContext";
-import { HoldingContext, HoldingLoad } from "../../dataContexts/HoldingContext";
+import { HoldingContext } from "../../dataContexts/HoldingContext";
+import { ToggleContext } from "../../dataContexts/ToggleContext";
+
+import { listAltPricings } from "../../graphql/queries";
+
+import { API, graphqlOperation } from "aws-amplify";
+
 
 const BasicContainer = styled.div`
   display: flex;
@@ -29,22 +35,46 @@ function Billing() {
   let { setHoldLoaded } = useContext(HoldingContext);
   let { orders, ordersLoaded, setOrdersLoaded } = useContext(OrdersContext);
   let { standing, standLoaded, setStandLoaded } = useContext(StandingContext);
+  let { setIsLoading } = useContext(ToggleContext)
+
+  const [ altPricing, setAltPricing ] = useState()
+  const [ nextInv, setNextInv ] = useState(0);
 
   useEffect(() => {
     if (!products) {
       setProdLoaded(false);
     }
     if (!customers) {
-      setCustLoaded(true);
+      setCustLoaded(false);
     }
     setHoldLoaded(true);
     if (!orders) {
-      setOrdersLoaded(true);
+      setOrdersLoaded(false);
     }
     if (!standing) {
-      setStandLoaded(true);
+      setStandLoaded(false);
     }
   }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+    fetchAltPricing();
+    setIsLoading(false);
+  }, []);
+
+  const fetchAltPricing = async () => {
+    try {
+      const altPricingData = await API.graphql(
+        graphqlOperation(listAltPricings, {
+          limit: "1000",
+        })
+      );
+      
+      setAltPricing(altPricingData.data.listAltPricings.items);
+    } catch (error) {
+      console.log("error on fetching Alt Pricing List", error);
+    }
+  };
 
   return (
     <React.Fragment>
@@ -58,13 +88,13 @@ function Billing() {
       </BasicContainer>
       
       <BasicContainer>
-        <SelectDate />
+        <SelectDate nextInv={nextInv} setNextInv={setNextInv}/>
       </BasicContainer>
      
       <Buttons />
-      <PublishGateKeeper />
+     
       <BasicContainer>
-        <BillingGrid />
+        <BillingGrid altPricing={altPricing} nextInv={nextInv}/>
       </BasicContainer>
     </React.Fragment>
   );

@@ -14,6 +14,12 @@
     "categories": {
       "auth": {
         "PersonalBPB": {}
+      },
+      "function": {
+        "grabSquare": {
+          "deploymentBucketName": "amplify-amplify131cc0cbea5f4-staging-201340-deployment",
+          "s3Key": "amplify-builds/grabSquare-4b4d7a534e646535514c-build.zip"
+        }
       }
     }
   }

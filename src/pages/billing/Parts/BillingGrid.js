@@ -26,7 +26,9 @@ const FooterGrid = styled.div`
   justify-content: space-between;
 `;
 
-const BillingGrid = () => {
+const clonedeep = require("lodash.clonedeep");
+
+const BillingGrid = ({ altPricing, nextInv }) => {
   const [expandedRows, setExpandedRows] = useState(null);
   const [invoices, setInvoices] = useState();
 
@@ -42,16 +44,17 @@ const BillingGrid = () => {
       let buildStand = buildStandList("*", delivDate, standing);
       let fullOrder = compileFullOrderList(buildOrders, buildStand);
 
-      console.log(fullOrder);
       let custList = fullOrder.map((ord) => ord["custName"]);
       let custListSet = new Set(custList);
       let custListArray = Array.from(custListSet);
       let invList = custListArray.map((cust) => ({
         custName: cust,
-        invNum: 1221,
+        invNum: 0,
         orders: [],
       }));
-      invList.forEach((inv, index) => (inv.invNum = inv.invNum + index));
+      invList.forEach(
+        (inv, index) => (inv.invNum = Number(nextInv) + Number(index))
+      );
 
       for (let inv of invList) {
         let orderClip = fullOrder.filter(
@@ -62,6 +65,14 @@ const BillingGrid = () => {
             products[
               products.findIndex((prod) => prod["prodName"] === ord["prodName"])
             ].wholePrice;
+          for (let alt of altPricing) {
+            if (
+              alt["custName"] === ord["custName"] &&
+              alt["prodName"] === ord["prodName"]
+            ) {
+              ratePull = alt["wholePrice"];
+            }
+          }
           let pushBit = {
             prodName: ord["prodName"],
             qty: Number(ord["qty"]),
@@ -72,12 +83,18 @@ const BillingGrid = () => {
           }
         }
       }
-      invList=invList.filter(inv => inv.orders.length>0)
+      invList = invList.filter((inv) => inv.orders.length > 0);
       setInvoices(invList);
     } catch {
       console.log("Whoops");
     }
-  }, [delivDate, orders, standing]);
+  }, [delivDate, orders, standing, nextInv]);
+
+
+  const formatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  })
 
   const deleteTemplate = () => {
     return <Button icon="pi pi-times-circle" />;
@@ -85,7 +102,9 @@ const BillingGrid = () => {
 
   const calcTotal = (rowData) => {
     let sum = Number(rowData.qty) * Number(rowData.rate);
-    sum = formatter.format(sum);
+
+    sum = formatter.format(sum)
+    
     return sum;
   };
 
@@ -95,7 +114,7 @@ const BillingGrid = () => {
       sum = sum + Number(i.qty) * Number(i.rate);
     }
 
-    sum = formatter.format(sum);
+    sum = formatter.format(sum)
 
     return (
       <FooterGrid>
@@ -108,10 +127,7 @@ const BillingGrid = () => {
     );
   };
 
-  const formatter = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  });
+  
 
   const calcSumTotal = (data) => {
     let sum = 0;
@@ -119,32 +135,92 @@ const BillingGrid = () => {
       sum = sum + Number(i.qty) * Number(i.rate);
     }
 
-    sum = formatter.format(sum);
+    sum = formatter.format(sum)
 
     return <div>{sum}</div>;
   };
 
-  const changeRate = (data) => {
-    let sum = formatter.format(data.rate);
+  const handleRateChange = (e, data, invNum) => {
+    if (e.code === "Enter") {
+      let invToModify = clonedeep(invoices);
+      let ind = invToModify.findIndex((inv) => inv["invNum"] === invNum);
+      let prodInd = invToModify[ind].orders.findIndex(
+        (ord) => ord["prodName"] === data["prodName"]
+      );
+      invToModify[ind].orders[prodInd]["rate"] = e.target.value;
+      setInvoices(invToModify);
+    }
+  };
+
+  const handleRateBlurChange = (e, data, invNum) => {
+    let invToModify = clonedeep(invoices);
+    let ind = invToModify.findIndex((inv) => inv["invNum"] === invNum);
+    let prodInd = invToModify[ind].orders.findIndex(
+      (ord) => ord["prodName"] === data["prodName"]
+    );
+    let val
+    data.rate !== e.target.value ? val = e.target.value : val = data.rate
+    invToModify[ind].orders[prodInd]["rate"] = Number(val);
+    setInvoices(invToModify);
+  };
+
+
+  const changeRate = (data, invNum) => {
+    
     return (
       <InputNumber
-        placeholder={sum}
+        placeholder={data.rate}
+        value={data.rate}
         size="4"
-        mode="currency"
-        currency="USD"
-        locale="en-US"
+        mode="decimal" locale="en-US" minFractionDigits={2}
+        onKeyDown={(e) => handleRateChange(e, data, invNum)}
+        onBlur={(e) => handleRateBlurChange(e, data, invNum)}
       />
     );
   };
 
-  const changeQty = (data) => {
-    return <InputNumber placeholder={data.qty} size="4" />;
+  const handleChange = (e, data, invNum) => {
+    if (e.code === "Enter") {
+      let invToModify = clonedeep(invoices);
+      let ind = invToModify.findIndex((inv) => inv["invNum"] === invNum);
+      let prodInd = invToModify[ind].orders.findIndex(
+        (ord) => ord["prodName"] === data["prodName"]
+      );
+      invToModify[ind].orders[prodInd]["qty"] = Number(e.target.value);
+      setInvoices(invToModify);
+    }
+  };
+
+  const handleBlurChange = (e, data, invNum) => {
+    let invToModify = clonedeep(invoices);
+    let ind = invToModify.findIndex((inv) => inv["invNum"] === invNum);
+    let prodInd = invToModify[ind].orders.findIndex(
+      (ord) => ord["prodName"] === data["prodName"]
+    );
+    let val
+    data.qty !== e.target.value ? val = e.target.value : val = data.qty
+    invToModify[ind].orders[prodInd]["qty"] = Number(val);
+    setInvoices(invToModify);
+  };
+
+  const changeQty = (data, invNum) => {
+    return (
+      <InputNumber
+        placeholder={data.qty}
+        value={data.qty}
+        size="4"
+        onKeyDown={(e) => handleChange(e, data, invNum)}
+        onBlur={(e) => handleBlurChange(e, data, invNum)}
+      />
+    );
   };
 
   const rowExpansionTemplate = (data) => {
     return (
       <div className="orders-subtable">
-        <h2>Invoice for {data.custName}</h2>
+        <h2>
+          Invoice #{data.invNum} for {data.custName}
+        </h2>
         <DataTable
           value={data.orders}
           footer={calcGrandTotal(data.orders)}
@@ -155,8 +231,11 @@ const BillingGrid = () => {
             body={deleteTemplate}
           ></Column>
           <Column field="prodName" header="Product"></Column>
-          <Column header="Quantity" body={changeQty}></Column>
-          <Column header="Rate" body={changeRate}>
+          <Column
+            header="Quantity"
+            body={(e) => changeQty(e, data.invNum)}
+          ></Column>
+          <Column header="Rate" body={(e) => changeRate(e, data.invNum)}>
             {" "}
           </Column>
           <Column header="Total" body={calcTotal}></Column>

@@ -109,7 +109,7 @@ type AltPricing @model @auth(rules: [{allow: public}]) {
   id: ID!
   custName: String
   prodName: String
-  price: Int
+  wholePrice: Float
 }
 
 type Closure @model @auth(rules: [{allow: public}]) {

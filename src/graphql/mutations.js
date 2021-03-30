@@ -499,7 +499,7 @@ export const createAltPricing = /* GraphQL */ `
       id
       custName
       prodName
-      price
+      wholePrice
       createdAt
       updatedAt
     }
@@ -514,7 +514,7 @@ export const updateAltPricing = /* GraphQL */ `
       id
       custName
       prodName
-      price
+      wholePrice
       createdAt
       updatedAt
     }
@@ -529,7 +529,7 @@ export const deleteAltPricing = /* GraphQL */ `
       id
       custName
       prodName
-      price
+      wholePrice
       createdAt
       updatedAt
     }

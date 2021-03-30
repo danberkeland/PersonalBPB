@@ -340,7 +340,7 @@ export const getAltPricing = /* GraphQL */ `
       id
       custName
       prodName
-      price
+      wholePrice
       createdAt
       updatedAt
     }
@@ -357,7 +357,7 @@ export const listAltPricings = /* GraphQL */ `
         id
         custName
         prodName
-        price
+        wholePrice
         createdAt
         updatedAt
       }

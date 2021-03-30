@@ -28,5 +28,12 @@
       "dependsOn": [],
       "customAuth": false
     }
+  },
+  "function": {
+    "grabSquare": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
   }
 }

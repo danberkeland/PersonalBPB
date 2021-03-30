@@ -7,11 +7,11 @@ import PublishGateKeeper from "./Parts/PublishGateKeeper";
 import Buttons from "./Parts/Buttons";
 import SelectDate from "./Parts/SelectDate";
 
-import { CustomerContext } from "../../dataContexts/CustomerContext";
-import { ProductsContext } from "../../dataContexts/ProductsContext";
-import { OrdersContext } from "../../dataContexts/OrdersContext";
-import { StandingContext } from "../../dataContexts/StandingContext";
-import { HoldingContext } from "../../dataContexts/HoldingContext";
+import { CustomerContext, CustomerLoad } from "../../dataContexts/CustomerContext";
+import { ProductsContext, ProductsLoad } from "../../dataContexts/ProductsContext";
+import { OrdersContext, OrdersLoad } from "../../dataContexts/OrdersContext";
+import { StandingContext, StandingLoad } from "../../dataContexts/StandingContext";
+import { HoldingContext, HoldingLoad } from "../../dataContexts/HoldingContext";
 
 const BasicContainer = styled.div`
   display: flex;
@@ -24,23 +24,35 @@ const BasicContainer = styled.div`
 `;
 
 function Billing() {
-  const { setCustLoaded } = useContext(CustomerContext);
-  const { setProdLoaded } = useContext(ProductsContext);
+  const { customers, custLoaded, setCustLoaded } = useContext(CustomerContext);
+  const { products, prodLoaded, setProdLoaded } = useContext(ProductsContext);
   let { setHoldLoaded } = useContext(HoldingContext);
-  let { setOrdersLoaded } = useContext(OrdersContext);
-  let { setStandLoaded } = useContext(StandingContext);
+  let { orders, ordersLoaded, setOrdersLoaded } = useContext(OrdersContext);
+  let { standing, standLoaded, setStandLoaded } = useContext(StandingContext);
 
   useEffect(() => {
-    setCustLoaded(true);
-
-    setProdLoaded(true);
+    if (!products) {
+      setProdLoaded(false);
+    }
+    if (!customers) {
+      setCustLoaded(true);
+    }
     setHoldLoaded(true);
-    setOrdersLoaded(true);
-    setStandLoaded(true);
+    if (!orders) {
+      setOrdersLoaded(true);
+    }
+    if (!standing) {
+      setStandLoaded(true);
+    }
   }, []);
 
   return (
     <React.Fragment>
+      {!ordersLoaded ? <OrdersLoad /> : ""}
+      {!custLoaded ? <CustomerLoad /> : ""}
+      {!prodLoaded ? <ProductsLoad /> : ""}
+      {!standLoaded ? <StandingLoad /> : ""}
+      
       <BasicContainer>
         <h1>Billing</h1>
       </BasicContainer>

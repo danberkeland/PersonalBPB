@@ -10,6 +10,8 @@ import { ProductsContext } from "../../../dataContexts/ProductsContext";
 import { OrdersContext } from "../../../dataContexts/OrdersContext";
 import { StandingContext } from "../../../dataContexts/StandingContext";
 
+import swal from "@sweetalert/with-react";
+
 import {
   buildCartList,
   buildStandList,
@@ -96,9 +98,52 @@ const BillingGrid = ({ altPricing, nextInv }) => {
     currency: "USD",
   })
 
-  const deleteTemplate = () => {
-    return <Button icon="pi pi-times-circle" />;
+  const deleteTemplate = (data, invNum) => {
+    return <Button icon="pi pi-times-circle" onClick={e => deleteItem(data, invNum)}
+    />;
   };
+
+  
+
+  const deleteItem = (data, invNum) => {
+    
+    let invToModify = clonedeep(invoices);
+      let ind = invToModify.findIndex((inv) => inv["invNum"] === invNum);
+      let prodInd = invToModify[ind].orders.findIndex(
+        (ord) => ord["prodName"] === data["prodName"]
+      );
+      invToModify[ind].orders[prodInd]["qty"] = 0;
+      setInvoices(invToModify);
+    
+  }
+
+
+  const deleteInvoiceTemplate = (invNum) => {
+    return <Button icon="pi pi-times-circle" onClick={e => deleteCheck(invNum)}
+    />;
+  };
+
+  const deleteCheck = (invNum) => {
+    swal({
+      text:
+        " Are you sure that you would like to permanently delete this invoice?",
+      icon: "warning",
+      buttons: ["Yes", "Don't do it!"],
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (!willDelete) {
+        deleteInvoice(invNum);
+      } else {
+        return;
+      }
+    });
+  }
+
+  const deleteInvoice = (invNum) => {
+    let invToModify = clonedeep(invoices);
+    invToModify = invToModify.filter(inv => inv["invNum"] !== invNum)
+    setInvoices(invToModify)
+  }
 
   const calcTotal = (rowData) => {
     let sum = Number(rowData.qty) * Number(rowData.rate);
@@ -228,7 +273,7 @@ const BillingGrid = ({ altPricing, nextInv }) => {
         >
           <Column
             headerStyle={{ width: "4rem" }}
-            body={deleteTemplate}
+            body={e => deleteTemplate(e, data.invNum)}
           ></Column>
           <Column field="prodName" header="Product"></Column>
           <Column
@@ -262,7 +307,7 @@ const BillingGrid = ({ altPricing, nextInv }) => {
 
           <Column
             headerStyle={{ width: "4rem" }}
-            body={deleteTemplate}
+            body={e => deleteInvoiceTemplate(e.invNum)}
           ></Column>
         </DataTable>
       </div>

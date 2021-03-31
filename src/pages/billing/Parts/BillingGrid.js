@@ -3,6 +3,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { InputNumber } from "primereact/inputnumber";
+import { Dropdown } from 'primereact/dropdown';
 
 import { CurrentDataContext } from "../../../dataContexts/CurrentDataContext";
 import { CustomerContext } from "../../../dataContexts/CustomerContext";
@@ -25,10 +26,20 @@ const FooterGrid = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
+  padding: 10px 10px;
+  align-items: center;
 `;
 
 const clonedeep = require("lodash.clonedeep");
+
+const cities = [
+  {name: 'New York', code: 'NY'},
+  {name: 'Rome', code: 'RM'},
+  {name: 'London', code: 'LDN'},
+  {name: 'Istanbul', code: 'IST'},
+  {name: 'Paris', code: 'PRS'}
+];
 
 const BillingGrid = ({ altPricing, nextInv }) => {
   const [expandedRows, setExpandedRows] = useState(null);
@@ -162,13 +173,40 @@ const BillingGrid = ({ altPricing, nextInv }) => {
     sum = formatter.format(sum)
 
     return (
+      <React.Fragment>
+     
       <FooterGrid>
-        <div></div>
-        <div></div>
+        <Button>ADD +</Button>
+        <label>Product</label>
+        <Dropdown optionLabel="name" options={cities} placeholder="Select a Product"/>
+        <label>Quantity</label>
+        <InputNumber
+        id="addQty"
+        placeholder=''
+        value=''
+        size="4"
+        
+      />
+      <label>Rate</label>
+        <InputNumber
+        placeholder=''
+        value=''
+        size="4"
+        
+      />
+      </FooterGrid> 
+      <FooterGrid>
+      
+      <div></div>
+      <div></div>
         <div>Grand Total</div>
         <div>{sum}</div>
         <div></div>
+
+        
+        
       </FooterGrid>
+      </React.Fragment>
     );
   };
 

@@ -39,6 +39,7 @@ function Billing() {
 
   const [ altPricing, setAltPricing ] = useState()
   const [ nextInv, setNextInv ] = useState(0);
+  const [invoices, setInvoices] = useState();
 
   useEffect(() => {
     if (!products) {
@@ -88,13 +89,13 @@ function Billing() {
       </BasicContainer>
       
       <BasicContainer>
-        <SelectDate nextInv={nextInv} setNextInv={setNextInv}/>
+        <SelectDate nextInv={nextInv} setNextInv={setNextInv} invoices={invoices} setInvoices={setInvoices}/>
       </BasicContainer>
      
       <Buttons />
      
       <BasicContainer>
-        <BillingGrid altPricing={altPricing} nextInv={nextInv}/>
+        <BillingGrid altPricing={altPricing} nextInv={nextInv} invoices={invoices} setInvoices={setInvoices}/>
       </BasicContainer>
     </React.Fragment>
   );

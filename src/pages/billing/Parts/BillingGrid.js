@@ -3,10 +3,9 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { InputNumber } from "primereact/inputnumber";
-import { Dropdown } from 'primereact/dropdown';
+import { Dropdown } from "primereact/dropdown";
 
 import { CurrentDataContext } from "../../../dataContexts/CurrentDataContext";
-import { CustomerContext } from "../../../dataContexts/CustomerContext";
 import { ProductsContext } from "../../../dataContexts/ProductsContext";
 import { OrdersContext } from "../../../dataContexts/OrdersContext";
 import { StandingContext } from "../../../dataContexts/StandingContext";
@@ -18,6 +17,13 @@ import {
   buildStandList,
   compileFullOrderList,
 } from "../../../helpers/CartBuildingHelpers";
+
+import {
+  buildCustList,
+  buildInvList,
+  attachInvoiceOrders,
+  formatter,
+} from "../../../helpers/billingGridHelpers";
 
 import styled from "styled-components";
 
@@ -33,20 +39,14 @@ const FooterGrid = styled.div`
 
 const clonedeep = require("lodash.clonedeep");
 
-const cities = [
-  {name: 'New York', code: 'NY'},
-  {name: 'Rome', code: 'RM'},
-  {name: 'London', code: 'LDN'},
-  {name: 'Istanbul', code: 'IST'},
-  {name: 'Paris', code: 'PRS'}
-];
-
-const BillingGrid = ({ altPricing, nextInv }) => {
+const BillingGrid = ({ altPricing, nextInv, invoices, setInvoices }) => {
   const [expandedRows, setExpandedRows] = useState(null);
-  const [invoices, setInvoices] = useState();
+  
+  const [pickedProduct, setPickedProduct] = useState();
+  const [ pickedRate, setPickedRate ] = useState();
+  const [pickedQty, setPickedQty ] = useState()
 
   const { delivDate } = useContext(CurrentDataContext);
-  const { customers } = useContext(CustomerContext);
   const { products } = useContext(ProductsContext);
   const { orders } = useContext(OrdersContext);
   const { standing } = useContext(StandingContext);
@@ -57,81 +57,58 @@ const BillingGrid = ({ altPricing, nextInv }) => {
       let buildStand = buildStandList("*", delivDate, standing);
       let fullOrder = compileFullOrderList(buildOrders, buildStand);
 
-      let custList = fullOrder.map((ord) => ord["custName"]);
-      let custListSet = new Set(custList);
-      let custListArray = Array.from(custListSet);
-      let invList = custListArray.map((cust) => ({
-        custName: cust,
-        invNum: 0,
-        orders: [],
-      }));
-      invList.forEach(
-        (inv, index) => (inv.invNum = Number(nextInv) + Number(index))
+      let custListArray = buildCustList(fullOrder);
+      let invList = buildInvList(custListArray, nextInv);
+      let invOrders = attachInvoiceOrders(
+        invList,
+        fullOrder,
+        products,
+        altPricing
       );
 
-      for (let inv of invList) {
-        let orderClip = fullOrder.filter(
-          (ord) => ord["custName"] === inv["custName"]
-        );
-        for (let ord of orderClip) {
-          let ratePull =
-            products[
-              products.findIndex((prod) => prod["prodName"] === ord["prodName"])
-            ].wholePrice;
-          for (let alt of altPricing) {
-            if (
-              alt["custName"] === ord["custName"] &&
-              alt["prodName"] === ord["prodName"]
-            ) {
-              ratePull = alt["wholePrice"];
-            }
-          }
-          let pushBit = {
-            prodName: ord["prodName"],
-            qty: Number(ord["qty"]),
-            rate: ratePull,
-          };
-          if (pushBit.qty > 0) {
-            inv.orders.push(pushBit);
-          }
-        }
-      }
-      invList = invList.filter((inv) => inv.orders.length > 0);
-      setInvoices(invList);
+      setInvoices(invOrders);
     } catch {
       console.log("Whoops");
     }
   }, [delivDate, orders, standing, nextInv]);
 
+  useEffect(() => {
+    
+    try {
+      let ratePull =
+        products[
+          products.findIndex((prod) => prod["prodName"] === pickedProduct)
+        ].wholePrice;
 
-  const formatter = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  })
+      setPickedRate(ratePull);
+    } catch {
+      console.log("no product chosen");
+    }
+  }, [pickedProduct]);
 
   const deleteTemplate = (data, invNum) => {
-    return <Button icon="pi pi-times-circle" onClick={e => deleteItem(data, invNum)}
-    />;
+    return (
+      <Button
+        icon="pi pi-times-circle"
+        onClick={(e) => deleteItem(data, invNum)}
+      />
+    );
   };
 
-  
-
   const deleteItem = (data, invNum) => {
-    
     let invToModify = clonedeep(invoices);
-      let ind = invToModify.findIndex((inv) => inv["invNum"] === invNum);
-      let prodInd = invToModify[ind].orders.findIndex(
-        (ord) => ord["prodName"] === data["prodName"]
-      );
-      invToModify[ind].orders[prodInd]["qty"] = 0;
-      setInvoices(invToModify);
-    
-  }
-
+    let ind = invToModify.findIndex((inv) => inv["invNum"] === invNum);
+    let prodInd = invToModify[ind].orders.findIndex(
+      (ord) => ord["prodName"] === data["prodName"]
+    );
+    invToModify[ind].orders[prodInd]["qty"] = 0;
+    setInvoices(invToModify);
+  };
 
   const deleteInvoiceTemplate = (invNum) => {
-    return <Button icon="pi pi-times-circle" onClick={e => deleteCheck(invNum)}
-    />;
+    return (
+      <Button icon="pi pi-times-circle" onClick={(e) => deleteCheck(invNum)} />
+    );
   };
 
   const deleteCheck = (invNum) => {
@@ -148,77 +125,111 @@ const BillingGrid = ({ altPricing, nextInv }) => {
         return;
       }
     });
-  }
+  };
 
   const deleteInvoice = (invNum) => {
     let invToModify = clonedeep(invoices);
-    invToModify = invToModify.filter(inv => inv["invNum"] !== invNum)
-    setInvoices(invToModify)
-  }
+    invToModify = invToModify.filter((inv) => inv["invNum"] !== invNum);
+    setInvoices(invToModify);
+  };
 
   const calcTotal = (rowData) => {
     let sum = Number(rowData.qty) * Number(rowData.rate);
 
-    sum = formatter.format(sum)
-    
+    sum = formatter.format(sum);
+
     return sum;
   };
 
-  const calcGrandTotal = (data) => {
-    let sum = 0;
-    for (let i of data) {
-      sum = sum + Number(i.qty) * Number(i.rate);
+  const handleAddProduct = (e,invNum) => {
+    let invToModify = clonedeep(invoices);
+    let ind = invToModify.findIndex((inv) => inv["invNum"] === invNum);
+    let prodToAdd = {
+      prodName: pickedProduct,
+      qty: pickedQty,
+      rate: pickedRate
     }
+    invToModify[ind].orders.push(prodToAdd)
+    setInvoices(invToModify)
+    setPickedProduct('')
+    setPickedQty(0)
+    setPickedRate(0)
 
-    sum = formatter.format(sum)
+  }
+
+  const calcGrandTotal = (data, invNum) => {
+    let sum = 0;
+
+    try {
+      for (let i of data) {
+        sum = sum + Number(i.qty) * Number(i.rate);
+      }
+
+      sum = formatter.format(sum);
+    } catch {
+      console.log("nothing to calc");
+    }
 
     return (
       <React.Fragment>
-     
-      <FooterGrid>
-        <Button>ADD +</Button>
-        <label>Product</label>
-        <Dropdown optionLabel="name" options={cities} placeholder="Select a Product"/>
-        <label>Quantity</label>
-        <InputNumber
-        id="addQty"
-        placeholder=''
-        value=''
-        size="4"
-        
-      />
-      <label>Rate</label>
-        <InputNumber
-        placeholder=''
-        value=''
-        size="4"
-        
-      />
-      </FooterGrid> 
-      <FooterGrid>
-      
-      <div></div>
-      <div></div>
-        <div>Grand Total</div>
-        <div>{sum}</div>
-        <div></div>
-
-        
-        
-      </FooterGrid>
+        <FooterGrid>
+          <Button onClick={(e) => handleAddProduct(e, invNum)}>ADD +</Button>
+          <label>Product</label>
+          <Dropdown
+            optionLabel="prodName"
+            options={products}
+            placeholder={pickedProduct}
+            name="products"
+            value={pickedProduct}
+            onChange={(e) => setPickedProduct(e.target.value.prodName)}
+          />
+          <label>Quantity</label>
+          <InputNumber
+            id="addQty"
+            placeholder={pickedQty}
+            value={pickedQty}
+            size="4"
+            onKeyDown={(e) =>
+              e.code === "Enter" && setPickedQty(e.target.value)
+            }
+            onBlur={(e) => setPickedQty(e.target.value)}
+          />
+          <label>Rate</label>
+          <InputNumber
+            id="addRate"
+            placeholder={pickedRate}
+            value={pickedRate}
+            size="4"
+            mode="decimal"
+            locale="en-US"
+            minFractionDigits={2}
+            onKeyDown={(e) =>
+              e.code === "Enter" && setPickedRate(e.target.value)
+            }
+            onBlur={(e) => setPickedRate(e.target.value)}
+          />
+        </FooterGrid>
+        <FooterGrid>
+          <div></div>
+          <div></div>
+          <div>Grand Total</div>
+          <div>{sum}</div>
+          <div></div>
+        </FooterGrid>
       </React.Fragment>
     );
   };
 
-  
-
   const calcSumTotal = (data) => {
     let sum = 0;
-    for (let i of data) {
-      sum = sum + Number(i.qty) * Number(i.rate);
+    try {
+      for (let i of data) {
+        sum = sum + Number(i.qty) * Number(i.rate);
+      }
+    } catch {
+      console.log("No data to calc.");
     }
-
-    sum = formatter.format(sum)
+    sum = formatter.format(sum);
 
     return <div>{sum}</div>;
   };
@@ -241,21 +252,21 @@ const BillingGrid = ({ altPricing, nextInv }) => {
     let prodInd = invToModify[ind].orders.findIndex(
       (ord) => ord["prodName"] === data["prodName"]
     );
-    let val
-    data.rate !== e.target.value ? val = e.target.value : val = data.rate
+    let val;
+    data.rate !== e.target.value ? (val = e.target.value) : (val = data.rate);
     invToModify[ind].orders[prodInd]["rate"] = Number(val);
     setInvoices(invToModify);
   };
 
-
   const changeRate = (data, invNum) => {
-    
     return (
       <InputNumber
         placeholder={data.rate}
         value={data.rate}
         size="4"
-        mode="decimal" locale="en-US" minFractionDigits={2}
+        mode="decimal"
+        locale="en-US"
+        minFractionDigits={2}
         onKeyDown={(e) => handleRateChange(e, data, invNum)}
         onBlur={(e) => handleRateBlurChange(e, data, invNum)}
       />
@@ -274,14 +285,16 @@ const BillingGrid = ({ altPricing, nextInv }) => {
     }
   };
 
+  
+
   const handleBlurChange = (e, data, invNum) => {
     let invToModify = clonedeep(invoices);
     let ind = invToModify.findIndex((inv) => inv["invNum"] === invNum);
     let prodInd = invToModify[ind].orders.findIndex(
       (ord) => ord["prodName"] === data["prodName"]
     );
-    let val
-    data.qty !== e.target.value ? val = e.target.value : val = data.qty
+    let val;
+    data.qty !== e.target.value ? (val = e.target.value) : (val = data.qty);
     invToModify[ind].orders[prodInd]["qty"] = Number(val);
     setInvoices(invToModify);
   };
@@ -298,6 +311,7 @@ const BillingGrid = ({ altPricing, nextInv }) => {
     );
   };
 
+
   const rowExpansionTemplate = (data) => {
     return (
       <div className="orders-subtable">
@@ -306,12 +320,12 @@ const BillingGrid = ({ altPricing, nextInv }) => {
         </h2>
         <DataTable
           value={data.orders}
-          footer={calcGrandTotal(data.orders)}
+          footer={calcGrandTotal(data.orders,data.invNum)}
           className="p-datatable-sm"
         >
           <Column
             headerStyle={{ width: "4rem" }}
-            body={e => deleteTemplate(e, data.invNum)}
+            body={(e) => deleteTemplate(e, data.invNum)}
           ></Column>
           <Column field="prodName" header="Product"></Column>
           <Column
@@ -345,7 +359,7 @@ const BillingGrid = ({ altPricing, nextInv }) => {
 
           <Column
             headerStyle={{ width: "4rem" }}
-            body={e => deleteInvoiceTemplate(e.invNum)}
+            body={(e) => deleteInvoiceTemplate(e.invNum)}
           ></Column>
         </DataTable>
       </div>

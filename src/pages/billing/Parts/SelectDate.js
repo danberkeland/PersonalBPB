@@ -1,9 +1,12 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import { CurrentDataContext } from "../../../dataContexts/CurrentDataContext";
+import { CustomerContext } from "../../../dataContexts/CustomerContext";
 
 import { Calendar } from "primereact/calendar";
 import { InputText } from "primereact/inputtext";
+import { Button } from "primereact/button";
+import { Dropdown } from "primereact/dropdown";
 
 import styled from "styled-components";
 
@@ -11,6 +14,9 @@ import {
   convertDatetoBPBDate,
   todayPlus,
 } from "../../../helpers/dateTimeHelpers";
+
+const clonedeep = require("lodash.clonedeep");
+
 
 const { DateTime } = require("luxon");
 
@@ -23,8 +29,11 @@ const BasicContainer = styled.div`
   box-sizing: border-box;
 `;
 
-const SelectDate = ({ nextInv, setNextInv }) => {
+const SelectDate = ({ nextInv, setNextInv, invoices, setInvoices }) => {
   const { delivDate, setDelivDate } = useContext(CurrentDataContext);
+  const { customers } = useContext(CustomerContext)
+
+  const [ pickedCustomer, setPickedCustomer ] = useState();
 
   
  
@@ -37,6 +46,17 @@ const SelectDate = ({ nextInv, setNextInv }) => {
   const setDate = (date) => {
     const dt2 = DateTime.fromJSDate(date);
     setDelivDate(dt2.toFormat("yyyy-MM-dd"));
+  };
+
+  const handleAddCustomer = (e) => {
+    let invToModify = clonedeep(invoices);
+    invToModify.push({
+      custName: e.target.value,
+      invNum: invoices[invoices.length - 1]["invNum"] + 1,
+      orders: [],
+    });
+    setInvoices(invToModify);
+    setPickedCustomer('')
   };
 
  
@@ -52,6 +72,18 @@ const SelectDate = ({ nextInv, setNextInv }) => {
           dateFormat="mm/dd/yy"
           onChange={(e) => setDate(e.value)}
         />
+        </div>
+        <div>
+          <Button value={pickedCustomer} onClick={e => handleAddCustomer(e)}>ADD CUSTOMER +</Button>
+          
+          <Dropdown
+            optionLabel="custName"
+            options={customers}
+            placeholder={pickedCustomer}
+            name="customers"
+            value={pickedCustomer}
+            onChange={e => setPickedCustomer(e.target.value.custName)}
+          />
         </div>
         <div>
         <span className="p-float-label">

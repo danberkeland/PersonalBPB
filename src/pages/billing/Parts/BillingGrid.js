@@ -7,6 +7,7 @@ import { Dropdown } from "primereact/dropdown";
 
 import { CurrentDataContext } from "../../../dataContexts/CurrentDataContext";
 import { ProductsContext } from "../../../dataContexts/ProductsContext";
+import { CustomerContext } from "../../../dataContexts/CustomerContext";
 import { OrdersContext } from "../../../dataContexts/OrdersContext";
 import { StandingContext } from "../../../dataContexts/StandingContext";
 
@@ -39,15 +40,17 @@ const FooterGrid = styled.div`
 
 const clonedeep = require("lodash.clonedeep");
 
-const BillingGrid = ({ altPricing, nextInv, invoices, setInvoices }) => {
+const BillingGrid = ({ altPricing, nextInv, invoices, setInvoices, zones }) => {
   const [expandedRows, setExpandedRows] = useState(null);
   
   const [pickedProduct, setPickedProduct] = useState();
   const [ pickedRate, setPickedRate ] = useState();
   const [pickedQty, setPickedQty ] = useState()
+  
 
   const { delivDate } = useContext(CurrentDataContext);
   const { products } = useContext(ProductsContext);
+  const { customers } = useContext(CustomerContext);
   const { orders } = useContext(OrdersContext);
   const { standing } = useContext(StandingContext);
 
@@ -56,21 +59,23 @@ const BillingGrid = ({ altPricing, nextInv, invoices, setInvoices }) => {
       let buildOrders = buildCartList("*", delivDate, orders);
       let buildStand = buildStandList("*", delivDate, standing);
       let fullOrder = compileFullOrderList(buildOrders, buildStand);
-
+      
       let custListArray = buildCustList(fullOrder);
       let invList = buildInvList(custListArray, nextInv);
       let invOrders = attachInvoiceOrders(
         invList,
         fullOrder,
         products,
-        altPricing
+        altPricing,
+        customers,
+        zones
       );
-
+      console.log(invOrders)
       setInvoices(invOrders);
     } catch {
       console.log("Whoops");
     }
-  }, [delivDate, orders, standing, nextInv]);
+  }, [delivDate, orders, standing, nextInv, zones]);
 
   useEffect(() => {
     

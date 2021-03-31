@@ -14,7 +14,7 @@ import { StandingContext, StandingLoad } from "../../dataContexts/StandingContex
 import { HoldingContext } from "../../dataContexts/HoldingContext";
 import { ToggleContext } from "../../dataContexts/ToggleContext";
 
-import { listAltPricings } from "../../graphql/queries";
+import { listAltPricings, listZones } from "../../graphql/queries";
 
 import { API, graphqlOperation } from "aws-amplify";
 
@@ -40,6 +40,7 @@ function Billing() {
   const [ altPricing, setAltPricing ] = useState()
   const [ nextInv, setNextInv ] = useState(0);
   const [invoices, setInvoices] = useState();
+  const [ zones, setZones ] = useState()
 
   useEffect(() => {
     if (!products) {
@@ -77,6 +78,29 @@ function Billing() {
     }
   };
 
+  useEffect(() => {
+    setIsLoading(true);
+    fetchZones();
+    setIsLoading(false);
+  }, []);
+
+  const fetchZones = async () => {
+    try {
+      const zoneData = await API.graphql(
+        graphqlOperation(listZones, {
+          limit: "50",
+        })
+      );
+      const zoneList = zoneData.data.listZones.items;
+      
+      let noDelete = zoneList.filter((zone) => zone["_deleted"] !== true);
+  
+      setZones(noDelete)
+    } catch (error) {
+      console.log("error on fetching Zone List", error);
+    }
+  };
+
   return (
     <React.Fragment>
       {!ordersLoaded ? <OrdersLoad /> : ""}
@@ -95,7 +119,7 @@ function Billing() {
       <Buttons />
      
       <BasicContainer>
-        <BillingGrid altPricing={altPricing} nextInv={nextInv} invoices={invoices} setInvoices={setInvoices}/>
+        <BillingGrid altPricing={altPricing} nextInv={nextInv} invoices={invoices} setInvoices={setInvoices} zones={zones}/>
       </BasicContainer>
     </React.Fragment>
   );

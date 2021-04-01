@@ -36,7 +36,7 @@ const Description = ({ selectedProduct, setSelectedProduct }) => {
         <InputText
           id="squareID"
           placeholder={selectedProduct.squareID}
-          disabled
+         
           onKeyUp={(e) =>
             e.code === "Enter" &&
             setSelectedProduct(setValue(e, selectedProduct))

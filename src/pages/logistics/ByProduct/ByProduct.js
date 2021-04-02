@@ -20,6 +20,10 @@ import { HoldingContext } from "../../../dataContexts/HoldingContext";
 import ProductGrid from "../ByProduct/Parts/ProductGrid";
 import ToolBar from "../ByProduct/Parts/ToolBar";
 
+import { createOrder } from "../../../graphql/mutations";
+
+import { API, graphqlOperation } from "aws-amplify";
+
 const MainWrapper = styled.div`
   display: grid;
   grid-template-columns: 1fr;
@@ -43,9 +47,9 @@ function ByProduct() {
   const [orderList, setOrderList] = useState("");
 
   const { custLoaded, setCustLoaded } = useContext(CustomerContext);
-  const { prodLoaded, setProdLoaded } = useContext(ProductsContext);
+  const { products, prodLoaded, setProdLoaded } = useContext(ProductsContext);
   let { setHoldLoaded } = useContext(HoldingContext);
-  let { ordersLoaded, setOrdersLoaded } = useContext(OrdersContext);
+  let { orders, ordersLoaded, setOrdersLoaded } = useContext(OrdersContext);
   let { standLoaded, setStandLoaded } = useContext(StandingContext);
 
   useEffect(() => {
@@ -56,17 +60,7 @@ function ByProduct() {
     setStandLoaded(false);
   }, []);
 
-  useEffect(() => {
-    fetch('https://8eo1jrov6a.execute-api.us-east-2.amazonaws.com/done')
-    // Handle success
-    .then(response => enterNewOrders(response.json()))  // convert to json
-   
-    .catch(err => console.log('Request Failed', err)); // Catch errors
-  },[])
-
-  const enterNewOrders = (orders) => {
-    return
-  }
+  
 
   return (
     <React.Fragment>

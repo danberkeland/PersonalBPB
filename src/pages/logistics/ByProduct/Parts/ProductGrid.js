@@ -25,35 +25,60 @@ const ProductGrid = () => {
 
   const [builtGrid, setBuiltGrid] = useState();
 
+  const tryZone = (grd) => {
+    let zone
+    try{
+    zone =
+      customers[
+        customers.findIndex(
+          (cust) => cust["custName"] === grd["custName"]
+        )
+      ]["zoneName"];
+    } catch {
+      zone = ''
+    }
+    return zone;
+  };
+
+  const tryNick = (grd) => {
+    let nick
+    try{
+    nick =
+      customers[
+        customers.findIndex(
+          (cust) => cust["custName"] === grd["custName"]
+        )
+      ]["nickName"];
+    } catch {
+      nick = ''
+    }
+    return nick;
+  };
+
   useEffect(() => {
     if (orders && standing && customers && products && delivDate) {
+      
       try {
         let buildOrders = buildCartList("*", delivDate, orders);
         let buildStand = buildStandList("*", delivDate, standing);
         let fullOrder = compileFullOrderList(buildOrders, buildStand);
-
+     
         let builtGridSetup = fullOrder.filter((ord) => ord["qty"] !== 0);
+        console.log(builtGridSetup)
+        
         builtGridSetup.forEach(
-          (grd) =>
-            (grd["zoneName"] =
-              customers[
-                customers.findIndex(
-                  (cust) => cust["custName"] === grd["custName"]
-                )
-              ]["zoneName"]) &&
+          (grd) => grd["zoneName"] = tryZone(grd)
+             &&
             (grd["nickName"] =
               products[
                 products.findIndex(
                   (prod) => prod["prodName"] === grd["prodName"]
                 )
               ]["nickName"]) &&
-            (grd["custNick"] =
-              customers[
-                customers.findIndex(
-                  (cust) => cust["custName"] === grd["custName"]
-                )
-              ]["nickName"])
+            (grd["custNick"] = tryNick(grd)
+            )
         );
+        
         setIsLoading(false);
         setBuiltGrid(builtGridSetup);
       } catch {

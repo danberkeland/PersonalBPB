@@ -110,7 +110,7 @@ function Billing() {
       {!standLoaded ? <StandingLoad /> : ""}
       
       <BasicContainer>
-        <h1>Billing Billing</h1>
+        <h1>Billing Fixes</h1>
       </BasicContainer>
       
       <BasicContainer>

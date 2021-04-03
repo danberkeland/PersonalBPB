@@ -1,5 +1,7 @@
 export const buildCustList = (fullOrder) => {
-  let custList = fullOrder.map((ord) => ord["custName"]);
+  console.log(fullOrder)
+  let custList = fullOrder.filter(ord => ord['isWhole']===true)
+  custList = custList.map((ord) => ord["custName"]);
   let custListSet = new Set(custList);
   let custListArray = Array.from(custListSet);
   return custListArray;

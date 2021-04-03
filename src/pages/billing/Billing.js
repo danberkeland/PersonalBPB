@@ -29,6 +29,24 @@ const BasicContainer = styled.div`
   box-sizing: border-box;
 `;
 
+const fetchInfo = async (operation, opString, limit) => {
+  try {
+    let info = await API.graphql(
+      graphqlOperation(operation, {
+        limit: limit,
+      })
+    );
+    let list = info.data[opString].items;
+
+    let noDelete = list.filter((li) => li["_deleted"] !== true);
+    return noDelete;
+  } catch {
+    return [];
+  }
+};
+
+
+
 function Billing() {
   const { customers, custLoaded, setCustLoaded } = useContext(CustomerContext);
   const { products, prodLoaded, setProdLoaded } = useContext(ProductsContext);
@@ -61,41 +79,24 @@ function Billing() {
   useEffect(() => {
     setIsLoading(true);
     fetchAltPricing();
+    fetchZones()
     setIsLoading(false);
   }, []);
 
+
   const fetchAltPricing = async () => {
     try {
-      const altPricingData = await API.graphql(
-        graphqlOperation(listAltPricings, {
-          limit: "1000",
-        })
-      );
-      
-      setAltPricing(altPricingData.data.listAltPricings.items);
+      let altPricing = await fetchInfo(listAltPricings,"listAltPricings", "1000");
+      setAltPricing(altPricing);   
     } catch (error) {
       console.log("error on fetching Alt Pricing List", error);
     }
   };
 
-  useEffect(() => {
-    setIsLoading(true);
-    fetchZones();
-    setIsLoading(false);
-  }, []);
-
   const fetchZones = async () => {
     try {
-      const zoneData = await API.graphql(
-        graphqlOperation(listZones, {
-          limit: "50",
-        })
-      );
-      const zoneList = zoneData.data.listZones.items;
-      
-      let noDelete = zoneList.filter((zone) => zone["_deleted"] !== true);
-  
-      setZones(noDelete)
+      let zones = await fetchInfo(listZones,"listZones", "50");
+      setZones(zones);
     } catch (error) {
       console.log("error on fetching Zone List", error);
     }

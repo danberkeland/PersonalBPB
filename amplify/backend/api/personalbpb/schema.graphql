@@ -121,15 +121,9 @@ type Closure @model @auth(rules: [{allow: public}]) {
 
 type HeldforWeeklyInvoicing @model @auth(rules: [{allow: public}]) {
   id: ID!
-  custName: String
-  delivDate: String
-  orders: [InvOrder]
-}
-
-type InvOrder @model @auth(rules: [{allow: public}]) {
-  id: ID!
-  prodName: String
+  custName: String!
+  delivDate: String!
+  prodName: String!
   qty: Int
   rate: Float
 }
- 

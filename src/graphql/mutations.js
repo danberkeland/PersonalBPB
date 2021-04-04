@@ -589,14 +589,9 @@ export const createHeldforWeeklyInvoicing = /* GraphQL */ `
       id
       custName
       delivDate
-      orders {
-        id
-        prodName
-        qty
-        rate
-        createdAt
-        updatedAt
-      }
+      prodName
+      qty
+      rate
       createdAt
       updatedAt
     }
@@ -611,14 +606,9 @@ export const updateHeldforWeeklyInvoicing = /* GraphQL */ `
       id
       custName
       delivDate
-      orders {
-        id
-        prodName
-        qty
-        rate
-        createdAt
-        updatedAt
-      }
+      prodName
+      qty
+      rate
       createdAt
       updatedAt
     }
@@ -633,56 +623,6 @@ export const deleteHeldforWeeklyInvoicing = /* GraphQL */ `
       id
       custName
       delivDate
-      orders {
-        id
-        prodName
-        qty
-        rate
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const createInvOrder = /* GraphQL */ `
-  mutation CreateInvOrder(
-    $input: CreateInvOrderInput!
-    $condition: ModelInvOrderConditionInput
-  ) {
-    createInvOrder(input: $input, condition: $condition) {
-      id
-      prodName
-      qty
-      rate
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const updateInvOrder = /* GraphQL */ `
-  mutation UpdateInvOrder(
-    $input: UpdateInvOrderInput!
-    $condition: ModelInvOrderConditionInput
-  ) {
-    updateInvOrder(input: $input, condition: $condition) {
-      id
-      prodName
-      qty
-      rate
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const deleteInvOrder = /* GraphQL */ `
-  mutation DeleteInvOrder(
-    $input: DeleteInvOrderInput!
-    $condition: ModelInvOrderConditionInput
-  ) {
-    deleteInvOrder(input: $input, condition: $condition) {
-      id
       prodName
       qty
       rate

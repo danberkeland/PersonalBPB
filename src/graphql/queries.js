@@ -402,14 +402,9 @@ export const getHeldforWeeklyInvoicing = /* GraphQL */ `
       id
       custName
       delivDate
-      orders {
-        id
-        prodName
-        qty
-        rate
-        createdAt
-        updatedAt
-      }
+      prodName
+      qty
+      rate
       createdAt
       updatedAt
     }
@@ -430,42 +425,6 @@ export const listHeldforWeeklyInvoicings = /* GraphQL */ `
         id
         custName
         delivDate
-        orders {
-          id
-          prodName
-          qty
-          rate
-          createdAt
-          updatedAt
-        }
-        createdAt
-        updatedAt
-      }
-      nextToken
-    }
-  }
-`;
-export const getInvOrder = /* GraphQL */ `
-  query GetInvOrder($id: ID!) {
-    getInvOrder(id: $id) {
-      id
-      prodName
-      qty
-      rate
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const listInvOrders = /* GraphQL */ `
-  query ListInvOrders(
-    $filter: ModelInvOrderFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listInvOrders(filter: $filter, limit: $limit, nextToken: $nextToken) {
-      items {
-        id
         prodName
         qty
         rate

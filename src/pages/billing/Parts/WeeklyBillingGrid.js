@@ -25,6 +25,27 @@ import { ExpandedBillingRows } from "./Parts/ExpandedBillingRows";
 import { DeleteInvoice } from "./Parts/DeleteInvoice";
 import { convertDatetoBPBDate } from "../../../helpers/dateTimeHelpers";
 
+import { API, graphqlOperation } from "aws-amplify";
+
+import { listHeldforWeeklyInvoicings } from "../../../graphql/queries";
+import { createHeldforWeeklyInvoicing } from "../../../graphql/mutations";
+
+const fetchInfo = async (operation, opString, limit) => {
+  try {
+    let info = await API.graphql(
+      graphqlOperation(operation, {
+        limit: limit,
+      })
+    );
+    let list = info.data[opString].items;
+
+    let noDelete = list.filter((li) => li["_deleted"] !== true);
+    return noDelete;
+  } catch {
+    return [];
+  }
+};
+
 const WeeklyBillingGrid = ({
   altPricing,
   nextInv,
@@ -62,7 +83,7 @@ const WeeklyBillingGrid = ({
         "weekly"
       );
       console.log(invOrders);
-      // add invOrders to DB
+      addOrdersToDB(invOrders)
       setWeeklyInvoices(invOrders);
     } catch {
       console.log("Whoops");
@@ -81,6 +102,42 @@ const WeeklyBillingGrid = ({
       console.log("no product chosen");
     }
   }, [pickedProduct]);
+
+  const addOrdersToDB = async (invOrders) => {
+    console.log(invOrders)
+    // fetch thisWeeksOrders
+    try {
+      let thisWeeksOrders = await fetchInfo(listHeldforWeeklyInvoicings,"listHeldforWeeklyInvoicings", "1000");
+      console.log(thisWeeksOrders)
+      
+      for (let inv of invOrders){
+        if (thisWeeksOrders.findIndex(ord => ord["delivDate"]===delivDate && ord["custName"]===inv["custName"] && inv["custName"]!=='')<0){
+          for (let ord of inv.orders){
+          let newWeeklyOrder = {
+            custName: inv["custName"],
+            delivDate: delivDate,
+            prodName: ord["prodName"],
+            qty: ord["qty"],
+            rate: ord["rate"]
+          }
+          
+          try {
+            await API.graphql(
+              graphqlOperation(createHeldforWeeklyInvoicing, { input: { ...newWeeklyOrder } })
+            );
+          } catch (error) {
+            console.log("error on creating Orders", error);
+          }
+        }
+          
+        }
+      }
+      // if order exists, but qty and rate have changed - UPDATE order
+    } catch (error) {
+      console.log("error on fetching listHeldforWeeklyInvoicings List", error);
+    }
+    
+  }
 
   const calcSumTotal = (data) => {
     let sum = 0;

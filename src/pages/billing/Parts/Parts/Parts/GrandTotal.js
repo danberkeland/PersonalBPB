@@ -21,8 +21,8 @@ const FooterGrid = styled.div`
 
 export const GrandTotal = ({
   rowData,
-  invoices,
-  setInvoices,
+  dailyInvoices,
+  setDailyInvoices,
   products,
   pickedProduct,
   setPickedProduct,
@@ -32,7 +32,7 @@ export const GrandTotal = ({
   setPickedRate,
 }) => {
   const handleAddProduct = (e, invNum) => {
-    let invToModify = clonedeep(invoices);
+    let invToModify = clonedeep(dailyInvoices);
     let ind = invToModify.findIndex((inv) => inv["invNum"] === invNum);
     let prodToAdd = {
       prodName: pickedProduct,
@@ -40,7 +40,7 @@ export const GrandTotal = ({
       rate: pickedRate,
     };
     invToModify[ind].orders.push(prodToAdd);
-    setInvoices(invToModify);
+    setDailyInvoices(invToModify);
     setPickedProduct("");
     setPickedQty(0);
     setPickedRate(0);

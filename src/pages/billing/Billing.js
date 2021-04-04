@@ -3,6 +3,7 @@ import React, { useEffect, useContext, useState } from "react";
 import styled from "styled-components";
 
 import BillingGrid from "./Parts/BillingGrid";
+import WeeklyBillingGrid from "./Parts/WeeklyBillingGrid";
 
 import SelectDate from "./Parts/SelectDate";
 
@@ -56,7 +57,8 @@ function Billing() {
 
   const [ altPricing, setAltPricing ] = useState()
   const [ nextInv, setNextInv ] = useState(0);
-  const [invoices, setInvoices] = useState();
+  const [dailyInvoices, setDailyInvoices] = useState();
+  const [weeklyInvoices, setWeeklyInvoices] = useState();
   const [ zones, setZones ] = useState()
 
   useEffect(() => {
@@ -113,13 +115,18 @@ function Billing() {
       </BasicContainer>
       
       <BasicContainer>
-        <SelectDate nextInv={nextInv} setNextInv={setNextInv} invoices={invoices} setInvoices={setInvoices}/>
+        <SelectDate nextInv={nextInv} setNextInv={setNextInv} dailyInvoices={dailyInvoices} setDailyInvoices={setDailyInvoices}/>
       </BasicContainer>
      
      
-     
+
       <BasicContainer>
-        <BillingGrid altPricing={altPricing} nextInv={nextInv} invoices={invoices} setInvoices={setInvoices} zones={zones}/>
+        <h2>Daily Invoicing</h2>
+        <BillingGrid altPricing={altPricing} nextInv={nextInv} dailyInvoices={dailyInvoices} setDailyInvoices={setDailyInvoices} zones={zones}/>
+      </BasicContainer>
+      <BasicContainer>
+      <h2>Weekly Invoicing (sent Sunday)</h2>
+        <WeeklyBillingGrid altPricing={altPricing} nextInv={nextInv} weeklyInvoices={weeklyInvoices} setWeeklyInvoices={setWeeklyInvoices} zones={zones}/>
       </BasicContainer>
     </React.Fragment>
   );

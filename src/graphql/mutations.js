@@ -580,3 +580,114 @@ export const deleteClosure = /* GraphQL */ `
     }
   }
 `;
+export const createHeldforWeeklyInvoicing = /* GraphQL */ `
+  mutation CreateHeldforWeeklyInvoicing(
+    $input: CreateHeldforWeeklyInvoicingInput!
+    $condition: ModelHeldforWeeklyInvoicingConditionInput
+  ) {
+    createHeldforWeeklyInvoicing(input: $input, condition: $condition) {
+      id
+      custName
+      delivDate
+      orders {
+        id
+        prodName
+        qty
+        rate
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateHeldforWeeklyInvoicing = /* GraphQL */ `
+  mutation UpdateHeldforWeeklyInvoicing(
+    $input: UpdateHeldforWeeklyInvoicingInput!
+    $condition: ModelHeldforWeeklyInvoicingConditionInput
+  ) {
+    updateHeldforWeeklyInvoicing(input: $input, condition: $condition) {
+      id
+      custName
+      delivDate
+      orders {
+        id
+        prodName
+        qty
+        rate
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteHeldforWeeklyInvoicing = /* GraphQL */ `
+  mutation DeleteHeldforWeeklyInvoicing(
+    $input: DeleteHeldforWeeklyInvoicingInput!
+    $condition: ModelHeldforWeeklyInvoicingConditionInput
+  ) {
+    deleteHeldforWeeklyInvoicing(input: $input, condition: $condition) {
+      id
+      custName
+      delivDate
+      orders {
+        id
+        prodName
+        qty
+        rate
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createInvOrder = /* GraphQL */ `
+  mutation CreateInvOrder(
+    $input: CreateInvOrderInput!
+    $condition: ModelInvOrderConditionInput
+  ) {
+    createInvOrder(input: $input, condition: $condition) {
+      id
+      prodName
+      qty
+      rate
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateInvOrder = /* GraphQL */ `
+  mutation UpdateInvOrder(
+    $input: UpdateInvOrderInput!
+    $condition: ModelInvOrderConditionInput
+  ) {
+    updateInvOrder(input: $input, condition: $condition) {
+      id
+      prodName
+      qty
+      rate
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteInvOrder = /* GraphQL */ `
+  mutation DeleteInvOrder(
+    $input: DeleteInvOrderInput!
+    $condition: ModelInvOrderConditionInput
+  ) {
+    deleteInvOrder(input: $input, condition: $condition) {
+      id
+      prodName
+      qty
+      rate
+      createdAt
+      updatedAt
+    }
+  }
+`;

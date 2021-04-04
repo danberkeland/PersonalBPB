@@ -499,3 +499,96 @@ export const onDeleteClosure = /* GraphQL */ `
     }
   }
 `;
+export const onCreateHeldforWeeklyInvoicing = /* GraphQL */ `
+  subscription OnCreateHeldforWeeklyInvoicing {
+    onCreateHeldforWeeklyInvoicing {
+      id
+      custName
+      delivDate
+      orders {
+        id
+        prodName
+        qty
+        rate
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateHeldforWeeklyInvoicing = /* GraphQL */ `
+  subscription OnUpdateHeldforWeeklyInvoicing {
+    onUpdateHeldforWeeklyInvoicing {
+      id
+      custName
+      delivDate
+      orders {
+        id
+        prodName
+        qty
+        rate
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteHeldforWeeklyInvoicing = /* GraphQL */ `
+  subscription OnDeleteHeldforWeeklyInvoicing {
+    onDeleteHeldforWeeklyInvoicing {
+      id
+      custName
+      delivDate
+      orders {
+        id
+        prodName
+        qty
+        rate
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateInvOrder = /* GraphQL */ `
+  subscription OnCreateInvOrder {
+    onCreateInvOrder {
+      id
+      prodName
+      qty
+      rate
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateInvOrder = /* GraphQL */ `
+  subscription OnUpdateInvOrder {
+    onUpdateInvOrder {
+      id
+      prodName
+      qty
+      rate
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteInvOrder = /* GraphQL */ `
+  subscription OnDeleteInvOrder {
+    onDeleteInvOrder {
+      id
+      prodName
+      qty
+      rate
+      createdAt
+      updatedAt
+    }
+  }
+`;

@@ -119,5 +119,17 @@ type Closure @model @auth(rules: [{allow: public}]) {
   lastDate: String
 }
 
+type HeldforWeeklyInvoicing @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  custName: String
+  delivDate: String
+  orders: [InvOrder]
+}
 
+type InvOrder @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  prodName: String
+  qty: Int
+  rate: Float
+}
  

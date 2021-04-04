@@ -1,5 +1,4 @@
 export const buildCustList = (fullOrder) => {
-  console.log(fullOrder)
   let custList = fullOrder.filter(ord => ord['isWhole']===true)
   custList = custList.map((ord) => ord["custName"]);
   let custListSet = new Set(custList);
@@ -25,7 +24,8 @@ export const attachInvoiceOrders = (
   products,
   altPricing,
   customers,
-  zones
+  zones, 
+  invFilter
 ) => {
   for (let inv of invList) {
     let orderClip = fullOrder.filter(
@@ -81,9 +81,9 @@ export const attachInvoiceOrders = (
       inv.orders.length > 0 &&
       customers[
         customers.findIndex((cust) => cust["custName"] === inv.custName)
-      ]["invoicing"] !== "no invoice"
+      ]["invoicing"] === invFilter 
+
   );
-  console.log(invList);
   return invList;
 };
 

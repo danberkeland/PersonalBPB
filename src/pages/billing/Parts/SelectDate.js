@@ -29,7 +29,7 @@ const BasicContainer = styled.div`
   box-sizing: border-box;
 `;
 
-const SelectDate = ({ nextInv, setNextInv, invoices, setInvoices }) => {
+const SelectDate = ({ nextInv, setNextInv, dailyInvoices, setDailyInvoices }) => {
   const { delivDate, setDelivDate } = useContext(CurrentDataContext);
   const { customers } = useContext(CustomerContext)
 
@@ -49,13 +49,13 @@ const SelectDate = ({ nextInv, setNextInv, invoices, setInvoices }) => {
   };
 
   const handleAddCustomer = (e) => {
-    let invToModify = clonedeep(invoices);
+    let invToModify = clonedeep(dailyInvoices);
     invToModify.push({
       custName: e.target.value,
-      invNum: invoices[invoices.length - 1]["invNum"] + 1,
+      invNum: dailyInvoices[dailyInvoices.length - 1]["invNum"] + 1,
       orders: [],
     });
-    setInvoices(invToModify);
+    setDailyInvoices(invToModify);
     setPickedCustomer('')
   };
 

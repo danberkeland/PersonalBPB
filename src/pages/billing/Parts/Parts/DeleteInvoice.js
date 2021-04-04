@@ -6,7 +6,7 @@ import swal from "@sweetalert/with-react";
 const clonedeep = require("lodash.clonedeep");
 
 
-export const DeleteInvoice = (invNum, invoices, setInvoices) => {
+export const DeleteInvoice = (invNum, dailyInvoices, setDailyInvoices) => {
 
     const deleteCheck = (invNum) => {
         swal({
@@ -25,9 +25,9 @@ export const DeleteInvoice = (invNum, invoices, setInvoices) => {
       };
       
       const deleteInvoiceFinal = (invNum) => {
-        let invToModify = clonedeep(invoices);
+        let invToModify = clonedeep(dailyInvoices);
         invToModify = invToModify.filter((inv) => inv["invNum"] !== invNum);
-        setInvoices(invToModify);
+        setDailyInvoices(invToModify);
       };
       
       

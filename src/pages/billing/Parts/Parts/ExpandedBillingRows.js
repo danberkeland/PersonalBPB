@@ -12,8 +12,8 @@ const clonedeep = require("lodash.clonedeep");
 
 export const ExpandedBillingRows = ({
   data,
-  invoices,
-  setInvoices,
+  dailyInvoices,
+  setDailyInvoices,
   products,
   pickedProduct,
   setPickedProduct,
@@ -23,13 +23,13 @@ export const ExpandedBillingRows = ({
   setPickedQty,
 }) => {
   const deleteItem = (data, invNum) => {
-    let invToModify = clonedeep(invoices);
+    let invToModify = clonedeep(dailyInvoices);
     let ind = invToModify.findIndex((inv) => inv["invNum"] === invNum);
     let prodInd = invToModify[ind].orders.findIndex(
       (ord) => ord["prodName"] === data["prodName"]
     );
     invToModify[ind].orders[prodInd]["qty"] = 0;
-    setInvoices(invToModify);
+    setDailyInvoices(invToModify);
   };
 
   const deleteTemplate = (data, invNum) => {
@@ -43,18 +43,18 @@ export const ExpandedBillingRows = ({
 
   const handleChange = (e, data, invNum) => {
     if (e.code === "Enter") {
-      let invToModify = clonedeep(invoices);
+      let invToModify = clonedeep(dailyInvoices);
       let ind = invToModify.findIndex((inv) => inv["invNum"] === invNum);
       let prodInd = invToModify[ind].orders.findIndex(
         (ord) => ord["prodName"] === data["prodName"]
       );
       invToModify[ind].orders[prodInd]["qty"] = Number(e.target.value);
-      setInvoices(invToModify);
+      setDailyInvoices(invToModify);
     }
   };
 
   const handleBlurChange = (e, data, invNum) => {
-    let invToModify = clonedeep(invoices);
+    let invToModify = clonedeep(dailyInvoices);
     let ind = invToModify.findIndex((inv) => inv["invNum"] === invNum);
     let prodInd = invToModify[ind].orders.findIndex(
       (ord) => ord["prodName"] === data["prodName"]
@@ -62,7 +62,7 @@ export const ExpandedBillingRows = ({
     let val;
     data.qty !== e.target.value ? (val = e.target.value) : (val = data.qty);
     invToModify[ind].orders[prodInd]["qty"] = Number(val);
-    setInvoices(invToModify);
+    setDailyInvoices(invToModify);
   };
 
   const changeQty = (data, invNum) => {
@@ -79,18 +79,18 @@ export const ExpandedBillingRows = ({
 
   const handleRateChange = (e, data, invNum) => {
     if (e.code === "Enter") {
-      let invToModify = clonedeep(invoices);
+      let invToModify = clonedeep(dailyInvoices);
       let ind = invToModify.findIndex((inv) => inv["invNum"] === invNum);
       let prodInd = invToModify[ind].orders.findIndex(
         (ord) => ord["prodName"] === data["prodName"]
       );
       invToModify[ind].orders[prodInd]["rate"] = e.target.value;
-      setInvoices(invToModify);
+      setDailyInvoices(invToModify);
     }
   };
 
   const handleRateBlurChange = (e, data, invNum) => {
-    let invToModify = clonedeep(invoices);
+    let invToModify = clonedeep(dailyInvoices);
     let ind = invToModify.findIndex((inv) => inv["invNum"] === invNum);
     let prodInd = invToModify[ind].orders.findIndex(
       (ord) => ord["prodName"] === data["prodName"]
@@ -98,7 +98,7 @@ export const ExpandedBillingRows = ({
     let val;
     data.rate !== e.target.value ? (val = e.target.value) : (val = data.rate);
     invToModify[ind].orders[prodInd]["rate"] = Number(val);
-    setInvoices(invToModify);
+    setDailyInvoices(invToModify);
   };
 
   const changeRate = (data, invNum) => {
@@ -146,8 +146,8 @@ export const ExpandedBillingRows = ({
       </DataTable>
       <GrandTotal
         rowData={data}
-        invoices={invoices}
-        setInvoices={setInvoices}
+        dailyInvoices={dailyInvoices}
+        setDailyInvoices={setDailyInvoices}
         products={products}
         pickedProduct={pickedProduct}
         setPickedProduct={setPickedProduct}

@@ -396,3 +396,83 @@ export const listClosures = /* GraphQL */ `
     }
   }
 `;
+export const getHeldforWeeklyInvoicing = /* GraphQL */ `
+  query GetHeldforWeeklyInvoicing($id: ID!) {
+    getHeldforWeeklyInvoicing(id: $id) {
+      id
+      custName
+      delivDate
+      orders {
+        id
+        prodName
+        qty
+        rate
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listHeldforWeeklyInvoicings = /* GraphQL */ `
+  query ListHeldforWeeklyInvoicings(
+    $filter: ModelHeldforWeeklyInvoicingFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listHeldforWeeklyInvoicings(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        custName
+        delivDate
+        orders {
+          id
+          prodName
+          qty
+          rate
+          createdAt
+          updatedAt
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getInvOrder = /* GraphQL */ `
+  query GetInvOrder($id: ID!) {
+    getInvOrder(id: $id) {
+      id
+      prodName
+      qty
+      rate
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listInvOrders = /* GraphQL */ `
+  query ListInvOrders(
+    $filter: ModelInvOrderFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listInvOrders(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        prodName
+        qty
+        rate
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;

@@ -8,7 +8,6 @@ import { CustomerContext } from "../../../dataContexts/CustomerContext";
 import { OrdersContext } from "../../../dataContexts/OrdersContext";
 import { StandingContext } from "../../../dataContexts/StandingContext";
 
-
 import {
   buildCartList,
   buildStandList,
@@ -23,10 +22,16 @@ import {
 } from "../../../helpers/billingGridHelpers";
 
 import { ExpandedBillingRows } from "./Parts/ExpandedBillingRows";
-import { DeleteInvoice } from "./Parts/DeleteInvoice"
+import { DeleteInvoice } from "./Parts/DeleteInvoice";
+import { convertDatetoBPBDate } from "../../../helpers/dateTimeHelpers";
 
-
-const BillingGrid = ({ altPricing, nextInv, dailyInvoices, setDailyInvoices, zones }) => {
+const WeeklyBillingGrid = ({
+  altPricing,
+  nextInv,
+  weeklyInvoices,
+  setWeeklyInvoices,
+  zones,
+}) => {
   const [expandedRows, setExpandedRows] = useState(null);
 
   const [pickedProduct, setPickedProduct] = useState();
@@ -54,10 +59,11 @@ const BillingGrid = ({ altPricing, nextInv, dailyInvoices, setDailyInvoices, zon
         altPricing,
         customers,
         zones,
-        "daily"
+        "weekly"
       );
-      
-      setDailyInvoices(invOrders);
+      console.log(invOrders);
+      // add invOrders to DB
+      setWeeklyInvoices(invOrders);
     } catch {
       console.log("Whoops");
     }
@@ -75,8 +81,6 @@ const BillingGrid = ({ altPricing, nextInv, dailyInvoices, setDailyInvoices, zon
       console.log("no product chosen");
     }
   }, [pickedProduct]);
-
- 
 
   const calcSumTotal = (data) => {
     let sum = 0;
@@ -96,8 +100,8 @@ const BillingGrid = ({ altPricing, nextInv, dailyInvoices, setDailyInvoices, zon
     return (
       <ExpandedBillingRows
         data={data}
-        dailyInvoices={dailyInvoices}
-        setDailyInvoices={setDailyInvoices}
+        dailyInvoices={weeklyInvoices}
+        setDailyInvoices={setWeeklyInvoices}
         products={products}
         pickedProduct={pickedProduct}
         setPickedProduct={setPickedProduct}
@@ -109,11 +113,15 @@ const BillingGrid = ({ altPricing, nextInv, dailyInvoices, setDailyInvoices, zon
     );
   };
 
+  const presentDeliv =() => {
+      return <div>{convertDatetoBPBDate(delivDate)}</div>
+  }
+
   return (
     <div className="datatable-rowexpansion-demo">
       <div className="card">
         <DataTable
-          value={dailyInvoices}
+          value={weeklyInvoices}
           expandedRows={expandedRows}
           onRowToggle={(e) => setExpandedRows(e.data)}
           rowExpansionTemplate={rowExpansionTemplate}
@@ -121,13 +129,15 @@ const BillingGrid = ({ altPricing, nextInv, dailyInvoices, setDailyInvoices, zon
           className="p-datatable-sm"
         >
           <Column expander style={{ width: "3em" }} />
-          <Column field="invNum" header="Invoice#" />
+          <Column header="Delivery Date" body={presentDeliv}/>
           <Column field="custName" header="Customer" />
           <Column header="total" body={(e) => calcSumTotal(e.orders)} />
 
           <Column
             headerStyle={{ width: "4rem" }}
-            body={(e) => DeleteInvoice(e.invNum,dailyInvoices,setDailyInvoices)}
+            body={(e) =>
+              DeleteInvoice(e.invNum, weeklyInvoices, setWeeklyInvoices)
+            }
           ></Column>
         </DataTable>
       </div>
@@ -135,4 +145,4 @@ const BillingGrid = ({ altPricing, nextInv, dailyInvoices, setDailyInvoices, zon
   );
 };
 
-export default BillingGrid;
+export default WeeklyBillingGrid;

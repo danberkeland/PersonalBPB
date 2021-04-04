@@ -82,8 +82,8 @@ const WeeklyBillingGrid = ({
         zones,
         "weekly"
       );
-      console.log(invOrders);
-      addOrdersToDB(invOrders)
+      
+      addOrdersToDB(invOrders);
       setWeeklyInvoices(invOrders);
     } catch {
       console.log("Whoops");
@@ -104,49 +104,60 @@ const WeeklyBillingGrid = ({
   }, [pickedProduct]);
 
   const addOrdersToDB = async (invOrders) => {
-    console.log(invOrders)
+    
     // fetch thisWeeksOrders
     try {
-      let thisWeeksOrders = await fetchInfo(listHeldforWeeklyInvoicings,"listHeldforWeeklyInvoicings", "1000");
-      console.log(thisWeeksOrders)
+      let thisWeeksOrders = await fetchInfo(
+        listHeldforWeeklyInvoicings,
+        "listHeldforWeeklyInvoicings",
+        "1000"
+      );
       
-      for (let inv of invOrders){
-        if (thisWeeksOrders.findIndex(ord => ord["delivDate"]===delivDate && ord["custName"]===inv["custName"] && inv["custName"]!=='')<0){
-          for (let ord of inv.orders){
-          let newWeeklyOrder = {
-            custName: inv["custName"],
-            delivDate: delivDate,
-            prodName: ord["prodName"],
-            qty: ord["qty"],
-            rate: ord["rate"]
-          }
-          
-          try {
-            await API.graphql(
-              graphqlOperation(createHeldforWeeklyInvoicing, { input: { ...newWeeklyOrder } })
-            );
-          } catch (error) {
-            console.log("error on creating Orders", error);
+
+      for (let inv of invOrders) {
+        if (
+          thisWeeksOrders.findIndex(
+            (ord) =>
+              ord["delivDate"] === delivDate &&
+              ord["custName"] === inv["custName"] &&
+              inv["custName"] !== ""
+          ) < 0
+        ) {
+          for (let ord of inv.orders) {
+            let newWeeklyOrder = {
+              custName: inv["custName"],
+              delivDate: delivDate,
+              prodName: ord["prodName"],
+              qty: ord["qty"],
+              rate: ord["rate"],
+            };
+            thisWeeksOrders.push(newWeeklyOrder);
+            try {
+              await API.graphql(
+                graphqlOperation(createHeldforWeeklyInvoicing, {
+                  input: { ...newWeeklyOrder },
+                })
+              );
+            } catch (error) {
+              console.log("error on creating Orders", error);
+            }
           }
         }
-          
-        }
+        setWeeklyInvoices(thisWeeksOrders);
       }
       // if order exists, but qty and rate have changed - UPDATE order
     } catch (error) {
       console.log("error on fetching listHeldforWeeklyInvoicings List", error);
     }
-    
-  }
+  };
 
   const calcSumTotal = (data) => {
-    let sum = 0;
+    
+    let sum;
     try {
-      for (let i of data) {
-        sum = sum + Number(i.qty) * Number(i.rate);
-      }
+      sum = Number(data.qty) * Number(data.rate);
     } catch {
-      console.log("No data to calc.");
+      sum = 0;
     }
     sum = formatter.format(sum);
 
@@ -170,9 +181,9 @@ const WeeklyBillingGrid = ({
     );
   };
 
-  const presentDeliv =() => {
-      return <div>{convertDatetoBPBDate(delivDate)}</div>
-  }
+  const presentDeliv = () => {
+    return <div>{convertDatetoBPBDate(delivDate)}</div>;
+  };
 
   return (
     <div className="datatable-rowexpansion-demo">
@@ -186,9 +197,12 @@ const WeeklyBillingGrid = ({
           className="p-datatable-sm"
         >
           <Column expander style={{ width: "3em" }} />
-          <Column header="Delivery Date" body={presentDeliv}/>
+          <Column header="Delivery Date" body={presentDeliv} />
           <Column field="custName" header="Customer" />
-          <Column header="total" body={(e) => calcSumTotal(e.orders)} />
+          <Column field="prodName" header="Product" />
+          <Column field="qty" header="Qty" />
+          <Column field="rate" header="Rate" />
+          <Column header="total" body={(e) => calcSumTotal(e)} />
 
           <Column
             headerStyle={{ width: "4rem" }}

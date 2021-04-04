@@ -1,13 +1,13 @@
-import React, { useState, useContext } from "react";
+import React from "react";
 import { Button } from "primereact/button";
 import { InputNumber } from "primereact/inputnumber";
 import { Dropdown } from "primereact/dropdown";
 
-import { ProductsContext } from "../../../dataContexts/ProductsContext";
-
-import { formatter } from "../../../helpers/billingGridHelpers";
+import { formatter } from "../../../../../helpers/billingGridHelpers";
 
 import styled from "styled-components";
+
+const clonedeep = require("lodash.clonedeep");
 
 const FooterGrid = styled.div`
   font-family: "Montserrat", sans-serif;
@@ -19,16 +19,18 @@ const FooterGrid = styled.div`
   align-items: center;
 `;
 
-const clonedeep = require("lodash.clonedeep");
-
-export const GrandTotal = ({ invoices, setInvoices, data, invNum }) => {
-    /*
-  const [pickedProduct, setPickedProduct] = useState();
-  const [pickedRate, setPickedRate] = useState();
-  const [pickedQty, setPickedQty] = useState();
-
-  const { products } = useContext(ProductsContext);
-
+export const GrandTotal = ({
+  rowData,
+  invoices,
+  setInvoices,
+  products,
+  pickedProduct,
+  setPickedProduct,
+  pickedQty,
+  setPickedQty,
+  pickedRate,
+  setPickedRate,
+}) => {
   const handleAddProduct = (e, invNum) => {
     let invToModify = clonedeep(invoices);
     let ind = invToModify.findIndex((inv) => inv["invNum"] === invNum);
@@ -43,7 +45,8 @@ export const GrandTotal = ({ invoices, setInvoices, data, invNum }) => {
     setPickedQty(0);
     setPickedRate(0);
   };
-
+  let data = rowData.orders;
+  let invNum = rowData.invNum;
   let sum = 0;
 
   try {
@@ -55,13 +58,10 @@ export const GrandTotal = ({ invoices, setInvoices, data, invNum }) => {
   } catch {
     console.log("nothing to calc");
   }
-*/
+
   return (
-      <h1>Testing</h1>
-    /*
     <React.Fragment>
       <FooterGrid>
-          
         <Button onClick={(e) => handleAddProduct(e, invNum)}>ADD +</Button>
         <label>Product</label>
         <Dropdown
@@ -101,8 +101,6 @@ export const GrandTotal = ({ invoices, setInvoices, data, invNum }) => {
         <div>{sum}</div>
         <div></div>
       </FooterGrid>
-          </React.Fragment>*/
+    </React.Fragment>
   );
 };
-
-

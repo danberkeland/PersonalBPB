@@ -4,7 +4,6 @@ import styled from "styled-components";
 
 import BillingGrid from "./Parts/BillingGrid";
 
-import Buttons from "./Parts/Buttons";
 import SelectDate from "./Parts/SelectDate";
 
 import { CustomerContext, CustomerLoad } from "../../dataContexts/CustomerContext";
@@ -110,14 +109,14 @@ function Billing() {
       {!standLoaded ? <StandingLoad /> : ""}
       
       <BasicContainer>
-        <h1>Billing Fixes</h1>
+        <h1>Billing</h1>
       </BasicContainer>
       
       <BasicContainer>
         <SelectDate nextInv={nextInv} setNextInv={setNextInv} invoices={invoices} setInvoices={setInvoices}/>
       </BasicContainer>
      
-      <Buttons />
+     
      
       <BasicContainer>
         <BillingGrid altPricing={altPricing} nextInv={nextInv} invoices={invoices} setInvoices={setInvoices} zones={zones}/>

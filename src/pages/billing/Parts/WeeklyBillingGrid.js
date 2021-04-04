@@ -82,7 +82,7 @@ const WeeklyBillingGrid = ({
         zones,
         "weekly"
       );
-      
+
       addOrdersToDB(invOrders);
       setWeeklyInvoices(invOrders);
     } catch {
@@ -104,15 +104,14 @@ const WeeklyBillingGrid = ({
   }, [pickedProduct]);
 
   const addOrdersToDB = async (invOrders) => {
-    
+    let thisWeeksOrders;
     // fetch thisWeeksOrders
     try {
-      let thisWeeksOrders = await fetchInfo(
+      thisWeeksOrders = await fetchInfo(
         listHeldforWeeklyInvoicings,
         "listHeldforWeeklyInvoicings",
         "1000"
       );
-      
 
       for (let inv of invOrders) {
         if (
@@ -143,6 +142,29 @@ const WeeklyBillingGrid = ({
             }
           }
         }
+        let compiledOrders = thisWeeksOrders.map((ord) => ord.custName);
+        compiledOrders = new Set(compiledOrders);
+        compiledOrders = Array.from(compiledOrders);
+        let ddate;
+
+        for (let cust of compiledOrders) {
+          ddate = [];
+          for (let ord of thisWeeksOrders) {
+            if (ord.custName === cust) {
+              ddate.push(ord.delivDate);
+            }
+          }
+        }
+        ddate = new Set(ddate);
+        ddate = Array.from(ddate)
+        compiledOrders = compiledOrders.map((comp) => ({
+          custName: comp,
+          delivDate: {
+            delivDate: ddate,
+            orders: []
+          }
+        }));
+        console.log(compiledOrders);
         setWeeklyInvoices(thisWeeksOrders);
       }
       // if order exists, but qty and rate have changed - UPDATE order
@@ -152,7 +174,6 @@ const WeeklyBillingGrid = ({
   };
 
   const calcSumTotal = (data) => {
-    
     let sum;
     try {
       sum = Number(data.qty) * Number(data.rate);

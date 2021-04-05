@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { Button } from "primereact/button";
+
 
 import { ExpandedWeeklyOrdersRows } from "./ExpandedWeeklyOrdersRows";
 
-import { formatter } from "../../../../helpers/billingGridHelpers";
 
-const clonedeep = require("lodash.clonedeep");
 
 export const ExpandedWeeklyRows = ({
   data,
@@ -24,24 +22,7 @@ export const ExpandedWeeklyRows = ({
 
   const [expandedRows, setExpandedRows] = useState(null);
 
-  const deleteItem = (data, invNum) => {
-    let invToModify = clonedeep(weeklyInvoices);
-    let ind = invToModify.findIndex((inv) => inv["invNum"] === invNum);
-    let prodInd = invToModify[ind].orders.findIndex(
-      (ord) => ord["prodName"] === data["prodName"]
-    );
-    invToModify[ind].orders[prodInd]["qty"] = 0;
-    setWeeklyInvoices(invToModify);
-  };
-
-  const deleteTemplate = (data, invNum) => {
-    return (
-      <Button
-        icon="pi pi-times-circle"
-        onClick={(e) => deleteItem(data, invNum)}
-      />
-    );
-  };
+  
   let custName = data.custName
 
   const rowExpansionTemplate = (data) => {

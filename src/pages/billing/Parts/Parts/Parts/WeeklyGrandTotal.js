@@ -7,6 +7,14 @@ import { formatter } from "../../../../../helpers/billingGridHelpers";
 
 import styled from "styled-components";
 
+import { API, graphqlOperation } from "aws-amplify";
+
+import { listHeldforWeeklyInvoicings } from "../../../../../graphql/queries";
+import {
+  createHeldforWeeklyInvoicing,
+  updateHeldforWeeklyInvoicing,
+} from "../../../../../graphql/mutations";
+
 const clonedeep = require("lodash.clonedeep");
 
 const FooterGrid = styled.div`
@@ -32,17 +40,17 @@ export const WeeklyGrandTotal = ({
   pickedRate,
   setPickedRate,
   needToSave,
-  setNeedToSave
+  setNeedToSave,
 }) => {
   const handleAddProduct = (e, delivDate, custName) => {
-    console.log(weeklyInvoices)
-    console.log(rowData)
     let invToModify = clonedeep(weeklyInvoices);
-    let ind = invToModify.findIndex((inv) => inv["custName"]===custName);
-    console.log(ind)
-    let nextInd = invToModify[ind].delivDate.findIndex(inv => inv["delivDate"]===delivDate)
+    let ind = invToModify.findIndex((inv) => inv["custName"] === custName);
+    console.log(ind);
+    let nextInd = invToModify[ind].delivDate.findIndex(
+      (inv) => inv["delivDate"] === delivDate
+    );
 
-    pickedQty = pickedQty ? pickedQty : 0
+    pickedQty = pickedQty ? pickedQty : 0;
     let prodToAdd = {
       prodName: pickedProduct,
       qty: pickedQty,
@@ -50,13 +58,14 @@ export const WeeklyGrandTotal = ({
     };
     invToModify[ind].delivDate[nextInd].orders.push(prodToAdd);
     setWeeklyInvoices(invToModify);
+    setNeedToSave(true);
     setPickedProduct("");
     setPickedQty(0);
     setPickedRate(0);
   };
   let data = rowData.orders;
   let delivDate = rowData.delivDate;
- 
+
   let sum = 0;
 
   try {
@@ -69,10 +78,95 @@ export const WeeklyGrandTotal = ({
     console.log("nothing to calc");
   }
 
+  const fetchInfo = async (operation, opString, limit) => {
+    try {
+      let info = await API.graphql(
+        graphqlOperation(operation, {
+          limit: limit,
+        })
+      );
+      let list = info.data[opString].items;
+
+      let noDelete = list.filter((li) => li["_deleted"] !== true);
+      return noDelete;
+    } catch {
+      return [];
+    }
+  };
+
+  const saveWeeklyOrder = async (e) => {
+    let checkWeeklies;
+    let ordsToMod;
+    // fetchWeeklies = fetch Weekly Orders
+    try {
+      checkWeeklies = await fetchInfo(
+        listHeldforWeeklyInvoicings,
+        "listHeldforWeeklyInvoicings",
+        "1000"
+      );
+    } catch (error) {
+      console.log(error);
+    }
+    console.log(checkWeeklies);
+    // find orders for custName and delivDate
+    let ind = weeklyInvoices.findIndex((inv) => inv["custName"] === custName);
+    let indDeliv = weeklyInvoices[ind].delivDate.findIndex(
+      (deliv) => deliv["delivDate"] === delivDate
+    );
+    ordsToMod = weeklyInvoices[ind].delivDate[indDeliv].orders;
+
+    // order for order
+    for (let ord of ordsToMod) {
+      let checkInd = checkWeeklies.findIndex(
+        (week) =>
+          week.prodName === ord.prodName &&
+          week.custName === custName &&
+          week.delivDate === delivDate
+      );
+      let newOrd = {
+        custName: custName,
+        delivDate: delivDate,
+        prodName: ord.prodName,
+        qty: ord.qty,
+        rate: ord.rate,
+      };
+
+      if (checkInd < 0) {
+        try {
+          await API.graphql(
+            graphqlOperation(createHeldforWeeklyInvoicing, {
+              input: { ...newOrd },
+            })
+          );
+        } catch (error) {
+          console.log("error on adding Weekly Orders", error);
+        }
+      } else {
+        newOrd.id = checkWeeklies[checkInd].id;
+        try {
+          await API.graphql(
+            graphqlOperation(updateHeldforWeeklyInvoicing, {
+              input: { ...newOrd },
+            })
+          );
+        } catch (error) {
+          console.log("error on updating Weekly Orders", error);
+        }
+      }
+    }
+
+    setNeedToSave(false);
+  };
+
   return (
     <React.Fragment>
       <FooterGrid>
-        <Button disabled={pickedProduct ? false : true} onClick={(e) => handleAddProduct(e, delivDate, custName)}>ADD +</Button>
+        <Button
+          disabled={pickedProduct ? false : true}
+          onClick={(e) => handleAddProduct(e, delivDate, custName)}
+        >
+          ADD +
+        </Button>
         <label>Product</label>
         <Dropdown
           optionLabel="prodName"
@@ -109,7 +203,13 @@ export const WeeklyGrandTotal = ({
         <div></div>
         <div>Grand Total</div>
         <div>{sum}</div>
-        <Button>SAVE ORDER</Button>
+        <Button
+          className={needToSave ? "p-button-danger" : ""}
+          disabled={needToSave ? false : true}
+          onClick={saveWeeklyOrder}
+        >
+          SAVE ORDER
+        </Button>
       </FooterGrid>
     </React.Fragment>
   );

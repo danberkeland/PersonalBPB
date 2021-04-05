@@ -22,6 +22,8 @@ import {
   formatter,
 } from "../../../helpers/billingGridHelpers";
 
+import { daysOfBillingWeek } from"../../../helpers/dateTimeHelpers"
+
 import { ExpandedWeeklyRows } from "./Parts/ExpandedWeeklyRows";
 import { DeleteInvoice } from "./Parts/DeleteInvoice";
 
@@ -29,13 +31,28 @@ import { API, graphqlOperation } from "aws-amplify";
 
 import { listHeldforWeeklyInvoicings } from "../../../graphql/queries";
 import { createHeldforWeeklyInvoicing } from "../../../graphql/mutations";
-import { add } from "lodash";
 
 const fetchInfo = async (operation, opString, limit) => {
+
+  const [Sun, Mon, Tues, Wed, Thurs, Fri, Sat] = daysOfBillingWeek()
+  
   try {
+    
+    let filter = {
+      or: [
+        { delivDate: { eq: Sun } },
+        { delivDate: { eq: Mon } },
+        { delivDate: { eq: Tues } },
+        { delivDate: { eq: Wed } },
+        { delivDate: { eq: Thurs } },
+        { delivDate: { eq: Fri } },
+        { delivDate: { eq: Sat } },
+      ],
+    };
     let info = await API.graphql(
       graphqlOperation(operation, {
         limit: limit,
+        filter: filter
       })
     );
     let list = info.data[opString].items;
@@ -144,6 +161,8 @@ const WeeklyBillingGrid = ({
             }
           }
         }
+
+        // Filter delivDate back to last Monday
 
         let custStart = thisWeeksOrders.map((ord) => ord["custName"]);
         custStart = new Set(custStart);

@@ -35,6 +35,7 @@ export const ExpandedWeeklyOrdersRows = ({
     );
     invToModify[ind].delivDate[nextInd].orders[prodInd]["qty"] = 0;
     setWeeklyInvoices(invToModify);
+    setNeedToSave(true)
   };
 
   const deleteTemplate = (data, delivDate) => {
@@ -58,6 +59,7 @@ export const ExpandedWeeklyOrdersRows = ({
       invToModify[ind].delivDate[nextInd].orders[prodInd]["qty"] = Number(e.target.value);
       
       setWeeklyInvoices(invToModify);
+      setNeedToSave(true)
     }
   };
 
@@ -75,6 +77,7 @@ export const ExpandedWeeklyOrdersRows = ({
     invToModify[ind].delivDate[nextInd].orders[prodInd]["qty"] = Number(val);
     
     setWeeklyInvoices(invToModify);
+    setNeedToSave(true)
   };
 
   const changeQty = (data, delivDate) => {
@@ -100,6 +103,7 @@ export const ExpandedWeeklyOrdersRows = ({
       );
       invToModify[ind].delivDate[nextInd].orders[prodInd]["rate"] = e.target.value;
       setWeeklyInvoices(invToModify);
+      setNeedToSave(true)
     }
   };
 
@@ -115,6 +119,7 @@ export const ExpandedWeeklyOrdersRows = ({
     data.rate !== e.target.value ? (val = e.target.value) : (val = data.rate);
     invToModify[ind].delivDate[nextInd].orders[prodInd]["rate"] = Number(val);
     setWeeklyInvoices(invToModify);
+    setNeedToSave(true)
   };
 
   const changeRate = (data, delivDate) => {

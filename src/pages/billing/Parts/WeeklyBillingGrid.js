@@ -7,6 +7,7 @@ import { ProductsContext } from "../../../dataContexts/ProductsContext";
 import { CustomerContext } from "../../../dataContexts/CustomerContext";
 import { OrdersContext } from "../../../dataContexts/OrdersContext";
 import { StandingContext } from "../../../dataContexts/StandingContext";
+import { ToggleContext } from "../../../dataContexts/ToggleContext";
 
 import {
   buildCartList,
@@ -65,6 +66,7 @@ const WeeklyBillingGrid = ({
   const { customers } = useContext(CustomerContext);
   const { orders } = useContext(OrdersContext);
   const { standing } = useContext(StandingContext);
+  const { setIsLoading } = useContext(ToggleContext)
 
   useEffect(() => {
     try {
@@ -83,7 +85,7 @@ const WeeklyBillingGrid = ({
         zones,
         "weekly"
       );
-
+      setIsLoading(true)
       addOrdersToDB(invOrders);
       setWeeklyInvoices(invOrders);
     } catch {
@@ -174,10 +176,24 @@ const WeeklyBillingGrid = ({
           ].delivDate = reformatted;
         }
 
+        for (let ord of thisWeeksOrders){
+          let ordToAdd = {
+            prodName: ord.prodName,
+            qty: ord.qty,
+            rate: ord.rate
+          }
+         let custInd = addDeliv.findIndex(add => add.custName===ord.custName)
+         let delivInd = addDeliv[custInd].delivDate.findIndex(deliv => deliv.delivDate===ord.delivDate)
+         let check = addDeliv[custInd].delivDate[delivInd].orders.map(item => item.prodName)
+         if (!check.includes(ord.prodName)){
+           addDeliv[custInd].delivDate[delivInd].orders.push(ordToAdd)
+         }
+        }
+
 
 
         console.log(addDeliv);
-
+        setIsLoading(false)
         setWeeklyInvoices(addDeliv);
       }
     } catch (error) {

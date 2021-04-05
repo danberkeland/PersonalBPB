@@ -75,6 +75,7 @@ export const OrdersLoad = () => {
   };
 
   const fetchSq = async (ords) => {
+    
     try {
       let response = await fetch(
         "https://8eo1jrov6a.execute-api.us-east-2.amazonaws.com/done"
@@ -82,7 +83,7 @@ export const OrdersLoad = () => {
 
       let newOrders = await response.json();
       newOrders = JSON.parse(newOrders);
-
+      
       for (let newOrd of newOrders) {
         let qty = Number(newOrd["qty"]);
         let dt = new Date().toISOString();
@@ -94,7 +95,7 @@ export const OrdersLoad = () => {
 
         let rt;
         let custName = newOrd["custName"];
-
+       
         let prodName =
           products[
             products.findIndex((prod) => newOrd["item"].includes(prod.squareID))
@@ -117,7 +118,7 @@ export const OrdersLoad = () => {
           prodName: prodName,
           route: rt,
         };
-
+       
         // Search orders for object, if doesn't exist, add:
         let ind = ords.findIndex(
           (ord) => ord["custName"] === custName && ord["prodName"] === prodName
@@ -132,6 +133,7 @@ export const OrdersLoad = () => {
             console.log("error on creating Orders", error);
           }
         }
+     
       }
     } catch {
       console.log("Request Failed");

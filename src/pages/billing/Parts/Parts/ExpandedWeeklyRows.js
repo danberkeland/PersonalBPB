@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
+
+import { ExpandedWeeklyOrdersRows } from "./ExpandedWeeklyOrdersRows";
 
 import { formatter } from "../../../../helpers/billingGridHelpers";
 
@@ -9,8 +11,8 @@ const clonedeep = require("lodash.clonedeep");
 
 export const ExpandedWeeklyRows = ({
   data,
-  dailyInvoices,
-  setDailyInvoices,
+  weeklyInvoices,
+  setWeeklyInvoices,
   products,
   pickedProduct,
   setPickedProduct,
@@ -19,14 +21,17 @@ export const ExpandedWeeklyRows = ({
   pickedQty,
   setPickedQty,
 }) => {
+
+  const [expandedRows, setExpandedRows] = useState(null);
+
   const deleteItem = (data, invNum) => {
-    let invToModify = clonedeep(dailyInvoices);
+    let invToModify = clonedeep(weeklyInvoices);
     let ind = invToModify.findIndex((inv) => inv["invNum"] === invNum);
     let prodInd = invToModify[ind].orders.findIndex(
       (ord) => ord["prodName"] === data["prodName"]
     );
     invToModify[ind].orders[prodInd]["qty"] = 0;
-    setDailyInvoices(invToModify);
+    setWeeklyInvoices(invToModify);
   };
 
   const deleteTemplate = (data, invNum) => {
@@ -37,21 +42,43 @@ export const ExpandedWeeklyRows = ({
       />
     );
   };
-  
-  const createDate = (e) => {
-      console.log(e)
-  }
 
+  const rowExpansionTemplate = (data) => {
+    
+    return (
+      <ExpandedWeeklyOrdersRows
+        data={data}
+        weeklyInvoices={weeklyInvoices}
+        setWeeklyInvoices={setWeeklyInvoices}
+        products={products}
+        pickedProduct={pickedProduct}
+        setPickedProduct={setPickedProduct}
+        pickedQty={pickedQty}
+        setPickedQty={setPickedQty}
+        pickedRate={pickedRate}
+        setPickedRate={setPickedRate}
+      />
+    );
+  };
+  
+  
   return (
     <div className="delivDate-subtable">
-     
-      <DataTable value={data.delivDate} className="p-datatable-sm">
-      <Column
-          headerStyle={{ width: "4rem" }}
-         
-        ></Column>
-        <Column field="delivDate"  header="Delivery Date"></Column>
+      <DataTable
+        value={data.delivDate}
+        className="p-datatable-sm"
+        expandedRows={expandedRows}
+        onRowToggle={(e) => setExpandedRows(e.data)}
+        rowExpansionTemplate={rowExpansionTemplate}
+        dataKey="delivDate"
         
+      >
+        <Column headerStyle={{ width: "4rem" }}></Column>
+        <Column expander style={{ width: "3em" }} />
+
+        <Column field="delivDate" header="Delivery Date" />
+
+       
       </DataTable>
     </div>
   );

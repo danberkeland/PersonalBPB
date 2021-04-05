@@ -142,32 +142,53 @@ const WeeklyBillingGrid = ({
             }
           }
         }
-        let compiledOrders = thisWeeksOrders.map((ord) => ord.custName);
-        compiledOrders = new Set(compiledOrders);
-        compiledOrders = Array.from(compiledOrders);
-        let ddate;
 
-        for (let cust of compiledOrders) {
-          ddate = [];
-          for (let ord of thisWeeksOrders) {
-            if (ord.custName === cust) {
-              ddate.push(ord.delivDate);
-            }
-          }
-        }
-        ddate = new Set(ddate);
-        ddate = Array.from(ddate)
-        compiledOrders = compiledOrders.map((comp) => ({
-          custName: comp,
-          delivDate: {
-            delivDate: ddate,
-            orders: []
-          }
+        let custStart = thisWeeksOrders.map((ord) => ord["custName"]);
+        custStart = new Set(custStart);
+        custStart = Array.from(custStart);
+        let addDeliv = custStart.map((cust) => ({
+          custName: cust,
+          delivDate: [],
         }));
-        console.log(compiledOrders);
+
+        for (let ord of thisWeeksOrders) {
+          
+          addDeliv[
+            addDeliv.findIndex((add) => add.custName === ord["custName"])
+          ].delivDate = {
+            delivDate: ord.delivDate,
+            orders: [],
+          };
+        }
+
+        for (let ord of thisWeeksOrders) {
+          let order = {
+            prodName: ord["prodName"],
+            qty: ord["qty"],
+            rate: ord["rate"],
+          };
+          let currentOrd =
+            addDeliv[
+              addDeliv.findIndex((add) => add.custName === ord["custName"])
+            ].delivDate.orders;
+          
+          let check = currentOrd.map(curr => curr.prodName)
+          if (!check.includes(order.prodName)){
+            currentOrd.push(order)
+          }
+         
+          addDeliv[
+            addDeliv.findIndex((add) => add.custName === ord["custName"])
+          ].delivDate = {
+            delivDate: ord.delivDate,
+            orders: currentOrd,
+          };
+       
+        }
+        console.log(addDeliv);
+
         setWeeklyInvoices(thisWeeksOrders);
       }
-      // if order exists, but qty and rate have changed - UPDATE order
     } catch (error) {
       console.log("error on fetching listHeldforWeeklyInvoicings List", error);
     }

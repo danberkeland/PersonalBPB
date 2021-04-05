@@ -62,12 +62,12 @@ const ProductGrid = () => {
         let buildOrders = buildCartList("*", delivDate, orders);
         let buildStand = buildStandList("*", delivDate, standing);
         let fullOrder = compileFullOrderList(buildOrders, buildStand);
-     
-        let builtGridSetup = fullOrder.filter((ord) => ord["qty"] !== 0);
         
+        let builtGridSetup = fullOrder.filter((ord) => ord["qty"] !== 0);
+        console.log(builtGridSetup)
         
         builtGridSetup.forEach(
-          (grd) => grd["zoneName"] = tryZone(grd)
+          (grd) => (grd["zoneName"] = tryZone(grd))
              &&
             (grd["nickName"] =
               products[

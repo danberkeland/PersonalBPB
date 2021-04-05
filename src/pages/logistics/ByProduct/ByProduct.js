@@ -47,9 +47,9 @@ function ByProduct() {
   const [orderList, setOrderList] = useState("");
 
   const { custLoaded, setCustLoaded } = useContext(CustomerContext);
-  const { products, prodLoaded, setProdLoaded } = useContext(ProductsContext);
+  const { prodLoaded, setProdLoaded } = useContext(ProductsContext);
   let { setHoldLoaded } = useContext(HoldingContext);
-  let { orders, ordersLoaded, setOrdersLoaded } = useContext(OrdersContext);
+  let { ordersLoaded, setOrdersLoaded } = useContext(OrdersContext);
   let { standLoaded, setStandLoaded } = useContext(StandingContext);
 
   useEffect(() => {

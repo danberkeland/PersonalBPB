@@ -21,14 +21,15 @@ import {
   formatter,
 } from "../../../helpers/billingGridHelpers";
 
-import { ExpandedBillingRows } from "./Parts/ExpandedBillingRows";
+import { ExpandedWeeklyRows } from "./Parts/ExpandedWeeklyRows";
 import { DeleteInvoice } from "./Parts/DeleteInvoice";
-import { convertDatetoBPBDate } from "../../../helpers/dateTimeHelpers";
+
 
 import { API, graphqlOperation } from "aws-amplify";
 
 import { listHeldforWeeklyInvoicings } from "../../../graphql/queries";
 import { createHeldforWeeklyInvoicing } from "../../../graphql/mutations";
+import { add } from "lodash";
 
 const fetchInfo = async (operation, opString, limit) => {
   try {
@@ -151,43 +152,33 @@ const WeeklyBillingGrid = ({
           delivDate: [],
         }));
 
-        for (let ord of thisWeeksOrders) {
-          
+        for (let cust of custStart) {
+          for (let ord of thisWeeksOrders) {
+            if (ord.custName === cust) {
+              if (
+                !addDeliv[
+                  addDeliv.findIndex((add) => add.custName === cust)
+                ].delivDate.includes(ord.delivDate)
+              ) {
+                addDeliv[
+                  addDeliv.findIndex((add) => add.custName === cust)
+                ].delivDate.push(ord.delivDate);
+              }
+            }
+          }
+          let reformatted = addDeliv[
+            addDeliv.findIndex((add) => add.custName === cust)
+          ].delivDate.map((dt) => ({ delivDate: dt, orders: [] }));
           addDeliv[
-            addDeliv.findIndex((add) => add.custName === ord["custName"])
-          ].delivDate = {
-            delivDate: ord.delivDate,
-            orders: [],
-          };
+            addDeliv.findIndex((add) => add.custName === cust)
+          ].delivDate = reformatted;
         }
 
-        for (let ord of thisWeeksOrders) {
-          let order = {
-            prodName: ord["prodName"],
-            qty: ord["qty"],
-            rate: ord["rate"],
-          };
-          let currentOrd =
-            addDeliv[
-              addDeliv.findIndex((add) => add.custName === ord["custName"])
-            ].delivDate.orders;
-          
-          let check = currentOrd.map(curr => curr.prodName)
-          if (!check.includes(order.prodName)){
-            currentOrd.push(order)
-          }
-         
-          addDeliv[
-            addDeliv.findIndex((add) => add.custName === ord["custName"])
-          ].delivDate = {
-            delivDate: ord.delivDate,
-            orders: currentOrd,
-          };
-       
-        }
+
+
         console.log(addDeliv);
 
-        setWeeklyInvoices(thisWeeksOrders);
+        setWeeklyInvoices(addDeliv);
       }
     } catch (error) {
       console.log("error on fetching listHeldforWeeklyInvoicings List", error);
@@ -207,11 +198,12 @@ const WeeklyBillingGrid = ({
   };
 
   const rowExpansionTemplate = (data) => {
+    
     return (
-      <ExpandedBillingRows
+      <ExpandedWeeklyRows
         data={data}
-        dailyInvoices={weeklyInvoices}
-        setDailyInvoices={setWeeklyInvoices}
+        weeklyInvoices={weeklyInvoices}
+        setWeeklyInvoices={setWeeklyInvoices}
         products={products}
         pickedProduct={pickedProduct}
         setPickedProduct={setPickedProduct}
@@ -223,10 +215,7 @@ const WeeklyBillingGrid = ({
     );
   };
 
-  const presentDeliv = () => {
-    return <div>{convertDatetoBPBDate(delivDate)}</div>;
-  };
-
+  
   return (
     <div className="datatable-rowexpansion-demo">
       <div className="card">
@@ -235,16 +224,13 @@ const WeeklyBillingGrid = ({
           expandedRows={expandedRows}
           onRowToggle={(e) => setExpandedRows(e.data)}
           rowExpansionTemplate={rowExpansionTemplate}
-          dataKey="invNum"
+          dataKey="custName"
           className="p-datatable-sm"
         >
           <Column expander style={{ width: "3em" }} />
-          <Column header="Delivery Date" body={presentDeliv} />
+         
           <Column field="custName" header="Customer" />
-          <Column field="prodName" header="Product" />
-          <Column field="qty" header="Qty" />
-          <Column field="rate" header="Rate" />
-          <Column header="total" body={(e) => calcSumTotal(e)} />
+          
 
           <Column
             headerStyle={{ width: "4rem" }}

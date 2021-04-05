@@ -42,12 +42,14 @@ export const ExpandedWeeklyRows = ({
       />
     );
   };
+  let custName = data.custName
 
   const rowExpansionTemplate = (data) => {
     
     return (
       <ExpandedWeeklyOrdersRows
         data={data}
+        custName={custName}
         weeklyInvoices={weeklyInvoices}
         setWeeklyInvoices={setWeeklyInvoices}
         products={products}

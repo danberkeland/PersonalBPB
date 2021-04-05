@@ -25,7 +25,6 @@ import {
 import { ExpandedWeeklyRows } from "./Parts/ExpandedWeeklyRows";
 import { DeleteInvoice } from "./Parts/DeleteInvoice";
 
-
 import { API, graphqlOperation } from "aws-amplify";
 
 import { listHeldforWeeklyInvoicings } from "../../../graphql/queries";
@@ -66,7 +65,7 @@ const WeeklyBillingGrid = ({
   const { customers } = useContext(CustomerContext);
   const { orders } = useContext(OrdersContext);
   const { standing } = useContext(StandingContext);
-  const { setIsLoading } = useContext(ToggleContext)
+  const { setIsLoading } = useContext(ToggleContext);
 
   useEffect(() => {
     try {
@@ -85,7 +84,7 @@ const WeeklyBillingGrid = ({
         zones,
         "weekly"
       );
-      setIsLoading(true)
+      setIsLoading(true);
       addOrdersToDB(invOrders);
       setWeeklyInvoices(invOrders);
     } catch {
@@ -176,24 +175,27 @@ const WeeklyBillingGrid = ({
           ].delivDate = reformatted;
         }
 
-        for (let ord of thisWeeksOrders){
+        for (let ord of thisWeeksOrders) {
           let ordToAdd = {
             prodName: ord.prodName,
             qty: ord.qty,
-            rate: ord.rate
+            rate: ord.rate,
+          };
+          let custInd = addDeliv.findIndex(
+            (add) => add.custName === ord.custName
+          );
+          let delivInd = addDeliv[custInd].delivDate.findIndex(
+            (deliv) => deliv.delivDate === ord.delivDate
+          );
+          let check = addDeliv[custInd].delivDate[delivInd].orders.map(
+            (item) => item.prodName
+          );
+          if (!check.includes(ord.prodName)) {
+            addDeliv[custInd].delivDate[delivInd].orders.push(ordToAdd);
           }
-         let custInd = addDeliv.findIndex(add => add.custName===ord.custName)
-         let delivInd = addDeliv[custInd].delivDate.findIndex(deliv => deliv.delivDate===ord.delivDate)
-         let check = addDeliv[custInd].delivDate[delivInd].orders.map(item => item.prodName)
-         if (!check.includes(ord.prodName)){
-           addDeliv[custInd].delivDate[delivInd].orders.push(ordToAdd)
-         }
         }
 
-
-
-        console.log(addDeliv);
-        setIsLoading(false)
+        setIsLoading(false);
         setWeeklyInvoices(addDeliv);
       }
     } catch (error) {
@@ -201,20 +203,7 @@ const WeeklyBillingGrid = ({
     }
   };
 
-  const calcSumTotal = (data) => {
-    let sum;
-    try {
-      sum = Number(data.qty) * Number(data.rate);
-    } catch {
-      sum = 0;
-    }
-    sum = formatter.format(sum);
-
-    return <div>{sum}</div>;
-  };
-
   const rowExpansionTemplate = (data) => {
-    
     return (
       <ExpandedWeeklyRows
         data={data}
@@ -231,7 +220,6 @@ const WeeklyBillingGrid = ({
     );
   };
 
-  
   return (
     <div className="datatable-rowexpansion-demo">
       <div className="card">
@@ -244,9 +232,8 @@ const WeeklyBillingGrid = ({
           className="p-datatable-sm"
         >
           <Column expander style={{ width: "3em" }} />
-         
+
           <Column field="custName" header="Customer" />
-          
 
           <Column
             headerStyle={{ width: "4rem" }}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
@@ -6,12 +6,13 @@ import { InputNumber } from "primereact/inputnumber";
 
 import { formatter } from "../../../../helpers/billingGridHelpers";
 
-import { GrandTotal } from "../Parts/Parts/GrandTotal"
+import { WeeklyGrandTotal } from "../Parts/Parts/WeeklyGrandTotal"
 
 const clonedeep = require("lodash.clonedeep");
 
 export const ExpandedWeeklyOrdersRows = ({
   data,
+  custName,
   weeklyInvoices,
   setWeeklyInvoices,
   products,
@@ -22,86 +23,101 @@ export const ExpandedWeeklyOrdersRows = ({
   pickedQty,
   setPickedQty,
 }) => {
-  const deleteItem = (data, invNum) => {
+
+  const [ needToSave, setNeedToSave ] = useState(false)
+  const deleteItem = (data, delivDate) => {
     let invToModify = clonedeep(weeklyInvoices);
-    let ind = invToModify.findIndex((inv) => inv["invNum"] === invNum);
-    let prodInd = invToModify[ind].orders.findIndex(
+    let ind = invToModify.findIndex((inv) => inv["custName"]===custName);
+    let nextInd = invToModify[ind].delivDate.findIndex(inv => inv["delivDate"]===delivDate)
+    
+    let prodInd = invToModify[ind].delivDate[nextInd].orders.findIndex(
       (ord) => ord["prodName"] === data["prodName"]
     );
-    invToModify[ind].orders[prodInd]["qty"] = 0;
+    invToModify[ind].delivDate[nextInd].orders[prodInd]["qty"] = 0;
     setWeeklyInvoices(invToModify);
   };
 
-  const deleteTemplate = (data, invNum) => {
+  const deleteTemplate = (data, delivDate) => {
     return (
       <Button
         icon="pi pi-times-circle"
-        onClick={(e) => deleteItem(data, invNum)}
+        onClick={(e) => deleteItem(data, delivDate)}
       />
     );
   };
 
-  const handleChange = (e, data, invNum) => {
+  const handleChange = (e, data, delivDate) => {
     if (e.code === "Enter") {
       let invToModify = clonedeep(weeklyInvoices);
-      let ind = invToModify.findIndex((inv) => inv["invNum"] === invNum);
-      let prodInd = invToModify[ind].orders.findIndex(
+      let ind = invToModify.findIndex((inv) => inv["custName"]===custName);
+      let nextInd = invToModify[ind].delivDate.findIndex(inv => inv["delivDate"]===delivDate)
+    
+      let prodInd = invToModify[ind].delivDate[nextInd].orders.findIndex(
         (ord) => ord["prodName"] === data["prodName"]
       );
-      invToModify[ind].orders[prodInd]["qty"] = Number(e.target.value);
+      invToModify[ind].delivDate[nextInd].orders[prodInd]["qty"] = Number(e.target.value);
+      
       setWeeklyInvoices(invToModify);
     }
   };
 
-  const handleBlurChange = (e, data, invNum) => {
+  const handleBlurChange = (e, data, delivDate) => {
     let invToModify = clonedeep(weeklyInvoices);
-    let ind = invToModify.findIndex((inv) => inv["invNum"] === invNum);
-    let prodInd = invToModify[ind].orders.findIndex(
+    let ind = invToModify.findIndex((inv) => inv["custName"]===custName);
+    
+    let nextInd = invToModify[ind].delivDate.findIndex(inv => inv["delivDate"]===delivDate)
+  
+    let prodInd = invToModify[ind].delivDate[nextInd].orders.findIndex(
       (ord) => ord["prodName"] === data["prodName"]
     );
     let val;
-    data.qty !== e.target.value ? (val = e.target.value) : (val = data.qty);
-    invToModify[ind].orders[prodInd]["qty"] = Number(val);
+    data.rate !== e.target.value ? (val = e.target.value) : (val = data.rate);
+    invToModify[ind].delivDate[nextInd].orders[prodInd]["qty"] = Number(val);
+    
     setWeeklyInvoices(invToModify);
   };
 
-  const changeQty = (data, invNum) => {
+  const changeQty = (data, delivDate) => {
     return (
       <InputNumber
         placeholder={data.qty}
         value={data.qty}
         size="4"
-        onKeyDown={(e) => handleChange(e, data, invNum)}
-        onBlur={(e) => handleBlurChange(e, data, invNum)}
+        onKeyDown={(e) => handleChange(e, data, delivDate)}
+        onBlur={(e) => handleBlurChange(e, data, delivDate)}
       />
     );
   };
 
-  const handleRateChange = (e, data, invNum) => {
+  const handleRateChange = (e, data, delivDate) => {
     if (e.code === "Enter") {
       let invToModify = clonedeep(weeklyInvoices);
-      let ind = invToModify.findIndex((inv) => inv["invNum"] === invNum);
-      let prodInd = invToModify[ind].orders.findIndex(
+      let ind = invToModify.findIndex((inv) => inv["custName"]===custName);
+      let nextInd = invToModify[ind].delivDate.findIndex(inv => inv["delivDate"]===delivDate)
+    
+      let prodInd = invToModify[ind].delivDate[nextInd].orders.findIndex(
         (ord) => ord["prodName"] === data["prodName"]
       );
-      invToModify[ind].orders[prodInd]["rate"] = e.target.value;
+      invToModify[ind].delivDate[nextInd].orders[prodInd]["rate"] = e.target.value;
       setWeeklyInvoices(invToModify);
     }
   };
 
-  const handleRateBlurChange = (e, data, invNum) => {
+  const handleRateBlurChange = (e, data, delivDate) => {
     let invToModify = clonedeep(weeklyInvoices);
-    let ind = invToModify.findIndex((inv) => inv["invNum"] === invNum);
-    let prodInd = invToModify[ind].orders.findIndex(
+    let ind = invToModify.findIndex((inv) => inv["custName"]===custName);
+    let nextInd = invToModify[ind].delivDate.findIndex(inv => inv["delivDate"]===delivDate)
+  
+    let prodInd = invToModify[ind].delivDate[nextInd].orders.findIndex(
       (ord) => ord["prodName"] === data["prodName"]
     );
     let val;
     data.rate !== e.target.value ? (val = e.target.value) : (val = data.rate);
-    invToModify[ind].orders[prodInd]["rate"] = Number(val);
+    invToModify[ind].delivDate[nextInd].orders[prodInd]["rate"] = Number(val);
     setWeeklyInvoices(invToModify);
   };
 
-  const changeRate = (data, invNum) => {
+  const changeRate = (data, delivDate) => {
     return (
       <InputNumber
         placeholder={data.rate}
@@ -110,8 +126,8 @@ export const ExpandedWeeklyOrdersRows = ({
         mode="decimal"
         locale="en-US"
         minFractionDigits={2}
-        onKeyDown={(e) => handleRateChange(e, data, invNum)}
-        onBlur={(e) => handleRateBlurChange(e, data, invNum)}
+        onKeyDown={(e) => handleRateChange(e, data, delivDate)}
+        onBlur={(e) => handleRateBlurChange(e, data, delivDate)}
       />
     );
   };
@@ -130,20 +146,21 @@ export const ExpandedWeeklyOrdersRows = ({
       <DataTable value={data.orders} className="p-datatable-sm">
         <Column
           headerStyle={{ width: "4rem" }}
-          body={(e) => deleteTemplate(e, data.invNum)}
+          body={(e) => deleteTemplate(e, data.delivDate)}
         ></Column>
         <Column field="prodName" header="Product"></Column>
         <Column
           header="Quantity"
-          body={(e) => changeQty(e, data.invNum)}
+          body={(e) => changeQty(e, data.delivDate)}
         ></Column>
-        <Column header="Rate" body={(e) => changeRate(e, data.invNum)}>
+        <Column header="Rate" body={(e) => changeRate(e, data.delivDate)}>
           {" "}
         </Column>
         <Column header="Total" body={calcTotal}></Column>
       </DataTable>
-      <GrandTotal
+      <WeeklyGrandTotal
         rowData={data}
+        custName={custName}
         weeklyInvoices={weeklyInvoices}
         setWeeklyInvoices={setWeeklyInvoices}
         products={products}
@@ -153,6 +170,8 @@ export const ExpandedWeeklyOrdersRows = ({
         setPickedQty={setPickedQty}
         pickedRate={pickedRate}
         setPickedRate={setPickedRate}
+        needToSave={needToSave}
+        setNeedToSave={setNeedToSave}
       />
     </div>
   );

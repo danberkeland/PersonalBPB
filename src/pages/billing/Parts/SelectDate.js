@@ -102,6 +102,7 @@ const SelectDate = ({ nextInv, setNextInv, dailyInvoices, setDailyInvoices }) =>
             </label>
           </span>
       </div>
+      <Button className="p-button-success">EXPORT CSV</Button>
       </BasicContainer>
     </React.Fragment>
   );

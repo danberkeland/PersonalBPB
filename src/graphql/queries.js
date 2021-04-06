@@ -18,6 +18,7 @@ export const getCustomer = /* GraphQL */ `
       phone
       toBePrinted
       toBeEmailed
+      printDuplicate
       terms
       invoicing
       prodsNotAllowed
@@ -54,6 +55,7 @@ export const listCustomers = /* GraphQL */ `
         phone
         toBePrinted
         toBeEmailed
+        printDuplicate
         terms
         invoicing
         prodsNotAllowed

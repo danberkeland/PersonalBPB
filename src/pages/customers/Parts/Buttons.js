@@ -107,6 +107,7 @@ const Buttons = ({ selectedCustomer, setSelectedCustomer }) => {
       phone: selectedCustomer["phone"],
       toBePrinted: selectedCustomer["toBePrinted"],
       toBeEmailed: selectedCustomer["toBeEmailed"],
+      printDuplicate: selectedCustomer["printDuplicate"],
       terms: selectedCustomer["terms"],
       invoicing: selectedCustomer["invoicing"],
       latestFirstDeliv: selectedCustomer["latestFirstDeliv"],

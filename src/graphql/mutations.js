@@ -21,6 +21,7 @@ export const createCustomer = /* GraphQL */ `
       phone
       toBePrinted
       toBeEmailed
+      printDuplicate
       terms
       invoicing
       prodsNotAllowed
@@ -55,6 +56,7 @@ export const updateCustomer = /* GraphQL */ `
       phone
       toBePrinted
       toBeEmailed
+      printDuplicate
       terms
       invoicing
       prodsNotAllowed
@@ -89,6 +91,7 @@ export const deleteCustomer = /* GraphQL */ `
       phone
       toBePrinted
       toBeEmailed
+      printDuplicate
       terms
       invoicing
       prodsNotAllowed

@@ -11,8 +11,9 @@ type Customer @model @auth(rules: [{allow: public}]) {
   firstName: String
   lastName: String
   phone: String
-  toBePrinted: String
-  toBeEmailed: String
+  toBePrinted: Boolean
+  toBeEmailed: Boolean
+  printDuplicate: Boolean
   terms: String
   invoicing: String
   prodsNotAllowed: [String]

@@ -9,12 +9,17 @@ import { setDropDownValue, setYesNoValue } from "../../../helpers/formHelpers";
 
 const terms = [{ terms: "0" }, { terms: "15" }, { terms: "30" }];
 
-const options = ["Y", "N"];
+
+
+const options = [
+  {label: 'Yes', value: true},
+  {label: 'No', value: false},
+  
+];
 
 const invoicing = [
   { invoicing: "daily" },
   { invoicing: "weekly" },
-  { invoicing: "monthly" },
 ];
 
 const YesNoBox = styled.div`
@@ -49,6 +54,18 @@ const Billing = ({ selectedCustomer, setSelectedCustomer }) => {
         <SelectButton
           value={selectedCustomer.toBeEmailed}
           id="toBeEmailed"
+          options={options}
+          onChange={(e) =>
+            setSelectedCustomer(setYesNoValue(e, selectedCustomer))
+          }
+        />
+      </YesNoBox>
+
+      <YesNoBox>
+        <label htmlFor="printDuplicate">Print Duplicate</label>
+        <SelectButton
+          value={selectedCustomer.printDuplicate}
+          id="printDuplicate"
           options={options}
           onChange={(e) =>
             setSelectedCustomer(setYesNoValue(e, selectedCustomer))

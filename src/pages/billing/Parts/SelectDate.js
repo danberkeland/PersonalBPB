@@ -15,9 +15,7 @@ import {
   todayPlus,
 } from "../../../helpers/dateTimeHelpers";
 
-import {
-  fetchInfo
-} from "../../../helpers/billingGridHelpers"
+import { fetchInfo } from "../../../helpers/billingGridHelpers";
 
 import { listHeldforWeeklyInvoicings } from "../../../graphql/queries";
 
@@ -70,9 +68,12 @@ const SelectDate = ({
   };
 
   const exportCSV = async () => {
+    
+    let lastInv;
     let data = [];
     for (let inv of dailyInvoices) {
       for (let ord of inv.orders) {
+        lastInv = inv.invNum;
         let ddate = convertDatetoBPBDate(delivDate);
         let dueDate = convertDatetoBPBDate(
           DateTime.now()
@@ -128,39 +129,123 @@ const SelectDate = ({
       }
     }
 
-    let todayDay= DateTime.now()
-        .setZone("America/Los_Angeles")
-        .weekdayLong
+    let todayDay = DateTime.now().setZone("America/Los_Angeles").weekdayLong;
 
-    
-    if (todayDay==="Wednesday"){
+    if (todayDay === "Sunday") {
       let weeklyInfo = await fetchInfo(
         listHeldforWeeklyInvoicings,
         "listHeldforWeeklyInvoicings",
         "1000"
       );
-      
+
+      let custSet = weeklyInfo.map((week) => week.custName);
+      custSet = new Set(custSet);
+      let custArray = Array.from(custSet);
+      lastInv++;
+      custArray = custArray.map((cust) => ({
+        custName: cust,
+        invNum: lastInv++,
+      }));
+      let weeklyOrders = [];
+      for (let cust of custArray) {
+        let newOrders = [];
+        for (let inv of weeklyInfo) {
+          if (inv.custName === cust.custName) {
+            let newOrder = {
+              prodName: inv.prodName,
+              qty: inv.qty,
+              rate: inv.rate,
+              fullDate: inv.delivDate,
+            };
+            newOrders.push(newOrder);
+          }
+        }
+
+        let newCust = {
+          custName: cust.custName,
+          invNum: cust.invNum,
+          orders: newOrders,
+        };
+        weeklyOrders.push(newCust);
+      }
+      for (let inv of weeklyOrders) {
+        for (let ord of inv.orders) {
+        
+          let ddate = convertDatetoBPBDate(delivDate);
+          let fullDate=convertDatetoBPBDate(ord.fullDate)
+          let dueDate = convertDatetoBPBDate(
+            DateTime.now()
+              .setZone("America/Los_Angeles")
+              .plus({ days: 15 })
+              .toString()
+              .split("T")[0]
+          );
+          let custIndex = customers.findIndex(
+            (cust) => cust["custName"] === inv["custName"]
+          );
+          let BillAddrLine1 = customers[custIndex].addr1;
+          let BillAddrLine2 = customers[custIndex].addr2;
+          let BillAddrCity = customers[custIndex].city;
+          let PostalCode = customers[custIndex].zip;
+          let ponote;
+          try {
+            ponote =
+              orders[
+                orders.findIndex(
+                  (order) =>
+                    order.delivDate === delivDate &&
+                    order.custName === ord.custName
+                )
+              ].PONote;
+          } catch {
+            ponote = "na";
+          }
+  
+          let newEntry = [
+            Number(inv.invNum),
+            inv.custName,
+            ddate,
+            dueDate,
+            fullDate,
+            "net15",
+            "Wholesale",
+            BillAddrLine1,
+            BillAddrLine2,
+            "",
+            BillAddrCity,
+            "CA",
+            PostalCode,
+            ponote,
+            true,
+            ord.prodName,
+            ord.prodName,
+            ord.qty,
+            ord.rate,
+            "Y",
+          ];
+        
+          data.push(newEntry);
+          console.log(data)
+        }
+      }
     }
-    
-     // if Sunday - add on weekly orders
 
     
+
     var csv =
       "RefNumber,Customer,TxnDate,DueDate,ShpDate,SalesTerm,Class,BillAddrLine1,BillAddrLine2,BillAddrLine3,BillAddrCity,BillAddrState,BillAddrPostalCode,Msg,AllowOnlineACHPayment,LineItem,LineDescrip,LineQty,LineUnitPrice,LineTaxable\n";
     data.forEach(function (row) {
       csv += row.join(",");
       csv += "\n";
     });
-
-   
-    console.log(csv);
-    /*
+    
+    
     var hiddenElement = document.createElement("a");
     hiddenElement.href = "data:text/csv;charset=utf-8," + encodeURI(csv);
     hiddenElement.target = "_blank";
-    hiddenElement.download = "invoiceExport.csv";
+    hiddenElement.download = `${delivDate}invoiceExport.csv`;
     hiddenElement.click();
-    */
+    
   };
 
   return (

@@ -160,10 +160,15 @@ const ToolBar = ({ setOrderList }) => {
           customers
         );
 
+        noZeroDelivDateOrderList = noZeroDelivDateOrderList.filter(
+          noz => noz.zoneName !=="Carlton Retail" &&
+          noz.zoneName !=="Prado Retail")
+          console.log(noZeroDelivDateOrderList)
         let gridOrderArray = buildGridOrderArray(
           noZeroDelivDateOrderList,
           products
         );
+        
 
         sortZtoADataByIndex(routes, "routeStart");
         for (let rte of routes) {

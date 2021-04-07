@@ -56,39 +56,7 @@ const routeRunsThatDay = (rte, dayNum) => {
   }
 };
 
-const productCanBeInPlace = (grd, routes, rte) => {
-  if (
-    grd["where"].includes("Mixed") ||
-    grd["where"].includes(
-      routes[
-        routes.findIndex((route) => route["routeName"] === rte["routeName"])
-      ]["RouteDepart"]
-    )
-  ) {
-    return true;
-  } else {
-    if (productCanMakeIt(grd, routes, rte)) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-};
 
-const productCanMakeIt = (grd, routes, rte) => {
-  for (let testRte of routes) {
-    if (
-      grd["where"].includes(testRte["RouteDepart"]) &&
-      testRte["RouteArrive"] === rte["RouteDepart"] &&
-      Number(testRte["routeStart"] + testRte["routeTime"]) <
-        Number(rte["routeStart"])
-    ) {
-      return true;
-    }
-  }
-
-  return false;
-};
 
 const productReadyBeforeRouteStarts = (
   products,
@@ -222,13 +190,67 @@ const ToolBar = ({ setOrderList }) => {
             }
           }
         }
-
+        for (let grd of gridOrderArray) {
+          if (grd.zone==="slopick" || grd.zone==="Prado Retail"){
+            grd.route="Pick up SLO"
+          }
+          if (grd.zone==="atownpick" || grd.zone==="Carlton Retail"){
+            grd.route="Pick up Carlton"
+          }
+          if (grd.route==="slopick" || grd.route==="Prado Retail"){
+            grd.route="Pick up SLO"
+          }
+          if (grd.route==="atownpick" || grd.route==="Carlton Retail"){
+            grd.route="Pick up Carlton"
+          }
+          if (grd.route==="deliv"){
+            grd.route="NOT ASSIGNED"
+          }
+        }
         setOrderList(gridOrderArray);
       } catch {
         console.log("Whoops!");
       }
     }
   }, [delivDate, orders, standing, customers, products]);
+
+  const productCanBeInPlace = (grd, routes, rte) => {
+    if (
+      grd["where"].includes("Mixed") ||
+      grd["where"].includes(
+        routes[
+          routes.findIndex((route) => route["routeName"] === rte["routeName"])
+        ]["RouteDepart"]
+      )
+    ) {
+      return true;
+    } else {
+      if (productCanMakeIt(grd, routes, rte)) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  };
+  
+  const productCanMakeIt = (grd, routes, rte) => {
+    for (let testRte of routes) {
+      if (
+        grd["where"].includes(testRte["RouteDepart"]) &&
+        testRte["RouteArrive"] === rte["RouteDepart"] &&
+        (Number(testRte["routeStart"] + testRte["routeTime"]) <
+          Number(rte["routeStart"]) ||
+          Number(testRte["routeStart"] + testRte["routeTime"]) >
+          customers[
+            customers.findIndex((cust) => cust["custName"] === grd["custName"])
+          ]["latestFinalDeliv"])
+      ) {
+        return true;
+      }
+    }
+  
+    return false;
+  };
 
   const setDate = (date) => {
     const dt2 = DateTime.fromJSDate(date);

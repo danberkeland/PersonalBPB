@@ -128,12 +128,13 @@ const CurrentOrderInfo = () => {
         }
       }
     }
-
+   
     let orderCheck = orders.filter(
-      (ord) => ord["custName"] === chosen && ord["delivDate"] === delivDate
+      (ord) => ord["custName"] === chosen && ord["delivDate"] === convertDatetoBPBDate(delivDate)
     );
+    console.log(orderCheck)
     if (orderCheck.length > 0) {
-      switch (orderCheck[0]["zoneName"]) {
+      switch (orderCheck[0].route) {
         case "slopick":
           setRoute("slopick");
           break;

@@ -31,6 +31,7 @@ import { API, graphqlOperation } from "aws-amplify";
 
 import { listHeldforWeeklyInvoicings } from "../../../graphql/queries";
 import { createHeldforWeeklyInvoicing } from "../../../graphql/mutations";
+import { sortAtoZDataByIndex } from "../../../helpers/sortDataHelpers";
 
 const fetchInfo = async (operation, opString, limit) => {
 
@@ -58,6 +59,7 @@ const fetchInfo = async (operation, opString, limit) => {
     let list = info.data[opString].items;
 
     let noDelete = list.filter((li) => li["_deleted"] !== true);
+    sortAtoZDataByIndex(noDelete, "delivDate")
     return noDelete;
   } catch {
     return [];

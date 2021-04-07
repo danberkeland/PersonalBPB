@@ -92,17 +92,7 @@ function OrderEntryButtons() {
     if (cartList) {
       
       for (let ord of currentCartList) {
-        let rte;
-        switch (ord["route"]) {
-          case "slopick":
-            rte = "slopick";
-            break;
-          case "atownpick":
-            rte = "atownpick";
-            break;
-          default:
-            rte = route;
-        }
+        let rte=route
 
         const updateDetails = {
           qty: ord["qty"],

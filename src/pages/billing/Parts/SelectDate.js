@@ -14,6 +14,13 @@ import {
   convertDatetoBPBDate,
   todayPlus,
 } from "../../../helpers/dateTimeHelpers";
+
+import {
+  fetchInfo
+} from "../../../helpers/billingGridHelpers"
+
+import { listHeldforWeeklyInvoicings } from "../../../graphql/queries";
+
 import { OrdersContext } from "../../../dataContexts/OrdersContext";
 
 const clonedeep = require("lodash.clonedeep");
@@ -62,7 +69,7 @@ const SelectDate = ({
     setPickedCustomer("");
   };
 
-  const exportCSV = () => {
+  const exportCSV = async () => {
     let data = [];
     for (let inv of dailyInvoices) {
       for (let ord of inv.orders) {
@@ -121,6 +128,23 @@ const SelectDate = ({
       }
     }
 
+    let todayDay= DateTime.now()
+        .setZone("America/Los_Angeles")
+        .weekdayLong
+
+    console.log(todayDay)
+    if (todayDay==="Wednesday"){
+      let weeklyInfo = await fetchInfo(
+        listHeldforWeeklyInvoicings,
+        "listHeldforWeeklyInvoicings",
+        "1000"
+      );
+      console.log(weeklyInfo)
+    }
+    
+     // if Sunday - add on weekly orders
+
+    
     var csv =
       "RefNumber,Customer,TxnDate,DueDate,ShpDate,SalesTerm,Class,BillAddrLine1,BillAddrLine2,BillAddrLine3,BillAddrCity,BillAddrState,BillAddrPostalCode,Msg,AllowOnlineACHPayment,LineItem,LineDescrip,LineQty,LineUnitPrice,LineTaxable\n";
     data.forEach(function (row) {
@@ -128,14 +152,15 @@ const SelectDate = ({
       csv += "\n";
     });
 
-    // if Sunday - add on weekly orders
-
+   
     console.log(csv);
+    /*
     var hiddenElement = document.createElement("a");
     hiddenElement.href = "data:text/csv;charset=utf-8," + encodeURI(csv);
     hiddenElement.target = "_blank";
     hiddenElement.download = "invoiceExport.csv";
     hiddenElement.click();
+    */
   };
 
   return (

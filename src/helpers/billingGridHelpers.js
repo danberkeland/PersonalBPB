@@ -1,3 +1,11 @@
+import { daysOfBillingWeek } from"../helpers/dateTimeHelpers"
+
+import { API, graphqlOperation } from "aws-amplify";
+
+import { sortAtoZDataByIndex } from "../helpers/sortDataHelpers";
+
+
+
 export const buildCustList = (fullOrder) => {
   let custList = fullOrder.filter(ord => ord['isWhole']===true)
   custList = custList.map((ord) => ord["custName"]);
@@ -91,3 +99,37 @@ export const formatter = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
 });
+
+export const fetchInfo = async (operation, opString, limit) => {
+
+  const [Sun, Mon, Tues, Wed, Thurs, Fri, Sat] = daysOfBillingWeek()
+  
+  try {
+    
+    let filter = {
+      or: [
+        { delivDate: { eq: Sun } },
+        { delivDate: { eq: Mon } },
+        { delivDate: { eq: Tues } },
+        { delivDate: { eq: Wed } },
+        { delivDate: { eq: Thurs } },
+        { delivDate: { eq: Fri } },
+        { delivDate: { eq: Sat } },
+      ],
+    };
+    let info = await API.graphql(
+      graphqlOperation(operation, {
+        limit: limit,
+        filter: filter
+      })
+    );
+    let list = info.data[opString].items;
+
+    let noDelete = list.filter((li) => li["_deleted"] !== true);
+    sortAtoZDataByIndex(noDelete, "delivDate")
+    return noDelete;
+  } catch {
+    return [];
+  }
+};
+

@@ -19,10 +19,10 @@ import {
   buildCustList,
   buildInvList,
   attachInvoiceOrders,
-  formatter,
+  fetchInfo
 } from "../../../helpers/billingGridHelpers";
 
-import { daysOfBillingWeek } from"../../../helpers/dateTimeHelpers"
+
 
 import { ExpandedWeeklyRows } from "./Parts/ExpandedWeeklyRows";
 import { DeleteInvoice } from "./Parts/DeleteInvoice";
@@ -31,40 +31,10 @@ import { API, graphqlOperation } from "aws-amplify";
 
 import { listHeldforWeeklyInvoicings } from "../../../graphql/queries";
 import { createHeldforWeeklyInvoicing } from "../../../graphql/mutations";
-import { sortAtoZDataByIndex } from "../../../helpers/sortDataHelpers";
 
-const fetchInfo = async (operation, opString, limit) => {
 
-  const [Sun, Mon, Tues, Wed, Thurs, Fri, Sat] = daysOfBillingWeek()
-  
-  try {
-    
-    let filter = {
-      or: [
-        { delivDate: { eq: Sun } },
-        { delivDate: { eq: Mon } },
-        { delivDate: { eq: Tues } },
-        { delivDate: { eq: Wed } },
-        { delivDate: { eq: Thurs } },
-        { delivDate: { eq: Fri } },
-        { delivDate: { eq: Sat } },
-      ],
-    };
-    let info = await API.graphql(
-      graphqlOperation(operation, {
-        limit: limit,
-        filter: filter
-      })
-    );
-    let list = info.data[opString].items;
 
-    let noDelete = list.filter((li) => li["_deleted"] !== true);
-    sortAtoZDataByIndex(noDelete, "delivDate")
-    return noDelete;
-  } catch {
-    return [];
-  }
-};
+
 
 const WeeklyBillingGrid = ({
   altPricing,
@@ -84,9 +54,10 @@ const WeeklyBillingGrid = ({
   const { customers } = useContext(CustomerContext);
   const { orders } = useContext(OrdersContext);
   const { standing } = useContext(StandingContext);
-  const { setIsLoading } = useContext(ToggleContext);
+  const { readyForWeekly, setIsLoading } = useContext(ToggleContext);
 
   useEffect(() => {
+    
     try {
       let buildOrders = buildCartList("*", delivDate, orders);
       let buildStand = buildStandList("*", delivDate, standing);
@@ -104,12 +75,23 @@ const WeeklyBillingGrid = ({
         "weekly"
       );
       setIsLoading(true);
-      addOrdersToDB(invOrders);
       setWeeklyInvoices(invOrders);
     } catch {
       console.log("Whoops");
     }
-  }, [delivDate, orders, standing, nextInv, zones]);
+  
+  }, [readyForWeekly]);
+
+  
+  useEffect(() => {
+    try{
+    if(weeklyInvoices.length>0){
+    setIsLoading(true);
+    addOrdersToDB(weeklyInvoices)
+  }} catch {
+    console.log("Whoops")
+  }
+  },[weeklyInvoices])
 
   useEffect(() => {
     try {
@@ -125,6 +107,7 @@ const WeeklyBillingGrid = ({
   }, [pickedProduct]);
 
   const addOrdersToDB = async (invOrders) => {
+    console.log("Starting Process")
     let thisWeeksOrders;
     // fetch thisWeeksOrders
     try {
@@ -133,8 +116,18 @@ const WeeklyBillingGrid = ({
         "listHeldforWeeklyInvoicings",
         "1000"
       );
-
+      console.log(invOrders)
+      console.log(delivDate)
+      console.log(thisWeeksOrders)
       for (let inv of invOrders) {
+
+        console.log(thisWeeksOrders.findIndex(
+          (ord) =>
+            ord["delivDate"] === delivDate &&
+            ord["custName"] === inv["custName"] &&
+            inv["custName"] !== ""
+        ))
+
         if (
           thisWeeksOrders.findIndex(
             (ord) =>
@@ -142,6 +135,7 @@ const WeeklyBillingGrid = ({
               ord["custName"] === inv["custName"] &&
               inv["custName"] !== ""
           ) < 0
+          
         ) {
           for (let ord of inv.orders) {
             let newWeeklyOrder = {
@@ -217,7 +211,7 @@ const WeeklyBillingGrid = ({
         }
 
         setIsLoading(false);
-        setWeeklyInvoices(addDeliv);
+       
       }
     } catch (error) {
       console.log("error on fetching listHeldforWeeklyInvoicings List", error);

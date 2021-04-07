@@ -7,6 +7,7 @@ import { createOrder } from "../graphql/mutations";
 
 import { API, graphqlOperation } from "aws-amplify";
 import { ProductsContext } from "./ProductsContext";
+import { ToggleContext } from "./ToggleContext";
 
 require("dotenv").config();
 
@@ -37,20 +38,38 @@ export const OrdersProvider = (props) => {
 };
 
 export const OrdersLoad = () => {
-  const { setOrders, setOriginalOrders, setOrdersLoaded } = useContext(
+
+  
+  const { orders, setOrders, setOrdersLoaded } = useContext(
     OrdersContext
   );
-  const { products } = useContext(ProductsContext);
+  const { readyForSq, setReadyForSq, setReadyForWeekly } = useContext(ToggleContext)
+  const { products } = useContext(ProductsContext)
+ 
 
   useEffect(() => {
     buildOrders();
-  }, [products]);
+  },[]);
 
+  
+
+  useEffect(() => {
+    if(orders.length>0 &&
+      products.length>0){
+        setReadyForSq(true)
+      }
+  },[orders,products])
+
+  useEffect(()=> {
+    if (readyForSq){
+      fetchSq(orders)
+    }
+  },[readyForSq])
+  
   const buildOrders = async () => {
     let ord = await fetchOrders();
-    let build = await fetchSq(ord);
-
-    setOrdersLoaded(true);
+    setOrders(ord)
+    setOrdersLoaded(true); 
   };
 
   const fetchOrders = async () => {
@@ -66,16 +85,13 @@ export const OrdersLoad = () => {
       let sortedData = sortAtoZDataByIndex(noDelete, "timeStamp");
       sortedData = sortAtoZDataByIndex(sortedData, "prodName");
 
-      setOrders(sortedData);
-      setOriginalOrders(sortedData);
       return sortedData;
     } catch (error) {
       console.log("error on fetching Orders List", error);
     }
   };
-
+  
   const fetchSq = async (ords) => {
-    
     try {
       let response = await fetch(
         "https://8eo1jrov6a.execute-api.us-east-2.amazonaws.com/done"
@@ -83,7 +99,7 @@ export const OrdersLoad = () => {
 
       let newOrders = await response.json();
       newOrders = JSON.parse(newOrders);
-      
+
       for (let newOrd of newOrders) {
         let qty = Number(newOrd["qty"]);
         let dt = new Date().toISOString();
@@ -95,7 +111,7 @@ export const OrdersLoad = () => {
 
         let rt;
         let custName = newOrd["custName"];
-       
+
         let prodName =
           products[
             products.findIndex((prod) => newOrd["item"].includes(prod.squareID))
@@ -118,7 +134,7 @@ export const OrdersLoad = () => {
           prodName: prodName,
           route: rt,
         };
-       
+
         // Search orders for object, if doesn't exist, add:
         let ind = ords.findIndex(
           (ord) => ord["custName"] === custName && ord["prodName"] === prodName
@@ -129,16 +145,22 @@ export const OrdersLoad = () => {
             await API.graphql(
               graphqlOperation(createOrder, { input: { ...itemToAdd } })
             );
+            ords.push(itemToAdd);
           } catch (error) {
             console.log("error on creating Orders", error);
           }
         }
-     
       }
+      setOrders(ords);
+      setReadyForWeekly(true)
+      
+      
     } catch {
       console.log("Request Failed");
     }
   };
-
+  
+  
+  
   return <React.Fragment></React.Fragment>;
 };

@@ -82,7 +82,7 @@ export const daysOfTheWeek = () => {
 export const daysOfBillingWeek = () => {
   let timeDelta = 0;
   let dayOfWeek = DateTime.now().setZone("America/Los_Angeles").weekday;
-  console.log(dayOfWeek)
+  
   for (let i = 0; i < 7; i++) {
     if (dayOfWeek === i) {
       timeDelta = 7 - i;

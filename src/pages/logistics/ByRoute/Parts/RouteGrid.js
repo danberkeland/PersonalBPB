@@ -76,8 +76,16 @@ const RouteGrid = ({ route, orderList }) => {
   const exportColumns = columns.map(col => ({ title: col.header, dataKey: col.field }));
 
   const exportPdf = () => {
-    const doc = new jsPDF('landscape');
-    doc.autoTable(exportColumns, data);
+    const doc = new jsPDF('l','mm','a4');
+    doc.setFontSize(24);
+    doc.text(10,20,'Delivery Sheet');
+    doc.autoTable({
+      columns: exportColumns, 
+      body: data,
+      margin: { top:26 },
+      styles: {fontSize: 16}
+    }
+    );
     doc.save("products.pdf");
   };
 

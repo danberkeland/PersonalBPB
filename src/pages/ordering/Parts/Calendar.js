@@ -6,12 +6,14 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { CurrentDataContext } from "../../../dataContexts/CurrentDataContext";
 import { StandingContext } from "../../../dataContexts/StandingContext";
 import { OrdersContext } from "../../../dataContexts/OrdersContext";
+import { ToggleContext } from "../../../dataContexts/ToggleContext";
 
 import {
   CreateStandingArray,
   CreateCartDateArray,
   CreateBlankCartDateArray,
 } from "../../../helpers/calendarBuildHelper";
+
 
 const Calendar = () => {
   const {
@@ -23,6 +25,8 @@ const Calendar = () => {
   } = useContext(CurrentDataContext);
   const { standing } = useContext(StandingContext);
   const { orders } = useContext(OrdersContext);
+  const { setModifications } = useContext(ToggleContext)
+
 
   useEffect(() => {
     let backToStandingArray = CreateStandingArray(standing, chosen);
@@ -57,6 +61,7 @@ const Calendar = () => {
   const handleDateSelect = (selectInfo) => {
     document.getElementById("orderCommand").focus();
     setDelivDate(selectInfo.dateStr);
+    setModifications(false)
   
   };
 

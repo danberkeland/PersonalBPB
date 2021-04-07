@@ -165,6 +165,7 @@ const CurrentOrderInfo = () => {
   const handleChosen = (chosen) => {
     setChosen(chosen);
     setDelivDate(tomorrow());
+    setModifications(false)
   };
 
   const changeDate = (date) => {
@@ -174,6 +175,11 @@ const CurrentOrderInfo = () => {
 
     return returnDate;
   };
+
+  const handleSetRoute = (e) => {
+    setRoute(e)
+    setModifications(true)
+  }
 
   return (
     <React.Fragment>
@@ -204,7 +210,7 @@ const CurrentOrderInfo = () => {
           <RadioButton
             value="deliv"
             name="delivery"
-            onChange={(e) => setRoute(e.value)}
+            onChange={(e) => handleSetRoute(e.value)}
             checked={route === "deliv"}
           />
           <label htmlFor="delivery">Delivery</label>
@@ -212,7 +218,7 @@ const CurrentOrderInfo = () => {
           <RadioButton
             value="slopick"
             name="delivery"
-            onChange={(e) => setRoute(e.value)}
+            onChange={(e) => handleSetRoute(e.value)}
             checked={route === "slopick"}
           />
           <label htmlFor="pickupSLO">Pick up SLO</label>
@@ -220,7 +226,7 @@ const CurrentOrderInfo = () => {
           <RadioButton
             value="atownpick"
             name="delivery"
-            onChange={(e) => setRoute(e.value)}
+            onChange={(e) => handleSetRoute(e.value)}
             checked={route === "atownpick"}
           />
           <label htmlFor="pickupAtown">Pick up Carlton</label>

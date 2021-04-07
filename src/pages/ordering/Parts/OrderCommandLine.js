@@ -87,7 +87,7 @@ const OrderCommandLine = () => {
           setRouteIsOn(true);
           setDelivDate(tomorrow);
           setOrderTypeWhole(true);
-          setModifications(true);
+          setModifications(false)
           return;
         }
       }

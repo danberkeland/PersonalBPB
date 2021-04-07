@@ -37,7 +37,7 @@ const SelectDate = ({
 }) => {
   const { delivDate, setDelivDate } = useContext(CurrentDataContext);
   const { customers } = useContext(CustomerContext);
-  const { orders } = useContext(OrdersContext)
+  const { orders } = useContext(OrdersContext);
 
   const [pickedCustomer, setPickedCustomer] = useState();
 
@@ -74,18 +74,27 @@ const SelectDate = ({
             .toString()
             .split("T")[0]
         );
-        let custIndex = customers.findIndex(cust => cust["custName"]===inv["custName"])
-        let BillAddrLine1 = customers[custIndex].addr1
-        let BillAddrLine2 = customers[custIndex].addr2
-        let BillAddrCity = customers[custIndex].city
-        let PostalCode = customers[custIndex].zip
+        let custIndex = customers.findIndex(
+          (cust) => cust["custName"] === inv["custName"]
+        );
+        let BillAddrLine1 = customers[custIndex].addr1;
+        let BillAddrLine2 = customers[custIndex].addr2;
+        let BillAddrCity = customers[custIndex].city;
+        let PostalCode = customers[custIndex].zip;
         let ponote;
         try {
-          ponote = orders[orders.findIndex(order => order.delivDate===delivDate && order.custName===ord.custName)].PONote
+          ponote =
+            orders[
+              orders.findIndex(
+                (order) =>
+                  order.delivDate === delivDate &&
+                  order.custName === ord.custName
+              )
+            ].PONote;
         } catch {
-          ponote = "na"
+          ponote = "na";
         }
-        
+
         let newEntry = [
           Number(inv.invNum),
           inv.custName,
@@ -111,7 +120,7 @@ const SelectDate = ({
         data.push(newEntry);
       }
     }
-    
+
     var csv =
       "RefNumber,Customer,TxnDate,DueDate,ShpDate,SalesTerm,Class,BillAddrLine1,BillAddrLine2,BillAddrLine3,BillAddrCity,BillAddrState,BillAddrPostalCode,Msg,AllowOnlineACHPayment,LineItem,LineDescrip,LineQty,LineUnitPrice,LineTaxable\n";
     data.forEach(function (row) {
@@ -119,13 +128,14 @@ const SelectDate = ({
       csv += "\n";
     });
 
+    // if Sunday - add on weekly orders
+
     console.log(csv);
     var hiddenElement = document.createElement("a");
     hiddenElement.href = "data:text/csv;charset=utf-8," + encodeURI(csv);
     hiddenElement.target = "_blank";
     hiddenElement.download = "invoiceExport.csv";
     hiddenElement.click();
-    
   };
 
   return (

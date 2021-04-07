@@ -92,7 +92,7 @@ export const daysOfBillingWeek = () => {
   if (dayOfWeek<=0){offset=0}
   let Sun = DateTime.now()
     .setZone("America/Los_Angeles")
-    .plus({ days: timeDelta-offset });
+    .plus({ days: (7+timeDelta-offset) });
   let SunSend = Sun.toString().split("T")[0];
 
   if (dayOfWeek<=1){offset=0}

@@ -132,7 +132,7 @@ const CurrentOrderInfo = () => {
     let orderCheck = orders.filter(
       (ord) => ord["custName"] === chosen && ord["delivDate"] === convertDatetoBPBDate(delivDate)
     );
-    console.log(orderCheck)
+    
     if (orderCheck.length > 0) {
       switch (orderCheck[0].route) {
         case "slopick":

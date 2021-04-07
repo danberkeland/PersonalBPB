@@ -25,7 +25,7 @@ export const zerosDelivFilter = (orderList, delivDate, customers) => {
       ord["delivDate"] === convertDatetoBPBDate(delivDate)
   );
   for (let ord of noZeroDelivDateOrderList) {
-    console.log(noZeroDelivDateOrderList)
+    
     if (ord["route"] === undefined || ord["route"] === "deliv") {
       let ind = customers.findIndex(
         (cust) => cust["custName"] === ord["custName"]
@@ -65,7 +65,7 @@ export const filterForZoneService = (
 
 export const buildGridOrderArray = (filterServe, products) => {
   let gridOrderArray;
-  console.log(filterServe)
+  
   gridOrderArray = filterServe.map((ord) => ({
     prodName: ord["prodName"],
     custName: ord["custName"],
@@ -81,7 +81,7 @@ export const buildGridOrderArray = (filterServe, products) => {
         products.findIndex((prod) => prod["prodName"] === ord["prodName"])
       ]["readyTime"],
   }));
-  console.log(gridOrderArray)
+  
   return gridOrderArray;
 };
 

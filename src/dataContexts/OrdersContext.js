@@ -152,7 +152,7 @@ export const OrdersLoad = () => {
         }
       }
       setOrders(ords);
-      setReadyForWeekly(true)
+      
       
       
     } catch {

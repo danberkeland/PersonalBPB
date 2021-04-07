@@ -19,10 +19,8 @@ import {
   buildCustList,
   buildInvList,
   attachInvoiceOrders,
-  fetchInfo
+  fetchInfo,
 } from "../../../helpers/billingGridHelpers";
-
-
 
 import { ExpandedWeeklyRows } from "./Parts/ExpandedWeeklyRows";
 import { DeleteInvoice } from "./Parts/DeleteInvoice";
@@ -32,10 +30,6 @@ import { API, graphqlOperation } from "aws-amplify";
 import { listHeldforWeeklyInvoicings } from "../../../graphql/queries";
 import { createHeldforWeeklyInvoicing } from "../../../graphql/mutations";
 
-
-
-
-
 const WeeklyBillingGrid = ({
   altPricing,
   nextInv,
@@ -44,6 +38,7 @@ const WeeklyBillingGrid = ({
   zones,
 }) => {
   const [expandedRows, setExpandedRows] = useState(null);
+  const [ weeklyLoaded, setWeeklyLoaded ] = useState(false)
 
   const [pickedProduct, setPickedProduct] = useState();
   const [pickedRate, setPickedRate] = useState();
@@ -54,10 +49,33 @@ const WeeklyBillingGrid = ({
   const { customers } = useContext(CustomerContext);
   const { orders } = useContext(OrdersContext);
   const { standing } = useContext(StandingContext);
-  const { readyForWeekly, setIsLoading } = useContext(ToggleContext);
+  const { readyForWeekly, setReadyForWeekly, setIsLoading } = useContext(
+    ToggleContext
+  );
+
+  useEffect(()=> {
+    if(!weeklyLoaded){
+    addOrdersToDB(weeklyInvoices)
+  }
+  },[weeklyInvoices])
 
   useEffect(() => {
-    
+    try{
+      if (
+        orders.length>0 &&
+        standing.length>0 &&
+        customers.length>0 &&
+        products.length>0){
+          setReadyForWeekly(true)
+        }
+
+
+    } catch {
+      console.log("Not ready for weeklies")
+    }
+  })
+
+  useEffect(() => {
     try {
       let buildOrders = buildCartList("*", delivDate, orders);
       let buildStand = buildStandList("*", delivDate, standing);
@@ -74,24 +92,15 @@ const WeeklyBillingGrid = ({
         zones,
         "weekly"
       );
-      setIsLoading(true);
       setWeeklyInvoices(invOrders);
+      
+      setIsLoading(true);
     } catch {
-      console.log("Whoops");
+      console.log("Trouble building invOrders");
     }
-  
   }, [readyForWeekly]);
 
   
-  useEffect(() => {
-    try{
-    if(weeklyInvoices.length>0){
-    setIsLoading(true);
-    addOrdersToDB(weeklyInvoices)
-  }} catch {
-    console.log("Whoops")
-  }
-  },[weeklyInvoices])
 
   useEffect(() => {
     try {
@@ -107,7 +116,8 @@ const WeeklyBillingGrid = ({
   }, [pickedProduct]);
 
   const addOrdersToDB = async (invOrders) => {
-    console.log("Starting Process")
+    setIsLoading(true)
+    
     let thisWeeksOrders;
     // fetch thisWeeksOrders
     try {
@@ -116,17 +126,10 @@ const WeeklyBillingGrid = ({
         "listHeldforWeeklyInvoicings",
         "1000"
       );
-      console.log(invOrders)
-      console.log(delivDate)
-      console.log(thisWeeksOrders)
+      
       for (let inv of invOrders) {
-
-        console.log(thisWeeksOrders.findIndex(
-          (ord) =>
-            ord["delivDate"] === delivDate &&
-            ord["custName"] === inv["custName"] &&
-            inv["custName"] !== ""
-        ))
+    
+      
 
         if (
           thisWeeksOrders.findIndex(
@@ -135,7 +138,6 @@ const WeeklyBillingGrid = ({
               ord["custName"] === inv["custName"] &&
               inv["custName"] !== ""
           ) < 0
-          
         ) {
           for (let ord of inv.orders) {
             let newWeeklyOrder = {
@@ -211,7 +213,8 @@ const WeeklyBillingGrid = ({
         }
 
         setIsLoading(false);
-       
+        setWeeklyInvoices(addDeliv);
+        setWeeklyLoaded(true)
       }
     } catch (error) {
       console.log("error on fetching listHeldforWeeklyInvoicings List", error);

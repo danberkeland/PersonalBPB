@@ -8,7 +8,6 @@ import { CustomerContext } from "../../../dataContexts/CustomerContext";
 import { OrdersContext } from "../../../dataContexts/OrdersContext";
 import { StandingContext } from "../../../dataContexts/StandingContext";
 
-
 import {
   buildCartList,
   buildStandList,
@@ -23,10 +22,15 @@ import {
 } from "../../../helpers/billingGridHelpers";
 
 import { ExpandedBillingRows } from "./Parts/ExpandedBillingRows";
-import { DeleteInvoice } from "./Parts/DeleteInvoice"
+import { DeleteInvoice } from "./Parts/DeleteInvoice";
 
-
-const BillingGrid = ({ altPricing, nextInv, dailyInvoices, setDailyInvoices, zones }) => {
+const BillingGrid = ({
+  altPricing,
+  nextInv,
+  dailyInvoices,
+  setDailyInvoices,
+  zones,
+}) => {
   const [expandedRows, setExpandedRows] = useState(null);
 
   const [pickedProduct, setPickedProduct] = useState();
@@ -56,7 +60,7 @@ const BillingGrid = ({ altPricing, nextInv, dailyInvoices, setDailyInvoices, zon
         zones,
         "daily"
       );
-      
+
       setDailyInvoices(invOrders);
     } catch {
       console.log("Whoops");
@@ -75,8 +79,6 @@ const BillingGrid = ({ altPricing, nextInv, dailyInvoices, setDailyInvoices, zon
       console.log("no product chosen");
     }
   }, [pickedProduct]);
-
- 
 
   const calcSumTotal = (data) => {
     let sum = 0;
@@ -127,7 +129,9 @@ const BillingGrid = ({ altPricing, nextInv, dailyInvoices, setDailyInvoices, zon
 
           <Column
             headerStyle={{ width: "4rem" }}
-            body={(e) => DeleteInvoice(e.invNum,dailyInvoices,setDailyInvoices)}
+            body={(e) =>
+              DeleteInvoice(e.invNum, dailyInvoices, setDailyInvoices)
+            }
           ></Column>
         </DataTable>
       </div>

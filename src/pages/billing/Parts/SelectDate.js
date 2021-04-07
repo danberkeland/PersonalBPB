@@ -132,14 +132,14 @@ const SelectDate = ({
         .setZone("America/Los_Angeles")
         .weekdayLong
 
-    console.log(todayDay)
+    
     if (todayDay==="Wednesday"){
       let weeklyInfo = await fetchInfo(
         listHeldforWeeklyInvoicings,
         "listHeldforWeeklyInvoicings",
         "1000"
       );
-      console.log(weeklyInfo)
+      
     }
     
      // if Sunday - add on weekly orders

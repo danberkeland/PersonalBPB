@@ -45,7 +45,7 @@ export const WeeklyGrandTotal = ({
   const handleAddProduct = (e, delivDate, custName) => {
     let invToModify = clonedeep(weeklyInvoices);
     let ind = invToModify.findIndex((inv) => inv["custName"] === custName);
-    console.log(ind);
+    
     let nextInd = invToModify[ind].delivDate.findIndex(
       (inv) => inv["delivDate"] === delivDate
     );
@@ -107,7 +107,7 @@ export const WeeklyGrandTotal = ({
     } catch (error) {
       console.log(error);
     }
-    console.log(checkWeeklies);
+  
     // find orders for custName and delivDate
     let ind = weeklyInvoices.findIndex((inv) => inv["custName"] === custName);
     let indDeliv = weeklyInvoices[ind].delivDate.findIndex(

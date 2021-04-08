@@ -9,6 +9,8 @@ import 'jspdf-autotable'
 import { ProductsContext } from "../../../../dataContexts/ProductsContext";
 import { OrdersContext } from "../../../../dataContexts/OrdersContext";
 import { StandingContext } from "../../../../dataContexts/StandingContext";
+import { CustomerContext } from "../../../../dataContexts/CustomerContext";
+
 
 import {
   buildProductArray,
@@ -17,10 +19,35 @@ import {
   createQtyGrid,
 } from "../../../../helpers/delivGridHelpers";
 
+import styled from "styled-components";
+
+
+
+const ButtonContainer = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-content: flex-end;
+  `
+
+const ButtonWrapper = styled.div`
+  font-family: "Montserrat", sans-serif;
+  display: flex;
+  width: 40%;
+  flex-direction: row;
+  justify-content:space-between;
+  align-content: center;
+
+  background: #ffffff;
+`;
+
+
 const RouteGrid = ({ route, orderList }) => {
   const { products } = useContext(ProductsContext);
   const { orders } = useContext(OrdersContext);
   const { standing } = useContext(StandingContext);
+  const { customers } = useContext(CustomerContext)
 
   const dt = useRef(null);
 
@@ -75,7 +102,7 @@ const RouteGrid = ({ route, orderList }) => {
 
   const exportColumns = columns.map(col => ({ title: col.header, dataKey: col.field }));
 
-  const exportPdf = () => {
+  const exportListPdf = () => {
     const doc = new jsPDF('l','mm','a4');
     doc.setFontSize(24);
     doc.text(10,20,'Delivery Sheet');
@@ -89,12 +116,117 @@ const RouteGrid = ({ route, orderList }) => {
     doc.save("products.pdf");
   };
 
+  const exportInvPdf = () => {
+    let invListFilt = orderList.filter(ord => ord.route===route)
+    let custFil = invListFilt.map(inv => inv.custName)
+    custFil = new Set(custFil)
+    custFil = Array.from(custFil)
+    let customersCompare = customers.map(cust => cust.custName)
+    let ordersToInv = orderList.filter(ord => custFil.includes(ord.custName) && customersCompare.includes(ord.custName))
+    ordersToInv = ordersToInv.filter(ord => customers[customers.findIndex(cust => cust.custName===ord.custName)].toBePrinted===true)
+    let ThinnedCustFil = ordersToInv.map(ord => ord.custName)
+    ThinnedCustFil = new Set(ThinnedCustFil)
+    ThinnedCustFil = Array.from(ThinnedCustFil)
+    
+
+
+
+    const doc = new jsPDF('0','mm','a4');
+
+    let init = true
+    for (let inv of ThinnedCustFil){
+
+      let leftMargin = 25
+      let rightColumn = 130
+
+      let addr1 = "849 West St."
+      let addr2 = "San Luis Obispo, CA 93405"
+      let phone = "(805)242-4403"
+
+      let invNum = "9999"
+      let ponote = "123456"
+      let delivdate = "Thursday, April 8, 2021"
+      let duedate = "Friday, April 23, 2021"
+
+      let head = [['Item','Price','Qty','Total','Returns']]
+      let body = [
+        ['Country Batard','$3.50','2','$7.00',''],
+        ['Baguette','$2.20','10','$22.00',''],
+        ['TOTAL','','','$29.00','']
+
+      ]
+
+      !init && doc.addPage('0','mm','a4')
+
+      doc.setFontSize(26);
+      doc.text(leftMargin,26,"Back Porch Bakery")
+      doc.setFontSize(14);
+      doc.text(leftMargin,32,"849 West St., San Luis Obispo, CA 93405 (805)242-4403")
+      doc.setFontSize(14);
+      doc.text(rightColumn,46,`Customer:`);
+      doc.setFontSize(12);
+      doc.text(rightColumn,56,`${inv}`);
+      doc.text(rightColumn,62,`${addr1}`);
+      doc.text(rightColumn,68,`${addr2}`);
+      doc.text(rightColumn,74,`${phone}`);
+      
+     
+
+      doc.autoTable({
+        body:[
+          ["Invoice #:",`${invNum}`],
+          ["PO #:",`${ponote}`],
+          ["Delivery Date:",`${delivdate}`],
+          ["Due Date:",`${duedate}`],
+      ],
+        margin: { top:80, left: leftMargin, right: leftMargin },
+        styles: {fontSize: 12}
+      })
+
+      doc.autoTable({
+        head: head, 
+        body: body,
+        margin: { top:110, left: leftMargin, right: leftMargin },
+        styles: {fontSize: 12}
+      }
+      );
+
+      
+
+      init = false
+      
+    }
+    
+    
+    doc.save("invoices.pdf");
+  };
+
+  const exportFullPdf = () => {
+    const doc = new jsPDF('l','mm','a4');
+    doc.setFontSize(24);
+    doc.text(10,20,'Delivery Sheet');
+    doc.autoTable({
+      columns: exportColumns, 
+      body: data,
+      margin: { top:26 },
+      styles: {fontSize: 16}
+    }
+    );
+    doc.save("products.pdf");
+  };
+
+
+
   const header = (
-    <div className="p-d-flex export-buttons">
+    <ButtonContainer>
+    <ButtonWrapper>
         
-        <Button type="button" icon="pi pi-file-pdf" onClick={exportPdf} className="p-button-warning p-mr-2" data-pr-tooltip="PDF" />
+        <Button type="button" onClick={exportListPdf} className="p-button-success" data-pr-tooltip="PDF">Print Delivery List</Button>
+        <Button type="button" onClick={exportInvPdf} className="p-button-success" data-pr-tooltip="PDF">Print Invoices</Button>
+        <Button type="button" onClick={exportFullPdf} className="p-button-success" data-pr-tooltip="PDF">Print Full Delivery Lists</Button>
        
-    </div>
+    </ButtonWrapper>
+    </ButtonContainer>
 );
 
 const onRowReorder = (e) => {

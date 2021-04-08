@@ -139,9 +139,11 @@ const RouteGrid = ({ route, orderList }) => {
       let leftMargin = 25
       let rightColumn = 130
 
-      let addr1 = "849 West St."
-      let addr2 = "San Luis Obispo, CA 93405"
-      let phone = "(805)242-4403"
+      let custInd = customers.findIndex(cust => cust.custName === inv)
+
+      let addr1 = customers[custInd].addr1
+      let addr2 = customers[custInd].addr2
+      let phone = customers[custInd].phone
 
       let invNum = "9999"
       let ponote = "123456"
@@ -149,12 +151,11 @@ const RouteGrid = ({ route, orderList }) => {
       let duedate = "Friday, April 23, 2021"
 
       let head = [['Item','Price','Qty','Total','Returns']]
-      let body = [
-        ['Country Batard','$3.50','2','$7.00',''],
-        ['Baguette','$2.20','10','$22.00',''],
-        ['TOTAL','','','$29.00','']
-
-      ]
+      console.log(orderList)
+      let body = orderList.filter(ord => ord.custName === inv)
+      console.log(body)
+      body = body.map(ord => [ord.prodName,2,ord.qty,(Number(2)*Number(ord.qty))])
+      
 
       !init && doc.addPage('0','mm','a4')
 

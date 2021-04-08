@@ -4,7 +4,7 @@ import { CurrentDataContext } from "../../../dataContexts/CurrentDataContext";
 import { CustomerContext } from "../../../dataContexts/CustomerContext";
 
 import { Calendar } from "primereact/calendar";
-import { InputText } from "primereact/inputtext";
+
 import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
 
@@ -35,8 +35,6 @@ const BasicContainer = styled.div`
 `;
 
 const SelectDate = ({
-  nextInv,
-  setNextInv,
   dailyInvoices,
   setDailyInvoices,
 }) => {
@@ -58,9 +56,11 @@ const SelectDate = ({
 
   const handleAddCustomer = (e) => {
     let invToModify = clonedeep(dailyInvoices);
+    let dateSplit = delivDate.split("-");
+    let newDate = dateSplit[1] + dateSplit[2] + dateSplit[0];
     invToModify.push({
       custName: e.target.value,
-      invNum: dailyInvoices[dailyInvoices.length - 1]["invNum"] + 1,
+      invNum: newDate+customers[customers.findIndex(cst => cst.custName===e.target.value)].nickName,
       orders: [],
     });
     setDailyInvoices(invToModify);
@@ -69,11 +69,11 @@ const SelectDate = ({
 
   const exportCSV = async () => {
     
-    let lastInv;
+  
     let data = [];
     for (let inv of dailyInvoices) {
       for (let ord of inv.orders) {
-        lastInv = inv.invNum;
+       
         let ddate = convertDatetoBPBDate(delivDate);
         let dueDate = convertDatetoBPBDate(
           DateTime.now()
@@ -104,7 +104,7 @@ const SelectDate = ({
         }
 
         let newEntry = [
-          Number(inv.invNum),
+          inv.invNum,
           inv.custName,
           ddate,
           dueDate,
@@ -131,7 +131,7 @@ const SelectDate = ({
 
     let todayDay = DateTime.now().setZone("America/Los_Angeles").weekdayLong;
 
-    if (todayDay === "Sunday") {
+    if (todayDay === "Thursday") {
       let weeklyInfo = await fetchInfo(
         listHeldforWeeklyInvoicings,
         "listHeldforWeeklyInvoicings",
@@ -141,10 +141,11 @@ const SelectDate = ({
       let custSet = weeklyInfo.map((week) => week.custName);
       custSet = new Set(custSet);
       let custArray = Array.from(custSet);
-      lastInv++;
+      let dateSplit = delivDate.split("-");
+      let newDate = dateSplit[1] + dateSplit[2] + dateSplit[0];
       custArray = custArray.map((cust) => ({
         custName: cust,
-        invNum: lastInv++,
+        invNum: newDate+customers[customers.findIndex(cst => cst.custName===cust)].nickName,
       }));
       let weeklyOrders = [];
       for (let cust of custArray) {
@@ -202,7 +203,7 @@ const SelectDate = ({
           }
   
           let newEntry = [
-            Number(inv.invNum),
+            inv.invNum,
             inv.custName,
             ddate,
             dueDate,
@@ -275,18 +276,7 @@ const SelectDate = ({
             onChange={(e) => setPickedCustomer(e.target.value.custName)}
           />
         </div>
-        <div>
-          <span className="p-float-label">
-            <InputText
-              id="invNum"
-              size="50"
-              placeholder={nextInv}
-              onKeyUp={(e) => e.code === "Enter" && setNextInv(e.target.value)}
-              onBlur={(e) => setNextInv(e.target.value)}
-            />
-            <label htmlFor="invNum">Enter next available invoice #</label>
-          </span>
-        </div>
+       
         <Button className="p-button-success" onClick={exportCSV}>
           EXPORT CSV
         </Button>

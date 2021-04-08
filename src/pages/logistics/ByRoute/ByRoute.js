@@ -16,10 +16,16 @@ import {
   StandingLoad,
 } from "../../../dataContexts/StandingContext";
 import { HoldingContext } from "../../../dataContexts/HoldingContext";
+import { ToggleContext } from "../../../dataContexts/ToggleContext";
 
 import RouteGrid from "../ByRoute/Parts/RouteGrid";
 import RouteList from "../ByRoute/Parts/RouteList";
 import ToolBar from "../ByRoute/Parts/ToolBar";
+
+import { listAltPricings } from "../../../graphql/queries";
+
+import { API, graphqlOperation } from "aws-amplify";
+
 
 
 
@@ -41,16 +47,34 @@ const DescripWrapper = styled.div`
   background: #ffffff;
 `;
 
+const fetchInfo = async (operation, opString, limit) => {
+  try {
+    let info = await API.graphql(
+      graphqlOperation(operation, {
+        limit: limit,
+      })
+    );
+    let list = info.data[opString].items;
+
+    let noDelete = list.filter((li) => li["_deleted"] !== true);
+    return noDelete;
+  } catch {
+    return [];
+  }
+};
+
 function ByRoute() {
   const [route, setRoute] = useState("AM Pastry");
   const [routeList, setRouteList] = useState();
   const [orderList, setOrderList] = useState();
+  const [ altPricing, setAltPricing ] = useState();
 
   const { custLoaded, setCustLoaded } = useContext(CustomerContext);
   const { prodLoaded, setProdLoaded } = useContext(ProductsContext);
   let { setHoldLoaded } = useContext(HoldingContext);
-  let { orders, ordersLoaded, setOrdersLoaded } = useContext(OrdersContext);
+  let { ordersLoaded, setOrdersLoaded } = useContext(OrdersContext);
   let { standLoaded, setStandLoaded } = useContext(StandingContext);
+  let { setIsLoading } = useContext(ToggleContext)
 
   useEffect(() => {
     setCustLoaded(false);
@@ -59,6 +83,22 @@ function ByRoute() {
     setOrdersLoaded(false);
     setStandLoaded(false);
   }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+    fetchAltPricing();
+    
+  }, []);
+
+
+  const fetchAltPricing = async () => {
+    try {
+      let altPricing = await fetchInfo(listAltPricings,"listAltPricings", "1000");
+      setAltPricing(altPricing);   
+    } catch (error) {
+      console.log("error on fetching Alt Pricing List", error);
+    }
+  };
 
   
   return (
@@ -77,7 +117,7 @@ function ByRoute() {
         />
         <DescripWrapper>
           <ToolBar setOrderList={setOrderList} />
-          <RouteGrid route={route} orderList={orderList} />
+          <RouteGrid route={route} orderList={orderList} altPricing={altPricing} setAltPricing={setAltPricing}/>
         </DescripWrapper>
       </MainWrapper>
     </React.Fragment>

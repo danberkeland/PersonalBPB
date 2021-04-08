@@ -82,7 +82,7 @@ const WeeklyBillingGrid = ({
       let fullOrder = compileFullOrderList(buildOrders, buildStand);
 
       let custListArray = buildCustList(fullOrder);
-      let invList = buildInvList(custListArray, nextInv);
+      let invList = buildInvList(custListArray, customers, delivDate);
       let invOrders = attachInvoiceOrders(
         invList,
         fullOrder,

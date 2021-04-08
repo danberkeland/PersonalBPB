@@ -14,15 +14,20 @@ export const buildCustList = (fullOrder) => {
   return custListArray;
 };
 
-export const buildInvList = (custListArray, nextInv) => {
-  let invList = custListArray.map((cust) => ({
+export const buildInvList = (custListArray, customers, delivDate) => {
+  let dateSplit = delivDate.split("-");
+  let newDate = dateSplit[1] + dateSplit[2] + dateSplit[0];
+  custListArray = custListArray.map((cust) => ({
     custName: cust,
-    invNum: 0,
+    nickName:
+      customers[customers.findIndex((ind) => ind.custName === cust)].nickName,
+  }));
+  let invList = custListArray.map((cust) => ({
+    custName: cust.custName,
+    invNum: newDate + cust.nickName,
     orders: [],
   }));
-  invList.forEach(
-    (inv, index) => (inv.invNum = Number(nextInv) + Number(index))
-  );
+  
   return invList;
 };
 

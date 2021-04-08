@@ -97,6 +97,10 @@ const RouteGrid = ({ route, orderList }) => {
     </div>
 );
 
+const onRowReorder = (e) => {
+  setData(e.value);
+}
+
   return (
     <div>
       <div className="card">
@@ -105,7 +109,9 @@ const RouteGrid = ({ route, orderList }) => {
           value={data}
           resizableColumns
           columnResizeMode="fit"
+          onRowReorder={onRowReorder}
         >
+          <Column rowReorder style={{width: '3em'}} />
           {dynamicColumns}
         </DataTable>
       </div>

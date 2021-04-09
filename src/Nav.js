@@ -33,7 +33,7 @@ function Nav() {
       {label: 'Production', icon: 'pi pi-fw pi-chart-bar', command:()=>{ setSelectedMenu("prod")}},
       {label: 'Logistics', icon: 'pi pi-fw pi-map', command:()=>{ setSelectedMenu("log")}},
       {label: 'EOD Counts', icon: 'pi pi-fw pi-map', command:()=>{ setSelectedMenu("eod")}},
-      {label: 'Dough Calc', icon: 'pi pi-fw pi-map', command:()=>{ window.location="/Dough"; }},
+      {label: 'Dough Calc', icon: 'pi pi-fw pi-map', command:()=>{ window.location="/doughCalc/doughCalc"; }},
       {label: 'Ordering', icon: 'pi pi-fw pi-shopping-cart', command:()=>{ window.location="/Ordering"; }},
       {label: 'Customers', icon: 'pi pi-fw pi-users', command:()=>{ window.location="/Customers"; }},
       {label: 'Products', icon: 'pi pi-fw pi-tags', command:()=>{ window.location="/Products"; }},
@@ -73,8 +73,8 @@ function Nav() {
    ]
 
    const Croixitems = [
-      {label: 'What Croix to shape'},
-      {label: 'Croix EOD Count'},
+      {label: 'What Croix to shape', command:()=>{ window.location="/BPBSProd/CroixToMake"; }},
+      {label: 'Croix EOD Count', command:()=>{ window.location="/EODCounts/BPBSCounts"; }},
 
    ]
 
@@ -87,8 +87,8 @@ function Nav() {
    ];
 
    const eoditems = [
-      {label: 'BPBN'},
-      {label: 'BPBS'},
+      {label: 'BPBN', command:()=>{ window.location="/EODCounts/BPBNCounts"; }},
+      {label: 'BPBS', command:()=>{ window.location="/EODCounts/BPBSCounts"; }},
    ];
    
 
@@ -111,7 +111,7 @@ function Nav() {
    const settingsitems = [
       {label: 'Edit Zones', command:()=>{ window.location="/settings/editZones"; }},
       {label: 'Edit Routes', command:()=>{ window.location="/settings/editRoutes"; }},
-      {label: 'Edit Doughs'}
+      {label: 'Edit Doughs', command:()=>{ window.location="/settings/editDough"; }}
 
    ];
 

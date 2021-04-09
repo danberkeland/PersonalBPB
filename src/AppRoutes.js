@@ -28,6 +28,10 @@ import BPBSWhatToMake from './pages/BPBSProd/BPBSWhatToMake';
 import BPBSMixPocket from './pages/BPBSProd/BPBSMixPocket';
 import CroixToMake from './pages/BPBSProd/CroixToMake';
 import BPBSCounts from './pages/EODCounts/BPBSCounts';
+import AMPastry from './pages/logistics/AMPastry';
+import NorthLists from './pages/logistics/NorthLists';
+import RetailBags from './pages/logistics/RetailBags';
+import EditDough from './pages/settings/editDough/editDough';
 
 
 function AppRoutes() {
@@ -39,9 +43,16 @@ function AppRoutes() {
         <Switch>
           <Route path="/ordering" component={Ordering} /> 
           <Route path="/logistics/byRoute" component={ByRoute} />  
-          <Route path="/logistics/byProduct" component={ByProduct} />  
+          <Route path="/logistics/byProduct" component={ByProduct} />
+          <Route path="/logistics/AMPastry" component={AMPastry} />
+          <Route path="/logistics/NorthLists" component={NorthLists} />
+          <Route path="/logistics/RetailBags" component={RetailBags} /> 
+
+
+
           <Route path="/settings/editRoutes" component={EditRoutes} />
           <Route path="/settings/editZones" component={EditZones} />
+          <Route path="/settings/editDough" component={EditDough} />
 
           <Route path="/BPBNProd/BPBNBaker1" component={BPBNBaker1} />
           <Route path="/BPBNProd/BPBNBaker2" component={BPBNBaker2} />

@@ -64,11 +64,11 @@ function Nav() {
    ]
 
    const BPBSitems = [
-      {label: 'BPBS What To Make'},
-      {label: 'BPBS Mix/Pocket'},
-      {label: 'Croix To Make'},
-      {label: 'BPBS EOD Count'},
-      {label: 'Dough Calculator'},
+      {label: 'BPBS What To Make', command:()=>{ window.location="/BPBSProd/BPBSWhatToMake"; }},
+      {label: 'BPBS Mix/Pocket', command:()=>{ window.location="/BPBSProd/BPBSMixPocket"; }},
+      {label: 'Croix To Make', command:()=>{ window.location="/BPBSProd/CroixToMake"; }},
+      {label: 'BPBS EOD Count', command:()=>{ window.location="/EODCounts/BPBSCounts"; }},
+      {label: 'Dough Calculator', command:()=>{ window.location="/doughCalc/doughCalc"; }},
 
    ]
 

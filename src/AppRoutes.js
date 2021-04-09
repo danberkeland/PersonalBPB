@@ -24,6 +24,10 @@ import BPBNBuckets from './pages/BPBNProd/BPBNBuckets';
 import BPBNSetOut from './pages/BPBNProd/BPBNSetOut';
 import BPBNCounts from './pages/EODCounts/BPBNCounts';
 import DoughCalc from './pages/doughCalc/doughCalc';
+import BPBSWhatToMake from './pages/BPBSProd/BPBSWhatToMake';
+import BPBSMixPocket from './pages/BPBSProd/BPBSMixPocket';
+import CroixToMake from './pages/BPBSProd/CroixToMake';
+import BPBSCounts from './pages/EODCounts/BPBSCounts';
 
 
 function AppRoutes() {
@@ -44,6 +48,13 @@ function AppRoutes() {
           <Route path="/BPBNProd/Buckets" component={BPBNBuckets} />
           <Route path="/BPBNProd/BPBNSetOut" component={BPBNSetOut} />
           <Route path="/EODCounts/BPBNCounts" component={BPBNCounts} />
+          <Route path="/doughCalc/doughCalc" component={DoughCalc} />
+
+          <Route path="/BPBSProd/BPBSWhatToMake" component={BPBSWhatToMake} />
+          <Route path="/BPBSProd/BPBSMixPocket" component={BPBSMixPocket} />
+          <Route path="/BPBSProd/CroixToMake" component={CroixToMake} />
+          <Route path="/BPBSProd/BPBNSetOut" component={BPBNSetOut} />
+          <Route path="/EODCounts/BPBSCounts" component={BPBSCounts} />
           <Route path="/doughCalc/doughCalc" component={DoughCalc} />
 
 

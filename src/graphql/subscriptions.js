@@ -544,3 +544,45 @@ export const onDeleteHeldforWeeklyInvoicing = /* GraphQL */ `
     }
   }
 `;
+export const onCreateDough = /* GraphQL */ `
+  subscription OnCreateDough {
+    onCreateDough {
+      id
+      doughName
+      ingredients
+      process
+      batchSize
+      mixedWhere
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateDough = /* GraphQL */ `
+  subscription OnUpdateDough {
+    onUpdateDough {
+      id
+      doughName
+      ingredients
+      process
+      batchSize
+      mixedWhere
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteDough = /* GraphQL */ `
+  subscription OnDeleteDough {
+    onDeleteDough {
+      id
+      doughName
+      ingredients
+      process
+      batchSize
+      mixedWhere
+      createdAt
+      updatedAt
+    }
+  }
+`;

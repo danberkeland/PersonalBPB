@@ -437,3 +437,38 @@ export const listHeldforWeeklyInvoicings = /* GraphQL */ `
     }
   }
 `;
+export const getDough = /* GraphQL */ `
+  query GetDough($id: ID!) {
+    getDough(id: $id) {
+      id
+      doughName
+      ingredients
+      process
+      batchSize
+      mixedWhere
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listDoughs = /* GraphQL */ `
+  query ListDoughs(
+    $filter: ModelDoughFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listDoughs(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        doughName
+        ingredients
+        process
+        batchSize
+        mixedWhere
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;

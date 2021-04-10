@@ -634,3 +634,54 @@ export const deleteHeldforWeeklyInvoicing = /* GraphQL */ `
     }
   }
 `;
+export const createDough = /* GraphQL */ `
+  mutation CreateDough(
+    $input: CreateDoughInput!
+    $condition: ModelDoughConditionInput
+  ) {
+    createDough(input: $input, condition: $condition) {
+      id
+      doughName
+      ingredients
+      process
+      batchSize
+      mixedWhere
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateDough = /* GraphQL */ `
+  mutation UpdateDough(
+    $input: UpdateDoughInput!
+    $condition: ModelDoughConditionInput
+  ) {
+    updateDough(input: $input, condition: $condition) {
+      id
+      doughName
+      ingredients
+      process
+      batchSize
+      mixedWhere
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteDough = /* GraphQL */ `
+  mutation DeleteDough(
+    $input: DeleteDoughInput!
+    $condition: ModelDoughConditionInput
+  ) {
+    deleteDough(input: $input, condition: $condition) {
+      id
+      doughName
+      ingredients
+      process
+      batchSize
+      mixedWhere
+      createdAt
+      updatedAt
+    }
+  }
+`;

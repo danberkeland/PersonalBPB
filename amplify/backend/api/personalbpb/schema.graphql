@@ -128,3 +128,13 @@ type HeldforWeeklyInvoicing @model @auth(rules: [{allow: public}]) {
   qty: Int
   rate: Float
 }
+
+
+type Dough @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  doughName: String
+  ingredients: [String]
+  process: [String]
+  batchSize: Float
+  mixedWhere: String
+}

@@ -1,9 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
 
 import { ProductsContext } from "../../../dataContexts/ProductsContext";
+import { ToggleContext } from "../../../dataContexts/ToggleContext";
 
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
+
+import { listDoughs } from "../../../graphql/queries";
+
+import { API, graphqlOperation } from "aws-amplify";
+
+import { sortAtoZDataByIndex } from "../../../helpers/sortDataHelpers";
 
 
 import {
@@ -13,17 +20,9 @@ import {
   
 } from "../../../helpers/formHelpers";
 
-const doughTypes = [
-  { doughType: "Baguette" },
-  { doughType: "Brioche" },
-  { doughType: "French" },
-  { doughType: "Focaccia" },
-  { doughType: "Whole Wheat" },
-  { doughType: "Croissant" },
-  { doughType: "Rustic Rye" },
-  { doughType: "Levain" },
-  { doughType: "Multigrain" },
-];
+
+
+
 
 const bakedWheres = [
   { bakedWhere: "Prado" },
@@ -32,9 +31,37 @@ const bakedWheres = [
 ];
 
 const Baking = ({ selectedProduct, setSelectedProduct }) => {
+  let { setIsLoading } = useContext(ToggleContext);
+  const [doughTypes, setDoughTypes ] = useState()
   const { products } = useContext(ProductsContext);
 
   const [ fullProducts, setFullProducts ] = useState([])
+
+  useEffect(() => {
+    setIsLoading(true);
+    fetchDoughs();
+    setIsLoading(false);
+  }, []);
+  
+  const fetchDoughs = async () => {
+    try {
+      const doughData = await API.graphql(
+        graphqlOperation(listDoughs, {
+          limit: "50",
+        })
+      );
+      const doughList = doughData.data.listDoughs.items;
+      sortAtoZDataByIndex(doughList, "doughName");
+      let noDelete = doughList.filter((dough) => dough["_deleted"] !== true);
+      let doughsToAdd = noDelete.map(no => ({doughType: no.doughName}))
+      doughsToAdd.push({doughType: "NA"})
+      setDoughTypes(doughsToAdd);
+  
+    } catch (error) {
+      console.log("error on fetching Dough List", error);
+    }
+  };
+  
 
   useEffect(() => {
     let stageProducts = products.map(prod => ({depends: prod["prodName"]}))
@@ -54,7 +81,7 @@ const Baking = ({ selectedProduct, setSelectedProduct }) => {
   return (
     <React.Fragment>
       <h2>
-        <i className="pi pi-user"></i> Packing Info
+        <i className="pi pi-user"></i> Baking Info
       </h2>
       <div className="p-inputgroup">
         <span className="p-inputgroup-addon">

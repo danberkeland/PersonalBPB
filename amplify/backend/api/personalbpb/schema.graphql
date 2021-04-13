@@ -133,8 +133,17 @@ type HeldforWeeklyInvoicing @model @auth(rules: [{allow: public}]) {
 type Dough @model @auth(rules: [{allow: public}]) {
   id: ID!
   doughName: String
-  ingredients: [String]
+  hydration: Float
   process: [String]
   batchSize: Float
   mixedWhere: String
+  components: [String]
+}
+
+type DoughComponent @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  dough: String
+  componentType: String
+  componentName: String
+  amount: Int
 }

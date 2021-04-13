@@ -642,10 +642,11 @@ export const createDough = /* GraphQL */ `
     createDough(input: $input, condition: $condition) {
       id
       doughName
-      ingredients
+      hydration
       process
       batchSize
       mixedWhere
+      components
       createdAt
       updatedAt
     }
@@ -659,10 +660,11 @@ export const updateDough = /* GraphQL */ `
     updateDough(input: $input, condition: $condition) {
       id
       doughName
-      ingredients
+      hydration
       process
       batchSize
       mixedWhere
+      components
       createdAt
       updatedAt
     }
@@ -676,10 +678,59 @@ export const deleteDough = /* GraphQL */ `
     deleteDough(input: $input, condition: $condition) {
       id
       doughName
-      ingredients
+      hydration
       process
       batchSize
       mixedWhere
+      components
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createDoughComponent = /* GraphQL */ `
+  mutation CreateDoughComponent(
+    $input: CreateDoughComponentInput!
+    $condition: ModelDoughComponentConditionInput
+  ) {
+    createDoughComponent(input: $input, condition: $condition) {
+      id
+      dough
+      componentType
+      componentName
+      amount
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateDoughComponent = /* GraphQL */ `
+  mutation UpdateDoughComponent(
+    $input: UpdateDoughComponentInput!
+    $condition: ModelDoughComponentConditionInput
+  ) {
+    updateDoughComponent(input: $input, condition: $condition) {
+      id
+      dough
+      componentType
+      componentName
+      amount
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteDoughComponent = /* GraphQL */ `
+  mutation DeleteDoughComponent(
+    $input: DeleteDoughComponentInput!
+    $condition: ModelDoughComponentConditionInput
+  ) {
+    deleteDoughComponent(input: $input, condition: $condition) {
+      id
+      dough
+      componentType
+      componentName
+      amount
       createdAt
       updatedAt
     }

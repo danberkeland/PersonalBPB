@@ -442,10 +442,11 @@ export const getDough = /* GraphQL */ `
     getDough(id: $id) {
       id
       doughName
-      ingredients
+      hydration
       process
       batchSize
       mixedWhere
+      components
       createdAt
       updatedAt
     }
@@ -461,10 +462,44 @@ export const listDoughs = /* GraphQL */ `
       items {
         id
         doughName
-        ingredients
+        hydration
         process
         batchSize
         mixedWhere
+        components
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getDoughComponent = /* GraphQL */ `
+  query GetDoughComponent($id: ID!) {
+    getDoughComponent(id: $id) {
+      id
+      dough
+      componentType
+      componentName
+      amount
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listDoughComponents = /* GraphQL */ `
+  query ListDoughComponents(
+    $filter: ModelDoughComponentFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listDoughComponents(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        dough
+        componentType
+        componentName
+        amount
         createdAt
         updatedAt
       }

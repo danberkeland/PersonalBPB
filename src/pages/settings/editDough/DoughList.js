@@ -2,7 +2,7 @@ import React, { useEffect, useContext } from "react";
 
 import { ToggleContext } from "../../../dataContexts/ToggleContext";
 
-import { listDoughs } from "../../../graphql/queries";
+import { listDoughs, listDoughComponents } from "../../../graphql/queries";
 
 import { API, graphqlOperation } from "aws-amplify";
 
@@ -22,14 +22,27 @@ const ListWrapper = styled.div`
   background: #ffffff;
 `;
 
-const DoughList = ({ selectedDough, setSelectedDough, doughs, setDoughs }) => {
+const DoughList = ({
+  selectedDough,
+  setSelectedDough,
+  doughs,
+  setDoughs,
+  doughComponents,
+  setDoughComponents,
+}) => {
   let { setIsLoading } = useContext(ToggleContext);
 
   useEffect(() => {
     setIsLoading(true);
     fetchDoughs();
     setIsLoading(false);
-  }, [doughs]);
+  }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+    fetchDoughComponents();
+    setIsLoading(false);
+  }, []);
 
   const fetchDoughs = async () => {
     try {
@@ -43,6 +56,23 @@ const DoughList = ({ selectedDough, setSelectedDough, doughs, setDoughs }) => {
       let noDelete = doughList.filter((dough) => dough["_deleted"] !== true);
 
       setDoughs(noDelete);
+    } catch (error) {
+      console.log("error on fetching Dough List", error);
+    }
+  };
+
+  const fetchDoughComponents = async () => {
+    try {
+      const doughData = await API.graphql(
+        graphqlOperation(listDoughComponents, {
+          limit: "50",
+        })
+      );
+      const doughList = doughData.data.listDoughComponents.items;
+      sortAtoZDataByIndex(doughList, "doughName");
+      let noDelete = doughList.filter((dough) => dough["_deleted"] !== true);
+
+      setDoughComponents(noDelete);
     } catch (error) {
       console.log("error on fetching Dough List", error);
     }

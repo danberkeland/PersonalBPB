@@ -41,6 +41,7 @@ const GroupBox = styled.div`
 function EditDoughs() {
   const [selectedDough, setSelectedDough] = useState();
   const [doughs, setDoughs] = useState(null);
+  const [doughComponents, setDoughComponents] = useState(null);
 
   const { setCustLoaded } = useContext(CustomerContext);
   const { setProdLoaded } = useContext(ProductsContext);
@@ -64,6 +65,8 @@ function EditDoughs() {
           setSelectedDough={setSelectedDough}
           doughs={doughs}
           setDoughs={setDoughs}
+          doughComponents={doughComponents}
+          setDoughComponents={setDoughComponents}
         />
         {selectedDough && (
           <React.Fragment>
@@ -74,6 +77,8 @@ function EditDoughs() {
                   setSelectedDough={setSelectedDough}
                   doughs={doughs}
                   setDoughs={setDoughs}
+                  doughComponents={doughComponents}
+                  setDoughComponents={setDoughComponents}
                 />
               </GroupBox>
             </DescripWrapper>
@@ -85,6 +90,8 @@ function EditDoughs() {
             setSelectedDough={setSelectedDough}
             doughs={doughs}
             setDoughs={setDoughs}
+            doughComponents={doughComponents}
+            setDoughComponents={setDoughComponents}
           />
         </DescripWrapper>
       </MainWrapper>

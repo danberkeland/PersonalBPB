@@ -549,10 +549,11 @@ export const onCreateDough = /* GraphQL */ `
     onCreateDough {
       id
       doughName
-      ingredients
+      hydration
       process
       batchSize
       mixedWhere
+      components
       createdAt
       updatedAt
     }
@@ -563,10 +564,11 @@ export const onUpdateDough = /* GraphQL */ `
     onUpdateDough {
       id
       doughName
-      ingredients
+      hydration
       process
       batchSize
       mixedWhere
+      components
       createdAt
       updatedAt
     }
@@ -577,10 +579,50 @@ export const onDeleteDough = /* GraphQL */ `
     onDeleteDough {
       id
       doughName
-      ingredients
+      hydration
       process
       batchSize
       mixedWhere
+      components
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateDoughComponent = /* GraphQL */ `
+  subscription OnCreateDoughComponent {
+    onCreateDoughComponent {
+      id
+      dough
+      componentType
+      componentName
+      amount
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateDoughComponent = /* GraphQL */ `
+  subscription OnUpdateDoughComponent {
+    onUpdateDoughComponent {
+      id
+      dough
+      componentType
+      componentName
+      amount
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteDoughComponent = /* GraphQL */ `
+  subscription OnDeleteDoughComponent {
+    onDeleteDoughComponent {
+      id
+      dough
+      componentType
+      componentName
+      amount
       createdAt
       updatedAt
     }

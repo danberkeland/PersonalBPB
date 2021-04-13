@@ -8,6 +8,7 @@ import {
   updateDough,
   deleteDough,
   createDough,
+  createDoughComponent,
 } from "../../../graphql/mutations";
 
 import { Button } from "primereact/button";
@@ -33,12 +34,63 @@ const Buttons = ({ selectedDough, setSelectedDough }) => {
       doughName = value;
       const addDetails = {
         doughName: doughName,
-        ingredients: [],
-        process: [],
-        batchSize: 0,
-        mixedWhere: '',
+        hydration: 60,
+        process: [
+          "scale",
+          "mix",
+          "bulk",
+          "divide",
+          "shape",
+          "proof",
+          "bake",
+          "cool",
+        ],
+        batchSize: 60,
+        mixedWhere: "Carlton",
+        components: ["lev", "dry", "wet", "dryplus"],
       };
-      createDgh(addDetails, doughName);
+
+      const levComponent = {
+        dough: doughName,
+        componentType: "lev",
+        componentName: "Levain",
+        amount: 20,
+      };
+
+      const dryComponent = {
+        dough: doughName,
+        componentType: "dry",
+        componentName: "Bread Flour",
+        amount: 100,
+      };
+
+      const wetComponent = {
+        dough: doughName,
+        componentType: "wet",
+        componentName: "Water",
+        amount: 100,
+      };
+
+      const saltComponent = {
+        dough: doughName,
+        componentType: "dryplus",
+        componentName: "Salt",
+        amount: 2,
+      };
+
+      const yeastComponent = {
+        dough: doughName,
+        componentType: "dryplus",
+        componentName: "Yeast",
+        amount: 1,
+      };
+
+      createDgh(addDetails);
+      createDghComp(levComponent);
+      createDghComp(dryComponent);
+      createDghComp(wetComponent);
+      createDghComp(saltComponent);
+      createDghComp(yeastComponent);
     });
   };
 
@@ -53,6 +105,16 @@ const Buttons = ({ selectedDough, setSelectedDough }) => {
     }
   };
 
+  const createDghComp = async (addDetails) => {
+    try {
+      await API.graphql(
+        graphqlOperation(createDoughComponent, { input: { ...addDetails } })
+      );
+    } catch (error) {
+      console.log("error on fetching Dough List", error);
+    }
+  };
+
   const updateDgh = async () => {
     const updateDetails = {
       id: selectedDough.id,
@@ -60,7 +122,7 @@ const Buttons = ({ selectedDough, setSelectedDough }) => {
       ingredients: selectedDough.ingredients,
       process: selectedDough.process,
       batchSize: selectedDough.batchSize,
-      
+
       _version: selectedDough["_version"],
     };
 

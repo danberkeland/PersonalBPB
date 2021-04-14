@@ -41,7 +41,8 @@ export const ExpandedWeeklyOrdersRows = ({
   const deleteTemplate = (data, delivDate) => {
     return (
       <Button
-        icon="pi pi-times-circle"
+        icon="pi pi-trash"
+        className="p-button-outlined p-button-rounded p-button-help p-button-sm"
         onClick={(e) => deleteItem(data, delivDate)}
       />
     );

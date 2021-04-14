@@ -32,7 +32,8 @@ export const DeleteInvoice = (invNum, dailyInvoices, setDailyInvoices) => {
       
       
     return (
-      <Button icon="pi pi-times-circle" onClick={(e) => deleteCheck(invNum)} />
+      <Button icon="pi pi-trash"
+      className="p-button-outlined p-button-rounded p-button-help p-button-sm" onClick={(e) => deleteCheck(invNum)} />
     );
   };
   

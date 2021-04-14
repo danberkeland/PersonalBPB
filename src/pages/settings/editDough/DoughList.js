@@ -71,7 +71,7 @@ const DoughList = ({
       const doughList = doughData.data.listDoughComponents.items;
       sortAtoZDataByIndex(doughList, "doughName");
       let noDelete = doughList.filter((dough) => dough["_deleted"] !== true);
-
+        console.log(noDelete)
       setDoughComponents(noDelete);
     } catch (error) {
       console.log("error on fetching Dough List", error);

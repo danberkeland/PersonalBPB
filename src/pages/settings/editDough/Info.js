@@ -9,6 +9,16 @@ import { Column } from "primereact/column";
 
 
 
+import {
+  setValue,
+  fixValue,
+  setPickValue,
+  setDropDownValue,
+} from "../../../helpers/formHelpers";
+
+const clonedeep = require("lodash.clonedeep");
+
+
 const Info = ({
   selectedDough,
   setSelectedDough,
@@ -19,44 +29,119 @@ const Info = ({
 }) => {
   console.log(selectedDough);
   const drys = doughComponents
-    .filter((dgh) => dgh.dough === selectedDough.doughName && dgh.componentType === "dry")
+    .filter(
+      (dgh) =>
+        dgh.dough === selectedDough.doughName && dgh.componentType === "dry"
+    )
     .map((dg) => ({ ing: dg.componentName }));
-  
-  const wets = doughComponents
-  .filter((dgh) => dgh.dough === selectedDough.doughName && dgh.componentType === "wet")
-  .map((dg) => ({ ing: dg.componentName }));
-  
-  const pre = doughComponents
-  .filter((dgh) => dgh.dough === selectedDough.doughName && dgh.componentType === "pre")
-  .map((dg) => ({ ing: dg.componentName }));
-  
-  const additions = doughComponents
-  .filter((dgh) => dgh.dough === selectedDough.doughName && dgh.componentType === "dryplus")
-  .map((dg) => ({ ing: dg.componentName }));
 
-  
+  const wets = doughComponents
+    .filter(
+      (dgh) =>
+        dgh.dough === selectedDough.doughName && dgh.componentType === "wet"
+    )
+    .map((dg) => ({ ing: dg.componentName }));
+
+  const pre = doughComponents
+    .filter(
+      (dgh) =>
+        dgh.dough === selectedDough.doughName && dgh.componentType === "pre"
+    )
+    .map((dg) => ({ ing: dg.componentName }));
+
+  const additions = doughComponents
+    .filter(
+      (dgh) =>
+        dgh.dough === selectedDough.doughName && dgh.componentType === "dryplus"
+    )
+    .map((dg) => ({ ing: dg.componentName }));
 
   const deleteButton = () => {
-    return <Button icon="pi pi-times"
-    className="p-button-outlined p-button-rounded p-button-help p-button-sm" />;
-  };
-
-  const handleInput = (e) => {
-    
-    let placeholder = doughComponents
-      .filter((dgh) => dgh.dough === selectedDough.doughName && dgh.componentName === e.ing)[0].amount
     return (
-      <InputText
-        id="firstname3"
-        type="text"
-        style={{ width: "50px" }}
-        placeholder={placeholder}
-        
+      <Button
+        icon="pi pi-times"
+        className="p-button-outlined p-button-rounded p-button-help p-button-sm"
       />
     );
   };
 
-  
+  const handleInput = (e) => {
+    let placeholder = doughComponents.filter(
+      (dgh) =>
+        dgh.dough === selectedDough.doughName && dgh.componentName === e.ing
+    )[0].amount;
+    let id
+    doughComponents.filter(
+      (dgh) =>
+        dgh.dough === selectedDough.doughName && dgh.componentName === e.ing
+    ).forEach(element => {
+      id = selectedDough.doughName+"_"+element.componentName+"_"+element.componentType
+    });
+    return (
+      <InputText
+        id={id}
+        style={{ width: "50px" }}
+        placeholder={placeholder}
+        onKeyUp={(e) =>
+          e.code === "Enter" && setDoughComponents(handleChange(e,id))
+        }
+        onBlur={(e) => setDoughComponents(handleBlur(e,id))
+        }
+      />
+    );
+  };
+
+  const handleChange = (value, id) => {
+    if (value.code === "Enter") {
+      let itemToUpdate = clonedeep(doughComponents);
+      let itemInfo = id.split("_");
+      itemToUpdate[
+        itemToUpdate.findIndex(
+          (item) =>
+            item.dough === itemInfo[0] &&
+            item.componentName === itemInfo[1] &&
+            item.componentType === itemInfo[2]
+        )
+      ].amount = value.target.value;
+      console.log(id)
+      document.getElementById(id).value = "";
+      return itemToUpdate;
+    }
+  };
+
+  const handleBlur = (value, id) => {
+    let itemToUpdate = clonedeep(doughComponents);
+    let itemInfo = id.split("_");
+    if (value.target.value !== "") {
+      itemToUpdate[
+        itemToUpdate.findIndex(
+          (item) =>
+            item.dough === itemInfo[0] &&
+            item.componentName === itemInfo[1] &&
+            item.componentType === itemInfo[2]
+        )
+      ].amount = value.target.value;
+    }
+    document.getElementById(id).value = "";
+    return itemToUpdate;
+  };
+
+  const getPercent = (e) => {
+    let placeholder = doughComponents.filter(
+      (dgh) =>
+        dgh.dough === selectedDough.doughName && dgh.componentName === e.ing
+    )[0].amount;
+    return placeholder;
+  };
+
+  const getWetPercent = (e) => {
+    let hydro = Number(selectedDough.hydration);
+    let placeholder = doughComponents.filter(
+      (dgh) =>
+        dgh.dough === selectedDough.doughName && dgh.componentName === e.ing
+    )[0].amount;
+    return placeholder*hydro*.01;
+  };
 
   const getFlourWeight = (e) => {
     let bulkWeight = selectedDough.batchSize;
@@ -80,8 +165,7 @@ const Info = ({
       .forEach((element) => {
         addNum = addNum + element.amount;
       });
-    
-    
+
     let fl = (
       bulkWeight /
       (1 + hydro * 0.01 + levNum * 0.01 + addNum * 0.01)
@@ -90,26 +174,49 @@ const Info = ({
     return fl;
   };
 
+  const dryWeight = (e) => {
+    let fl = getFlourWeight(e);
+    let totalDry = 0;
+    doughComponents
+      .filter(
+        (dgh) =>
+          dgh.dough === selectedDough.doughName && dgh.componentType === "dry"
+      )
+      .forEach((element) => {
+        totalDry = totalDry + Number(element.amount);
+      });
 
-  const dryWeight =(e) => {
-    let fl = getFlourWeight(e)
     let thisAmount = doughComponents.filter(
       (dgh) =>
         dgh.dough === selectedDough.doughName && dgh.componentName === e.ing
     )[0].amount;
-    return (fl*.01*thisAmount).toFixed(2)
-  }
+    console.log(thisAmount);
+    console.log(totalDry);
+    return ((fl * thisAmount) / totalDry).toFixed(2);
+  };
 
-  const wetWeight =(e) => {
-    let fl = getFlourWeight(e)
+  const wetWeight = (e) => {
+    let fl = getFlourWeight(e);
     let hydro = Number(selectedDough.hydration);
+    let totalDry = 0;
+    doughComponents
+      .filter(
+        (dgh) =>
+          dgh.dough === selectedDough.doughName && dgh.componentType === "wet"
+      )
+      .forEach((element) => {
+        totalDry = totalDry + Number(element.amount);
+      });
+
     let thisAmount = doughComponents.filter(
       (dgh) =>
         dgh.dough === selectedDough.doughName && dgh.componentName === e.ing
     )[0].amount;
-    return (fl*.01*thisAmount*hydro*.01).toFixed(2)
-  }
-  
+    console.log(thisAmount);
+    console.log(totalDry);
+    return (((fl * thisAmount) / totalDry) * hydro * 0.01).toFixed(2);
+  };
+
   return (
     <React.Fragment>
       <div className="p-grid p-ai-center">
@@ -117,22 +224,28 @@ const Info = ({
           <div>Dough Name: {selectedDough.doughName}</div>
         </div>
         <div className="p-col">
-          <label htmlFor="firstname3">Hydration</label>
+          <label htmlFor="hydration">Hydration</label>
           <InputText
-            id="firstname3"
-            type="text"
+            id="hydration"
             style={{ width: "50px" }}
-            placeholder={Number(selectedDough.hydration)}
+            placeholder={selectedDough.hydration}
+            onKeyUp={(e) =>
+              e.code === "Enter" && setSelectedDough(setValue(e, selectedDough))
+            }
+            onBlur={(e) => setSelectedDough(fixValue(e, selectedDough))}
           />
           %
         </div>
         <div className="p-col">
-          <label htmlFor="firstname3">Default Bulk:</label>
+          <label htmlFor="batchSize">Default Bulk:</label>
           <InputText
-            id="firstname3"
-            type="text"
+            id="batchSize"
             style={{ width: "50px" }}
-            placeholder={Number(selectedDough.batchSize)}
+            placeholder={selectedDough.batchSize}
+            onKeyUp={(e) =>
+              e.code === "Enter" && setSelectedDough(setValue(e, selectedDough))
+            }
+            onBlur={(e) => setSelectedDough(fixValue(e, selectedDough))}
           />
           lb.
         </div>
@@ -147,8 +260,16 @@ const Info = ({
               header="% of flour weight"
               body={handleInput}
             ></Column>
-            <Column className="p-text-center" header="Weight" body={dryWeight}></Column>
-            <Column className="p-text-center" header="Total %"></Column>
+            <Column
+              className="p-text-center"
+              header="Weight"
+              body={dryWeight}
+            ></Column>
+            <Column
+              className="p-text-center"
+              header="Total %"
+              body={getPercent}
+            ></Column>
             <Column className="p-text-right" body={deleteButton}></Column>
           </DataTable>
         </div>
@@ -162,8 +283,16 @@ const Info = ({
               header="Parts Dry"
               body={handleInput}
             ></Column>
-            <Column className="p-text-center" header="Weight" body={dryWeight}></Column>
-            <Column className="p-text-center" header="100%"></Column>
+            <Column
+              className="p-text-center"
+              header="Weight"
+              body={dryWeight}
+            ></Column>
+            <Column
+              className="p-text-center"
+              header="100%"
+              body={getPercent}
+            ></Column>
             <Column className="p-text-right" body={deleteButton}></Column>
           </DataTable>
         </div>
@@ -177,10 +306,15 @@ const Info = ({
               header="Parts Wet"
               body={handleInput}
             ></Column>
-            <Column className="p-text-center" header="Weight" body={wetWeight}></Column>
+            <Column
+              className="p-text-center"
+              header="Weight"
+              body={wetWeight}
+            ></Column>
             <Column
               className="p-text-center"
               header={Number(selectedDough.hydration) + "%"}
+              body={getWetPercent}
             ></Column>
             <Column className="p-text-right" body={deleteButton}></Column>
           </DataTable>
@@ -195,10 +329,17 @@ const Info = ({
               header="% flour weights"
               body={handleInput}
             ></Column>
-            <Column className="p-text-center" header="Weight" body={dryWeight}></Column>
-            <Column className="p-text-center" header="Total %"></Column>
+            <Column
+              className="p-text-center"
+              header="Weight"
+              body={dryWeight}
+            ></Column>
+            <Column
+              className="p-text-center"
+              header="Total %"
+              body={getPercent}
+            ></Column>
             <Column className="p-text-right" body={deleteButton}></Column>
-            
           </DataTable>
         </div>
       </div>

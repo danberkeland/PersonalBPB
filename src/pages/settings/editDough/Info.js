@@ -26,19 +26,40 @@ const preIngs = [
   { preIng: "Levain" },
   { preIng: "Poolish" },
   { preIng: "Rye Levain" },
+  { preIng: "Hi Glut Levain" },
+  { preIng: "Hi Glut Poolish" },
+
 ];
 const dryIngs = [
   { dryIng: "Bread Flour" },
   { dryIng: "Whole Wheat Flour" },
   { dryIng: "Rye Flour" },
+  { dryIng: "Hi Gluten Flour" },
+  { dryIng: "All Purpose Flour" },
+
 ];
 const wetIngs = [
   { wetIng: "Water" },
   { wetIng: "Vegetable Oil" },
   { wetIng: "Egg" },
+  { wetIng: "Olive Oil" },
+  { wetIng: "Milk" },
 ];
-const addIngs = [{ addIng: "Salt" }, { addIng: "Yeast" }, { addIng: "Sugar" }];
-const postIngs = [{ postIng: "Multigrains" }, { postIng: "Butter" }];
+const addIngs = [
+  { addIng: "Salt" },
+  { addIng: "Yeast" },
+  { addIng: "Sugar" },
+  { addIng: "Milk Powder" },
+  { addIng: "Gluten Powder" },
+];
+const postIngs = [
+  { postIng: "Multigrains" }, 
+  { postIng: "Butter" },
+  { postIng: "Olives" },
+  { postIng: "Bleu Cheese" },
+  { postIng: "Jalapenos" },
+  { postIng: "Cheddar" },
+];
 
 const Info = ({
   selectedDough,
@@ -146,6 +167,19 @@ const Info = ({
     setSelectedPost(e.value.postIng);
   };
 
+
+  const handleAddPre =() => {
+    let listToMod = clonedeep(doughComponents)
+    let newItem = ({
+      dough: selectedDough.doughName,
+      componentType: "pre",
+      componentName: selectedPre,
+      amount: 0,
+    })
+   
+    listToMod.push(newItem)
+    setDoughComponents(listToMod)
+  }
 
   const handleAddPost =() => {
     let listToMod = clonedeep(doughComponents)
@@ -367,6 +401,7 @@ const Info = ({
         <Button
           className="p-button-rounded p-button-outlined"
           icon="pi pi-plus"
+          onClick={handleAddPre}
         />
       </AddButtons>
       <div className="datatable-templating-demo">

@@ -7,54 +7,32 @@ import { InputText } from "primereact/inputtext";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 
-
-
-import {
-  setValue,
-  fixValue,
-  setPickValue,
-  setDropDownValue,
-} from "../../../helpers/formHelpers";
+import { setValue, fixValue } from "../../../helpers/formHelpers";
 
 const clonedeep = require("lodash.clonedeep");
-
 
 const Info = ({
   selectedDough,
   setSelectedDough,
-  doughs,
-  setDoughs,
   doughComponents,
   setDoughComponents,
 }) => {
   console.log(selectedDough);
-  const drys = doughComponents
-    .filter(
-      (dgh) =>
-        dgh.dough === selectedDough.doughName && dgh.componentType === "dry"
-    )
-    .map((dg) => ({ ing: dg.componentName }));
 
-  const wets = doughComponents
-    .filter(
-      (dgh) =>
-        dgh.dough === selectedDough.doughName && dgh.componentType === "wet"
-    )
-    .map((dg) => ({ ing: dg.componentName }));
+  const getCompList = (comp) => {
+    let compList = doughComponents
+      .filter(
+        (dgh) =>
+          dgh.dough === selectedDough.doughName && dgh.componentType === comp
+      )
+      .map((dg) => ({ ing: dg.componentName }));
+    return compList;
+  };
 
-  const pre = doughComponents
-    .filter(
-      (dgh) =>
-        dgh.dough === selectedDough.doughName && dgh.componentType === "pre"
-    )
-    .map((dg) => ({ ing: dg.componentName }));
-
-  const additions = doughComponents
-    .filter(
-      (dgh) =>
-        dgh.dough === selectedDough.doughName && dgh.componentType === "dryplus"
-    )
-    .map((dg) => ({ ing: dg.componentName }));
+  const drys = getCompList("dry");
+  const wets = getCompList("wet");
+  const pre = getCompList("pre");
+  const additions = getCompList("dryplus");
 
   const deleteButton = () => {
     return (
@@ -66,44 +44,50 @@ const Info = ({
   };
 
   const handleInput = (e) => {
-    let placeholder = doughComponents.filter(
-      (dgh) =>
-        dgh.dough === selectedDough.doughName && dgh.componentName === e.ing
-    )[0].amount;
-    let id
-    doughComponents.filter(
-      (dgh) =>
-        dgh.dough === selectedDough.doughName && dgh.componentName === e.ing
-    ).forEach(element => {
-      id = selectedDough.doughName+"_"+element.componentName+"_"+element.componentType
-    });
+    let placeholder = getAmount(e);
+    let id;
+    doughComponents
+      .filter(
+        (dgh) =>
+          dgh.dough === selectedDough.doughName && dgh.componentName === e.ing
+      )
+      .forEach((element) => {
+        id =
+          selectedDough.doughName +
+          "_" +
+          element.componentName +
+          "_" +
+          element.componentType;
+      });
     return (
       <InputText
         id={id}
         style={{ width: "50px" }}
         placeholder={placeholder}
         onKeyUp={(e) =>
-          e.code === "Enter" && setDoughComponents(handleChange(e,id))
+          e.code === "Enter" && setDoughComponents(handleChange(e, id))
         }
-        onBlur={(e) => setDoughComponents(handleBlur(e,id))
-        }
+        onBlur={(e) => setDoughComponents(handleBlur(e, id))}
       />
     );
+  };
+
+  const updateItem = (value, itemToUpdate, itemInfo) => {
+    itemToUpdate[
+      itemToUpdate.findIndex(
+        (item) =>
+          item.dough === itemInfo[0] &&
+          item.componentName === itemInfo[1] &&
+          item.componentType === itemInfo[2]
+      )
+    ].amount = value.target.value;
   };
 
   const handleChange = (value, id) => {
     if (value.code === "Enter") {
       let itemToUpdate = clonedeep(doughComponents);
       let itemInfo = id.split("_");
-      itemToUpdate[
-        itemToUpdate.findIndex(
-          (item) =>
-            item.dough === itemInfo[0] &&
-            item.componentName === itemInfo[1] &&
-            item.componentType === itemInfo[2]
-        )
-      ].amount = value.target.value;
-      console.log(id)
+      updateItem(value, itemToUpdate, itemInfo);
       document.getElementById(id).value = "";
       return itemToUpdate;
     }
@@ -113,137 +97,78 @@ const Info = ({
     let itemToUpdate = clonedeep(doughComponents);
     let itemInfo = id.split("_");
     if (value.target.value !== "") {
-      itemToUpdate[
-        itemToUpdate.findIndex(
-          (item) =>
-            item.dough === itemInfo[0] &&
-            item.componentName === itemInfo[1] &&
-            item.componentType === itemInfo[2]
-        )
-      ].amount = value.target.value;
+      updateItem(value, itemToUpdate, itemInfo);
     }
     document.getElementById(id).value = "";
     return itemToUpdate;
   };
 
-  const getPercent = (e) => {
-    let placeholder = doughComponents.filter(
+  const getAmount = (e) => {
+    let thisAmount = doughComponents.filter(
       (dgh) =>
         dgh.dough === selectedDough.doughName && dgh.componentName === e.ing
     )[0].amount;
+    return thisAmount;
+  };
+
+  const addUp = (comp) => {
+    let compSum = 0;
+    doughComponents
+      .filter(
+        (dgh) =>
+          dgh.dough === selectedDough.doughName && dgh.componentType === comp
+      )
+      .forEach((element) => {
+        compSum = compSum + element.amount;
+      });
+    return compSum;
+  };
+
+  const getPercent = (e, comp) => {
+    let thisAmount = getAmount(e);
+    let totalAmount = addUp(comp);
+    return thisAmount / totalAmount;
+  };
+
+  const getItemPercent = (e) => {
+    let placeholder = getAmount(e);
     return placeholder;
   };
 
   const getWetPercent = (e) => {
     let hydro = Number(selectedDough.hydration);
-    let thisAmount = doughComponents.filter(
-      (dgh) =>
-        dgh.dough === selectedDough.doughName && dgh.componentName === e.ing
-    )[0].amount;
-    let totalAmount = 0;
-    doughComponents
-      .filter(
-        (dgh) =>
-          dgh.dough === selectedDough.doughName &&
-          dgh.componentType === "wet"
-      )
-      .forEach((element) => {
-        totalAmount = totalAmount + element.amount;
-      });
-    return thisAmount/totalAmount*hydro*.01;
+    let percent = getPercent(e, "wet");
+    return percent * hydro * 0.01;
   };
 
   const getDryPercent = (e) => {
-    
-    let thisAmount = doughComponents.filter(
-      (dgh) =>
-        dgh.dough === selectedDough.doughName && dgh.componentName === e.ing
-    )[0].amount;
-    let totalAmount = 0;
-    doughComponents
-      .filter(
-        (dgh) =>
-          dgh.dough === selectedDough.doughName &&
-          dgh.componentType === "dry"
-      )
-      .forEach((element) => {
-        totalAmount = totalAmount + element.amount;
-      });
-    return thisAmount/totalAmount*100;
+    let percent = getPercent(e, "dry");
+    return percent * 100;
   };
 
   const getFlourWeight = (e) => {
     let bulkWeight = selectedDough.batchSize;
     let hydro = Number(selectedDough.hydration);
-    let levNum = 0;
-    doughComponents
-      .filter(
-        (dgh) =>
-          dgh.dough === selectedDough.doughName && dgh.componentType === "pre"
-      )
-      .forEach((element) => {
-        levNum = levNum + element.amount;
-      });
-    let addNum = 0;
-    doughComponents
-      .filter(
-        (dgh) =>
-          dgh.dough === selectedDough.doughName &&
-          dgh.componentType === "dryplus"
-      )
-      .forEach((element) => {
-        addNum = addNum + element.amount;
-      });
-
+    let levNum = addUp("pre");
+    let addNum = addUp("dryplus");
     let fl = (
       bulkWeight /
       (1 + hydro * 0.01 + levNum * 0.01 + addNum * 0.01)
     ).toFixed(2);
-
     return fl;
   };
 
   const dryWeight = (e) => {
     let fl = getFlourWeight(e);
-    let totalDry = 0;
-    doughComponents
-      .filter(
-        (dgh) =>
-          dgh.dough === selectedDough.doughName && dgh.componentType === "dry"
-      )
-      .forEach((element) => {
-        totalDry = totalDry + Number(element.amount);
-      });
-
-    let thisAmount = doughComponents.filter(
-      (dgh) =>
-        dgh.dough === selectedDough.doughName && dgh.componentName === e.ing
-    )[0].amount;
-    console.log(thisAmount);
-    console.log(totalDry);
-    return ((fl * thisAmount) / totalDry).toFixed(2);
+    let percent = getPercent(e, "dry");
+    return (fl * percent).toFixed(2);
   };
 
   const wetWeight = (e) => {
     let fl = getFlourWeight(e);
     let hydro = Number(selectedDough.hydration);
-    let totalDry = 0;
-    doughComponents
-      .filter(
-        (dgh) =>
-          dgh.dough === selectedDough.doughName && dgh.componentType === "wet"
-      )
-      .forEach((element) => {
-        totalDry = totalDry + Number(element.amount);
-      });
-
-    let thisAmount = doughComponents.filter(
-      (dgh) =>
-        dgh.dough === selectedDough.doughName && dgh.componentName === e.ing
-    )[0].amount;
-    console.log(thisAmount);
-    console.log(totalDry);
-    return (((fl * thisAmount) / totalDry) * hydro * 0.01).toFixed(2);
+    let percent = getPercent(e, "wet");
+    return (fl * percent * hydro * 0.01).toFixed(2);
   };
 
   return (
@@ -297,7 +222,7 @@ const Info = ({
             <Column
               className="p-text-center"
               header="Total %"
-              body={getPercent}
+              body={getItemPercent}
             ></Column>
             <Column className="p-text-right" body={deleteButton}></Column>
           </DataTable>
@@ -366,7 +291,7 @@ const Info = ({
             <Column
               className="p-text-center"
               header="Total %"
-              body={getPercent}
+              body={getItemPercent}
             ></Column>
             <Column className="p-text-right" body={deleteButton}></Column>
           </DataTable>

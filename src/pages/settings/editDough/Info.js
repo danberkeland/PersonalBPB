@@ -6,8 +6,20 @@ import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
+import { Dropdown } from "primereact/dropdown";
+
 
 import { setValue, fixValue } from "../../../helpers/formHelpers";
+
+import styled from "styled-components";
+
+const AddButtons = styled.div`
+  display: flex;
+  width: 60%;
+  margin: auto;
+  padding: 10px;
+  justify-content: space-around;
+`;
 
 const clonedeep = require("lodash.clonedeep");
 
@@ -62,7 +74,8 @@ const Info = ({
     return (
       <InputText
         id={id}
-        style={{ width: "50px" }}
+        style={{ width: "50px", backgroundColor: "#E3F2FD", fontWeight: "bold" }}
+        
         placeholder={placeholder}
         onKeyUp={(e) =>
           e.code === "Enter" && setDoughComponents(handleChange(e, id))
@@ -138,7 +151,7 @@ const Info = ({
   const getWetPercent = (e) => {
     let hydro = Number(selectedDough.hydration);
     let percent = getPercent(e, "wet");
-    return percent * hydro * 0.01;
+    return percent * hydro;
   };
 
   const getDryPercent = (e) => {
@@ -164,6 +177,13 @@ const Info = ({
     return (fl * percent).toFixed(2);
   };
 
+  const directWeight = (e) => {
+    let fl = getFlourWeight(e);
+    let percent = getItemPercent(e);
+    return (fl * percent*.01).toFixed(2);
+  };
+
+
   const wetWeight = (e) => {
     let fl = getFlourWeight(e);
     let hydro = Number(selectedDough.hydration);
@@ -181,7 +201,7 @@ const Info = ({
           <label htmlFor="hydration">Hydration</label>
           <InputText
             id="hydration"
-            style={{ width: "50px" }}
+            style={{ width: "50px", backgroundColor: "#E3F2FD", fontWeight: "bold" }}
             placeholder={selectedDough.hydration}
             onKeyUp={(e) =>
               e.code === "Enter" && setSelectedDough(setValue(e, selectedDough))
@@ -194,7 +214,7 @@ const Info = ({
           <label htmlFor="batchSize">Default Bulk:</label>
           <InputText
             id="batchSize"
-            style={{ width: "50px" }}
+            style={{ width: "50px", backgroundColor: "#E3F2FD", fontWeight: "bold" }}
             placeholder={selectedDough.batchSize}
             onKeyUp={(e) =>
               e.code === "Enter" && setSelectedDough(setValue(e, selectedDough))
@@ -217,7 +237,7 @@ const Info = ({
             <Column
               className="p-text-center"
               header="Weight"
-              body={dryWeight}
+              body={directWeight}
             ></Column>
             <Column
               className="p-text-center"
@@ -228,6 +248,10 @@ const Info = ({
           </DataTable>
         </div>
       </div>
+      <AddButtons className="addPre">
+        <Dropdown optionLabel="prodName" style={{ width: "50%" }} onChange={handleChange} placeholder="Add a Pre Mix"/>
+        <Button className="p-button-rounded p-button-outlined" icon="pi pi-plus" />
+      </AddButtons>
       <div className="datatable-templating-demo">
         <div className="card">
           <DataTable value={drys} className="p-datatable-sm">
@@ -251,6 +275,10 @@ const Info = ({
           </DataTable>
         </div>
       </div>
+      <AddButtons className="addDry">
+        <Dropdown optionLabel="prodName" style={{ width: "50%" }} onChange={handleChange} placeholder="Add a Dry"/>
+        <Button className="p-button-rounded p-button-outlined" icon="pi pi-plus" />
+      </AddButtons>
       <div className="datatable-templating-demo">
         <div className="card">
           <DataTable value={wets} className="p-datatable-sm">
@@ -274,6 +302,10 @@ const Info = ({
           </DataTable>
         </div>
       </div>
+      <AddButtons className="addWet">
+        <Dropdown optionLabel="prodName" style={{ width: "50%" }} onChange={handleChange} placeholder="Add a Wet"/>
+        <Button className="p-button-rounded p-button-outlined" icon="pi pi-plus" />
+      </AddButtons>
       <div className="datatable-templating-demo">
         <div className="card">
           <DataTable value={additions} className="p-datatable-sm">
@@ -286,7 +318,7 @@ const Info = ({
             <Column
               className="p-text-center"
               header="Weight"
-              body={dryWeight}
+              body={directWeight}
             ></Column>
             <Column
               className="p-text-center"
@@ -297,6 +329,14 @@ const Info = ({
           </DataTable>
         </div>
       </div>
+      <AddButtons className="addDryPlus">
+        <Dropdown optionLabel="prodName" style={{ width: "50%" }} onChange={handleChange} placeholder="Add To Mix"/>
+        <Button className="p-button-rounded p-button-outlined" icon="pi pi-plus" />
+      </AddButtons>
+      <AddButtons className="addPost">
+        <Dropdown optionLabel="prodName" style={{ width: "50%" }} onChange={handleChange} placeholder="Add a Post Mix"/>
+        <Button className="p-button-rounded p-button-outlined" icon="pi pi-plus" />
+      </AddButtons>
     </React.Fragment>
   );
 };

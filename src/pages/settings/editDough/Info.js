@@ -186,6 +186,19 @@ const Info = ({
     setDoughComponents(listToMod)
   }
 
+  const handleAddAdd =() => {
+    let listToMod = clonedeep(doughComponents)
+    let newItem = ({
+      dough: selectedDough.doughName,
+      componentType: "dryplus",
+      componentName: selectedAdd,
+      amount: 0,
+    })
+   
+    listToMod.push(newItem)
+    setDoughComponents(listToMod)
+  }
+
   const handleBlur = (value, id) => {
     let itemToUpdate = clonedeep(doughComponents);
     let itemInfo = id.split("_");
@@ -479,6 +492,7 @@ const Info = ({
         <Button
           className="p-button-rounded p-button-outlined"
           icon="pi pi-plus"
+          onClick={handleAddAdd}
           
         />
       </AddButtons>

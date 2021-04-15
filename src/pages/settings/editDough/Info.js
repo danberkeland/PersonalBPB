@@ -136,11 +136,40 @@ const Info = ({
 
   const getWetPercent = (e) => {
     let hydro = Number(selectedDough.hydration);
-    let placeholder = doughComponents.filter(
+    let thisAmount = doughComponents.filter(
       (dgh) =>
         dgh.dough === selectedDough.doughName && dgh.componentName === e.ing
     )[0].amount;
-    return placeholder*hydro*.01;
+    let totalAmount = 0;
+    doughComponents
+      .filter(
+        (dgh) =>
+          dgh.dough === selectedDough.doughName &&
+          dgh.componentType === "wet"
+      )
+      .forEach((element) => {
+        totalAmount = totalAmount + element.amount;
+      });
+    return thisAmount/totalAmount*hydro*.01;
+  };
+
+  const getDryPercent = (e) => {
+    
+    let thisAmount = doughComponents.filter(
+      (dgh) =>
+        dgh.dough === selectedDough.doughName && dgh.componentName === e.ing
+    )[0].amount;
+    let totalAmount = 0;
+    doughComponents
+      .filter(
+        (dgh) =>
+          dgh.dough === selectedDough.doughName &&
+          dgh.componentType === "dry"
+      )
+      .forEach((element) => {
+        totalAmount = totalAmount + element.amount;
+      });
+    return thisAmount/totalAmount*100;
   };
 
   const getFlourWeight = (e) => {
@@ -291,7 +320,7 @@ const Info = ({
             <Column
               className="p-text-center"
               header="100%"
-              body={getPercent}
+              body={getDryPercent}
             ></Column>
             <Column className="p-text-right" body={deleteButton}></Column>
           </DataTable>

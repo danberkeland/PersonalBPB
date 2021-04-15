@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import "primeflex/primeflex.css";
 
@@ -7,7 +7,6 @@ import { InputText } from "primereact/inputtext";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Dropdown } from "primereact/dropdown";
-
 
 import { setValue, fixValue } from "../../../helpers/formHelpers";
 
@@ -23,13 +22,37 @@ const AddButtons = styled.div`
 
 const clonedeep = require("lodash.clonedeep");
 
+const preIngs = [
+  { preIng: "Levain" },
+  { preIng: "Poolish" },
+  { preIng: "Rye Levain" },
+];
+const dryIngs = [
+  { dryIng: "Bread Flour" },
+  { dryIng: "Whole Wheat Flour" },
+  { dryIng: "Rye Flour" },
+];
+const wetIngs = [
+  { wetIng: "Water" },
+  { wetIng: "Vegetable Oil" },
+  { wetIng: "Egg" },
+];
+const addIngs = [{ addIng: "Salt" }, { addIng: "Yeast" }, { addIng: "Sugar" }];
+const postIngs = [{ postIng: "Multigrains" }, { postIng: "Butter" }];
+
 const Info = ({
   selectedDough,
   setSelectedDough,
   doughComponents,
   setDoughComponents,
 }) => {
-  console.log(selectedDough);
+ 
+
+  const [selectedPre, setSelectedPre] = useState("");
+  const [selectedDry, setSelectedDry] = useState("");
+  const [selectedWet, setSelectedWet] = useState("");
+  const [selectedAdd, setSelectedAdd] = useState("");
+  const [selectedPost, setSelectedPost] = useState("");
 
   const getCompList = (comp) => {
     let compList = doughComponents
@@ -45,16 +68,9 @@ const Info = ({
   const wets = getCompList("wet");
   const pre = getCompList("pre");
   const additions = getCompList("dryplus");
+  const posts = getCompList("post");
 
-  const deleteButton = () => {
-    return (
-      <Button
-        icon="pi pi-times"
-        className="p-button-outlined p-button-rounded p-button-help p-button-sm"
-      />
-    );
-  };
-
+  
   const handleInput = (e) => {
     let placeholder = getAmount(e);
     let id;
@@ -74,8 +90,11 @@ const Info = ({
     return (
       <InputText
         id={id}
-        style={{ width: "50px", backgroundColor: "#E3F2FD", fontWeight: "bold" }}
-        
+        style={{
+          width: "50px",
+          backgroundColor: "#E3F2FD",
+          fontWeight: "bold",
+        }}
         placeholder={placeholder}
         onKeyUp={(e) =>
           e.code === "Enter" && setDoughComponents(handleChange(e, id))
@@ -106,6 +125,67 @@ const Info = ({
     }
   };
 
+  const handlePrePick = (e) => {
+    console.log(e.value);
+    setSelectedPre(e.value.preIng);
+  };
+
+  const handleDryPick = (e) => {
+    setSelectedDry(e.value.dryIng);
+  };
+
+  const handleWetPick = (e) => {
+    setSelectedWet(e.value.wetIng);
+  };
+
+  const handleAddPick = (e) => {
+    setSelectedAdd(e.value.addIng);
+  };
+
+  const handlePostPick = (e) => {
+    setSelectedPost(e.value.postIng);
+  };
+
+
+  const handleAddPost =() => {
+    let listToMod = clonedeep(doughComponents)
+    let newItem = ({
+      dough: selectedDough.doughName,
+      componentType: "post",
+      componentName: selectedPost,
+      amount: 0,
+    })
+   
+    listToMod.push(newItem)
+    setDoughComponents(listToMod)
+  }
+
+  const handleAddDry =() => {
+    let listToMod = clonedeep(doughComponents)
+    let newItem = ({
+      dough: selectedDough.doughName,
+      componentType: "dry",
+      componentName: selectedDry,
+      amount: 0,
+    })
+   
+    listToMod.push(newItem)
+    setDoughComponents(listToMod)
+  }
+
+  const handleAddWet =() => {
+    let listToMod = clonedeep(doughComponents)
+    let newItem = ({
+      dough: selectedDough.doughName,
+      componentType: "wet",
+      componentName: selectedWet,
+      amount: 0,
+    })
+   
+    listToMod.push(newItem)
+    setDoughComponents(listToMod)
+  }
+
   const handleBlur = (value, id) => {
     let itemToUpdate = clonedeep(doughComponents);
     let itemInfo = id.split("_");
@@ -132,14 +212,16 @@ const Info = ({
           dgh.dough === selectedDough.doughName && dgh.componentType === comp
       )
       .forEach((element) => {
-        compSum = compSum + element.amount;
+        compSum = compSum + Number(element.amount);
       });
     return compSum;
   };
 
   const getPercent = (e, comp) => {
     let thisAmount = getAmount(e);
+    console.log(thisAmount)
     let totalAmount = addUp(comp);
+    console.log(totalAmount)
     return thisAmount / totalAmount;
   };
 
@@ -164,31 +246,31 @@ const Info = ({
     let hydro = Number(selectedDough.hydration);
     let levNum = addUp("pre");
     let addNum = addUp("dryplus");
+    let postNum = addUp("post")
     let fl = (
       bulkWeight /
-      (1 + hydro * 0.01 + levNum * 0.01 + addNum * 0.01)
+      (1 + hydro * 0.01 + levNum * 0.01 + addNum * 0.01 + postNum * 0.01)
     ).toFixed(2);
     return fl;
   };
 
   const dryWeight = (e) => {
     let fl = getFlourWeight(e);
-    let percent = getPercent(e, "dry");
+    let percent = getPercent(e,"dry");
     return (fl * percent).toFixed(2);
   };
 
   const directWeight = (e) => {
     let fl = getFlourWeight(e);
     let percent = getItemPercent(e);
-    return (fl * percent*.01).toFixed(2);
+    return (fl * percent * .01).toFixed(2);
   };
-
 
   const wetWeight = (e) => {
     let fl = getFlourWeight(e);
     let hydro = Number(selectedDough.hydration);
     let percent = getPercent(e, "wet");
-    return (fl * percent * hydro * 0.01).toFixed(2);
+    return (fl * percent * hydro * .01).toFixed(2);
   };
 
   return (
@@ -201,7 +283,11 @@ const Info = ({
           <label htmlFor="hydration">Hydration</label>
           <InputText
             id="hydration"
-            style={{ width: "50px", backgroundColor: "#E3F2FD", fontWeight: "bold" }}
+            style={{
+              width: "50px",
+              backgroundColor: "#E3F2FD",
+              fontWeight: "bold",
+            }}
             placeholder={selectedDough.hydration}
             onKeyUp={(e) =>
               e.code === "Enter" && setSelectedDough(setValue(e, selectedDough))
@@ -214,7 +300,11 @@ const Info = ({
           <label htmlFor="batchSize">Default Bulk:</label>
           <InputText
             id="batchSize"
-            style={{ width: "50px", backgroundColor: "#E3F2FD", fontWeight: "bold" }}
+            style={{
+              width: "50px",
+              backgroundColor: "#E3F2FD",
+              fontWeight: "bold",
+            }}
             placeholder={selectedDough.batchSize}
             onKeyUp={(e) =>
               e.code === "Enter" && setSelectedDough(setValue(e, selectedDough))
@@ -226,116 +316,213 @@ const Info = ({
       </div>
       <div className="datatable-templating-demo">
         <div className="card">
-          <DataTable value={pre} className="p-datatable-sm">
-            <Column field="ing" header="Pre Mix"></Column>
+          {pre.length > 0 ? (
+            <DataTable value={pre} className="p-datatable-sm">
+              <Column field="ing" header="Pre Mix"></Column>
 
-            <Column
-              className="p-text-center"
-              header="% of flour weight"
-              body={handleInput}
-            ></Column>
-            <Column
-              className="p-text-center"
-              header="Weight"
-              body={directWeight}
-            ></Column>
-            <Column
-              className="p-text-center"
-              header="Total %"
-              body={getItemPercent}
-            ></Column>
-            <Column className="p-text-right" body={deleteButton}></Column>
-          </DataTable>
+              <Column
+                className="p-text-center"
+                header="% of flour weight"
+                body={handleInput}
+              ></Column>
+              <Column
+                className="p-text-center"
+                header="Weight"
+                body={directWeight}
+              ></Column>
+              <Column
+                className="p-text-center"
+                header="Total %"
+                body={getItemPercent}
+              ></Column>
+              
+            </DataTable>
+          ) : (
+            ""
+          )}
         </div>
       </div>
       <AddButtons className="addPre">
-        <Dropdown optionLabel="prodName" style={{ width: "50%" }} onChange={handleChange} placeholder="Add a Pre Mix"/>
-        <Button className="p-button-rounded p-button-outlined" icon="pi pi-plus" />
+        <Dropdown
+          id="preIng"
+          optionLabel="preIng"
+          options={preIngs}
+          style={{ width: "50%" }}
+          onChange={handlePrePick}
+          placeholder={selectedPre !== "" ? selectedPre : "Select a Pre Mix"}
+        />
+        <Button
+          className="p-button-rounded p-button-outlined"
+          icon="pi pi-plus"
+        />
       </AddButtons>
       <div className="datatable-templating-demo">
         <div className="card">
-          <DataTable value={drys} className="p-datatable-sm">
-            <Column field="ing" header="Dry"></Column>
-            <Column
-              className="p-text-center"
-              header="Parts Dry"
-              body={handleInput}
-            ></Column>
-            <Column
-              className="p-text-center"
-              header="Weight"
-              body={dryWeight}
-            ></Column>
-            <Column
-              className="p-text-center"
-              header="100%"
-              body={getDryPercent}
-            ></Column>
-            <Column className="p-text-right" body={deleteButton}></Column>
-          </DataTable>
+          {drys.length > 0 ? (
+            <DataTable value={drys} className="p-datatable-sm">
+              <Column field="ing" header="Drys"></Column>
+              <Column
+                className="p-text-center"
+                header="Parts Dry"
+                body={handleInput}
+              ></Column>
+              <Column
+                className="p-text-center"
+                header="Weight"
+                body={dryWeight}
+              ></Column>
+              <Column
+                className="p-text-center"
+                header="100%"
+                body={getDryPercent}
+              ></Column>
+             
+            </DataTable>
+          ) : (
+            ""
+          )}
         </div>
       </div>
       <AddButtons className="addDry">
-        <Dropdown optionLabel="prodName" style={{ width: "50%" }} onChange={handleChange} placeholder="Add a Dry"/>
-        <Button className="p-button-rounded p-button-outlined" icon="pi pi-plus" />
+        <Dropdown
+          id="dryIng"
+          optionLabel="dryIng"
+          options={dryIngs}
+          style={{ width: "50%" }}
+          onChange={handleDryPick}
+          placeholder={selectedDry !== "" ? selectedDry : "Select a Dry Mix"}
+        />
+        <Button
+          className="p-button-rounded p-button-outlined"
+          icon="pi pi-plus"
+          onClick={handleAddDry}
+        />
       </AddButtons>
       <div className="datatable-templating-demo">
         <div className="card">
-          <DataTable value={wets} className="p-datatable-sm">
-            <Column field="ing" header="Wets"></Column>
-            <Column
-              className="p-text-center"
-              header="Parts Wet"
-              body={handleInput}
-            ></Column>
-            <Column
-              className="p-text-center"
-              header="Weight"
-              body={wetWeight}
-            ></Column>
-            <Column
-              className="p-text-center"
-              header={Number(selectedDough.hydration) + "%"}
-              body={getWetPercent}
-            ></Column>
-            <Column className="p-text-right" body={deleteButton}></Column>
-          </DataTable>
+          {wets.length > 0 ? (
+            <DataTable value={wets} className="p-datatable-sm">
+              <Column field="ing" header="Wets"></Column>
+              <Column
+                className="p-text-center"
+                header="Parts Wet"
+                body={handleInput}
+              ></Column>
+              <Column
+                className="p-text-center"
+                header="Weight"
+                body={wetWeight}
+              ></Column>
+              <Column
+                className="p-text-center"
+                header={Number(selectedDough.hydration) + "%"}
+                body={getWetPercent}
+              ></Column>
+            
+            </DataTable>
+          ) : (
+            ""
+          )}
         </div>
       </div>
       <AddButtons className="addWet">
-        <Dropdown optionLabel="prodName" style={{ width: "50%" }} onChange={handleChange} placeholder="Add a Wet"/>
-        <Button className="p-button-rounded p-button-outlined" icon="pi pi-plus" />
+        <Dropdown
+          id="wetIng"
+          optionLabel="wetIng"
+          options={wetIngs}
+          style={{ width: "50%" }}
+          onChange={handleWetPick}
+          placeholder={selectedWet !== "" ? selectedWet : "Select a Wet Mix"}
+        />
+        <Button
+          className="p-button-rounded p-button-outlined"
+          icon="pi pi-plus"
+          onClick={handleAddWet}
+        />
       </AddButtons>
       <div className="datatable-templating-demo">
         <div className="card">
-          <DataTable value={additions} className="p-datatable-sm">
-            <Column field="ing" header="Additions"></Column>
-            <Column
-              className="p-text-center"
-              header="% flour weights"
-              body={handleInput}
-            ></Column>
-            <Column
-              className="p-text-center"
-              header="Weight"
-              body={directWeight}
-            ></Column>
-            <Column
-              className="p-text-center"
-              header="Total %"
-              body={getItemPercent}
-            ></Column>
-            <Column className="p-text-right" body={deleteButton}></Column>
-          </DataTable>
+          {additions.length > 0 ? (
+            <DataTable value={additions} className="p-datatable-sm">
+              <Column field="ing" header="Additions"></Column>
+              <Column
+                className="p-text-center"
+                header="% flour weights"
+                body={handleInput}
+              ></Column>
+              <Column
+                className="p-text-center"
+                header="Weight"
+                body={directWeight}
+              ></Column>
+              <Column
+                className="p-text-center"
+                header="Total %"
+                body={getItemPercent}
+              ></Column>
+              
+            </DataTable>
+          ) : (
+            ""
+          )}
         </div>
       </div>
       <AddButtons className="addDryPlus">
-        <Dropdown optionLabel="prodName" style={{ width: "50%" }} onChange={handleChange} placeholder="Add To Mix"/>
-        <Button className="p-button-rounded p-button-outlined" icon="pi pi-plus" />
+        <Dropdown
+          id="addIng"
+          optionLabel="addIng"
+          options={addIngs}
+          style={{ width: "50%" }}
+          onChange={handleAddPick}
+          placeholder={selectedAdd !== "" ? selectedAdd : "Select a Add Mix"}
+        />
+        <Button
+          className="p-button-rounded p-button-outlined"
+          icon="pi pi-plus"
+          
+        />
       </AddButtons>
+      <div className="datatable-templating-demo">
+        <div className="card">
+          {posts.length > 0 ? (
+            <DataTable value={posts} className="p-datatable-sm">
+              <Column field="ing" header="Post Mix"></Column>
+              <Column
+                className="p-text-center"
+                header="% flour weights"
+                body={handleInput}
+              ></Column>
+              <Column
+                className="p-text-center"
+                header="Weight"
+                body={directWeight}
+              ></Column>
+              <Column
+                className="p-text-center"
+                header="Total %"
+                body={getItemPercent}
+              ></Column>
+           
+            </DataTable>
+          ) : (
+            ""
+          )}
+        </div>
+      </div>
       <AddButtons className="addPost">
-        <Dropdown optionLabel="prodName" style={{ width: "50%" }} onChange={handleChange} placeholder="Add a Post Mix"/>
-        <Button className="p-button-rounded p-button-outlined" icon="pi pi-plus" />
+        <Dropdown
+          id="postIng"
+          optionLabel="postIng"
+          options={postIngs}
+          style={{ width: "50%" }}
+          onChange={handlePostPick}
+          placeholder={selectedPost !== "" ? selectedPost : "Select a Post Mix"}
+        />
+        <Button
+          className="p-button-rounded p-button-outlined"
+          icon="pi pi-plus"
+          onClick={handleAddPost}
+        />
       </AddButtons>
     </React.Fragment>
   );

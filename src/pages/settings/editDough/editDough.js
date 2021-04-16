@@ -42,6 +42,7 @@ function EditDoughs() {
   const [selectedDough, setSelectedDough] = useState();
   const [doughs, setDoughs] = useState(null);
   const [doughComponents, setDoughComponents] = useState(null);
+  const [isModified, setIsModified] = useState(false)
 
   const { setCustLoaded } = useContext(CustomerContext);
   const { setProdLoaded } = useContext(ProductsContext);
@@ -75,10 +76,10 @@ function EditDoughs() {
                 <Info
                   selectedDough={selectedDough}
                   setSelectedDough={setSelectedDough}
-                  doughs={doughs}
-                  setDoughs={setDoughs}
                   doughComponents={doughComponents}
                   setDoughComponents={setDoughComponents}
+                  isModified={isModified}
+                  setIsModified={setIsModified}
                 />
               </GroupBox>
             </DescripWrapper>
@@ -88,10 +89,8 @@ function EditDoughs() {
           <Buttons
             selectedDough={selectedDough}
             setSelectedDough={setSelectedDough}
-            doughs={doughs}
-            setDoughs={setDoughs}
-            doughComponents={doughComponents}
-            setDoughComponents={setDoughComponents}
+            isModified={isModified}
+            setIsModified={setIsModified}
           />
         </DescripWrapper>
       </MainWrapper>

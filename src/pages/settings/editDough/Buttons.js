@@ -24,7 +24,7 @@ const ButtonBox = styled.div`
   padding: 5px 20px;
 `;
 
-const Buttons = ({ selectedDough, setSelectedDough }) => {
+const Buttons = ({ selectedDough, setSelectedDough, isModified, setIsModified }) => {
   const handleAddDough = () => {
     let doughName;
 
@@ -189,7 +189,7 @@ const Buttons = ({ selectedDough, setSelectedDough }) => {
             label="Update Dough"
             icon="pi pi-user-edit"
             onClick={updateDgh}
-            className={"p-button-raised p-button-rounded p-button-success"}
+            className={isModified ? "p-button-raised p-button-rounded p-button-danger" : "p-button-raised p-button-rounded p-button-success"}
           />
           <br />
         </React.Fragment>

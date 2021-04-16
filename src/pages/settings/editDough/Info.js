@@ -66,6 +66,8 @@ const Info = ({
   setSelectedDough,
   doughComponents,
   setDoughComponents,
+  isModified,
+  setIsModified
 }) => {
  
 
@@ -142,6 +144,7 @@ const Info = ({
       let itemInfo = id.split("_");
       updateItem(value, itemToUpdate, itemInfo);
       document.getElementById(id).value = "";
+      setIsModified(true)
       return itemToUpdate;
     }
   };
@@ -240,6 +243,7 @@ const Info = ({
       updateItem(value, itemToUpdate, itemInfo);
     }
     document.getElementById(id).value = "";
+    setIsModified(true)
     return itemToUpdate;
   };
 
@@ -336,10 +340,15 @@ const Info = ({
               fontWeight: "bold",
             }}
             placeholder={selectedDough.hydration}
-            onKeyUp={(e) =>
-              e.code === "Enter" && setSelectedDough(setValue(e, selectedDough))
+            onKeyUp={(e) => {if (e.code === "Enter"){
+              setSelectedDough(setValue(e, selectedDough))
+              setIsModified(true)}
+            }}
+           
+            onBlur={(e) => {
+              setSelectedDough(fixValue(e, selectedDough));
+              setIsModified(true)}
             }
-            onBlur={(e) => setSelectedDough(fixValue(e, selectedDough))}
           />
           %
         </div>
@@ -353,10 +362,15 @@ const Info = ({
               fontWeight: "bold",
             }}
             placeholder={selectedDough.batchSize}
-            onKeyUp={(e) =>
-              e.code === "Enter" && setSelectedDough(setValue(e, selectedDough))
+            onKeyUp={(e) => {if (e.code === "Enter"){
+              setSelectedDough(setValue(e, selectedDough))
+              setIsModified(true)}
+            }}
+           
+            onBlur={(e) => {
+              setSelectedDough(fixValue(e, selectedDough));
+              setIsModified(true)}
             }
-            onBlur={(e) => setSelectedDough(fixValue(e, selectedDough))}
           />
           lb.
         </div>

@@ -59,6 +59,7 @@ const postIngs = [
   { postIng: "Bleu Cheese" },
   { postIng: "Jalapenos" },
   { postIng: "Cheddar" },
+  { postIng: "Croix Scraps"}
 ];
 
 const Info = ({

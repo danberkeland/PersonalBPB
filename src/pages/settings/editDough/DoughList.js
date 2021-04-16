@@ -29,6 +29,8 @@ const DoughList = ({
   setDoughs,
   doughComponents,
   setDoughComponents,
+  isReload,
+  setIsReload
 }) => {
   let { setIsLoading } = useContext(ToggleContext);
 
@@ -36,13 +38,13 @@ const DoughList = ({
     setIsLoading(true);
     fetchDoughs();
     setIsLoading(false);
-  }, []);
+  }, [isReload]);
 
   useEffect(() => {
     setIsLoading(true);
     fetchDoughComponents();
     setIsLoading(false);
-  }, []);
+  }, [isReload]);
 
   const fetchDoughs = async () => {
     try {

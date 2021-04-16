@@ -24,7 +24,8 @@ const ButtonBox = styled.div`
   padding: 5px 20px;
 `;
 
-const Buttons = ({ selectedDough, setSelectedDough, isModified, setIsModified }) => {
+const Buttons = ({ selectedDough, setSelectedDough, isModified, setIsModified, isReload,
+  setIsReload }) => {
   const handleAddDough = () => {
     let doughName;
 
@@ -91,6 +92,7 @@ const Buttons = ({ selectedDough, setSelectedDough, isModified, setIsModified })
       createDghComp(wetComponent);
       createDghComp(saltComponent);
       createDghComp(yeastComponent);
+      setIsReload(!isReload)
     });
   };
 

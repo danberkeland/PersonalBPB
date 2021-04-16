@@ -43,6 +43,7 @@ function EditDoughs() {
   const [doughs, setDoughs] = useState(null);
   const [doughComponents, setDoughComponents] = useState(null);
   const [isModified, setIsModified] = useState(false)
+  const [isReload,setIsReload] = useState(false)
 
   const { setCustLoaded } = useContext(CustomerContext);
   const { setProdLoaded } = useContext(ProductsContext);
@@ -68,6 +69,8 @@ function EditDoughs() {
           setDoughs={setDoughs}
           doughComponents={doughComponents}
           setDoughComponents={setDoughComponents}
+          isReload={isReload}
+          setIsReload={setIsReload}
         />
         {selectedDough && (
           <React.Fragment>
@@ -91,6 +94,8 @@ function EditDoughs() {
             setSelectedDough={setSelectedDough}
             isModified={isModified}
             setIsModified={setIsModified}
+            isReload={isReload}
+            setIsReload={setIsReload}
           />
         </DescripWrapper>
       </MainWrapper>

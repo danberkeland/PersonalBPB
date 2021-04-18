@@ -1,4 +1,9 @@
 import { InputText } from "primereact/inputtext";
+import { listDoughs, listDoughComponents } from "../../../../graphql/queries";
+
+import { API, graphqlOperation } from "aws-amplify";
+
+import { sortAtoZDataByIndex } from "../../../../helpers/sortDataHelpers";
 const clonedeep = require("lodash.clonedeep");
 
 export const getCompList = (comp, doughComponents, selectedDough) => {
@@ -45,7 +50,6 @@ export const handleBlur = (value, id, doughComponents, setIsModified) => {
 };
 
 export const getAmount = (e, doughComponents, selectedDough) => {
-  console.log(doughComponents);
   let thisAmount = doughComponents.filter(
     (dgh) =>
       dgh.dough === selectedDough.doughName && dgh.componentName === e.ing
@@ -68,16 +72,16 @@ export const addUp = (comp, doughComponents, selectedDough) => {
 
 export const getPercent = (e, comp, doughComponents, selectedDough) => {
   let thisAmount = getAmount(e, doughComponents, selectedDough);
-  console.log(thisAmount);
+
   let totalAmount = addUp(comp, doughComponents, selectedDough);
-  console.log(totalAmount);
+
   return thisAmount / totalAmount;
 };
 
 export const getFlourWeight = (e, doughComponents, selectedDough) => {
   let bulkWeight = selectedDough.batchSize;
   let hydro = Number(selectedDough.hydration);
-  let levNum = addUp("pre", doughComponents, selectedDough);
+  let levNum = addUp("lev", doughComponents, selectedDough);
   let addNum = addUp("dryplus", doughComponents, selectedDough);
   let postNum = addUp("post", doughComponents, selectedDough);
   let fl = (
@@ -88,7 +92,6 @@ export const getFlourWeight = (e, doughComponents, selectedDough) => {
 };
 
 export const getItemPercent = (e, doughComponents, selectedDough) => {
-  console.log(doughComponents);
   let placeholder = getAmount(e, doughComponents, selectedDough);
   return placeholder;
 };
@@ -133,4 +136,39 @@ export const handleInput = (
       }
     />
   );
+};
+
+
+export const fetchDoughs = async (setDoughs) => {
+  try {
+    const doughData = await API.graphql(
+      graphqlOperation(listDoughs, {
+        limit: "50",
+      })
+    );
+    const doughList = doughData.data.listDoughs.items;
+    sortAtoZDataByIndex(doughList, "doughName");
+    let noDelete = doughList.filter((dough) => dough["_deleted"] !== true);
+
+    setDoughs(noDelete);
+  } catch (error) {
+    console.log("error on fetching Dough List", error);
+  }
+};
+
+export const fetchDoughComponents = async (setDoughComponents) => {
+  try {
+    const doughData = await API.graphql(
+      graphqlOperation(listDoughComponents, {
+        limit: "50",
+      })
+    );
+    const doughList = doughData.data.listDoughComponents.items;
+    sortAtoZDataByIndex(doughList, "doughName");
+    let noDelete = doughList.filter((dough) => dough["_deleted"] !== true);
+      console.log(noDelete)
+    setDoughComponents(noDelete);
+  } catch (error) {
+    console.log("error on fetching Dough List", error);
+  }
 };

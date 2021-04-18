@@ -2,11 +2,7 @@ import React, { useEffect, useContext } from "react";
 
 import { ToggleContext } from "../../../dataContexts/ToggleContext";
 
-import { listDoughs, listDoughComponents } from "../../../graphql/queries";
-
-import { API, graphqlOperation } from "aws-amplify";
-
-import { sortAtoZDataByIndex } from "../../../helpers/sortDataHelpers";
+import { fetchDoughs, fetchDoughComponents } from "./InfoParts/utils"
 
 import styled from "styled-components";
 
@@ -16,6 +12,8 @@ import { ScrollPanel } from "primereact/scrollpanel";
 
 const ListWrapper = styled.div`
   font-family: "Montserrat", sans-serif;
+  display: flex;
+  align-items: flex-start;
   margin: auto;
   width: 100%;
   height: 100vh;
@@ -30,58 +28,27 @@ const DoughList = ({
   doughComponents,
   setDoughComponents,
   isReload,
-  setIsReload
+  setIsReload,
+  setIsModified
 }) => {
   let { setIsLoading } = useContext(ToggleContext);
 
   useEffect(() => {
     setIsLoading(true);
-    fetchDoughs();
+    fetchDoughs(setDoughs);
     setIsLoading(false);
   }, [isReload]);
 
   useEffect(() => {
     setIsLoading(true);
-    fetchDoughComponents();
+    fetchDoughComponents(setDoughComponents);
     setIsLoading(false);
   }, [isReload]);
 
-  const fetchDoughs = async () => {
-    try {
-      const doughData = await API.graphql(
-        graphqlOperation(listDoughs, {
-          limit: "50",
-        })
-      );
-      const doughList = doughData.data.listDoughs.items;
-      sortAtoZDataByIndex(doughList, "doughName");
-      let noDelete = doughList.filter((dough) => dough["_deleted"] !== true);
-
-      setDoughs(noDelete);
-    } catch (error) {
-      console.log("error on fetching Dough List", error);
-    }
-  };
-
-  const fetchDoughComponents = async () => {
-    try {
-      const doughData = await API.graphql(
-        graphqlOperation(listDoughComponents, {
-          limit: "50",
-        })
-      );
-      const doughList = doughData.data.listDoughComponents.items;
-      sortAtoZDataByIndex(doughList, "doughName");
-      let noDelete = doughList.filter((dough) => dough["_deleted"] !== true);
-        console.log(noDelete)
-      setDoughComponents(noDelete);
-    } catch (error) {
-      console.log("error on fetching Dough List", error);
-    }
-  };
 
   const handleSelection = (e) => {
     setSelectedDough(e.value);
+    setIsModified(false)
   };
 
   return (

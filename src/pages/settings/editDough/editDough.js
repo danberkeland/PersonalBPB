@@ -71,6 +71,7 @@ function EditDoughs() {
           setDoughComponents={setDoughComponents}
           isReload={isReload}
           setIsReload={setIsReload}
+          setIsModified={setIsModified}
         />
         {selectedDough && (
           <React.Fragment>
@@ -92,6 +93,10 @@ function EditDoughs() {
           <Buttons
             selectedDough={selectedDough}
             setSelectedDough={setSelectedDough}
+            doughs={doughs}
+            setDoughs={setDoughs}
+            doughComponents={doughComponents}
+            setDoughComponents={setDoughComponents}
             isModified={isModified}
             setIsModified={setIsModified}
             isReload={isReload}

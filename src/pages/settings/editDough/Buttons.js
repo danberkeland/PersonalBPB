@@ -9,11 +9,13 @@ import {
   deleteDough,
   createDough,
   createDoughComponent,
+  deleteDoughComponent,
 } from "../../../graphql/mutations";
 
 import { Button } from "primereact/button";
 
 import { API, graphqlOperation } from "aws-amplify";
+
 
 const ButtonBox = styled.div`
   display: flex;
@@ -24,14 +26,24 @@ const ButtonBox = styled.div`
   padding: 5px 20px;
 `;
 
-const Buttons = ({ selectedDough, setSelectedDough, isModified, setIsModified, isReload,
-  setIsReload }) => {
+const Buttons = ({
+  selectedDough,
+  setSelectedDough,
+  doughs,
+  setDoughs,
+  doughComponents,
+  setDoughComponents,
+  isModified,
+  setIsModified,
+  isReload,
+  setIsReload,
+}) => {
   const handleAddDough = () => {
     let doughName;
 
     swal("Enter Dough Name:", {
       content: "input",
-    }).then((value) => {
+    }).then(async (value) => {
       doughName = value;
       const addDetails = {
         doughName: doughName,
@@ -86,14 +98,15 @@ const Buttons = ({ selectedDough, setSelectedDough, isModified, setIsModified, i
         amount: 1,
       };
 
-      createDgh(addDetails);
-      createDghComp(levComponent);
-      createDghComp(dryComponent);
-      createDghComp(wetComponent);
-      createDghComp(saltComponent);
-      createDghComp(yeastComponent);
-      setIsReload(!isReload)
+      await createDgh(addDetails);
+      await createDghComp(levComponent);
+      await createDghComp(dryComponent);
+      await createDghComp(wetComponent);
+      await createDghComp(saltComponent);
+      await createDghComp(yeastComponent);
+      setIsReload(!isReload);
     });
+    
   };
 
   const createDgh = async (addDetails) => {
@@ -101,7 +114,6 @@ const Buttons = ({ selectedDough, setSelectedDough, isModified, setIsModified, i
       await API.graphql(
         graphqlOperation(createDough, { input: { ...addDetails } })
       );
-      setSelectedDough();
     } catch (error) {
       console.log("error on fetching Dough List", error);
     }
@@ -117,6 +129,28 @@ const Buttons = ({ selectedDough, setSelectedDough, isModified, setIsModified, i
     }
   };
 
+  const deleteComps = async () => {
+    let deleteList = doughComponents.filter(
+      (dgh) => dgh.dough === selectedDough.doughName
+    );
+    for (let comp of deleteList) {
+      let id = comp.id;
+      const deleteDetails = {
+        id: id,
+      };
+
+      try {
+        await API.graphql(
+          graphqlOperation(deleteDoughComponent, {
+            input: { ...deleteDetails },
+          })
+        );
+      } catch (error) {
+        console.log("error on deleting DoughComponent List", error);
+      }
+    }
+  };
+
   const updateDgh = async () => {
     const updateDetails = {
       id: selectedDough.id,
@@ -124,6 +158,7 @@ const Buttons = ({ selectedDough, setSelectedDough, isModified, setIsModified, i
       ingredients: selectedDough.ingredients,
       process: selectedDough.process,
       batchSize: selectedDough.batchSize,
+      hydration: selectedDough.hydration,
 
       _version: selectedDough["_version"],
     };
@@ -142,6 +177,26 @@ const Buttons = ({ selectedDough, setSelectedDough, isModified, setIsModified, i
     } catch (error) {
       console.log("error on fetching Dough List", error);
     }
+
+    // remove all old dough components
+    await deleteComps();
+
+    // add all new dough components
+    let addBackList = doughComponents.filter(
+      (dgh) => dgh.dough === selectedDough.doughName
+    );
+    for (let comp of addBackList) {
+      const newDetails = {
+        dough: comp.dough,
+        componentType: comp.componentType,
+        componentName: comp.componentName,
+        amount: comp.amount,
+      };
+      if (Number(newDetails.amount > 0)) {
+        await createDghComp(newDetails);
+      }
+    }
+    setIsReload(!isReload);
   };
 
   const deleteDoughWarn = async () => {
@@ -154,6 +209,8 @@ const Buttons = ({ selectedDough, setSelectedDough, isModified, setIsModified, i
     }).then((willDelete) => {
       if (!willDelete) {
         deleteDgh();
+
+        // delete dough components
       } else {
         return;
       }
@@ -170,10 +227,13 @@ const Buttons = ({ selectedDough, setSelectedDough, isModified, setIsModified, i
       await API.graphql(
         graphqlOperation(deleteDough, { input: { ...deleteDetails } })
       );
-      setSelectedDough();
     } catch (error) {
       console.log("error on fetching Dough List", error);
     }
+    deleteComps();
+
+    setSelectedDough();
+    setIsReload(!isReload);
   };
 
   return (
@@ -191,7 +251,11 @@ const Buttons = ({ selectedDough, setSelectedDough, isModified, setIsModified, i
             label="Update Dough"
             icon="pi pi-user-edit"
             onClick={updateDgh}
-            className={isModified ? "p-button-raised p-button-rounded p-button-danger" : "p-button-raised p-button-rounded p-button-success"}
+            className={
+              isModified
+                ? "p-button-raised p-button-rounded p-button-danger"
+                : "p-button-raised p-button-rounded p-button-success"
+            }
           />
           <br />
         </React.Fragment>

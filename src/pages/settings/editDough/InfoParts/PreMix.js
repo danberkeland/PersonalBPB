@@ -42,7 +42,7 @@ const PreMix = ({
 }) => {
   const [selectedPre, setSelectedPre] = useState("");
 
-  const pre = getCompList("pre", doughComponents, selectedDough);
+  const pre = getCompList("lev", doughComponents, selectedDough);
 
   const handlePrePick = (e) => {
     console.log(e.value);
@@ -53,7 +53,7 @@ const PreMix = ({
     let listToMod = clonedeep(doughComponents);
     let newItem = {
       dough: selectedDough.doughName,
-      componentType: "pre",
+      componentType: "lev",
       componentName: selectedPre,
       amount: 0,
     };

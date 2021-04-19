@@ -33,6 +33,7 @@ type Product @model @auth(rules: [{allow: public}]) {
   packSize: Int
   doughType: String
   freezerThaw: Boolean
+  eodCount: Boolean
   packGroupOrder: Int
   readyTime: Float
   bakedWhere: [String]

@@ -86,6 +86,18 @@ const Packing = ({ selectedProduct, setSelectedProduct }) => {
           }
         />
       </YesNoBox>
+      <br />
+      <YesNoBox>
+        <label htmlFor="eodCount">Count at End of Day?</label>
+        <SelectButton
+          value={selectedProduct.eodCount}
+          id="eodCount"
+          options={options}
+          onChange={(e) =>
+            setSelectedProduct(setYesNoValue(e, selectedProduct))
+          }
+        />
+      </YesNoBox>
     </React.Fragment>
   );
 };

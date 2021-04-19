@@ -107,6 +107,7 @@ export const onCreateProduct = /* GraphQL */ `
       packSize
       doughType
       freezerThaw
+      eodCount
       packGroupOrder
       readyTime
       bakedWhere
@@ -133,6 +134,7 @@ export const onUpdateProduct = /* GraphQL */ `
       packSize
       doughType
       freezerThaw
+      eodCount
       packGroupOrder
       readyTime
       bakedWhere
@@ -159,6 +161,7 @@ export const onDeleteProduct = /* GraphQL */ `
       packSize
       doughType
       freezerThaw
+      eodCount
       packGroupOrder
       readyTime
       bakedWhere

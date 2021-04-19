@@ -82,6 +82,7 @@ export const getProduct = /* GraphQL */ `
       packSize
       doughType
       freezerThaw
+      eodCount
       packGroupOrder
       readyTime
       bakedWhere
@@ -113,6 +114,7 @@ export const listProducts = /* GraphQL */ `
         packSize
         doughType
         freezerThaw
+        eodCount
         packGroupOrder
         readyTime
         bakedWhere

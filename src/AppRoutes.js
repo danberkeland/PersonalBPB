@@ -22,12 +22,11 @@ import BPBNBaker1 from './pages/BPBNProd/BPBNBaker1';
 import BPBNBaker2 from './pages/BPBNProd/BPBNBaker2';
 import BPBNBuckets from './pages/BPBNProd/BPBNBuckets';
 import BPBNSetOut from './pages/BPBNProd/BPBNSetOut';
-import BPBNCounts from './pages/EODCounts/BPBNCounts';
+import EODCounts from './pages/EODCounts/EODCounts';
 import DoughCalc from './pages/doughCalc/doughCalc';
 import BPBSWhatToMake from './pages/BPBSProd/BPBSWhatToMake';
 import BPBSMixPocket from './pages/BPBSProd/BPBSMixPocket';
 import CroixToMake from './pages/BPBSProd/CroixToMake';
-import BPBSCounts from './pages/EODCounts/BPBSCounts';
 import AMPastry from './pages/logistics/AMPastry';
 import NorthLists from './pages/logistics/NorthLists';
 import RetailBags from './pages/logistics/RetailBags';
@@ -58,14 +57,14 @@ function AppRoutes() {
           <Route path="/BPBNProd/BPBNBaker2" component={BPBNBaker2} />
           <Route path="/BPBNProd/Buckets" component={BPBNBuckets} />
           <Route path="/BPBNProd/BPBNSetOut" component={BPBNSetOut} />
-          <Route path="/EODCounts/BPBNCounts" component={BPBNCounts} />
+          <Route path="/EODCounts/BPBNCounts" component={()=><EODCounts loc={'Carlton'} />} />
           <Route path="/doughCalc/doughCalc" component={DoughCalc} />
 
           <Route path="/BPBSProd/BPBSWhatToMake" component={BPBSWhatToMake} />
           <Route path="/BPBSProd/BPBSMixPocket" component={BPBSMixPocket} />
           <Route path="/BPBSProd/CroixToMake" component={CroixToMake} />
           <Route path="/BPBSProd/BPBNSetOut" component={BPBNSetOut} />
-          <Route path="/EODCounts/BPBSCounts" component={BPBSCounts} />
+          <Route path="/EODCounts/BPBSCounts" component={()=><EODCounts loc={'Prado'} />} />
           <Route path="/doughCalc/doughCalc" component={DoughCalc} />
 
 

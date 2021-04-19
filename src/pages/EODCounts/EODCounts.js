@@ -1,5 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 
+import { InputText } from "primereact/inputtext";
+
 import { CustomerContext } from "../../dataContexts/CustomerContext";
 import {
   ProductsContext,
@@ -29,7 +31,7 @@ const EaGrid = styled.div`
   grid-template-columns: 3fr 1fr;
 `;
 
-function BPBSCounts() {
+function EODCounts({ loc }) {
   const { products, prodLoaded, setProdLoaded } = useContext(ProductsContext);
   const { setCustLoaded } = useContext(CustomerContext);
   let { setHoldLoaded } = useContext(HoldingContext);
@@ -50,7 +52,7 @@ function BPBSCounts() {
 
   useEffect(() => {
     let prodsToMap = products.filter(
-      (prod) => prod.bakedWhere[0] === "Prado" && prod.eodCount === true
+      (prod) => prod.bakedWhere[0] === loc && prod.eodCount === true
     );
     setEODProds(prodsToMap);
   }, [products]);
@@ -59,7 +61,7 @@ function BPBSCounts() {
     <React.Fragment>
       <WholeBox>
         {!prodLoaded ? <ProductsLoad /> : ""}
-        <h1>BPBS EOD Counts</h1>
+        {loc === "Prado" ? <h1>BPBS EOD Counts</h1> : <h1>BPBN EOD Counts</h1>}
         <h2>On Shelf</h2>
 
         <BagGrid>
@@ -75,7 +77,13 @@ function BPBSCounts() {
                 .map((eod) => (
                   <React.Fragment>
                     <div key={eod.prodName}>{eod.prodName}</div>
-                    <div>123</div>
+                    <InputText
+                      style={{
+                        width: "50px",
+                        backgroundColor: "#E3F2FD",
+                        fontWeight: "bold",
+                      }}
+                    />
                     <div>123</div>
                   </React.Fragment>
                 ))
@@ -94,7 +102,13 @@ function BPBSCounts() {
                 .map((eod) => (
                   <React.Fragment>
                     <div key={eod.prodName}>{eod.prodName}</div>
-                    <div>123</div>
+                    <InputText
+                      style={{
+                        width: "50px",
+                        backgroundColor: "#E3F2FD",
+                        fontWeight: "bold",
+                      }}
+                    />
                   </React.Fragment>
                 ))
             : ""}
@@ -115,7 +129,13 @@ function BPBSCounts() {
                 .map((eod) => (
                   <React.Fragment>
                     <div key={eod.prodName}>{eod.prodName}</div>
-                    <div>123</div>
+                    <InputText
+                      style={{
+                        width: "50px",
+                        backgroundColor: "#E3F2FD",
+                        fontWeight: "bold",
+                      }}
+                    />
                     <div>123</div>
                   </React.Fragment>
                 ))
@@ -134,7 +154,13 @@ function BPBSCounts() {
                 .map((eod) => (
                   <React.Fragment>
                     <div key={eod.prodName}>{eod.prodName}</div>
-                    <div>123</div>
+                    <InputText
+                      style={{
+                        width: "50px",
+                        backgroundColor: "#E3F2FD",
+                        fontWeight: "bold",
+                      }}
+                    />
                   </React.Fragment>
                 ))
             : ""}
@@ -144,4 +170,4 @@ function BPBSCounts() {
   );
 }
 
-export default BPBSCounts;
+export default EODCounts;

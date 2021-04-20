@@ -92,7 +92,8 @@ const Buttons = ({ selectedProduct, setSelectedProduct }) => {
         weight: 0,
         descrip: "description",
         picURL: "",
-        squareID: ""
+        squareID: "",
+        currentStock: 0
       };
 
       setProdLoaded(false);
@@ -122,7 +123,8 @@ const Buttons = ({ selectedProduct, setSelectedProduct }) => {
         weight: selectedProduct["weight"],
         descrip: selectedProduct["descrip"],
         picURL: selectedProduct["picURL"],
-        squareID: selectedProduct["squareID"]
+        squareID: selectedProduct["squareID"],
+        currentStock: selectedProduct["currentStock"]
     };
 
     try {

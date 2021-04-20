@@ -45,6 +45,7 @@ type Product @model @auth(rules: [{allow: public}]) {
   descrip: String
   picURL: String
   squareID: String
+  currentStock: Int
 }
 
 type Order @model @auth(rules: [{allow: public}]) {

@@ -22,16 +22,7 @@ const WholeBox = styled.div`
   margin: auto;
 `;
 
-const BagGrid = styled.div`
-  display: grid;
-  grid-template-columns: 3fr 1fr 1fr;
-`;
 
-const EaGrid = styled.div`
-  display: grid;
-
-  grid-template-columns: 3fr 1fr;
-`;
 
 function EODCounts({ loc }) {
   const { products, prodLoaded, setProdLoaded } = useContext(ProductsContext);
@@ -59,7 +50,10 @@ function EODCounts({ loc }) {
     setEODProds(prodsToMap);
   }, [products]);
 
-  const handleInput = () => {
+  
+
+  const handleInput = (e) => {
+    
     return (
       <InputText
         style={{
@@ -67,7 +61,17 @@ function EODCounts({ loc }) {
           backgroundColor: "#E3F2FD",
           fontWeight: "bold",
         }}
+        placeholder={e.currentStock}
       />
+    );
+  };
+
+  const eaCount = (e) => {
+    
+    return (
+      <React.Fragment>
+        {e.currentStock * e.packSize}
+      </React.Fragment>
     );
   };
 
@@ -91,7 +95,7 @@ function EODCounts({ loc }) {
               header="# of bags"
               body={(e) => handleInput(e)}
             ></Column>
-            <Column className="p-text-center" header="ea"></Column>
+            <Column className="p-text-center" header="ea" body={eaCount}></Column>
           </DataTable>
         )}
         {eodProds && (
@@ -103,7 +107,7 @@ function EODCounts({ loc }) {
             className="p-datatable-sm"
           >
             <Column field="prodName" header="Each"></Column>
-
+              <Column></Column>
             <Column
               className="p-text-center"
               header="ea"
@@ -129,7 +133,7 @@ function EODCounts({ loc }) {
               header="# of bags"
               body={(e) => handleInput(e)}
             ></Column>
-            <Column className="p-text-center" header="ea"></Column>
+            <Column className="p-text-center" header="ea" body={eaCount}></Column>
           </DataTable>
         )}
 
@@ -142,7 +146,7 @@ function EODCounts({ loc }) {
             className="p-datatable-sm"
           >
             <Column field="prodName" header="Each"></Column>
-
+            <Column></Column>
             <Column
               className="p-text-center"
               header="ea"

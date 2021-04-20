@@ -94,6 +94,7 @@ export const getProduct = /* GraphQL */ `
       descrip
       picURL
       squareID
+      currentStock
       createdAt
       updatedAt
     }
@@ -126,6 +127,7 @@ export const listProducts = /* GraphQL */ `
         descrip
         picURL
         squareID
+        currentStock
         createdAt
         updatedAt
       }

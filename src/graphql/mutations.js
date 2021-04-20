@@ -131,6 +131,7 @@ export const createProduct = /* GraphQL */ `
       descrip
       picURL
       squareID
+      currentStock
       createdAt
       updatedAt
     }
@@ -161,6 +162,7 @@ export const updateProduct = /* GraphQL */ `
       descrip
       picURL
       squareID
+      currentStock
       createdAt
       updatedAt
     }
@@ -191,6 +193,7 @@ export const deleteProduct = /* GraphQL */ `
       descrip
       picURL
       squareID
+      currentStock
       createdAt
       updatedAt
     }

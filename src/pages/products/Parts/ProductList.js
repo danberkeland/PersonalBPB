@@ -15,7 +15,7 @@ const ListWrapper = styled.div`
   height: 100vh;
   background: #ffffff;
 `;
-
+console.log("hello")
 const ProductList = ({ selectedProduct, setSelectedProduct }) => {
   const { products } = useContext(ProductsContext);
 

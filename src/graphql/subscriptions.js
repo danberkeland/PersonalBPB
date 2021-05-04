@@ -122,6 +122,8 @@ export const onCreateProduct = /* GraphQL */ `
       currentStock
       whoCountedLast
       forBake
+      bakeExtra
+      batchSize
       createdAt
       updatedAt
     }
@@ -152,6 +154,8 @@ export const onUpdateProduct = /* GraphQL */ `
       currentStock
       whoCountedLast
       forBake
+      bakeExtra
+      batchSize
       createdAt
       updatedAt
     }
@@ -182,6 +186,8 @@ export const onDeleteProduct = /* GraphQL */ `
       currentStock
       whoCountedLast
       forBake
+      bakeExtra
+      batchSize
       createdAt
       updatedAt
     }

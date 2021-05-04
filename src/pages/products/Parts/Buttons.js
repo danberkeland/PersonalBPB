@@ -61,7 +61,9 @@ const Buttons = ({ selectedProduct, setSelectedProduct }) => {
           currentStock: 0,
           whoCountedLast: "",
           eodCount: false,
-          forBake: prodName
+          forBake: prodName,
+          bakeExtra: 0,
+          batchSize: 1
         };
         createProd(addDetails, nickName, prodName);
       });
@@ -103,7 +105,9 @@ const Buttons = ({ selectedProduct, setSelectedProduct }) => {
         squareID: selectedProduct["squareID"],
         currentStock: selectedProduct["currentStock"],
         whoCountedLast: selectedProduct["whoCountedLast"],
-        forBake: selectedProduct["forBake"]
+        forBake: selectedProduct["forBake"],
+        bakeExtra: selectedProduct["bakeExtra"],
+        batchSize: selectedProduct["batchSize"],
     };
 
     try {

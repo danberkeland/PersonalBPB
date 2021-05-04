@@ -212,6 +212,7 @@ const ToolBar = ({ setOrderList }) => {
             grd.route="NOT ASSIGNED"
           }
         }
+        console.log(gridOrderArray)
         setOrderList(gridOrderArray);
       } catch {
         console.log("Whoops!");

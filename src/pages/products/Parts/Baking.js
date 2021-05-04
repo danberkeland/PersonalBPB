@@ -156,6 +156,42 @@ const Baking = ({ selectedProduct, setSelectedProduct }) => {
       </div>
       <br />
 
+      <div className="p-inputgroup">
+        <span className="p-inputgroup-addon">
+          <label htmlFor="batchSize">Batch Size</label>
+          <br />
+        </span>
+
+        <InputText
+          id="batchSize"
+          placeholder={selectedProduct.batchSize}
+          onKeyUp={(e) =>
+            e.code === "Enter" &&
+            setSelectedProduct(setValue(e, selectedProduct))
+          }
+          onBlur={(e) => setSelectedProduct(fixValue(e, selectedProduct))}
+        />
+      </div>
+      <br />
+
+      <div className="p-inputgroup">
+        <span className="p-inputgroup-addon">
+          <label htmlFor="bakeExtra">Bake Extra</label>
+          <br />
+        </span>
+
+        <InputText
+          id="bakeExtra"
+          placeholder={selectedProduct.bakeExtra}
+          onKeyUp={(e) =>
+            e.code === "Enter" &&
+            setSelectedProduct(setValue(e, selectedProduct))
+          }
+          onBlur={(e) => setSelectedProduct(fixValue(e, selectedProduct))}
+        />
+      </div>
+      <br />
+
 
 
       <div className="p-inputgroup">

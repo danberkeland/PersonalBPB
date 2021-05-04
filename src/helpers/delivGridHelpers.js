@@ -40,7 +40,6 @@ export const zerosDelivFilter = (orderList, delivDate, customers) => {
         (cust) => cust["custName"] === ord["custName"]
       );
       if (ind > -1) {
-        let custZone = customers[ind]["zoneName"];
         ord["zoneName"] = ord["route"];
       } 
     }

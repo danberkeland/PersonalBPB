@@ -48,6 +48,8 @@ type Product @model @auth(rules: [{allow: public}]) {
   currentStock: Int
   whoCountedLast: String
   forBake: String
+  bakeExtra: Int
+  batchSize: Int
 }
 
 type Order @model @auth(rules: [{allow: public}]) {

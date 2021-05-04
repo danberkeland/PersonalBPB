@@ -42,7 +42,7 @@ export const addDelivQty = (make, fullOrders) => {
   make.needEarly = 0;
   let qty = fullOrders
     .filter((full) => make.forBake === full.forBake)
-    .map((ord) => ord.qty);
+    .map((ord) => ord.qty * ord.packSize);
   if (qty.length > 0) {
     let qtyAcc = qty.reduce(addUp);
     make.qty = qtyAcc;
@@ -54,8 +54,8 @@ export const addDelivQty = (make, fullOrders) => {
 export const addNeedEarly = (make, products) => {
   let curr = products
     .filter((full) => make.forBake === full.forBake)
-    .map((ord) => ord.currentStock);
-  console.log(curr);
+    .map((ord) => ord.currentStock * ord.packSize);
+  
   if (curr.length > 0) {
     let currAcc = curr.reduce(addUp);
     make.needEarly -= currAcc;
@@ -65,4 +65,28 @@ export const addNeedEarly = (make, products) => {
       make.needEarly = 0;
       make.makeTotal = 0;
   }
+};
+
+export const buildMakeShelfProdTemplate = (products) => {
+  let makeShelfProds;
+  makeShelfProds = Array.from(
+    new Set(
+      products
+        .filter(
+          (prod) =>
+            !prod.bakedWhere.includes("Carlton") &&
+            Number(prod.readyTime) >= 15 &&
+            prod.packGroup !== "frozen pastries" &&
+            prod.packGroup !== "baked pastries"
+        )
+        .map((prod) => prod.forBake)
+    )
+  ).map((make) => ({
+    forBake: make,
+    qty: 0,
+    needEarly: 0,
+    makeTotal: 0,
+  }));
+
+  return makeShelfProds;
 };

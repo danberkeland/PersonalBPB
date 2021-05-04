@@ -27,6 +27,7 @@ import {
   addProdAttr,
   buildMakeFreshProdTemplate,
   addNeedEarly,
+  buildMakeShelfProdTemplate,
 } from "../../helpers/prodBuildHelpers";
 
 import {
@@ -35,6 +36,8 @@ import {
   compileFullOrderList,
 } from "../../helpers/CartBuildingHelpers";
 
+import { todayPlus } from "../../helpers/dateTimeHelpers"
+
 import { API, graphqlOperation } from "aws-amplify";
 
 import styled from "styled-components";
@@ -42,16 +45,11 @@ import styled from "styled-components";
 const WholeBox = styled.div`
   display: flex;
   flex-direction: column;
-  width: 60%;
+  width: 50%;
   margin: auto;
   padding: 0 0 100px 0;
 `;
 
-const IngDetails = styled.div`
-  font-size: 0.8em;
-`;
-
-const makeFresh = [];
 
 const clonedeep = require("lodash.clonedeep");
 
@@ -64,12 +62,15 @@ function BPBSWhatToMake() {
   let { orders, ordersLoaded, setOrdersLoaded } = useContext(OrdersContext);
   let { standing, standLoaded, setStandLoaded } = useContext(StandingContext);
 
-  const [fullOrders, setFullOrders] = useState([]);
-  const [freshProds, setFreshProds] = useState();
+  const [ fullOrdersToday, setFullOrdersToday ] = useState([]);
+  const [ fullOrdersTomorrow, setFullOrdersTomorrow ] = useState([]);
+  const [ freshProds, setFreshProds ] = useState();
+  const [ shelfProds, setShelfProds ] = useState()
 
-  let today = DateTime.now().setZone("America/Los_Angeles");
-  let delivDate = today.toString().split("T")[0];
-
+  let delivDate = todayPlus()[0];
+  let tomorrow = todayPlus()[1];
+  
+  
   useEffect(() => {
     setProdLoaded(false);
     setCustLoaded(false);
@@ -84,17 +85,31 @@ function BPBSWhatToMake() {
       let buildStand = buildStandList("*", delivDate, standing);
       let fullOrder = compileFullOrderList(buildOrders, buildStand);
       fullOrder = addProdAttr(fullOrder, products); // adds forBake, packSize, currentStock
-      setFullOrders(fullOrder);
+      setFullOrdersToday(fullOrder);
     } catch {
       console.log("Whoops");
     }
   }, [delivDate, orders, standing, products]);
 
   useEffect(() => {
+    console.log(tomorrow)
+    try {
+      let buildOrders = buildCartList("*", tomorrow, orders);
+      let buildStand = buildStandList("*", tomorrow, standing);
+      let fullOrder = compileFullOrderList(buildOrders, buildStand);
+      fullOrder = addProdAttr(fullOrder, products); // adds forBake, packSize, currentStock
+      setFullOrdersTomorrow(fullOrder);
+     
+    } catch {
+      console.log("Whoops");
+    }
+  }, [tomorrow, orders, standing, products]);
+
+  useEffect(() => {
     try {
       let makeFreshProds = buildMakeFreshProdTemplate(products);
       for (let make of makeFreshProds) {
-        addDelivQty(make, fullOrders);
+        addDelivQty(make, fullOrdersToday);
         addNeedEarly(make, products);
       }
       setFreshProds(makeFreshProds);
@@ -103,6 +118,18 @@ function BPBSWhatToMake() {
     }
   }, [delivDate, orders, standing, products]);
 
+  useEffect(() => {
+    try {
+      let makeShelfProds = buildMakeShelfProdTemplate(products);
+      for (let make of makeShelfProds) {
+        addDelivQty(make, fullOrdersTomorrow);
+        addNeedEarly(make, products);
+      }
+      setShelfProds(makeShelfProds);
+    } catch {
+      console.log("Whoops");
+    }
+  }, [delivDate, orders, standing, products]);
   
 
 
@@ -117,14 +144,18 @@ function BPBSWhatToMake() {
         <h1>BPBS What To Make</h1>
 
         <h2>Make Fresh</h2>
-
         <DataTable value={freshProds} className="p-datatable-sm">
           <Column field="forBake" header="Product"></Column>
           <Column field="qty" header="Total Deliv"></Column>
           <Column field="needEarly" header="Need Early"></Column>
-          <Column field="makeTotal" header="MakeTotal"></Column>
-         
-          
+          <Column field="makeTotal" header="MakeTotal"></Column>     
+        </DataTable>
+        <h2>Make For Shelf</h2>
+        <DataTable value={shelfProds} className="p-datatable-sm">
+          <Column field="forBake" header="Product"></Column>
+          <Column field="qty" header="Total Deliv"></Column>
+          <Column field="needEarly" header="Need Early"></Column>
+          <Column field="makeTotal" header="MakeTotal"></Column>     
         </DataTable>
       </WholeBox>
     </React.Fragment>

@@ -95,6 +95,8 @@ export const getProduct = /* GraphQL */ `
       picURL
       squareID
       currentStock
+      whoCountedLast
+      forBake
       createdAt
       updatedAt
     }
@@ -128,6 +130,8 @@ export const listProducts = /* GraphQL */ `
         picURL
         squareID
         currentStock
+        whoCountedLast
+        forBake
         createdAt
         updatedAt
       }

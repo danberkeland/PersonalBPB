@@ -46,6 +46,8 @@ type Product @model @auth(rules: [{allow: public}]) {
   picURL: String
   squareID: String
   currentStock: Int
+  whoCountedLast: String
+  forBake: String
 }
 
 type Order @model @auth(rules: [{allow: public}]) {

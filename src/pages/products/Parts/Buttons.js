@@ -57,45 +57,22 @@ const Buttons = ({ selectedProduct, setSelectedProduct }) => {
           weight: 0,
           descrip: "description",
           picURL: "",
-          squareID: ""
+          squareID: "",
+          currentStock: 0,
+          whoCountedLast: "",
+          eodCount: false,
+          forBake: prodName
         };
         createProd(addDetails, nickName, prodName);
       });
     });
   };
 
-  const createProd = async (addDetails, nickName, prodName) => {
+  const createProd = async (addDetails) => {
     try {
-      const prodData = await API.graphql(
+      await API.graphql(
         graphqlOperation(createProduct, { input: { ...addDetails } })
       );
-      let id = prodData.data.createProduct.id;
-      let version = prodData.data.createProduct.version;
-
-      const fullDetails = {
-        id: id,
-        _version: version,
-        prodName: prodName,
-        nickName: nickName,
-        packGroup: "",
-        packSize: 0,
-        doughType: "",
-        freezerThaw: false,
-        eodCount: false,
-        packGroupOrder: 0,
-        readyTime: 15,
-        bakedWhere: [""],
-        wholePrice: 0,
-        retailPrice: 0,
-        isWhole: false,
-        depends: [""],
-        weight: 0,
-        descrip: "description",
-        picURL: "",
-        squareID: "",
-        currentStock: 0
-      };
-
       setProdLoaded(false);
     } catch (error) {
       console.log("error on fetching Cust List", error);
@@ -124,7 +101,9 @@ const Buttons = ({ selectedProduct, setSelectedProduct }) => {
         descrip: selectedProduct["descrip"],
         picURL: selectedProduct["picURL"],
         squareID: selectedProduct["squareID"],
-        currentStock: selectedProduct["currentStock"]
+        currentStock: selectedProduct["currentStock"],
+        whoCountedLast: selectedProduct["whoCountedLast"],
+        forBake: selectedProduct["forBake"]
     };
 
     try {

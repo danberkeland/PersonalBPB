@@ -30,6 +30,7 @@
     "save": "^2.4.0",
     "styled-components": "^5.2.1",
     "sweetalert": "^2.1.2",
+    "timeago-react": "^3.0.2",
     "uuid": "^8.3.2",
     "web-vitals": "^0.2.4",
     "wildcard-regex": "^3.0.2"

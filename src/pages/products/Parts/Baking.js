@@ -137,6 +137,27 @@ const Baking = ({ selectedProduct, setSelectedProduct }) => {
       </div>
       <br />
 
+
+      <div className="p-inputgroup">
+        <span className="p-inputgroup-addon">
+          <label htmlFor="forBake">Name for Bakers</label>
+          <br />
+        </span>
+
+        <InputText
+          id="forBake"
+          placeholder={selectedProduct.forBake}
+          onKeyUp={(e) =>
+            e.code === "Enter" &&
+            setSelectedProduct(setValue(e, selectedProduct))
+          }
+          onBlur={(e) => setSelectedProduct(fixValue(e, selectedProduct))}
+        />
+      </div>
+      <br />
+
+
+
       <div className="p-inputgroup">
         <span className="p-inputgroup-addon">
           <label htmlFor="weight">Dough Weight (lbs.)</label>

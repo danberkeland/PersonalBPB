@@ -120,6 +120,8 @@ export const onCreateProduct = /* GraphQL */ `
       picURL
       squareID
       currentStock
+      whoCountedLast
+      forBake
       createdAt
       updatedAt
     }
@@ -148,6 +150,8 @@ export const onUpdateProduct = /* GraphQL */ `
       picURL
       squareID
       currentStock
+      whoCountedLast
+      forBake
       createdAt
       updatedAt
     }
@@ -176,6 +180,8 @@ export const onDeleteProduct = /* GraphQL */ `
       picURL
       squareID
       currentStock
+      whoCountedLast
+      forBake
       createdAt
       updatedAt
     }

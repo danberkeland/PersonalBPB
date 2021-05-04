@@ -112,16 +112,28 @@ function BPBSWhatToMake() {
       for (let make of makeFreshProds) {
         const addUp = (acc, val) => {
           return acc + val;
-        }
-        make.qty=0
-        let qty = fullOrders.filter(full => make.forBake === full.forBake).map(ord => ord.qty)
+        };
+        make.qty = 0;
+        make.needEarly = 0;
+        let qty = fullOrders
+          .filter((full) => make.forBake === full.forBake)
+          .map((ord) => ord.qty);
         if (qty.length > 0) {
-        let qtyAcc =qty.reduce(addUp);
-        make.qty = qtyAcc;
-        
+          let qtyAcc = qty.reduce(addUp);
+          make.qty = qtyAcc;
+          make.needEarly = qtyAcc;      
+        }
+        let curr = products
+          .filter((full) => make.forBake === full.forBake)
+          .map((ord) => ord.currentStock);
+          console.log(curr)
+          if (curr.length > 0) {
+            let currAcc = curr.reduce(addUp);
+            make.needEarly -= currAcc;      
+          }
       }
-        
-      }
+
+      
 
       setFreshProds(makeFreshProds);
     } catch {
@@ -143,7 +155,7 @@ function BPBSWhatToMake() {
       {!holdLoaded ? <HoldingLoad /> : ""}
         <h1>BPBS What To Make</h1>
 
-        <h2>On Shelf</h2>
+        <h2>Make Fresh</h2>
 
         <DataTable value={freshProds} className="p-datatable-sm">
         <Column field="forBake" header="Product"></Column>

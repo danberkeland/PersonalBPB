@@ -24,7 +24,7 @@ import { RoutesLoad, RoutesContext } from "../../dataContexts/RoutesContext";
 import {
   addDelivQty,
   addFresh,
-  totalFreshQty,
+  addShelf,
   addPocketsQty,
   addProdAttr,
   buildMakeFreshProdTemplate,
@@ -134,8 +134,9 @@ function BPBSWhatToMake() {
     try {
       let makeShelfProds = buildMakeShelfProdTemplate(products);
       for (let make of makeShelfProds) {
-        addDelivQty(make, fullOrdersToday);
+        addShelf(make, fullOrdersToday, fullOrdersTomorrow, products, routes);
         addNeedEarly(make, products);
+        
       }
       setShelfProds(makeShelfProds);
     } catch {
@@ -147,7 +148,7 @@ function BPBSWhatToMake() {
     try {
       let makeFreezerProds = buildMakeFreezerProdTemplate(products);
       for (let make of makeFreezerProds) {
-        addDelivQty(make, fullOrdersToday);
+        addShelf(make, fullOrdersToday, fullOrdersTomorrow, products, routes);
         addNeedEarly(make, products);
       }
       setFreezerProds(makeFreezerProds);
@@ -156,6 +157,7 @@ function BPBSWhatToMake() {
     }
   }, [products, fullOrdersToday, fullOrdersTomorrow, routes]);
 
+  
   useEffect(() => {
     try {
       let makePocketsNorth = buildMakePocketsNorthTemplate(products);
@@ -168,8 +170,6 @@ function BPBSWhatToMake() {
       console.log("Whoops");
     }
   }, [products, fullOrdersToday, fullOrdersTomorrow, routes]);
-  
-  
   
 
   return (

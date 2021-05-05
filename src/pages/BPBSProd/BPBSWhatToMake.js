@@ -20,11 +20,11 @@ import {
   StandingContext,
 } from "../../dataContexts/StandingContext";
 import { HoldingLoad, HoldingContext } from "../../dataContexts/HoldingContext";
-import { CurrentDataContext } from "../../dataContexts/CurrentDataContext";
-
+import { RoutesLoad, RoutesContext } from "../../dataContexts/RoutesContext";
 import {
   addDelivQty,
-  addFreshQty,
+  addFresh,
+  totalFreshQty,
   addPocketsQty,
   addProdAttr,
   buildMakeFreshProdTemplate,
@@ -46,6 +46,7 @@ import { API, graphqlOperation } from "aws-amplify";
 
 import styled from "styled-components";
 
+
 const WholeBox = styled.div`
   display: flex;
   flex-direction: column;
@@ -65,6 +66,7 @@ function BPBSWhatToMake() {
   let { holdLoaded, setHoldLoaded } = useContext(HoldingContext);
   let { orders, ordersLoaded, setOrdersLoaded } = useContext(OrdersContext);
   let { standing, standLoaded, setStandLoaded } = useContext(StandingContext);
+  let { routes, routesLoaded, setRoutesLoaded } = useContext(RoutesContext)
 
   const [ fullOrdersToday, setFullOrdersToday ] = useState([]);
   const [ fullOrdersTomorrow, setFullOrdersTomorrow ] = useState([]);
@@ -78,6 +80,7 @@ function BPBSWhatToMake() {
   
   
   useEffect(() => {
+    setRoutesLoaded(false);
     setProdLoaded(false);
     setCustLoaded(false);
     setHoldLoaded(false);
@@ -97,33 +100,35 @@ function BPBSWhatToMake() {
     } catch {
       console.log("Whoops");
     }
-  }, [delivDate, orders, standing, products, customers]);
 
-  useEffect(() => {
-    
     try {
       let buildOrders = buildCartList("*", tomorrow, orders);
       let buildStand = buildStandList("*", tomorrow, standing);
       let fullOrder = compileFullOrderList(buildOrders, buildStand);
-      fullOrder = addProdAttr(fullOrder, products, customers); // adds forBake, packSize, currentStock
+      fullOrder = addProdAttr(fullOrder, products, customers); // adds forBake, packSize, currentStock 
       setFullOrdersTomorrow(fullOrder);
     } catch {
       console.log("Whoops");
     }
-  }, [tomorrow, orders, standing, products, customers]);
+
+
+  }, [tomorrow, delivDate, orders, standing, products, customers]);
+
+  
 
   useEffect(() => {
     try {
       let makeFreshProds = buildMakeFreshProdTemplate(products);
       for (let make of makeFreshProds) {
-        addFreshQty(make, fullOrdersToday);
-        addNeedEarly(make, products);
+        addFresh(make, fullOrdersToday, fullOrdersTomorrow, products, routes);
       }
+      
       setFreshProds(makeFreshProds);
+     
     } catch {
       console.log("Whoops");
     }
-  }, [delivDate, orders, standing, products, customers]);
+  }, [products, fullOrdersToday, fullOrdersTomorrow, routes]);
 
   useEffect(() => {
     try {
@@ -136,7 +141,7 @@ function BPBSWhatToMake() {
     } catch {
       console.log("Whoops");
     }
-  }, [delivDate, orders, standing, products, customers]);
+  }, [products, fullOrdersToday, fullOrdersTomorrow, routes]);
 
   useEffect(() => {
     try {
@@ -149,7 +154,7 @@ function BPBSWhatToMake() {
     } catch {
       console.log("Whoops");
     }
-  }, [delivDate, orders, standing, products, customers]);
+  }, [products, fullOrdersToday, fullOrdersTomorrow, routes]);
 
   useEffect(() => {
     try {
@@ -162,7 +167,7 @@ function BPBSWhatToMake() {
     } catch {
       console.log("Whoops");
     }
-  }, [delivDate, orders, standing, products, customers]);
+  }, [products, fullOrdersToday, fullOrdersTomorrow, routes]);
   
   
   
@@ -175,12 +180,14 @@ function BPBSWhatToMake() {
         {!prodLoaded ? <ProductsLoad /> : ""}
         {!standLoaded ? <StandingLoad /> : ""}
         {!holdLoaded ? <HoldingLoad /> : ""}
+        {!routesLoaded ? <RoutesLoad /> : ""}
         <h1>BPBS What To Make {convertDatetoBPBDate(delivDate)}</h1>
 
         <h2>Send Pockets North</h2>
         <DataTable value={pocketsNorth} className="p-datatable-sm">
           <Column field="forBake" header="Product"></Column>
           <Column field="qty" header="Total Deliv"></Column>
+          
          
         </DataTable>
 
@@ -188,8 +195,8 @@ function BPBSWhatToMake() {
         <DataTable value={freshProds} className="p-datatable-sm">
           <Column field="forBake" header="Product"></Column>
           <Column field="qty" header="Total Deliv"></Column>
-          <Column field="needEarly" header="Need Early"></Column>
-          <Column field="makeTotal" header="MakeTotal"></Column>     
+          <Column field="makeTotal" header="MakeTotal"></Column>   
+          <Column field="bagEOD" header="Bag for Tomorrow"></Column>  
         </DataTable>
         <h2>Make For Shelf</h2>
         <DataTable value={shelfProds} className="p-datatable-sm">
@@ -205,6 +212,7 @@ function BPBSWhatToMake() {
           <Column field="needEarly" header="Need Early"></Column>
           <Column field="makeTotal" header="MakeTotal"></Column>     
         </DataTable>
+        
       </WholeBox>
     </React.Fragment>
   );

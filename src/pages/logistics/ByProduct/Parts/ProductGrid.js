@@ -75,8 +75,14 @@ const ProductGrid = () => {
                   (prod) => prod["prodName"] === grd["prodName"]
                 )
               ]["nickName"]) &&
-            (grd["custNick"] = tryNick(grd)
-            )
+            (grd["custNick"] = tryNick(grd)) &&
+            (grd["forBake"] =products[
+              products.findIndex(
+                (prod) => prod["prodName"] === grd["prodName"]
+              )
+            ]["forBake"])
+
+            
         );
         
         setIsLoading(false);
@@ -128,6 +134,12 @@ const ProductGrid = () => {
         header="Prod nick"
         filter
         filterPlaceholder="Search by nickname"
+      ></Column>
+      <Column
+        field="forBake"
+        header="For Bake"
+        filter
+        filterPlaceholder="Search by forBake"
       ></Column>
       <Column
         field="custName"

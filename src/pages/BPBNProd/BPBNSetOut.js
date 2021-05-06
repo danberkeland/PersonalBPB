@@ -18,7 +18,7 @@ import {
 } from "../../dataContexts/StandingContext";
 import { HoldingLoad, HoldingContext } from "../../dataContexts/HoldingContext";
 import { RoutesLoad, RoutesContext } from "../../dataContexts/RoutesContext";
-import { addProdAttr, buildSetOutTemplate } from "../../helpers/prodBuildHelpers";
+import { addProdAttr, buildSetOutTemplate, addSetOut } from "../../helpers/prodBuildHelpers";
 
 import {
   buildCartList,
@@ -44,7 +44,7 @@ function BPBNSetOut({ loc }) {
   let { holdLoaded, setHoldLoaded } = useContext(HoldingContext);
   let { orders, ordersLoaded, setOrdersLoaded } = useContext(OrdersContext);
   let { standing, standLoaded, setStandLoaded } = useContext(StandingContext);
-  let { routesLoaded, setRoutesLoaded } = useContext(RoutesContext);
+  let { routes, routesLoaded, setRoutesLoaded } = useContext(RoutesContext);
 
   const [ fullOrdersTwoDay, setFullOrdersTwoDay ] = useState([]);
   const [ fullOrdersTomorrow, setFullOrdersTomorrow ] = useState([]);
@@ -88,10 +88,10 @@ function BPBNSetOut({ loc }) {
   useEffect(() => {
     try {
       let makeSetOut = buildSetOutTemplate(products, loc);
-      //for (let make of makeSetOut) {
-      //  addSetOut(make, fullOrdersToday, fullOrdersTomorrow, products)
+      for (let make of makeSetOut) {
+        addSetOut(make, fullOrdersTwoDay, fullOrdersTomorrow, routes, loc)
         
-      //}
+      }
       setSetOut(makeSetOut);
     } catch {
       console.log("Whoops");

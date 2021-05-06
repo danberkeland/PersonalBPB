@@ -98,6 +98,68 @@ export const buildSetOutTemplate = (products, loc) => {
   return makeFreshProds;
 };
 
+export const addSetOut = (
+  make,
+  fullTwoDay,
+  fullOrdersTomorrow,
+  routes,
+  loc
+  
+) => {
+  
+  make.qty = 0;
+ 
+  let qtyAccTwoDay = 0;
+  let qtyAccTomorrow = 0;
+ 
+  let availableRoutes = routes.filter(
+    (rt) =>
+      rt.RouteDepart === loc
+  );
+  
+  let qtyTomorrow = fullOrdersTomorrow
+    .filter(
+      (full) =>
+        make.forBake === full.forBake &&
+        checkZone(full, availableRoutes) === true
+    )
+    .map((ord) => ord.qty);
+  if (qtyTomorrow.length > 0) {
+    qtyAccTomorrow = qtyTomorrow.reduce(addUp);
+
+   
+  
+
+    make.qty = qtyAccTomorrow;
+   
+  }
+};
+
+
+export const buildMakeShelfProdTemplate = (products) => {
+  let makeShelfProds;
+  makeShelfProds = Array.from(
+    new Set(
+      products
+        .filter(
+          (prod) =>
+            !prod.bakedWhere.includes("Carlton") &&
+            Number(prod.readyTime) >= 15 &&
+            prod.packGroup !== "frozen pastries" &&
+            prod.packGroup !== "baked pastries" &&
+            prod.freezerThaw !== true
+        )
+        .map((prod) => prod.forBake)
+    )
+  ).map((make) => ({
+    forBake: make,
+    qty: 0,
+    needEarly: 0,
+    makeTotal: 0,
+  }));
+
+  return makeShelfProds
+}
 
 const addUp = (acc, val) => {
   return acc + val;
@@ -271,31 +333,6 @@ export const addNeedEarly = (make, products) => {
     let num = Math.ceil(make.makeTotal / batchSize);
     make.makeTotal = num * batchSize;
   }
-};
-
-export const buildMakeShelfProdTemplate = (products) => {
-  let makeShelfProds;
-  makeShelfProds = Array.from(
-    new Set(
-      products
-        .filter(
-          (prod) =>
-            !prod.bakedWhere.includes("Carlton") &&
-            Number(prod.readyTime) >= 15 &&
-            prod.packGroup !== "frozen pastries" &&
-            prod.packGroup !== "baked pastries" &&
-            prod.freezerThaw !== true
-        )
-        .map((prod) => prod.forBake)
-    )
-  ).map((make) => ({
-    forBake: make,
-    qty: 0,
-    needEarly: 0,
-    makeTotal: 0,
-  }));
-
-  return makeShelfProds;
 };
 
 export const buildMakeFreezerProdTemplate = (products) => {

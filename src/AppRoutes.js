@@ -56,14 +56,14 @@ function AppRoutes() {
           <Route path="/BPBNProd/BPBNBaker1" component={BPBNBaker1} />
           <Route path="/BPBNProd/BPBNBaker2" component={BPBNBaker2} />
           <Route path="/BPBNProd/Buckets" component={BPBNBuckets} />
-          <Route path="/BPBNProd/BPBNSetOut" component={BPBNSetOut} />
+          <Route path="/BPBNProd/BPBNSetOut" render={(props)=><BPBNSetOut {...props} loc={'Carlton'} />} />
           <Route path="/EODCounts/BPBNCounts" render={(props)=><EODCounts {...props} loc={'Carlton'} />} />
           <Route path="/doughCalc/doughCalc" component={DoughCalc} />
 
           <Route path="/BPBSProd/BPBSWhatToMake" component={BPBSWhatToMake} />
           <Route path="/BPBSProd/BPBSMixPocket" component={BPBSMixPocket} />
           <Route path="/BPBSProd/CroixToMake" component={CroixToMake} />
-          <Route path="/BPBSProd/BPBNSetOut" component={BPBNSetOut} />
+          <Route path="/BPBSProd/BPBSSetOut" render={(props)=><BPBNSetOut {...props} loc={'Prado'} />} />
           <Route path="/EODCounts/BPBSCounts" render={(props)=><EODCounts {...props} loc={'Prado'} />} />
           <Route path="/doughCalc/doughCalc" component={DoughCalc} />
 

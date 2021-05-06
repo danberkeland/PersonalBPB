@@ -75,6 +75,30 @@ export const buildMakeFreshProdTemplate = (products) => {
   return makeFreshProds;
 };
 
+export const buildSetOutTemplate = (products, loc) => {
+  let makeFreshProds;
+  makeFreshProds = Array.from(
+    new Set(
+      products
+        .filter(
+          (prod) =>
+            (prod.bakedWhere.includes(loc) ||
+            prod.bakedWhere.includes("Mixed")) &&
+            
+            prod.packGroup === "baked pastries" &&
+            prod.doughType === "Croissant"
+        )
+        .map((prod) => prod.forBake)
+    )
+  ).map((make) => ({
+    forBake: make,
+    qty: 0
+  }));
+
+  return makeFreshProds;
+};
+
+
 const addUp = (acc, val) => {
   return acc + val;
 };

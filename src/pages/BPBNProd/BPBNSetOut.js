@@ -20,6 +20,8 @@ import { HoldingLoad, HoldingContext } from "../../dataContexts/HoldingContext";
 import { RoutesLoad, RoutesContext } from "../../dataContexts/RoutesContext";
 import { addProdAttr, buildSetOutTemplate, addSetOut } from "../../helpers/prodBuildHelpers";
 
+import useOrderBuilder from "./buildorders"
+ 
 import {
   buildCartList,
   buildStandList,
@@ -63,6 +65,9 @@ function BPBNSetOut({ loc }) {
     setStandLoaded(false);
   }, []);
 
+
+
+  
   useEffect(() => {
     try {
       let buildOrders = buildCartList("*", twoDay, orders);
@@ -84,7 +89,7 @@ function BPBNSetOut({ loc }) {
       console.log("Whoops");
     }
   }, [tomorrow, delivDate, orders, standing, products, customers]);
-
+  
   useEffect(() => {
     try {
       let makeSetOut = buildSetOutTemplate(products, loc);

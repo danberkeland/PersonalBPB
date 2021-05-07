@@ -31,6 +31,7 @@ import AMPastry from './pages/logistics/AMPastry';
 import NorthLists from './pages/logistics/NorthLists';
 import RetailBags from './pages/logistics/RetailBags';
 import EditDough from './pages/settings/editDough/editDough';
+import TestComponent from './pages/testComponent/testComponent'
 
 
 function AppRoutes() {
@@ -76,6 +77,8 @@ function AppRoutes() {
           <Route path="/billing" component={Billing} />
           <Route path="/admin" component={Admin} />
           <Route path="/" exact component={Ordering} />
+
+          <Route path="/test" exact component={TestComponent} />
         </Switch>
       </div>
     </Router>        

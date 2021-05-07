@@ -40,12 +40,11 @@ import {
   compileFullOrderList,
 } from "../../helpers/CartBuildingHelpers";
 
-import { convertDatetoBPBDate, todayPlus } from "../../helpers/dateTimeHelpers"
+import { convertDatetoBPBDate, todayPlus } from "../../helpers/dateTimeHelpers";
 
 import { API, graphqlOperation } from "aws-amplify";
 
 import styled from "styled-components";
-
 
 const WholeBox = styled.div`
   display: flex;
@@ -54,7 +53,6 @@ const WholeBox = styled.div`
   margin: auto;
   padding: 0 0 100px 0;
 `;
-
 
 const clonedeep = require("lodash.clonedeep");
 
@@ -66,19 +64,18 @@ function BPBSWhatToMake() {
   let { holdLoaded, setHoldLoaded } = useContext(HoldingContext);
   let { orders, ordersLoaded, setOrdersLoaded } = useContext(OrdersContext);
   let { standing, standLoaded, setStandLoaded } = useContext(StandingContext);
-  let { routes, routesLoaded, setRoutesLoaded } = useContext(RoutesContext)
+  let { routes, routesLoaded, setRoutesLoaded } = useContext(RoutesContext);
 
-  const [ fullOrdersToday, setFullOrdersToday ] = useState([]);
-  const [ fullOrdersTomorrow, setFullOrdersTomorrow ] = useState([]);
-  const [ freshProds, setFreshProds ] = useState();
-  const [ shelfProds, setShelfProds ] = useState()
-  const [ freezerProds, setFreezerProds ] = useState();
-  const [ pocketsNorth, setPocketsNorth ] = useState();
+  const [fullOrdersToday, setFullOrdersToday] = useState([]);
+  const [fullOrdersTomorrow, setFullOrdersTomorrow] = useState([]);
+  const [freshProds, setFreshProds] = useState();
+  const [shelfProds, setShelfProds] = useState();
+  const [freezerProds, setFreezerProds] = useState();
+  const [pocketsNorth, setPocketsNorth] = useState();
 
   let delivDate = todayPlus()[0];
   let tomorrow = todayPlus()[1];
-  
-  
+
   useEffect(() => {
     setRoutesLoaded(false);
     setProdLoaded(false);
@@ -88,8 +85,7 @@ function BPBSWhatToMake() {
     setStandLoaded(false);
   }, []);
 
-
-
+  /*
   useEffect(() => {
     try {
       let buildOrders = buildCartList("*", delivDate, orders);
@@ -170,7 +166,23 @@ function BPBSWhatToMake() {
       console.log("Whoops");
     }
   }, [products, fullOrdersToday, fullOrdersTomorrow, routes]);
-  
+  */
+
+  useEffect(() => {
+    composeWhatToMake.getPocketsNorth().then((data) => setPocketsNorth(data));
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    composeWhatToMake.getFreshProds().then((data) => setFreshProds(data));
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    composeWhatToMake.getShelfProds().then((data) => setShelfProds(data));
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    composeWhatToMake.getFreezerProds().then((data) => setFreezerProds(data));
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <React.Fragment>
@@ -187,32 +199,29 @@ function BPBSWhatToMake() {
         <DataTable value={pocketsNorth} className="p-datatable-sm">
           <Column field="forBake" header="Product"></Column>
           <Column field="qty" header="Total Deliv"></Column>
-          
-         
         </DataTable>
 
         <h2>Make Fresh</h2>
         <DataTable value={freshProds} className="p-datatable-sm">
           <Column field="forBake" header="Product"></Column>
           <Column field="qty" header="Total Deliv"></Column>
-          <Column field="makeTotal" header="MakeTotal"></Column>   
-          <Column field="bagEOD" header="Bag for Tomorrow"></Column>  
+          <Column field="makeTotal" header="MakeTotal"></Column>
+          <Column field="bagEOD" header="Bag for Tomorrow"></Column>
         </DataTable>
         <h2>Make For Shelf</h2>
         <DataTable value={shelfProds} className="p-datatable-sm">
           <Column field="forBake" header="Product"></Column>
           <Column field="qty" header="Total Deliv"></Column>
           <Column field="needEarly" header="Need Early"></Column>
-          <Column field="makeTotal" header="MakeTotal"></Column>     
+          <Column field="makeTotal" header="MakeTotal"></Column>
         </DataTable>
         <h2>Make For Freezer</h2>
         <DataTable value={freezerProds} className="p-datatable-sm">
           <Column field="forBake" header="Product"></Column>
           <Column field="qty" header="Total Deliv"></Column>
           <Column field="needEarly" header="Need Early"></Column>
-          <Column field="makeTotal" header="MakeTotal"></Column>     
+          <Column field="makeTotal" header="MakeTotal"></Column>
         </DataTable>
-        
       </WholeBox>
     </React.Fragment>
   );

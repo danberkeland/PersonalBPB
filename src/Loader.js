@@ -33,7 +33,7 @@ const LoaderBack = styled.div`
 const Loader = () => {
 
     let { isLoading, setIsLoading } = useContext(ToggleContext)
-
+    /*
     let { custLoaded } = useContext(CustomerContext)
     let { holdLoaded } = useContext(HoldingContext)
     let { ordersLoaded } = useContext(OrdersContext)
@@ -50,7 +50,7 @@ const Loader = () => {
                 setIsLoading(false)
             }
     },[custLoaded, holdLoaded, ordersLoaded, prodLoaded, standLoaded])
-    
+    */
     return (
         
             <React.Fragment>

@@ -34,9 +34,10 @@ const update = (order, products, customers) => {
 };
 
 
-export const addProdAttr = (fullOrder, products, customers) => {
+export const addProdAttr = (fullOrder, database) => {
+  const [products, customers, routes, standing, orders] = database
   let fullToFix = clonedeep(fullOrder);
-  console.log(fullToFix);
+ 
   fullToFix = fullToFix.map((full) =>
     ({
       custName: full.custName,
@@ -46,31 +47,39 @@ export const addProdAttr = (fullOrder, products, customers) => {
     })
   );
   fullToFix.forEach(full => Object.assign(full, update(full, products, customers)))
-  console.log(fullToFix);
+  
 
   return fullToFix;
 };
 
-export const buildMakeFreshProdTemplate = (products) => {
-  let makeFreshProds;
-  makeFreshProds = Array.from(
+const freshProdFilter = (prod) => {
+  let fil = !prod.bakedWhere.includes("Carlton") &&
+  Number(prod.readyTime) < 15 &&
+  prod.packGroup !== "frozen pastries" &&
+  prod.packGroup !== "baked pastries"
+  return fil
+  }
+
+const makeProds = (products, filt) => {
+  let make = Array.from(
     new Set(
       products
-        .filter(
-          (prod) =>
-            !prod.bakedWhere.includes("Carlton") &&
-            Number(prod.readyTime) < 15 &&
-            prod.packGroup !== "frozen pastries" &&
-            prod.packGroup !== "baked pastries"
-        )
+        .filter((prod) => filt(prod))
         .map((prod) => prod.forBake)
     )
   ).map((make) => ({
     forBake: make,
     qty: 0,
     makeTotal: 0,
-    bagEOD: 0
+    bagEOD: 0,
   }));
+  return make
+}
+  
+
+export const buildMakeFreshProdTemplate = (products) => {
+  let makeFreshProds;
+  makeFreshProds = makeProds(products,freshProdFilter)
 
   return makeFreshProds;
 };
@@ -223,19 +232,17 @@ export const addFresh = (
         checkZone(full, availableRoutesToday) === true
     )
     .map((ord) => ord.qty * ord.packSize);
+
   if (qtyToday.length > 0) {
     qtyAccToday = qtyToday.reduce(addUp);
+  }
 
-    let qtyTomorrow = fullOrdersTomorrow
-      .filter(
-        (full) =>
+  let qtyTomorrow = fullOrdersTomorrow
+    .filter(
+      (full) =>
           make.forBake === full.forBake &&
           full.atownPick !== true &&
-          checkZone(full, availableRoutesTomorrow) === true
-
-          
-          
-          
+          checkZone(full, availableRoutesTomorrow) === true     
       )
       .map((ord) => ord.qty * ord.packSize);
    
@@ -246,7 +253,7 @@ export const addFresh = (
     make.qty = qtyAccToday;
     make.makeTotal = qtyAccToday+qtyAccTomorrow;
     make.bagEOD = qtyAccTomorrow;
-  }
+  
 };
 
 export const addShelf = (
@@ -258,6 +265,7 @@ export const addShelf = (
 ) => {
   
   make.qty = 0;
+  make.needEarly = 0;
   
   let qtyAccToday = 0;
   let qtyAccTomorrow = 0;
@@ -310,10 +318,11 @@ export const addPocketsQty = (make, fullOrders) => {
 
 
 export const addNeedEarly = (make, products) => {
+
   let curr = products
     .filter((full) => make.forBake === full.forBake)
     .map((ord) => ord.currentStock * ord.packSize);
-
+  
   if (curr.length > 0) {
     let currAcc = curr.reduce(addUp);
     make.needEarly -= currAcc;
@@ -330,8 +339,8 @@ export const addNeedEarly = (make, products) => {
       .batchSize;
 
   if (batchSize > 0) {
-    let num = Math.ceil(make.makeTotal / batchSize);
-    make.makeTotal = num * batchSize;
+    let num = Math.ceil(Number(make.makeTotal) / Number(batchSize));
+    make.makeTotal = num * Number(batchSize);
   }
 };
 

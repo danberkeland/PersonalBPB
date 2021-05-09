@@ -7,6 +7,14 @@ const { DateTime } = require("luxon");
 
 const clonedeep = require("lodash.clonedeep");
 
+export const getFullOrders = (delivDate, database) => {
+  const [ products, customers, routes, standing, orders ] = database
+   let buildOrders = buildCartList("*", delivDate, orders);
+   let buildStand = buildStandList("*", delivDate, standing);
+   let fullOrder = compileFullOrderList(buildOrders, buildStand);
+   return fullOrder;
+ };
+
 export const buildCartList = (chosen, delivDate, orders) => {
   let BPBDate = convertDatetoBPBDate(delivDate);
   let filteredOrders = clonedeep(orders);

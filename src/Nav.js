@@ -66,7 +66,7 @@ function Nav() {
    const BPBSitems = [
       {label: 'BPBS What To Make', command:()=>{ window.location="/BPBSProd/BPBSWhatToMake"; }},
       {label: 'BPBS Mix/Pocket', command:()=>{ window.location="/BPBSProd/BPBSMixPocket"; }},
-      {label: 'BPBN Set Out', command:()=>{ window.location="/BPBSProd/BPBSSetOut"; }},
+      {label: 'BPBS Set Out', command:()=>{ window.location="/BPBSProd/BPBSSetOut"; }},
       {label: 'Croix To Make', command:()=>{ window.location="/BPBSProd/CroixToMake"; }},
       {label: 'BPBS EOD Count', command:()=>{ window.location="/EODCounts/BPBSCounts"; }},
       {label: 'Dough Calculator', command:()=>{ window.location="/doughCalc/doughCalc"; }},

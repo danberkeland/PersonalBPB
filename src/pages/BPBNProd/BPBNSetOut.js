@@ -6,7 +6,7 @@ import { Column } from "primereact/column";
 
 import { ToggleContext } from "../../dataContexts/ToggleContext";
 
-import { promisedSetOut } from "./BPBNSetOutUtils/getSetOutData";
+import { promisedData } from "../../helpers/databaseFetchers";
 import ComposeSetOut from "./BPBNSetOutUtils/composeSetOut";
 import { convertDatetoBPBDate, todayPlus } from "../../helpers/dateTimeHelpers";
 
@@ -30,7 +30,7 @@ function BPBNSetOut({ loc }) {
   const [ setOut, setSetOut ] = useState([])
 
   useEffect(() => {
-    promisedSetOut(setIsLoading).then(database => gatherSetOutInfo(database));
+    promisedData(setIsLoading).then(database => gatherSetOutInfo(database));
 }, []); // eslint-disable-line react-hooks/exhaustive-deps
   
 

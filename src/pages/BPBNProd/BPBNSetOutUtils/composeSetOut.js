@@ -11,22 +11,13 @@ const getFullMakeOrders = (delivDate, database) => {
   return fullOrder;
 };
 
-const setOutFilter = (prod,loc) => {
-  let fil =
-  (prod.bakedWhere.includes(loc) ||
-            prod.bakedWhere.includes("Mixed")) &&
-            
-            prod.packGroup === "baked pastries" &&
-            prod.doughType === "Croissant"
-  return fil;
-};
 
 const buildSetOutTemplate = (products, filt, loc) => {
   let makeFreshProds;
   makeFreshProds = Array.from(
     new Set(
       products
-          .filter((prod) => filt(prod))
+          .filter((prod) => filt(prod,loc))
         .map((prod) => prod.forBake)
     )
   ).map((make) => ({
@@ -41,6 +32,9 @@ export default class ComposeSetOut {
   returnSetOutBreakDown = (database, loc) => {
     let setOut = this.getSetOut(database, loc);
 
+    // setOut = handleAlmondConundrum(setOut, database, loc);
+
+
     return {
       setOut: setOut,
     };
@@ -48,7 +42,7 @@ export default class ComposeSetOut {
 
   getSetOut(database, loc) {
     const [products, customers, routes, standing, orders] = database;
-    let makeSetOut = buildSetOutTemplate(products, setOutFilter, loc);
+    let makeSetOut = buildSetOutTemplate(products, this.setOutFilter, loc);
     let fullOrdersTwoDay = getFullMakeOrders(twoDay, database);
     let fullOrdersTomorrow = getFullMakeOrders(tomorrow, database);
     for (let make of makeSetOut) {
@@ -56,4 +50,13 @@ export default class ComposeSetOut {
     }
     return makeSetOut;
   }
+
+  setOutFilter = (prod,loc) => {
+    let fil =
+    (prod.bakedWhere.includes(loc) ||
+              prod.bakedWhere.includes("Mixed")) &&      
+              prod.packGroup === "baked pastries" &&
+              prod.doughType === "Croissant"
+    return fil;
+  };
 }

@@ -6,6 +6,7 @@ import {
   listOrders,
 } from "../graphql/queries";
 
+
 import { sortAtoZDataByIndex } from "../helpers/sortDataHelpers";
 
 import { API, graphqlOperation } from "aws-amplify";
@@ -59,3 +60,24 @@ export const fetchOrders = async () => {
   sortedData = sortAtoZDataByIndex(sortedData, "prodName");
   return sortedData;
 };
+
+
+export const promisedData = (setIsLoading) => {
+  const all = new Promise((resolve, reject) => {
+    resolve(fetchData(setIsLoading));
+  });
+  return all;
+};
+
+const fetchData = async (setIsLoading) => {
+  setIsLoading(true)
+  let products = await fetchProducts();
+  let customers = await fetchCustomers();
+  let routes = await fetchRoutes();
+  let standing = await fetchStanding();
+  let orders = await fetchOrders();
+  let data = [products, customers, routes, standing, orders];
+  setIsLoading(false)
+  return data;
+};
+

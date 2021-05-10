@@ -1,4 +1,4 @@
-import { convertDatetoBPBDate } from "../helpers/dateTimeHelpers";
+import { convertDatetoBPBDate, todayPlus } from "../helpers/dateTimeHelpers";
 import { sortAtoZDataByIndex } from "../helpers/sortDataHelpers";
 
 import { wildcardRegExp } from "wildcard-regex";
@@ -6,6 +6,8 @@ import { wildcardRegExp } from "wildcard-regex";
 const { DateTime } = require("luxon");
 
 const clonedeep = require("lodash.clonedeep");
+
+const today = todayPlus()[0]
 
 export const getFullOrders = (delivDate, database) => {
   const [ products, customers, routes, standing, orders ] = database
@@ -35,8 +37,11 @@ export const buildStandList = (chosen, delivDate, standing, route, ponote) => {
   let builtStandList = [];
   builtStandList = filteredStanding.filter(
     (standing) =>
-      standing["custName"].match(wildcardRegExp(`${chosen}`)) && standing["isStand"] === true
+      standing["custName"].match(wildcardRegExp(`${chosen}`))
   );
+  if (delivDate === today){
+    builtStandList = builtStandList.filter(stand => stand.isStand===true)
+  }
   let convertedStandList = convertStandListtoStandArray(
     builtStandList,
     delivDate,

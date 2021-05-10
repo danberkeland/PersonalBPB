@@ -11,12 +11,10 @@ let today = todayPlus()[0];
 
 const makeRetailBags = (products, filt) => {
   let make = Array.from(
-    new Set(products.filter((prod) => filt(prod)).map((prod) => prod.forBake))
+    new Set(products.filter((prod) => filt(prod)).map((prod) => prod.prodName))
   ).map((make) => ({
-    forBake: make,
+    prodName: make,
     qty: 0,
-    makeTotal: 0,
-    bagEOD: 0,
   }));
   return make;
 };
@@ -52,14 +50,12 @@ export default class ComposeRetailBags {
 
   retailBagsFilter = (prod) => {
     let fil =
-      prod.bakedWhere.includes("Mixed") &&
-      Number(prod.readyTime) < 15 &&
-      prod.packGroup !== "frozen pastries" &&
-      prod.packGroup !== "baked pastries" &&
-      prod.freezerThaw !== true;
+      prod.packGroup === "retail"
     return fil;
   };
 
   
+
+
 }
 

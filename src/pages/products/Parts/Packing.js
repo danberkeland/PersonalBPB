@@ -24,6 +24,8 @@ const groups = [
   { packGroup: "sandwich breads" },
   { packGroup: "rolls" },
   { packGroup: "focaccia" },
+  { packGroup: "retail" },
+
 ];
 
 const YesNoBox = styled.div`

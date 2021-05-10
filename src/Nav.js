@@ -85,6 +85,7 @@ function Nav() {
       {label: 'North Driver Lists', command:()=>{ window.location="/logistics/NorthLists"; }},
       {label: 'AM Pastry Pack', command:()=>{ window.location="/logistics/AMPastry"; }},
       {label: 'Retail Bags', command:()=>{ window.location="/logistics/RetailBags"; }},
+      {label: 'Special Orders', command:()=>{ window.location="/logistics/SpecialOrders"; }},
    ];
 
    const eoditems = [

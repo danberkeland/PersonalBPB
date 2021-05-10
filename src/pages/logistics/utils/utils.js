@@ -27,50 +27,20 @@ export const addRetailBagQty = (
   make.qty = 0;
 
   let qtyAccToday = 0;
-  let qtyAccTomorrow = 0;
-  let guaranteeTimeToday = Number(
-    products[products.findIndex((prod) => prod.forBake === make.forBake)]
-      .readyTime
-  );
-  let availableRoutesToday = routes.filter(
-    (rt) =>
-      (rt.RouteDepart === "Prado") &
-        (Number(rt.routeStart) > guaranteeTimeToday) ||
-      rt.routeName === "Pick up SLO"
-  );
-  let availableRoutesTomorrow = routes.filter(
-    (rt) => rt.RouteDepart === "Carlton"
-  );
-
+ 
+  
   let qtyToday = fullOrders
     .filter(
       (full) =>
-        make.forBake === full.forBake &&
-        full.atownPick !== true &&
-        checkZone(full, availableRoutesToday) === true
+        make.prodName === full.prodName 
     )
-    .map((ord) => ord.qty * ord.packSize);
+    .map((ord) => ord.qty);
 
   if (qtyToday.length > 0) {
     qtyAccToday = qtyToday.reduce(addUp);
   }
-
-  let qtyTomorrow = fullOrdersTomorrow
-    .filter(
-      (full) =>
-        make.forBake === full.forBake &&
-        full.atownPick !== true &&
-        checkZone(full, availableRoutesTomorrow) === true
-    )
-    .map((ord) => ord.qty * ord.packSize);
-
-  if (qtyTomorrow.length > 0) {
-    qtyAccTomorrow = qtyTomorrow.reduce(addUp);
-  }
-
   make.qty = qtyAccToday;
-  make.makeTotal = qtyAccToday + qtyAccTomorrow;
-  make.bagEOD = qtyAccTomorrow;
+
 };
 
 
@@ -150,4 +120,9 @@ export const addPocketsQty = (make, fullOrders) => {
     make.needEarly = qtyAcc;
     make.makeTotal = qtyAcc;
   }
+
 };
+
+export const addSpecialOrdersQty = () => {
+    
+}

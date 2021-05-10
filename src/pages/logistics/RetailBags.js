@@ -59,6 +59,7 @@ function RetailBags() {
 
   const gatherRetailBagInfo = (database) => {
     let retailBagData = compose.returnRetailBags(database)
+    console.log(retailBagData.retailBags)
     setRetailBags(retailBagData.retailBags);
   }
 
@@ -92,7 +93,7 @@ function RetailBags() {
     
 
     
-    doc.save(`WhatToMake${delivDate}.pdf`);
+    doc.save(`RetailBags${delivDate}.pdf`);
   };
 
   const header = (

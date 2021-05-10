@@ -137,12 +137,13 @@ export const buildProductArray = (gridToEdit, products) => {
 export const createColumns = (listOfProducts) => {
   sortAtoZDataByIndex(listOfProducts, 2);
   let columns = [
-    { field: "customer", header: "Customer", width: { width: "10%" } },
+    { field: "customer", header: "Customer", dataKey: "customer", width: { width: "10%" } },
   ];
   for (let prod of listOfProducts) {
     let newCol = {
-      field: prod[0],
-      header: prod[1],
+      field: prod,
+      header: prod,
+      dataKey: prod,
       width: { width: "30px" },
     };
     columns.push(newCol);

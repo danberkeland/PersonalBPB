@@ -10,8 +10,9 @@ export const addProdAttr = (fullOrder, database) => {
     prodName: full.prodName,
     qty: full.qty,
   }));
+  fullToFix = fullToFix.filter(full => full.qty !== 0)
   fullToFix.forEach((full) =>
-    Object.assign(full, update(full, products, customers))
+    Object.assign(full, update(full, database))
   );
 
   return fullToFix;
@@ -47,8 +48,23 @@ export const addRetailBagQty = (
 
 
 
-const update = (order, products, customers) => {
-  let atownPick = "atownpick";
+const update = (order, database) => {
+  const [products, customers, routes, standing, orders] = database;
+  let atownPick
+  let routeDepart = "";
+  let route = "";
+  let rtcheckNorthRun = routes[routes.findIndex(rt => rt.routeName === "AM North")].RouteServe
+  let rtcheckCarltonToPrado = routes[routes.findIndex(rt => rt.routeName === "Carlton to Prado")].RouteServe
+  if (rtcheckNorthRun.includes(order.zone) || rtcheckCarltonToPrado.includes(order.zone)){
+    routeDepart = "Carlton"
+  }
+  if (rtcheckCarltonToPrado.includes(order.zone)){
+    route = "Carlton to Prado"
+  }
+  
+ 
+
+  let routeStart = 5.5
   let ind =
     products[products.findIndex((prod) => prod.prodName === order.prodName)];
   try {
@@ -75,6 +91,11 @@ const update = (order, products, customers) => {
     readyTime: ind.readyTime,
     zone: atownPick,
     atownPick: pick,
+    bakedWhere: ind.bakedWhere,
+    packGroup: ind.packGroup,
+    routeDepart: routeDepart,
+    route: route,
+    routeStart: routeStart
   };
 
   return toAdd;
@@ -99,14 +120,6 @@ export const addDelivQty = (make, fullOrders) => {
   }
 };
 
-const checkZone = (full, availableRoutes) => {
-  for (let av of availableRoutes) {
-    if (av.RouteServe.includes(full.zone)) {
-      return true;
-    }
-  }
-  return false;
-};
 
 export const addPocketsQty = (make, fullOrders) => {
   make.qty = 0;
@@ -123,6 +136,7 @@ export const addPocketsQty = (make, fullOrders) => {
 
 };
 
-export const addSpecialOrdersQty = () => {
-    
+
+export const addCroixBakedAndFrozen = (croix, fullOrdersTomorrow) => {
+  return
 }

@@ -49,22 +49,37 @@ const compose = new ComposeNorthList();
 function NorthList() {
 
   const { setIsLoading } = useContext(ToggleContext);
-  const [croixNorth, setCroixNorth] = useState();
-  const [shelfProdsNorth, setShelfProdsNorth] = useState();
-  const [CarltonToPrado, setCarltonToPrado] = useState();
-  const [Baguettes, setBaguettes] = useState();
-  const [otherRustics, setOtherRustics] = useState();
-  const [retailStuff, setRetailStuff] = useState();
-  const [earlyDeliveries, setEarlyDeliveries] = useState();
-  const [columnsShelfProdsNorth, setColumnsShelfProdsNorth] = useState();
-  const [columnsCarltonToPrado, setColumnsCarltonToPrado] = useState();
-  const [columnsBaguettes, setColumnsBaguettes] = useState();
-  const [columnsOtherRustics, setColumnsOtherRustics] = useState();
-  const [columnsRetailStuff, setColumnsRetailStuff] = useState();
-  const [columnsEarlyDeliveries, setColumnsEarlyDeliveries] = useState();
+  const [croixNorth, setCroixNorth] = useState([]);
+  const [shelfProdsNorth, setShelfProdsNorth] = useState([]);
+  const [CarltonToPrado, setCarltonToPrado] = useState([]);
+  const [Baguettes, setBaguettes] = useState([]);
+  const [otherRustics, setOtherRustics] = useState([]);
+  const [retailStuff, setRetailStuff] = useState([]);
+  const [earlyDeliveries, setEarlyDeliveries] = useState([]);
+  const [columnsShelfProdsNorth, setColumnsShelfProdsNorth] = useState([]);
+  const [columnsCarltonToPrado, setColumnsCarltonToPrado] = useState([]);
+  const [columnsBaguettes, setColumnsBaguettes] = useState([]);
+  const [columnsOtherRustics, setColumnsOtherRustics] = useState([]);
+  const [columnsRetailStuff, setColumnsRetailStuff] = useState([]);
+  const [columnsEarlyDeliveries, setColumnsEarlyDeliveries] = useState([]);
 
 
   let delivDate = todayPlus()[0];
+
+  const createColumns = (cols) => {
+    let columns = [cols].map((col, i) => {
+      return (
+        <Column
+          npmkey={col.field}
+          field={col.field}
+          header={col.header}
+          key={col.field}
+          style={col.width}
+        />
+      );
+    });
+    return columns;
+  };
 
   const dynamicColumnsShelfProdsNorth = columnsShelfProdsNorth.map((col, i) => {
     return (
@@ -132,6 +147,12 @@ function NorthList() {
     );
   });
 
+  
+  
+ 
+  
+
+  
   useEffect(() => {
     promisedData(setIsLoading).then(database => gatherMakeInfo(database));
 }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -188,7 +209,7 @@ function NorthList() {
 
     doc.autoTable({
       body: shelfProdsNorth,
-      columns: columnsShelfProdsNorth,
+      columns: dynamicColumnsShelfProdsNorth,
       startY: finalY + titleToNextTable,
       styles: { fontSize: tableFont },
     });
@@ -285,7 +306,7 @@ function NorthList() {
         <h1>AM North Run {convertDatetoBPBDate(delivDate)}</h1>
         <h3>Frozen and Baked Croix</h3>
         <DataTable value={croixNorth} className="p-datatable-sm">
-          <Column field="forBake" header="Product"></Column>
+          <Column field="prodName" header="Product"></Column>
           <Column field="frozen" header="Frozen"></Column>
           <Column field="baked" header="Baked"></Column>
         </DataTable>
@@ -297,7 +318,7 @@ function NorthList() {
         >
           {dynamicColumnsShelfProdsNorth}
         </DataTable>
-
+        
         <h3>Carlton To Prado</h3>
         <DataTable
           className="p-datatable-gridlines p-datatable-sm p-datatable-striped"
@@ -306,7 +327,7 @@ function NorthList() {
           {dynamicColumnsCarltonToPrado}
         </DataTable>
 
-
+        <h3>Baguettes</h3>
         <DataTable
           className="p-datatable-gridlines p-datatable-sm p-datatable-striped"
           value={Baguettes}
@@ -314,6 +335,7 @@ function NorthList() {
           {dynamicColumnsBaguettes}
         </DataTable>
 
+        <h3>Other Rustics</h3>
         <DataTable
           className="p-datatable-gridlines p-datatable-sm p-datatable-striped"
           value={otherRustics}
@@ -321,6 +343,7 @@ function NorthList() {
           {dynamicColumnsOtherRustics}
         </DataTable>
 
+        <h3>Retail</h3>
         <DataTable
           className="p-datatable-gridlines p-datatable-sm p-datatable-striped"
           value={retailStuff}
@@ -328,13 +351,15 @@ function NorthList() {
           {dynamicColumnsRetailStuff}
         </DataTable>
 
+
+        <h3>Early Deliveries</h3>
         <DataTable
           className="p-datatable-gridlines p-datatable-sm p-datatable-striped"
           value={earlyDeliveries}
         >
           {dynamicColumnsEarlyDeliveries}
         </DataTable>
-
+        
       </WholeBox>
     </React.Fragment>
   );

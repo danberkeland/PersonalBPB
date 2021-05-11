@@ -28,6 +28,7 @@ const update = (order, products, customers) => {
     readyTime: ind.readyTime,
     zone: atownPick,
     atownPick: pick,
+    bakedWhere: ind.bakedWhere
   };
 
   return toAdd;

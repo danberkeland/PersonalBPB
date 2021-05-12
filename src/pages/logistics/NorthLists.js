@@ -66,91 +66,28 @@ function NorthList() {
 
   let delivDate = todayPlus()[0];
 
-  const createColumns = (cols) => {
-    let columns = [cols].map((col, i) => {
+ 
+  const createDynamic = (cols) => {
+    const dynamicColumns = cols.map((col, i) => {
       return (
         <Column
           npmkey={col.field}
           field={col.field}
           header={col.header}
-          key={col.field}
           style={col.width}
         />
       );
     });
-    return columns;
-  };
 
-  const dynamicColumnsShelfProdsNorth = columnsShelfProdsNorth.map((col, i) => {
-    return (
-      <Column
-        npmkey={col.field}
-        field={col.field}
-        header={col.header}
-        style={col.width}
-      />
-    );
-  });
+    return dynamicColumns
+  }
 
-  const dynamicColumnsCarltonToPrado = columnsCarltonToPrado.map((col, i) => {
-    return (
-      <Column
-        npmkey={col.field}
-        field={col.field}
-        header={col.header}
-        style={col.width}
-      />
-    );
-  });
-
-  const dynamicColumnsBaguettes = columnsBaguettes.map((col, i) => {
-    return (
-      <Column
-        npmkey={col.field}
-        field={col.field}
-        header={col.header}
-        style={col.width}
-      />
-    );
-  });
-
-  const dynamicColumnsOtherRustics = columnsOtherRustics.map((col, i) => {
-    return (
-      <Column
-        npmkey={col.field}
-        field={col.field}
-        header={col.header}
-        style={col.width}
-      />
-    );
-  });
-
-  const dynamicColumnsRetailStuff = columnsRetailStuff.map((col, i) => {
-    return (
-      <Column
-        npmkey={col.field}
-        field={col.field}
-        header={col.header}
-        style={col.width}
-      />
-    );
-  });
-
-  const dynamicColumnsEarlyDeliveries = columnsEarlyDeliveries.map((col, i) => {
-    return (
-      <Column
-        npmkey={col.field}
-        field={col.field}
-        header={col.header}
-        style={col.width}
-      />
-    );
-  });
-
-  
-  
- 
-  
+  const dynamicColumnsShelfProdsNorth = createDynamic(columnsShelfProdsNorth);
+  const dynamicColumnsCarltonToPrado = createDynamic(columnsCarltonToPrado);
+  const dynamicColumnsBaguettes = createDynamic(columnsBaguettes);
+  const dynamicColumnsOtherRustics = createDynamic(columnsOtherRustics);
+  const dynamicColumnsRetailStuff = createDynamic(columnsRetailStuff);
+  const dynamicColumnsEarlyDeliveries = createDynamic(columnsEarlyDeliveries)
 
   
   useEffect(() => {
@@ -235,7 +172,6 @@ function NorthList() {
     let tableToNextTitle = 12;
     let titleToNextTable = tableToNextTitle + 4;
     let tableFont = 11;
-    let titleFont = 14;
 
     const doc = new jsPDF("p", "mm", "a4");
     doc.setFontSize(20);

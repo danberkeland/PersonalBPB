@@ -2,11 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { CurrentDataContext } from "../../../../dataContexts/CurrentDataContext";
-import { CustomerContext } from "../../../../dataContexts/CustomerContext";
-import { ProductsContext } from "../../../../dataContexts/ProductsContext";
-import { OrdersContext } from "../../../../dataContexts/OrdersContext";
-import { StandingContext } from "../../../../dataContexts/StandingContext";
+
 import { ToggleContext } from "../../../../dataContexts/ToggleContext";
 
 import {
@@ -15,12 +11,17 @@ import {
   compileFullOrderList,
 } from "../../../../helpers/CartBuildingHelpers";
 
-const ProductGrid = () => {
-  const { delivDate } = useContext(CurrentDataContext);
-  const { customers } = useContext(CustomerContext);
-  const { products } = useContext(ProductsContext);
-  const { orders } = useContext(OrdersContext);
-  const { standing } = useContext(StandingContext);
+
+const ProductGrid = ({ delivDate,
+  setDelivDate,
+  prodGridData,
+  database }) => {
+  
+  const [ customers, setCustomers ] = useState(database.customers);
+  const [ routes, setRoutes ] = useState(database.routes)
+  const [ products, setProducts ] = useState(database.products);
+  const [ orders, setOrders ] = useState(database.orders);
+  const [ standing, setStanding ] = useState(database.standing);
   const { setIsLoading } = useContext(ToggleContext);
 
   const [builtGrid, setBuiltGrid] = useState();

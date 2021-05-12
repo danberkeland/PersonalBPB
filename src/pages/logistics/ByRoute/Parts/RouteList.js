@@ -1,9 +1,6 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect } from "react";
 
 import styled from "styled-components";
-
-import { OrdersContext } from "../../../../dataContexts/OrdersContext";
-import { StandingContext } from "../../../../dataContexts/StandingContext";
 
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -17,20 +14,18 @@ const ListWrapper = styled.div`
   background: #ffffff;
 `;
 
-const RouteList = ({ orderList, setRouteList, setRoute, routeList }) => {
-  const { orders } = useContext(OrdersContext);
-  const { standing } = useContext(StandingContext);
-
+const RouteList = ({ orderList, setRouteList, setRoute, routeList, database }) => {
+  
   useEffect(() => {
     if (orderList) {
       let rtList = orderList.map((ord) => ord["route"]);
       let setRtList = new Set(rtList);
       let rtListArray = Array.from(setRtList);
       rtListArray = rtListArray.map((rt) => ({ route: rt }));
-
+      console.log(rtListArray)
       setRouteList(rtListArray);
     }
-  }, [orderList, orders, standing]);
+  }, [orderList, database]);
 
   const handleSelection = (e) => {
     setRoute(e.value.route);

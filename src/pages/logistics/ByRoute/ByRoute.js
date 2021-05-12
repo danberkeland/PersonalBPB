@@ -13,7 +13,7 @@ import {
   promisedData,
   fetchAltPricing,
 } from "../../../helpers/databaseFetchers";
-import ComposeProductGrid from "./utils/composeProductGrid";
+import ComposeProductGrid from "./Parts/utils/composeProductGrid";
 
 const MainWrapper = styled.div`
   display: grid;
@@ -41,18 +41,18 @@ function ByRoute() {
   const [routeList, setRouteList] = useState();
   const [orderList, setOrderList] = useState();
   const [altPricing, setAltPricing] = useState();
-  const [database, setDatabase] = useState();
-  
+  const [database, setDatabase] = useState([]);
 
   let { setIsLoading } = useContext(ToggleContext);
 
   useEffect(() => {
     promisedData(setIsLoading).then((database) => gatherProdGridInfo(database));
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [delivDate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const gatherProdGridInfo = (data) => {
-    let prodGridData = compose.returnProdGrid(data);
+    let prodGridData = compose.returnProdGrid(data, delivDate);
     setDatabase(data);
+    console.log(prodGridData.prodGrid)
     setOrderList(prodGridData.prodGrid);
   };
 
@@ -70,19 +70,13 @@ function ByRoute() {
           setRoute={setRoute}
           routeList={routeList}
           database={database}
-          delivDate={delivDate}
         />
         <DescripWrapper>
-          <ToolBar
-            setOrderList={setOrderList}
-            database={database}
-            setDelivDate={setDelivDate}
-          />
+          <ToolBar delivDate={delivDate} setDelivDate={setDelivDate} />
           <RouteGrid
             route={route}
             orderList={orderList}
             altPricing={altPricing}
-            setAltPricing={setAltPricing}
             database={database}
             delivDate={delivDate}
           />

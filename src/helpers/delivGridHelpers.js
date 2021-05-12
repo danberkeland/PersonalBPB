@@ -18,7 +18,8 @@ export const removeDoubles = (orderList) => {
   return orderList;
 };
 
-export const zerosDelivFilter = (orderList, delivDate, customers) => {
+export const zerosDelivFilter = (orderList, delivDate, database) => {
+  const [ products, customers, routes, standing, orders ] = database
   let noZeroDelivDateOrderList = orderList.filter(
     (ord) =>
       Number(ord["qty"]) > 0 &&
@@ -62,9 +63,10 @@ export const filterForZoneService = (
   return filterServe;
 };
 
-export const buildGridOrderArray = (filterServe, products) => {
+export const buildGridOrderArray = (filterServe, database) => {
+  const [ products, customers, routes, standing, orders ] = database
   let gridOrderArray;
-  
+  console.log(filterServe)
   gridOrderArray = filterServe.map((ord) => ({
     prodName: ord["prodName"],
     custName: ord["custName"],
@@ -141,9 +143,9 @@ export const createColumns = (listOfProducts) => {
   ];
   for (let prod of listOfProducts) {
     let newCol = {
-      field: prod,
-      header: prod,
-      dataKey: prod,
+      field: prod[0],
+      header: prod[1],
+      dataKey: prod[0],
       width: { width: "30px" },
     };
     columns.push(newCol);
@@ -153,11 +155,12 @@ export const createColumns = (listOfProducts) => {
 
 export const createListOfCustomers = (orderList) => {
   let listOfCustomers = orderList.map((order) => order["custName"]);
-  listOfCustomers = new Set(listOfCustomers);
+  listOfCustomers = Array.from(new Set(listOfCustomers));
   return listOfCustomers;
 };
 
 export const createQtyGrid = (listOfCustomers, orderList) => {
+  console.log(orderList)
   let data = [];
   for (let cust of listOfCustomers) {
     let newData = { customer: cust };
@@ -166,9 +169,8 @@ export const createQtyGrid = (listOfCustomers, orderList) => {
         newData[order["prodName"]] = order["qty"];
       }
     }
-
     data.push(newData);
   }
-
+  console.log(data)
   return data;
 };

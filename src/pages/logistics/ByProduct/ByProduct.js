@@ -6,7 +6,7 @@ import ToolBar from "../ByProduct/Parts/ToolBar";
 import { ToggleContext } from "../../../dataContexts/ToggleContext";
 import { todayPlus } from "../../../helpers/dateTimeHelpers";
 import { promisedData  } from "../../../helpers/databaseFetchers";
-import ComposeProductGrid from "./utils/composeProductGrid";
+//import ComposeProductGrid from "./utils/composeProductGrid";
 
 const MainWrapper = styled.div`
   display: grid;
@@ -26,7 +26,7 @@ const DescripWrapper = styled.div`
   background: #ffffff;
 `;
 
-const compose = new ComposeProductGrid();
+//const compose = new ComposeProductGrid();
 
 function ByProduct() {
   const { setIsLoading } = useContext(ToggleContext);
@@ -39,7 +39,7 @@ function ByProduct() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const gatherMakeInfo = (data) => {
-    let prodGridData = compose.returnNorthBreakDown(data);
+    //let prodGridData = compose.returnNorthBreakDown(data);
     setDatabase(data);
     setProdGridData(prodGridData);
   };

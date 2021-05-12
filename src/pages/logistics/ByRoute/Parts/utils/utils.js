@@ -1,6 +1,6 @@
 const clonedeep = require("lodash.clonedeep");
 
-export const addProdAttr = (fullOrder, database) => {
+export const addAttr = (fullOrder, database) => {
   const [products, customers, routes, standing, orders] = database;
   let fullToFix = clonedeep(fullOrder);
 
@@ -105,3 +105,111 @@ const update = (order, database) => {
 const addUp = (acc, val) => {
   return acc + val;
 };
+
+
+const { DateTime } = require("luxon");
+
+export const calcDayNum = (delivDate) => {
+  let day = DateTime.fromSQL(delivDate);
+  let dayNum = day.weekday;
+  if (dayNum === 7) {
+    dayNum = 0;
+  }
+  dayNum = dayNum + 1;
+  return dayNum;
+};
+
+export const routeRunsThatDay = (rte, dayNum) => {
+    if (rte["RouteSched"].includes(dayNum.toString())) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  export const productCanBeInPlace = (grd, routes, customers, rte) => {
+    if (
+      grd["where"].includes("Mixed") ||
+      grd["where"].includes(
+        routes[
+          routes.findIndex((route) => route["routeName"] === rte["routeName"])
+        ]["RouteDepart"]
+      )
+    ) {
+      return true;
+    } else {
+      if (productCanMakeIt(grd, routes, customers, rte)) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  };
+
+  const productCanMakeIt = (grd, routes, customers, rte) => {
+    for (let testRte of routes) {
+      if (
+        grd["where"].includes(testRte["RouteDepart"]) &&
+        testRte["RouteArrive"] === rte["RouteDepart"] &&
+        (Number(testRte["routeStart"] + testRte["routeTime"]) <
+          Number(rte["routeStart"]) ||
+          Number(testRte["routeStart"] + testRte["routeTime"]) >
+          customers[
+            customers.findIndex((cust) => cust["custName"] === grd["custName"])
+          ]["latestFinalDeliv"])
+      ) {
+        return true;
+      }
+    }
+  
+    return false;
+  };
+
+  export const productReadyBeforeRouteStarts = (
+    products,
+    customers,
+    routes,
+    grd,
+    rte
+  ) => {
+    if (
+      products[
+        products.findIndex((prod) => prod["prodName"] === grd["prodName"])
+      ]["readyTime"] <
+        routes[routes.findIndex((rt) => rt["routeName"] === rte["routeName"])][
+          "routeStart"
+        ] ||
+      products[
+        products.findIndex((prod) => prod["prodName"] === grd["prodName"])
+      ]["readyTime"] >
+        customers[
+          customers.findIndex((cust) => cust["custName"] === grd["custName"])
+        ]["latestFinalDeliv"]
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  export const customerIsOpen = (customers, grd, routes, rte) => {
+    if (
+      customers[
+        customers.findIndex((cust) => cust["custName"] === grd["custName"])
+      ]["latestFirstDeliv"] <
+      Number(
+        routes[routes.findIndex((rt) => rt["routeName"] === rte["routeName"])][
+          "routeStart"
+        ]
+      ) +
+        Number(
+          routes[routes.findIndex((rt) => rt["routeName"] === rte["routeName"])][
+            "routeTime"
+          ]
+        )
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  };

@@ -97,7 +97,7 @@ const makeOrders = (database, filter) => {
             )
           ].qty;
       } catch {
-        custItem[prod] = 0;
+        custItem[prod] = null;
       }
     }
     orderArray.push(custItem);
@@ -225,6 +225,7 @@ export default class ComposeNorthList {
   otherRusticsFilter = (ord) => {
     let fil =(
       ord.bakedWhere.includes("Carlton") &&
+      ord.packGroup !== "retail" &&
       ord.custName !== "Lucy's Coffee Shop" &&
       ord.prodName !== "Baguette" &&
       ord.delivDate === convertedToday &&
@@ -262,7 +263,7 @@ export default class ComposeNorthList {
 
   earlyDeliveriesFilter = (ord) => {
     let fil =(
-      
+      ord.bakedWhere.includes("Carlton") &&
       ord.custName === "Lucy's Coffee Shop"
       )
       

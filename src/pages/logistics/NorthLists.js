@@ -36,10 +36,10 @@ const ButtonContainer = styled.div`
 const ButtonWrapper = styled.div`
   font-family: "Montserrat", sans-serif;
   display: flex;
-  width: 40%;
+  width: 60%;
   flex-direction: row;
   justify-content: space-between;
-  align-content: center;
+  align-content: left;
 
   background: #ffffff;
 `;
@@ -174,7 +174,7 @@ function NorthList() {
     setColumnsEarlyDeliveries(northData.columnsEarlyDeliveries);
   }
 
-  const exportListPdf = () => {
+  const exportNorthListPdf = () => {
     let finalY;
     let pageMargin = 10;
     let tableToNextTitle = 12;
@@ -209,7 +209,7 @@ function NorthList() {
 
     doc.autoTable({
       body: shelfProdsNorth,
-      columns: dynamicColumnsShelfProdsNorth,
+      columns: columnsShelfProdsNorth,
       startY: finalY + titleToNextTable,
       styles: { fontSize: tableFont },
     });
@@ -226,11 +226,23 @@ function NorthList() {
       styles: { fontSize: tableFont },
     });
 
-    finalY = doc.previousAutoTable.finalY
+    doc.save(`LongDriverNorth${delivDate}.pdf`);
+  };
 
-    doc.setFontSize(titleFont);
-    doc.text(pageMargin, finalY + tableToNextTitle, `Baguettes`);
+  const exportSouthListPdf = () => {
+    let finalY;
+    let pageMargin = 10;
+    let tableToNextTitle = 12;
+    let titleToNextTable = tableToNextTitle + 4;
+    let tableFont = 11;
+    let titleFont = 14;
 
+    const doc = new jsPDF("p", "mm", "a4");
+    doc.setFontSize(20);
+    doc.text(pageMargin, 20, `North Driver ${convertDatetoBPBDate(delivDate)}`);
+
+    finalY = 20
+   
     doc.autoTable({
       body: Baguettes,
       columns: columnsBaguettes,
@@ -240,10 +252,11 @@ function NorthList() {
 
     finalY = doc.previousAutoTable.finalY
 
-    doc.setFontSize(titleFont);
-    doc.text(pageMargin, finalY + tableToNextTitle, `Other Stuff`);
+   
 
     doc.autoTable({
+      
+      pageBreak: 'avoid',
       body: otherRustics,
       columns: columnsOtherRustics,
       startY: finalY + titleToNextTable,
@@ -252,8 +265,7 @@ function NorthList() {
 
     finalY = doc.previousAutoTable.finalY
 
-    doc.setFontSize(titleFont);
-    doc.text(pageMargin, finalY + tableToNextTitle, `Retail`);
+    
 
     doc.autoTable({
       body: retailStuff,
@@ -264,8 +276,7 @@ function NorthList() {
 
     finalY = doc.previousAutoTable.finalY
 
-    doc.setFontSize(titleFont);
-    doc.text(pageMargin, finalY + tableToNextTitle, `Early Deliveries`);
+    
 
     doc.autoTable({
       body: earlyDeliveries,
@@ -277,19 +288,28 @@ function NorthList() {
     finalY = doc.previousAutoTable.finalY
 
     
-    doc.save(`LongDriver${delivDate}.pdf`);
+    doc.save(`LongDriverSouth${delivDate}.pdf`);
   };
+
 
   const header = (
     <ButtonContainer>
       <ButtonWrapper>
         <Button
           type="button"
-          onClick={exportListPdf}
+          onClick={exportNorthListPdf}
           className="p-button-success"
           data-pr-tooltip="PDF"
         >
-          Print Long Driver Lists
+          Print Long Driver North List
+        </Button>  
+        <Button
+          type="button"
+          onClick={exportSouthListPdf}
+          className="p-button-success"
+          data-pr-tooltip="PDF"
+        >
+          Print Long Driver South List
         </Button>   
       </ButtonWrapper>
     </ButtonContainer>

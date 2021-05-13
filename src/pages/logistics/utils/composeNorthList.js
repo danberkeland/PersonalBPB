@@ -77,17 +77,18 @@ const addRoutes = (delivDate, prodGrid, database) => {
   return prodGrid;
 };
 
-const getProdNickNames = (delivDate, database, filt) => {
+const getProdNickNames = (delivDate, database, filter) => {
   const [products, customers, routes, standing, orders] = database;
   let fullOrder = getFullOrders(delivDate, database);
   fullOrder = zerosDelivFilter(fullOrder, delivDate, database);
   fullOrder = buildGridOrderArray(fullOrder, database);
   fullOrder = addRoutes(delivDate, fullOrder, database);
+  
   let fullNames = Array.from(
     new Set(
       fullOrder
         .filter(fu => 
-          filt(fu)
+          filter
         )
         .map((fil) => fil.prodName)
     )
@@ -97,6 +98,7 @@ const getProdNickNames = (delivDate, database, filt) => {
       products[products.findIndex((prod) => fil === prod.prodName)].nickName
   );
   return nickNames;
+  
 };
 
 const getCustNames = (delivDate, database, filter) => {
@@ -110,7 +112,7 @@ const getCustNames = (delivDate, database, filter) => {
   return Array.from(
     new Set(
       fullOrder
-        .filter(
+        .filter(fu => 
           filter
         )
         .map((fil) => fil.custName)
@@ -238,12 +240,12 @@ export default class ComposeNorthList {
   };
 
   shelfProdsFilter = (ord) => {
-    let fil =
+    return (
       ord.where.includes("Prado") &&
       ord.packGroup !== "frozen pastries" &&
       ord.routeDepart === "Carlton"
 
-    return fil;
+    )
   };
   /*
   returnCarltonToPrado = (database) => {
@@ -317,10 +319,10 @@ export default class ComposeNorthList {
     return fil;
   };
   */
-  returnColumnsShelfProdsNorth = (database) => {
+  returnColumnsShelfProdsNorth = (delivDate, database) => {
     let shelfProds = makeOrders(today, database);
     console.log(shelfProds)
-    shelfProds = getProdNickNames(shelfProds, this.shelfProdsFilter)
+    shelfProds = getProdNickNames(delivDate, database, this.shelfProdsFilter)
     console.log(shelfProds)
     shelfProds = createColumns(shelfProds)
     console.log(shelfProds)

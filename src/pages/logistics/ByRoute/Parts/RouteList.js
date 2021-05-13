@@ -22,7 +22,7 @@ const RouteList = ({ orderList, setRouteList, setRoute, routeList, database }) =
       let setRtList = new Set(rtList);
       let rtListArray = Array.from(setRtList);
       rtListArray = rtListArray.map((rt) => ({ route: rt }));
-      console.log(rtListArray)
+    
       setRouteList(rtListArray);
     }
   }, [orderList, database]);

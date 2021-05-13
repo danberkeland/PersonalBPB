@@ -59,7 +59,7 @@ const RouteGrid = ({ route,
 
       columns = createColumns(listOfProducts);
     }
-    console.log(columns)
+  
     return columns;
   };
 
@@ -99,7 +99,7 @@ const RouteGrid = ({ route,
     title: col.header,
     dataKey: col.field,
   }));
-  /*
+  
   const exportListPdf = () => {
     const doc = new jsPDF("l", "mm", "a4");
     doc.setFontSize(20);
@@ -455,7 +455,7 @@ const RouteGrid = ({ route,
       </ButtonWrapper>
     </ButtonContainer>
   );
-    */
+    
   const onRowReorder = (e) => {
     setData(e.value);
   };
@@ -464,7 +464,7 @@ const RouteGrid = ({ route,
     <div>
       <div className="card">
         <DataTable
-          //header={header}
+          header={header}
           ref={dt}
           className="p-datatable-gridlines p-datatable-sm p-datatable-striped"
           value={data}

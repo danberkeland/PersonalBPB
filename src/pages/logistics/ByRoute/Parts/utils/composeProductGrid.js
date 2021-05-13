@@ -38,7 +38,10 @@ const addRoutes = (delivDate, prodGrid, database) => {
                 ) &&
                 customerIsOpen(customers, grd, routes, rte)
               ) {
-                grd["route"] = rte["routeName"];
+                grd.route = rte.routeName;
+                grd.routeDepart = rte.RouteDepart;
+                grd.routeStart = rte.routeStart;
+                grd.routeServe = rte.RouteServe;
               }
             }
           }
@@ -60,6 +63,8 @@ const addRoutes = (delivDate, prodGrid, database) => {
             grd.route="NOT ASSIGNED"
           }
         }
+
+   
     return prodGrid
 }
 
@@ -86,7 +91,7 @@ export default class ComposeProductGrid {
     prodGrid = zerosDelivFilter(prodGrid, delivDate, database);
     prodGrid = buildGridOrderArray(prodGrid, database);
     prodGrid = addRoutes(delivDate, prodGrid, database);
-    console.log(prodGrid)
+   
     //prodGrid = addAttr(database, prodGrid);
     
     return prodGrid;

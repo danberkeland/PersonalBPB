@@ -55,7 +55,7 @@ const makeSpecialOrders = (database, loc) => {
   const [products, customers, routes, standing, orders] = database;
   let prodNames = getProdNickNames(database, loc);
   let custNames = getCustNames(database, loc);
-  console.log(custNames);
+ 
   let orderArray = [];
   for (let cust of custNames) {
     let custItem = {};
@@ -65,7 +65,7 @@ const makeSpecialOrders = (database, loc) => {
     for (let prod of prodNames) {
       let prodFullName =
         products[products.findIndex((pr) => pr.nickName === prod)].prodName;
-      console.log(prodFullName);
+     
       try {
         custItem[prod] =
           orders[

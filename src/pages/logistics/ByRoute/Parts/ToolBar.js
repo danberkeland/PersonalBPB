@@ -1,6 +1,4 @@
-import React, { useContext } from "react";
-
-import { ToggleContext } from "../../../../dataContexts/ToggleContext";
+import React from "react";
 
 import { Calendar } from "primereact/calendar";
 
@@ -9,7 +7,6 @@ import { convertDatetoBPBDate } from "../../../../helpers/dateTimeHelpers";
 const { DateTime } = require("luxon");
 
 const ToolBar = ({ delivDate, setDelivDate }) => {
-  let { setIsLoading } = useContext(ToggleContext);
 
   const setDate = (date) => {
     const dt2 = DateTime.fromJSDate(date);

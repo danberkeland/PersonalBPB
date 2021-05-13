@@ -58,7 +58,7 @@ function ByRoute() {
 
   useEffect(() => {
     setIsLoading(true);
-    fetchAltPricing();
+    fetchAltPricing().then(data => setAltPricing(data))
   }, []);
 
   return (

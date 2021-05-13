@@ -176,21 +176,20 @@ export const buildProductArray = (gridToEdit, products) => {
 };
 
 export const createColumns = (listOfProducts) => {
-  console.log(listOfProducts)
   sortAtoZDataByIndex(listOfProducts, 2);
   let columns = [
     {
-      field: "custName",
-      header: "custName",
-      dataKey: "custName",
+      field: "customer",
+      header: "customer",
+      dataKey: "customer",
       width: { width: "10%" },
     },
   ];
   for (let prod of listOfProducts) {
     let newCol = {
-      field: prod[1],
-      header: prod[0],
-      dataKey: prod[1],
+      field: prod,
+      header: prod,
+      dataKey: prod,
       width: { width: "30px" },
     };
     columns.push(newCol);

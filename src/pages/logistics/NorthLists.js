@@ -71,51 +71,52 @@ function NorthList() {
     const dynamicColumns = cols.map((col, i) => {
       return (
         <Column
-          npmkey={col.header}
-          field={col.header}
+          npmkey={col.field}
+          field={col.field}
           header={col.header}
+          key={col.field}
           style={col.width}
         />
       );
     });
-    console.log(dynamicColumns)
     return dynamicColumns
   }
 
   const dynamicColumnsShelfProdsNorth = createDynamic(columnsShelfProdsNorth);
   /*
   const dynamicColumnsCarltonToPrado = createDynamic(columnsCarltonToPrado);
+  */
   const dynamicColumnsBaguettes = createDynamic(columnsBaguettes);
   const dynamicColumnsOtherRustics = createDynamic(columnsOtherRustics);
   const dynamicColumnsRetailStuff = createDynamic(columnsRetailStuff);
   const dynamicColumnsEarlyDeliveries = createDynamic(columnsEarlyDeliveries)
 
-  */
+  
   useEffect(() => {
     promisedData(setIsLoading).then(database => gatherMakeInfo(database));
 }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const gatherMakeInfo = (database) => {
-    let northData = compose.returnNorthBreakDown(database)
+    let northData = compose.returnNorthBreakDown(delivDate, database)
     setCroixNorth(northData.croixNorth);
     setShelfProdsNorth(northData.shelfProdsNorth);
     /*
     setCarltonToPrado(northData.CarltonToPrado);
+    */
     setBaguettes(northData.Baguettes);
     setOtherRustics(northData.otherRustics);
     setRetailStuff(northData.retailStuff);
     setEarlyDeliveries(northData.earlyDeliveries);
-    */
     setColumnsShelfProdsNorth(northData.columnsShelfProdsNorth);
     /*
     setColumnsCarltonToPrado(northData.columnsCarltonToPrado);
+    */
     setColumnsBaguettes(northData.columnsBaguettes);
     setColumnsOtherRustics(northData.columnsOtherRustics);
     setColumnsRetailStuff(northData.columnsRetailStuff);
     setColumnsEarlyDeliveries(northData.columnsEarlyDeliveries);
-    */
   }
-  /*
+  
   const exportNorthListPdf = () => {
     let finalY;
     let pageMargin = 10;
@@ -257,13 +258,13 @@ function NorthList() {
   );
 
   
-      */
+      
 
   return (
     <React.Fragment>
       <WholeBox>
         <h1>LONG DRIVER</h1>
-        {/*<div>{header}</div>*/}
+        <div>{header}</div>
         <h1>AM North Run {convertDatetoBPBDate(delivDate)}</h1>
         <h3>Frozen and Baked Croix</h3>
         <DataTable value={croixNorth} className="p-datatable-sm">
@@ -279,7 +280,7 @@ function NorthList() {
         >
           {dynamicColumnsShelfProdsNorth}
         </DataTable>
-        {/*}
+        {/*
         <h3>Carlton To Prado</h3>
         <DataTable
           className="p-datatable-gridlines p-datatable-sm p-datatable-striped"
@@ -287,7 +288,7 @@ function NorthList() {
         >
           {dynamicColumnsCarltonToPrado}
         </DataTable>
-
+        */}
         <h3>Baguettes</h3>
         <DataTable
           className="p-datatable-gridlines p-datatable-sm p-datatable-striped"
@@ -320,7 +321,7 @@ function NorthList() {
         >
           {dynamicColumnsEarlyDeliveries}
         </DataTable>
-  */}
+  
       </WholeBox>
     </React.Fragment>
   );

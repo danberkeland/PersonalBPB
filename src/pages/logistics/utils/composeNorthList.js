@@ -88,7 +88,7 @@ const getProdNickNames = (delivDate, database, filter) => {
     new Set(
       fullOrder
         .filter(fu => 
-          filter
+          filter(fu)
         )
         .map((fil) => fil.prodName)
     )
@@ -113,7 +113,7 @@ const getCustNames = (delivDate, database, filter) => {
     new Set(
       fullOrder
         .filter(fu => 
-          filter
+          filter(fu)
         )
         .map((fil) => fil.custName)
     )
@@ -175,24 +175,25 @@ const makeOrders = (delivDate, database, filter) => {
 };
 
 export default class ComposeNorthList {
-  returnNorthBreakDown = (database) => {
+  returnNorthBreakDown = (delivDate, database) => {
     let croixNorth = this.returnCroixNorth(database);
     let shelfProdsNorth = this.returnShelfProdsNorth(database);
     /*
     let CarltonToPrado = this.returnCarltonToPrado(database);
+    */
     let Baguettes = this.returnBaguettes(database);
     let otherRustics = this.returnOtherRustics(database);
     let retailStuff = this.returnRetailStuff(database);
     let earlyDeliveries = this.returnEarlyDeliveries(database);
-    */
-    let columnsShelfProdsNorth = this.returnColumnsShelfProdsNorth(database);
+    let columnsShelfProdsNorth = this.returnColumnsShelfProdsNorth(delivDate, database);
     /*
     let columnsCarltonToPrado = this.returnColumnsCarltonToPrado(database);
-    let columnsBaguettes = this.returnColumnsBaguettes(database);
-    let columnsOtherRustics = this.returnColumnsOtherRustics(database);
-    let columnsRetailStuff = this.returnColumnsRetailStuff(database);
-    let columnsEarlyDeliveries = this.returnColumnsEarlyDeliveries(database);
     */
+    let columnsBaguettes = this.returnColumnsBaguettes(delivDate, database);
+    let columnsOtherRustics = this.returnColumnsOtherRustics(delivDate, database);
+    let columnsRetailStuff = this.returnColumnsRetailStuff(delivDate, database);
+    let columnsEarlyDeliveries = this.returnColumnsEarlyDeliveries(delivDate, database);
+
     // [freshProds, shelfProds] = handleFrenchConundrum(freshProds, shelfProds);
 
     return {
@@ -200,19 +201,19 @@ export default class ComposeNorthList {
       shelfProdsNorth: shelfProdsNorth,
       /*
       CarltonToPrado: CarltonToPrado,
+      */
       Baguettes: Baguettes,
       otherRustics: otherRustics,
       retailStuff: retailStuff,
       earlyDeliveries: earlyDeliveries,
-      */
       columnsShelfProdsNorth: columnsShelfProdsNorth,
       /*
       columnsCarltonToPrado: columnsCarltonToPrado,
+      */
       columnsBaguettes: columnsBaguettes,
       columnsOtherRustics: columnsOtherRustics,
       columnsRetailStuff: columnsRetailStuff,
       columnsEarlyDeliveries: columnsEarlyDeliveries,
-      */
     };
   };
 
@@ -235,7 +236,6 @@ export default class ComposeNorthList {
 
   returnShelfProdsNorth = (database) => {
     let shelfProds = makeOrders(today, database, this.shelfProdsFilter);
-    console.log(shelfProds)
     return shelfProds;
   };
 
@@ -249,121 +249,104 @@ export default class ComposeNorthList {
   };
   /*
   returnCarltonToPrado = (database) => {
-    let shelfProds = makeOrders(today, database);
+    let shelfProds = makeOrders(today, database, this.CarltonToPradoFilter);
     return shelfProds;
   };
-
+  
   CarltonToPradoFilter = (ord) => {
     let fil =
       ord.delivDate === convertedToday && ord.route === "Carlton to Prado";
 
     return fil;
   };
-
+  */
   returnBaguettes = (database) => {
-    let shelfProds = makeOrders(today, database);
+    let shelfProds = makeOrders(today, database, this.BaguettesFilter);
     return shelfProds;
   };
 
   BaguettesFilter = (ord) => {
-    let fil =
-      ord.prodName === "Baguette" &&
-      ord.delivDate === convertedToday &&
-      ord.routeDepart !== "Carlton";
+    return (
+      ord.prodName === "Baguette"
+      
 
-    return fil;
+    )
   };
 
   returnOtherRustics = (database) => {
-    let shelfProds = makeOrders(today, database);
+    let shelfProds = makeOrders(today, database, this.otherRusticsFilter);
     return shelfProds;
   };
 
   otherRusticsFilter = (ord) => {
-    let fil =
-      ord.bakedWhere.includes("Carlton") &&
-      ord.packGroup !== "retail" &&
-      ord.custName !== "Lucy's Coffee Shop" &&
-      ord.prodName !== "Baguette" &&
-      ord.delivDate === convertedToday &&
-      ord.routeDepart !== "Carlton";
-
-    return fil;
+    return (
+      ord.prodName !=="Baguette" &&
+      ord.where.includes("Carlton") &&
+      ord.routeDepart === "Prado"
+    )
   };
 
   returnRetailStuff = (database) => {
-    let shelfProds = makeOrders(today, database);
+    let shelfProds = makeOrders(today, database, this.retailStuffFilter);
     return shelfProds;
   };
 
   retailStuffFilter = (ord) => {
-    let fil =
-      ord.bakedWhere.includes("Carlton") &&
+    return (
       ord.packGroup === "retail" &&
-      ord.delivDate === convertedToday &&
-      ord.routeDepart !== "Carlton";
+      ord.routeDepart === "Prado"
 
-    return fil;
+    )
   };
 
   returnEarlyDeliveries = (database) => {
-    let shelfProds = makeOrders(today, database);
+    let shelfProds = makeOrders(today, database, this.earlyDeliveriesFilter);
     return shelfProds;
   };
 
   earlyDeliveriesFilter = (ord) => {
-    let fil =
-      ord.bakedWhere.includes("Carlton") &&
-      ord.custName === "Lucy's Coffee Shop";
+    return (
+      ord.where.includes("Prado") &&
+      ord.packGroup !== "frozen pastries" &&
+      ord.routeDepart === "Carlton"
 
-    return fil;
+    )
   };
-  */
+  
   returnColumnsShelfProdsNorth = (delivDate, database) => {
-    let shelfProds = makeOrders(today, database);
-    console.log(shelfProds)
-    shelfProds = getProdNickNames(delivDate, database, this.shelfProdsFilter)
-    console.log(shelfProds)
-    shelfProds = createColumns(shelfProds)
-    console.log(shelfProds)
-    return shelfProds;
+    let filteredOrders = getProdNickNames(delivDate, database, this.shelfProdsFilter)
+    filteredOrders = createColumns(filteredOrders)  
+    return filteredOrders;
   };
   /*
-  returnColumnsCarltonToPrado = (database) => {
-    let shelfProds = makeOrders(today, database);
-    shelfProds = getProdNickNames(shelfProds, this.shelfProdsFilter)
-    shelfProds = createColumns(shelfProds)
-    return shelfProds;
-  };
-
-  returnColumnsBaguettes = (database) => {
-    let shelfProds = makeOrders(today, database);
-    shelfProds = getProdNickNames(shelfProds, this.shelfProdsFilter)
-    shelfProds = createColumns(shelfProds)
-    return shelfProds;
-  };
-
-  returnColumnsOtherRustics = (database) => {
-    let shelfProds = makeOrders(today, database);
-    shelfProds = getProdNickNames(shelfProds, this.shelfProdsFilter)
-    shelfProds = createColumns(shelfProds)
-    return shelfProds;
-  };
-
-  returnColumnsRetailStuff = (database) => {
-    let shelfProds = makeOrders(today, database);
-    shelfProds = getProdNickNames(shelfProds, this.shelfProdsFilter)
-    console.log(shelfProds)
-    shelfProds = createColumns(shelfProds)
-    console.log(shelfProds)
-    return shelfProds;
-  };
-
-  returnColumnsEarlyDeliveries = (database) => {
-    let shelfProds = makeOrders(today, database);
-    shelfProds = getProdNickNames(shelfProds, this.shelfProdsFilter)
-    shelfProds = createColumns(shelfProds)
-    return shelfProds;
+  returnColumnsCarltonToPrado = (delivDate, database) => {
+    let filteredOrders = getProdNickNames(delivDate, database, this.CarltonToPradoFilter)
+    filteredOrders = createColumns(filteredOrders)  
+    return filteredOrders;
   };
   */
+  returnColumnsBaguettes = (delivDate, database) => {
+    let filteredOrders = getProdNickNames(delivDate, database, this.BaguettesFilter)
+    filteredOrders = createColumns(filteredOrders)  
+    return filteredOrders;
+  };
+
+  returnColumnsOtherRustics = (delivDate, database) => {
+    let filteredOrders = getProdNickNames(delivDate, database, this.otherRusticsFilter)
+    filteredOrders = createColumns(filteredOrders)  
+    return filteredOrders;
+  };
+
+  returnColumnsRetailStuff = (delivDate, database) => {
+    let filteredOrders = getProdNickNames(delivDate, database, this.retailStuffFilter)
+    filteredOrders = createColumns(filteredOrders)  
+    return filteredOrders;
+  };
+
+  returnColumnsEarlyDeliveries = (delivDate, database) => {
+    let filteredOrders = getProdNickNames(delivDate, database, this.earlyDeliveriesFilter)
+    filteredOrders = createColumns(filteredOrders)  
+    return filteredOrders;
+  };
+
 }

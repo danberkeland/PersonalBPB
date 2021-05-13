@@ -112,16 +112,41 @@ const getCroixNorth = (delivDate, database) => {
   return fullOrder;
 };
 
-const makeOrders = (delivDate, database) => {
-  const [products, customers, routes, standing, orders] = database;
-  let prodGrid = getFullOrders(delivDate, database);
-  prodGrid = zerosDelivFilter(prodGrid, delivDate, database);
-  prodGrid = buildGridOrderArray(prodGrid, database);
-  prodGrid = addRoutes(delivDate, prodGrid, database);
- 
-  //prodGrid = addAttr(database, prodGrid);
 
-  return prodGrid;
+const makeOrders = (delivDate, database, filter) => {
+ 
+  const [products, customers, routes, standing, orders] = database;
+  let prodNames = getProdNickNames(database, filter);
+  let custNames = getCustNames(database, filter);
+  let fullOrder = getFullOrders(delivDate, database);
+  fullOrder = zerosDelivFilter(fullOrder, delivDate, database);
+  fullOrder = buildGridOrderArray(fullOrder, database);
+  fullOrder = addRoutes(delivDate, fullOrder, database);
+  
+  let orderArray = [];
+  for (let cust of custNames) {
+    let custItem = {};
+    custItem = {
+      customer: cust,
+    };
+    for (let prod of prodNames) {
+      let prodFullName =
+        products[products.findIndex((pr) => pr.nickName === prod)].prodName;
+      try {
+        custItem[prod] =
+          fullOrder[
+            fullOrder.findIndex(ord => ord.prodName === prodFullName &&
+              ord.custName === cust
+             
+            )
+          ].qty;
+      } catch {
+        custItem[prod] = null;
+      }
+    }
+    orderArray.push(custItem);
+  }
+  return orderArray;
 };
 
 export default class ComposeNorthList {
@@ -184,8 +209,7 @@ export default class ComposeNorthList {
   };
 
   returnShelfProdsNorth = (database) => {
-    let shelfProds = makeOrders(today, database);
-    shelfProds = shelfProds.filter(ord => this.shelfProdsFilter(ord))
+    let shelfProds = makeOrders(today, database, this.shelfProdsFilter);
     console.log(shelfProds)
     return shelfProds;
   };

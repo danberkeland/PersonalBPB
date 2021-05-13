@@ -77,21 +77,44 @@ const addRoutes = (delivDate, prodGrid, database) => {
   return prodGrid;
 };
 
-const getProdNickNames = (orderList, filter) => {
-  let prodNicks = orderList.filter(ord => filter(ord)).map(prod => prod.prodNick+"_"+prod.prodName)
-  prodNicks = Array.from(new Set(prodNicks));
-  prodNicks = prodNicks.map(prod => [prod.split("_")[0], prod.split("_")[1]])
-  return prodNicks
-  
+const getProdNickNames = (delivDate, database, filt) => {
+  const [products, customers, routes, standing, orders] = database;
+  let fullOrder = getFullOrders(delivDate, database);
+  fullOrder = zerosDelivFilter(fullOrder, delivDate, database);
+  fullOrder = buildGridOrderArray(fullOrder, database);
+  fullOrder = addRoutes(delivDate, fullOrder, database);
+  let fullNames = Array.from(
+    new Set(
+      fullOrder
+        .filter(fu => 
+          filt(fu)
+        )
+        .map((fil) => fil.prodName)
+    )
+  );
+  let nickNames = fullNames.map(
+    (fil) =>
+      products[products.findIndex((prod) => fil === prod.prodName)].nickName
+  );
+  return nickNames;
 };
 
-const getCustNames = (database, filter) => {
+const getCustNames = (delivDate, database, filter) => {
+  
   const [products, customers, routes, standing, orders] = database;
-  let fullOrderToday = getFullOrders(today, database);
-  let fullOrder = addProdAttr(fullOrderToday, database); // adds forBake, packSize, currentStock
-
+  let fullOrder = getFullOrders(delivDate, database);
+  fullOrder = zerosDelivFilter(fullOrder, delivDate, database);
+  fullOrder = buildGridOrderArray(fullOrder, database);
+  fullOrder = addRoutes(delivDate, fullOrder, database);
+  
   return Array.from(
-    new Set(fullOrder.filter(filter).map((fil) => fil.custName))
+    new Set(
+      fullOrder
+        .filter(
+          filter
+        )
+        .map((fil) => fil.custName)
+    )
   );
 };
 
@@ -116,8 +139,8 @@ const getCroixNorth = (delivDate, database) => {
 const makeOrders = (delivDate, database, filter) => {
  
   const [products, customers, routes, standing, orders] = database;
-  let prodNames = getProdNickNames(database, filter);
-  let custNames = getCustNames(database, filter);
+  let prodNames = getProdNickNames(delivDate, database, filter);
+  let custNames = getCustNames(delivDate, database, filter);
   let fullOrder = getFullOrders(delivDate, database);
   fullOrder = zerosDelivFilter(fullOrder, delivDate, database);
   fullOrder = buildGridOrderArray(fullOrder, database);

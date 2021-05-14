@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
@@ -8,14 +8,10 @@ import "jspdf-autotable";
 
 import { formatter } from "../../../../helpers/billingGridHelpers";
 
-import { ProductsContext } from "../../../../dataContexts/ProductsContext";
-import { OrdersContext } from "../../../../dataContexts/OrdersContext";
-import { StandingContext } from "../../../../dataContexts/StandingContext";
-import { CustomerContext } from "../../../../dataContexts/CustomerContext";
-import { CurrentDataContext } from "../../../../dataContexts/CurrentDataContext";
 
 import {
   buildProductArray,
+  createRouteGridColumns,
   createColumns,
   createListOfCustomers,
   createQtyGrid,
@@ -44,12 +40,11 @@ const ButtonWrapper = styled.div`
   background: #ffffff;
 `;
 
-const RouteGrid = ({ route, orderList, altPricing, setAltPricing }) => {
-  const { products } = useContext(ProductsContext);
-  const { orders } = useContext(OrdersContext);
-  const { standing } = useContext(StandingContext);
-  const { customers } = useContext(CustomerContext);
-  const { delivDate } = useContext(CurrentDataContext);
+const RouteGrid = ({ route,
+  orderList,
+  altPricing,
+  database,
+  delivDate }) => {
 
   const dt = useRef(null);
 
@@ -57,15 +52,15 @@ const RouteGrid = ({ route, orderList, altPricing, setAltPricing }) => {
   const [data, setData] = useState([]);
 
   const constructColumns = () => {
+    const [products, customers, routes, standing, orders] = database;
     let columns;
     if (orderList) {
       let buildGridSetUp = orderList.filter((ord) => ord["route"] === route);
+      let listOfProducts = buildProductArray(buildGridSetUp, products);
 
-      let gridToEdit = buildGridSetUp.filter((grd) => grd["route"] === route);
-      let listOfProducts = buildProductArray(gridToEdit, products);
-
-      columns = createColumns(listOfProducts);
+      columns = createRouteGridColumns(listOfProducts);
     }
+  
     return columns;
   };
 
@@ -88,7 +83,7 @@ const RouteGrid = ({ route, orderList, altPricing, setAltPricing }) => {
     let dat = constructData();
     setColumns(col ? col : []);
     setData(dat ? dat : []);
-  }, [route, orderList, orders, standing]);
+  }, [route, orderList ]);
 
   const dynamicColumns = columns.map((col, i) => {
     return (
@@ -105,7 +100,7 @@ const RouteGrid = ({ route, orderList, altPricing, setAltPricing }) => {
     title: col.header,
     dataKey: col.field,
   }));
-
+  
   const exportListPdf = () => {
     const doc = new jsPDF("l", "mm", "a4");
     doc.setFontSize(20);
@@ -120,6 +115,7 @@ const RouteGrid = ({ route, orderList, altPricing, setAltPricing }) => {
   };
 
   const ratePull = (ord) => {
+    const [products, customers, routes, standing, orders] = database;
     let ratePull =
         products[
           products.findIndex((prod) => prod["prodName"] === ord["prodName"])
@@ -137,6 +133,7 @@ const RouteGrid = ({ route, orderList, altPricing, setAltPricing }) => {
   
 
   const exportInvPdf = () => {
+    const [products, customers, routes, standing, orders] = database;
     let invListFilt = orderList.filter((ord) => ord.route === route);
     let custFil = invListFilt.map((inv) => inv.custName);
     custFil = new Set(custFil);
@@ -263,7 +260,7 @@ const RouteGrid = ({ route, orderList, altPricing, setAltPricing }) => {
   };
 
   const exportFullPdf = () => {
-    //construct route list
+    const [products, customers, routes, standing, orders] = database;
     let init = true;
     let routeList = Array.from(new Set(orderList.map((ord) => ord.route)));
     const doc = new jsPDF("l", "mm", "a4");
@@ -275,7 +272,7 @@ const RouteGrid = ({ route, orderList, altPricing, setAltPricing }) => {
         let gridToEdit = buildGridSetUp.filter((grd) => grd["route"] === rt);
         let listOfProducts = buildProductArray(gridToEdit, products);
 
-        columns = createColumns(listOfProducts);
+        columns = createRouteGridColumns(listOfProducts);
       }
       columns = columns.map((col) => ({
         title: col.header,
@@ -426,10 +423,9 @@ const RouteGrid = ({ route, orderList, altPricing, setAltPricing }) => {
     init = false
     }
     doc.save("invoices.pdf");
-    //     print route grid
-    //     print invoices for route
+    
   };
-
+  
   const header = (
     <ButtonContainer>
       <ButtonWrapper>
@@ -460,7 +456,7 @@ const RouteGrid = ({ route, orderList, altPricing, setAltPricing }) => {
       </ButtonWrapper>
     </ButtonContainer>
   );
-
+    
   const onRowReorder = (e) => {
     setData(e.value);
   };

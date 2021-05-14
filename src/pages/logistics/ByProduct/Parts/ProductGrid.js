@@ -1,97 +1,18 @@
-import React, { useState, useEffect, useContext } from "react";
-
+import React, { useEffect, useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { CurrentDataContext } from "../../../../dataContexts/CurrentDataContext";
-import { CustomerContext } from "../../../../dataContexts/CustomerContext";
-import { ProductsContext } from "../../../../dataContexts/ProductsContext";
-import { OrdersContext } from "../../../../dataContexts/OrdersContext";
-import { StandingContext } from "../../../../dataContexts/StandingContext";
-import { ToggleContext } from "../../../../dataContexts/ToggleContext";
 
-import {
-  buildCartList,
-  buildStandList,
-  compileFullOrderList,
-} from "../../../../helpers/CartBuildingHelpers";
 
-const ProductGrid = () => {
-  const { delivDate } = useContext(CurrentDataContext);
-  const { customers } = useContext(CustomerContext);
-  const { products } = useContext(ProductsContext);
-  const { orders } = useContext(OrdersContext);
-  const { standing } = useContext(StandingContext);
-  const { setIsLoading } = useContext(ToggleContext);
+const ProductGrid = ({ orderList }) => {
 
-  const [builtGrid, setBuiltGrid] = useState();
+  const [data, setData] = useState([]);
 
-  const tryZone = (grd) => {
-    let zone
-    try{
-    zone =
-      customers[
-        customers.findIndex(
-          (cust) => cust["custName"] === grd["custName"]
-        )
-      ]["zoneName"];
-    } catch {
-      zone = ''
-    }
-    return zone;
-  };
-
-  const tryNick = (grd) => {
-    let nick
-    try{
-    nick =
-      customers[
-        customers.findIndex(
-          (cust) => cust["custName"] === grd["custName"]
-        )
-      ]["nickName"];
-    } catch {
-      nick = ''
-    }
-    return nick;
-  };
 
   useEffect(() => {
-    if (orders && standing && customers && products && delivDate) {
-      
-      try {
-        let buildOrders = buildCartList("*", delivDate, orders);
-        let buildStand = buildStandList("*", delivDate, standing);
-        let fullOrder = compileFullOrderList(buildOrders, buildStand);
-        
-        let builtGridSetup = fullOrder.filter((ord) => ord["qty"] !== 0);
-        
-        
-        builtGridSetup.forEach(
-          (grd) => (grd["zoneName"] = tryZone(grd))
-             &&
-            (grd["nickName"] =
-              products[
-                products.findIndex(
-                  (prod) => prod["prodName"] === grd["prodName"]
-                )
-              ]["nickName"]) &&
-            (grd["custNick"] = tryNick(grd)) &&
-            (grd["forBake"] =products[
-              products.findIndex(
-                (prod) => prod["prodName"] === grd["prodName"]
-              )
-            ]["forBake"])
+    let dat = orderList; 
+    setData(dat ? dat : []);
+  }, [orderList ]);
 
-            
-        );
-        
-        setIsLoading(false);
-        setBuiltGrid(builtGridSetup);
-      } catch {
-        console.log("Whoops");
-      }
-    }
-  }, [delivDate, orders, standing, customers, products]);
 
   const headerTemplate = (data) => {
     return (
@@ -107,7 +28,7 @@ const ProductGrid = () => {
 
   return (
     <DataTable
-      value={builtGrid}
+      value={data}
       rowGroupMode="subheader"
       groupField="zoneName"
       sortMode="single"
@@ -118,7 +39,7 @@ const ProductGrid = () => {
       rowGroupFooterTemplate={footerTemplate}
     >
       <Column
-        field="zoneName"
+        field="zone"
         header="Zone"
         filter
         filterPlaceholder="Search by zone"
@@ -130,7 +51,7 @@ const ProductGrid = () => {
         filterPlaceholder="Search by product"
       ></Column>
       <Column
-        field="nickName"
+        field="prodNick"
         header="Prod nick"
         filter
         filterPlaceholder="Search by nickname"

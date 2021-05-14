@@ -226,7 +226,7 @@ const SelectDate = ({
           ];
         
           data.push(newEntry);
-          console.log(data)
+         
         }
       }
     }

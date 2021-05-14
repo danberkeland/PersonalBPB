@@ -4,8 +4,8 @@ import {
   listRoutes,
   listStandings,
   listOrders,
+  listAltPricings
 } from "../graphql/queries";
-
 
 import { sortAtoZDataByIndex } from "../helpers/sortDataHelpers";
 
@@ -53,6 +53,16 @@ export const fetchStanding = async () => {
   return sortedData;
 };
 
+
+export const fetchAltPricing = async () => {
+  let altPricing = await fetchFromDataBase(
+    listAltPricings,
+    "listAltPricings",
+    "1000"
+  );
+  return altPricing;
+}
+
 export const fetchOrders = async () => {
   let ordList = await fetchFromDataBase(listOrders, "listOrders", "5000");
   let noDelete = ordList.filter((cust) => cust["_deleted"] !== true);
@@ -60,7 +70,6 @@ export const fetchOrders = async () => {
   sortedData = sortAtoZDataByIndex(sortedData, "prodName");
   return sortedData;
 };
-
 
 export const promisedData = (setIsLoading) => {
   const all = new Promise((resolve, reject) => {
@@ -70,14 +79,13 @@ export const promisedData = (setIsLoading) => {
 };
 
 const fetchData = async (setIsLoading) => {
-  setIsLoading(true)
+  setIsLoading(true);
   let products = await fetchProducts();
   let customers = await fetchCustomers();
   let routes = await fetchRoutes();
   let standing = await fetchStanding();
   let orders = await fetchOrders();
   let data = [products, customers, routes, standing, orders];
-  setIsLoading(false)
+  setIsLoading(false);
   return data;
 };
-

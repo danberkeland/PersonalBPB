@@ -45,7 +45,7 @@ const PreMix = ({
   const pre = getCompList("lev", doughComponents, selectedDough);
 
   const handlePrePick = (e) => {
-    console.log(e.value);
+   
     setSelectedPre(e.value.preIng);
   };
 

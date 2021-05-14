@@ -59,7 +59,7 @@ function RetailBags() {
 
   const gatherRetailBagInfo = (database) => {
     let retailBagData = compose.returnRetailBags(database)
-    console.log(retailBagData.retailBags)
+   
     setRetailBags(retailBagData.retailBags);
   }
 

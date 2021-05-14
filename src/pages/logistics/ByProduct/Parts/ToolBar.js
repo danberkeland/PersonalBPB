@@ -1,31 +1,16 @@
-import React, { useContext, useEffect } from "react";
-
-import { CurrentDataContext } from "../../../../dataContexts/CurrentDataContext";
+import React from "react";
 
 import { Calendar } from "primereact/calendar";
 
-import { ToggleContext } from "../../../../dataContexts/ToggleContext";
-
-import {
-  convertDatetoBPBDate,
-  todayPlus,
-} from "../../../../helpers/dateTimeHelpers";
+import { convertDatetoBPBDate } from "../../../../helpers/dateTimeHelpers";
 
 const { DateTime } = require("luxon");
 
-const ToolBar = () => {
-  const { delivDate, setDelivDate } = useContext(CurrentDataContext);
-  const { setIsLoading } = useContext(ToggleContext);
-
-  useEffect(() => {
-    let [today] = todayPlus();
-    setDelivDate(today);
-  }, []);
+const ToolBar = ({ delivDate, setDelivDate }) => {
 
   const setDate = (date) => {
     const dt2 = DateTime.fromJSDate(date);
     setDelivDate(dt2.toFormat("yyyy-MM-dd"));
-    setIsLoading(true);
   };
 
   return (

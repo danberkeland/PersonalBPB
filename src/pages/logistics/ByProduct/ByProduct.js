@@ -2,27 +2,13 @@ import React, { useContext, useEffect, useState } from "react";
 
 import styled from "styled-components";
 
-import {
-  CustomerContext,
-  CustomerLoad,
-} from "../../../dataContexts/CustomerContext";
-import {
-  ProductsContext,
-  ProductsLoad,
-} from "../../../dataContexts/ProductsContext";
-import { OrdersContext, OrdersLoad } from "../../../dataContexts/OrdersContext";
-import {
-  StandingContext,
-  StandingLoad,
-} from "../../../dataContexts/StandingContext";
-import { HoldingContext } from "../../../dataContexts/HoldingContext";
+import { ToggleContext } from "../../../dataContexts/ToggleContext";
 
 import ProductGrid from "../ByProduct/Parts/ProductGrid";
 import ToolBar from "../ByProduct/Parts/ToolBar";
-
-import { createOrder } from "../../../graphql/mutations";
-
-import { API, graphqlOperation } from "aws-amplify";
+import { todayPlus } from "../../../helpers/dateTimeHelpers";
+import {promisedData} from "../../../helpers/databaseFetchers";
+import ComposeProductGrid from "../../logistics/ByRoute/Parts/utils/composeProductGrid";
 
 const MainWrapper = styled.div`
   display: grid;
@@ -33,46 +19,44 @@ const MainWrapper = styled.div`
 const DescripWrapper = styled.div`
   font-family: "Montserrat", sans-serif;
   display: flex;
-  margin: 0px 10px;
-  padding: 0px 10px;
+  width: 95%;
+  margin: 10px auto;
   flex-direction: column;
   justify-items: start;
   align-content: flex-start;
-  width: 100%;
+
   background: #ffffff;
 `;
 
-function ByProduct() {
-  const [product] = useState("");
-  const [orderList, setOrderList] = useState("");
+const compose = new ComposeProductGrid();
 
-  const { custLoaded, setCustLoaded } = useContext(CustomerContext);
-  const { prodLoaded, setProdLoaded } = useContext(ProductsContext);
-  let { setHoldLoaded } = useContext(HoldingContext);
-  let { ordersLoaded, setOrdersLoaded } = useContext(OrdersContext);
-  let { standLoaded, setStandLoaded } = useContext(StandingContext);
+function ByProduct() { 
+  const [delivDate, setDelivDate] = useState(todayPlus()[0]); 
+  const [orderList, setOrderList] = useState();
+  const [database, setDatabase] = useState([]);
+  let { setIsLoading } = useContext(ToggleContext);
 
   useEffect(() => {
-    setCustLoaded(false);
-    setProdLoaded(false);
-    setHoldLoaded(true);
-    setOrdersLoaded(false);
-    setStandLoaded(false);
-  }, []);
+    promisedData(setIsLoading).then((database) => gatherProdGridInfo(database));
+  }, [delivDate]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  
+  const gatherProdGridInfo = (data) => {
+    let prodGridData = compose.returnProdGrid(data, delivDate);
+    setDatabase(data);
+    console.log(prodGridData.prodGrid)
+    setOrderList(prodGridData.prodGrid);
+  };
 
   return (
     <React.Fragment>
-      {!ordersLoaded ? <OrdersLoad /> : ""}
-      {!custLoaded ? <CustomerLoad /> : ""}
-      {!prodLoaded ? <ProductsLoad /> : ""}
-      {!standLoaded ? <StandingLoad /> : ""}
-
       <MainWrapper>
         <DescripWrapper>
-          <ToolBar setOrderList={setOrderList} product={product} />
-          <ProductGrid product={product} orderList={orderList} />
+          <ToolBar delivDate={delivDate} setDelivDate={setDelivDate}  />
+          <ProductGrid
+            orderList={orderList}
+            database={database}
+            delivDate={delivDate}
+          />
         </DescripWrapper>
       </MainWrapper>
     </React.Fragment>

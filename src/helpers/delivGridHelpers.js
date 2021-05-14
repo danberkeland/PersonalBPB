@@ -3,7 +3,6 @@ import { sortZtoADataByIndex, sortAtoZDataByIndex } from "./sortDataHelpers";
 
 const { DateTime } = require("luxon");
 
-
 export const removeDoubles = (orderList) => {
   for (let i = 0; i < orderList.length; ++i) {
     for (let j = i + 1; j < orderList.length; ++j) {
@@ -18,14 +17,14 @@ export const removeDoubles = (orderList) => {
   return orderList;
 };
 
-export const zerosDelivFilter = (orderList, delivDate, customers) => {
+export const zerosDelivFilter = (orderList, delivDate, database) => {
+  const [products, customers, routes, standing, orders] = database;
   let noZeroDelivDateOrderList = orderList.filter(
     (ord) =>
       Number(ord["qty"]) > 0 &&
       ord["delivDate"] === convertDatetoBPBDate(delivDate)
   );
   for (let ord of noZeroDelivDateOrderList) {
-    
     if (ord["route"] === undefined || ord["route"] === "deliv") {
       let ind = customers.findIndex(
         (cust) => cust["custName"] === ord["custName"]
@@ -34,14 +33,13 @@ export const zerosDelivFilter = (orderList, delivDate, customers) => {
         let custZone = customers[ind]["zoneName"];
         ord["zoneName"] = custZone;
       }
-      
     } else {
       let ind = customers.findIndex(
         (cust) => cust["custName"] === ord["custName"]
       );
       if (ind > -1) {
         ord["zoneName"] = ord["route"];
-      } 
+      }
     }
   }
   return noZeroDelivDateOrderList;
@@ -62,29 +60,77 @@ export const filterForZoneService = (
   return filterServe;
 };
 
-export const buildGridOrderArray = (filterServe, products) => {
+const buildCustName = (ord, customers) => {
+  try {
+  return customers[
+    customers.findIndex((cust) => cust["custName"] === ord["custName"])
+  ].nickName
+} catch {
+  return
+}
+
+}
+
+export const buildGridOrderArray = (filterServe, database) => {
+  const [products, customers, routes, standing, orders] = database;
   let gridOrderArray;
-  
+
   gridOrderArray = filterServe.map((ord) => ({
     prodName: ord["prodName"],
+    prodNick: products[
+      products.findIndex((prod) => prod["prodName"] === ord["prodName"])
+    ].nickName,
     custName: ord["custName"],
+    custNick: buildCustName(ord,customers),
     zone: ord["zoneName"],
     route: ord["route"],
     qty: ord["qty"],
+    doughType:
+      products[
+        products.findIndex((prod) => prod["prodName"] === ord["prodName"])
+      ]["doughType"],
     where:
       products[
         products.findIndex((prod) => prod["prodName"] === ord["prodName"])
       ]["bakedWhere"],
-    when:
+    when: products[
+      products.findIndex((prod) => prod["prodName"] === ord["prodName"])
+    ]["readyTime"],
+    forBake:
       products[
         products.findIndex((prod) => prod["prodName"] === ord["prodName"])
-      ]["readyTime"],
+      ].forBake,
+    packSize:
+      products[
+        products.findIndex((prod) => prod["prodName"] === ord["prodName"])
+      ].packSize,
+    currentStock:
+      products[
+        products.findIndex((prod) => prod["prodName"] === ord["prodName"])
+      ].currentStock,
+    batchSize:
+      products[
+        products.findIndex((prod) => prod["prodName"] === ord["prodName"])
+      ].batchSize,
+    bakeExtra:
+      products[
+        products.findIndex((prod) => prod["prodName"] === ord["prodName"])
+      ].bakeExtra,
+    packGroup:
+      products[
+        products.findIndex((prod) => prod["prodName"] === ord["prodName"])
+      ].packGroup,
   }));
-  
+
   return gridOrderArray;
 };
 
-export const isZoneIncludedInRoute = (gridOrderArray, routes, delivDate, customers) => {
+export const isZoneIncludedInRoute = (
+  gridOrderArray,
+  routes,
+  delivDate,
+  customers
+) => {
   sortZtoADataByIndex(routes, "routeStart");
   for (let rte of routes) {
     for (let grd of gridOrderArray) {
@@ -93,21 +139,20 @@ export const isZoneIncludedInRoute = (gridOrderArray, routes, delivDate, custome
       if (dayNum === 7) {
         dayNum = 0;
       }
-      dayNum = (dayNum + 1);
+      dayNum = dayNum + 1;
 
       if (!rte["RouteServe"].includes(grd["zone"])) {
         continue;
       } else {
-        
-        if (rte["RouteSched"].includes(dayNum.toString())){
+        if (rte["RouteSched"].includes(dayNum.toString())) {
           grd["route"] = rte["routeName"];
         } else {
-          grd["route"] = "Pick up Carlton"
+          grd["route"] = "Pick up Carlton";
         }
       }
-      }
+    }
   }
-  
+
   return gridOrderArray;
 };
 
@@ -137,7 +182,12 @@ export const buildProductArray = (gridToEdit, products) => {
 export const createColumns = (listOfProducts) => {
   sortAtoZDataByIndex(listOfProducts, 2);
   let columns = [
-    { field: "customer", header: "Customer", dataKey: "customer", width: { width: "10%" } },
+    {
+      field: "customer",
+      header: "customer",
+      dataKey: "customer",
+      width: { width: "10%" },
+    },
   ];
   for (let prod of listOfProducts) {
     let newCol = {
@@ -151,13 +201,36 @@ export const createColumns = (listOfProducts) => {
   return columns;
 };
 
+export const createRouteGridColumns = (listOfProducts) => {
+  sortAtoZDataByIndex(listOfProducts, 2);
+  let columns = [
+    {
+      field: "customer",
+      header: "customer",
+      dataKey: "customer",
+      width: { width: "10%" },
+    },
+  ];
+  for (let prod of listOfProducts) {
+    let newCol = {
+      field: prod[0],
+      header: prod[1],
+      dataKey: prod[1],
+      width: { width: "30px" },
+    };
+    columns.push(newCol);
+  }
+  return columns;
+};
+
 export const createListOfCustomers = (orderList) => {
   let listOfCustomers = orderList.map((order) => order["custName"]);
-  listOfCustomers = new Set(listOfCustomers);
+  listOfCustomers = Array.from(new Set(listOfCustomers));
   return listOfCustomers;
 };
 
 export const createQtyGrid = (listOfCustomers, orderList) => {
+  console.log(orderList);
   let data = [];
   for (let cust of listOfCustomers) {
     let newData = { customer: cust };
@@ -166,9 +239,8 @@ export const createQtyGrid = (listOfCustomers, orderList) => {
         newData[order["prodName"]] = order["qty"];
       }
     }
-
     data.push(newData);
   }
-
+  console.log(data);
   return data;
 };

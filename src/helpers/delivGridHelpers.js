@@ -85,6 +85,10 @@ export const buildGridOrderArray = (filterServe, database) => {
     zone: ord["zoneName"],
     route: ord["route"],
     qty: ord["qty"],
+    doughType:
+      products[
+        products.findIndex((prod) => prod["prodName"] === ord["prodName"])
+      ]["doughType"],
     where:
       products[
         products.findIndex((prod) => prod["prodName"] === ord["prodName"])
@@ -190,6 +194,28 @@ export const createColumns = (listOfProducts) => {
       field: prod,
       header: prod,
       dataKey: prod,
+      width: { width: "30px" },
+    };
+    columns.push(newCol);
+  }
+  return columns;
+};
+
+export const createRouteGridColumns = (listOfProducts) => {
+  sortAtoZDataByIndex(listOfProducts, 2);
+  let columns = [
+    {
+      field: "customer",
+      header: "customer",
+      dataKey: "customer",
+      width: { width: "10%" },
+    },
+  ];
+  for (let prod of listOfProducts) {
+    let newCol = {
+      field: prod[0],
+      header: prod[1],
+      dataKey: prod[1],
       width: { width: "30px" },
     };
     columns.push(newCol);

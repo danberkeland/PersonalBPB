@@ -11,6 +11,7 @@ import { formatter } from "../../../../helpers/billingGridHelpers";
 
 import {
   buildProductArray,
+  createRouteGridColumns,
   createColumns,
   createListOfCustomers,
   createQtyGrid,
@@ -57,7 +58,7 @@ const RouteGrid = ({ route,
       let buildGridSetUp = orderList.filter((ord) => ord["route"] === route);
       let listOfProducts = buildProductArray(buildGridSetUp, products);
 
-      columns = createColumns(listOfProducts);
+      columns = createRouteGridColumns(listOfProducts);
     }
   
     return columns;
@@ -271,7 +272,7 @@ const RouteGrid = ({ route,
         let gridToEdit = buildGridSetUp.filter((grd) => grd["route"] === rt);
         let listOfProducts = buildProductArray(gridToEdit, products);
 
-        columns = createColumns(listOfProducts);
+        columns = createRouteGridColumns(listOfProducts);
       }
       columns = columns.map((col) => ({
         title: col.header,

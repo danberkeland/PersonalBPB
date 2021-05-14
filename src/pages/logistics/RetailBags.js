@@ -96,12 +96,35 @@ function RetailBags() {
     doc.save(`RetailBags${delivDate}.pdf`);
   };
 
+  const exportTestSticker = () => {
+    
+    const doc = new jsPDF({
+      orientation: "landscape",
+      unit: "in",
+      format:[4,2]
+    });
+    doc.setFontSize(20);
+    doc.text(5, 5, `Test Sticker`);
+
+    
+    
+    doc.save(`TestSticker.pdf`);
+  };
+
   const header = (
     <ButtonContainer>
       <ButtonWrapper>
         <Button
           type="button"
           onClick={exportListPdf}
+          className="p-button-success"
+          data-pr-tooltip="PDF"
+        >
+          Print Retail Bag List
+        </Button>
+        <Button
+          type="button"
+          onClick={exportTestSticker}
           className="p-button-success"
           data-pr-tooltip="PDF"
         >

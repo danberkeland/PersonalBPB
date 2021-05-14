@@ -130,7 +130,7 @@ function NorthList() {
     doc.autoTable({
       body: croixNorth,
       columns: [
-        { header: "Product", dataKey: "forBake" },
+        { header: "Product", dataKey: "prodNick" },
         { header: "Qty", dataKey: "qty" },
       ],
       startY: finalY + titleToNextTable,

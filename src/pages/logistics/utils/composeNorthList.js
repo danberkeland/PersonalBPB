@@ -322,6 +322,7 @@ export default class ComposeNorthList {
           continue
         }
       }
+      sec.prodNick = "fr"+sec.prodNick
     }
 
     return secondObject;

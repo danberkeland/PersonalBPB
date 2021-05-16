@@ -17,7 +17,8 @@ import {
 
 const clonedeep = require("lodash.clonedeep");
 let tomorrow = todayPlus()[1];
-let today = todayPlus()[0];
+let twoDay = todayPlus()[2];
+let threeDay = todayPlus()[3];
 
 const addRoutes = (delivDate, prodGrid, database) => {
   const [products, customers, routes, standing, orders] = database;
@@ -86,22 +87,37 @@ const addUp = (acc, val) => {
 export default class ComposePastryPrep {
   returnPastryPrepBreakDown = (delivDate, database, loc) => {
     let setOut = this.returnSetOut(delivDate, database, loc);
-    let pastryPrep = this.returnPastryPrep(delivDate, database, loc)
-
-    // [freshProds, shelfProds] = handleFrenchConundrum(freshProds, shelfProds);
+    let pastryPrep = this.returnPastryPrep(delivDate, database, loc);
+    let almondPrep = this.returnAlmondPrep(delivDate, database, loc);
 
     return {
       setOut: setOut,
-      pastryPrep: pastryPrep
+      pastryPrep: pastryPrep,
+      almondPrep: almondPrep,
     };
   };
 
   returnSetOut = (delivDate, database, loc) => {
     const [products, customers, routes, standing, orders] = database;
     let setOutList = getOrdersList(tomorrow, database);
+    let twoDayList = getOrdersList(twoDay, database);
+    let threeDayList = getOrdersList(threeDay, database);
     let setOutToday = setOutList.filter((set) => this.setOutFilter(set, loc));
-    setOutToday = this.makeAddQty(setOutToday);
+    let twoDayToday = twoDayList.filter((set) =>
+      this.twoDayFrozenFilter(set, loc)
+    );
+    let threeDayToday = threeDayList.filter((set) =>
+      this.threeDayAlFilter(set, loc)
+    );
 
+    setOutToday = this.makeAddQty(setOutToday);
+    let twoDayPlains = this.makeAddQty(twoDayToday);
+    let threeDayPlains = this.makeAddQty(threeDayToday);
+
+    if (loc === "Prado") {
+      setOutToday[setOutToday.findIndex((set) => set.prodNick === "pl")].qty +=
+        twoDayPlains[0].qty + threeDayPlains[0].qty;
+    }
     return setOutToday;
   };
 
@@ -109,29 +125,80 @@ export default class ComposePastryPrep {
     return (
       ord.routeDepart === loc &&
       ord.packGroup === "baked pastries" &&
+      ord.prodNick !== "al" &&
       ord.doughType === "Croissant"
     );
+  };
+
+  twoDayFrozenFilter = (ord, loc) => {
+    return ord.prodNick === "fral";
+  };
+
+  threeDayAlFilter = (ord, loc) => {
+    return ord.routeDepart === "Carlton" && ord.prodNick === "al";
   };
 
   returnPastryPrep = (delivDate, database, loc) => {
     const [products, customers, routes, standing, orders] = database;
     let setOutList = getOrdersList(tomorrow, database);
-    let setOutToday = setOutList.filter((set) => this.pastryPrepFilter(set, loc));
+    let setOutToday = setOutList.filter((set) =>
+      this.pastryPrepFilter(set, loc)
+    );
     setOutToday = this.makeAddQty(setOutToday);
 
+   
     return setOutToday;
   };
 
   pastryPrepFilter = (ord, loc) => {
     return (
-      ord.routeDepart === loc &&
-      ord.packGroup === "baked pastries" &&
-      ord.doughType !== "Croissant"
+      (ord.where.includes(loc) &&
+        ord.packGroup === "baked pastries" &&
+        ord.doughType !== "Croissant") ||
+      (ord.where.includes("Mixed") &&
+        ord.routeDepart === loc &&
+        ord.packGroup === "baked pastries" &&
+        ord.doughType !== "Croissant")
     );
   };
 
+  returnAlmondPrep = (delivDate, database, loc) => {
+    const [products, customers, routes, standing, orders] = database;
+    let setOutList = getOrdersList(tomorrow, database);
+    let twoDayList = getOrdersList(twoDay, database);
+    let threeDayList = getOrdersList(threeDay, database);
+    let setOutToday = setOutList.filter((set) => this.setOutFilter(set, loc));
+    let twoDayToday = twoDayList.filter((set) =>
+      this.twoDayFrozenFilter(set, loc)
+    );
+    let threeDayToday = threeDayList.filter((set) =>
+      this.threeDayAlFilter(set, loc)
+    );
 
+    setOutToday = this.makeAddQty(setOutToday);
+    let twoDayPlains = this.makeAddQty(twoDayToday);
+    let threeDayPlains = this.makeAddQty(threeDayToday);
+    let freezerAmt = twoDayPlains[0].qty + threeDayPlains[0].qty
+    let newAlmondList = [
+      {
+        prodNick: "fridge",
+        qty: setOutToday[0].qty,
+      },
+      { prodNick: "freezer", qty: freezerAmt },
+    ];
+    return newAlmondList;
+  };
 
+  almondPrepFilter = (ord, loc) => {
+    return ord.prodNick === "al";
+  };
+
+  almondFridgePrepFilter = (ord, loc) => {
+    return (
+      ord.prodNick === "al" &&
+      ord.routeDepart === "Prado"
+    )
+  };
 
   makeAddQty = (bakedTomorrow) => {
     let makeList2 = Array.from(

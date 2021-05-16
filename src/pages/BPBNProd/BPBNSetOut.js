@@ -2,63 +2,147 @@ import React, { useEffect, useState, useContext } from "react";
 
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-
+import { Button } from "primereact/button";
 
 import { ToggleContext } from "../../dataContexts/ToggleContext";
 
-import { promisedData } from "../../helpers/databaseFetchers";
-import ComposeSetOut from "./BPBNSetOutUtils/composeSetOut";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+
 import { convertDatetoBPBDate, todayPlus } from "../../helpers/dateTimeHelpers";
+import { promisedData } from "../../helpers/databaseFetchers";
+import ComposePastryPrep from "./BPBNSetOutUtils/composePastryPrep";
 
 import styled from "styled-components";
 
 const WholeBox = styled.div`
   display: flex;
   flex-direction: column;
-  width: 40%;
+  width: 50%;
   margin: auto;
   padding: 0 0 100px 0;
 `;
 
-const compose = new ComposeSetOut();
+const ButtonContainer = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-content: flex-start;
+`;
+
+const ButtonWrapper = styled.div`
+  font-family: "Montserrat", sans-serif;
+  display: flex;
+  width: 60%;
+  flex-direction: row;
+  justify-content: space-between;
+  align-content: left;
+
+  background: #ffffff;
+`;
+
+const compose = new ComposePastryPrep();
 
 function BPBNSetOut({ loc }) {
-
-  let delivDate = todayPlus()[0];
-  
   const { setIsLoading } = useContext(ToggleContext);
-  const [ setOut, setSetOut ] = useState([])
-  const [ pastryPrep, setPastryPrep ] = useState([])
+  const [setOut, setSetOut] = useState([]);
+  const [pastryPrep, setPastryPrep] = useState([]);
+  
+  let delivDate = todayPlus()[0];
 
   useEffect(() => {
-    promisedData(setIsLoading).then(database => gatherSetOutInfo(database));
-}, []); // eslint-disable-line react-hooks/exhaustive-deps
+    promisedData(setIsLoading).then((database) => gatherPastryPrepInfo(database));
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const gatherPastryPrepInfo = (database) => {
+    let pastryPrepData = compose.returnPastryPrepBreakDown(delivDate, database, loc);
+    setSetOut(pastryPrepData.setOut);
+    setPastryPrep(pastryPrepData.pastryPrep)
+  };
+
+  const exportPastryPrepPdf = () => {
+    let finalY;
+    let pageMargin = 10;
+    let tableToNextTitle = 12;
+    let titleToNextTable = tableToNextTitle + 4;
+    let tableFont = 11;
+    let titleFont = 14;
+
+    const doc = new jsPDF("p", "mm", "a4");
+    doc.setFontSize(20);
+    doc.text(pageMargin, 20, `${loc} Pastry Prep ${convertDatetoBPBDate(delivDate)}`);
+
+    finalY = 20;
+
+    doc.setFontSize(titleFont);
+    doc.text(pageMargin, finalY + tableToNextTitle, `Set Out`);
+
+    doc.autoTable({
+      body: setOut,
+      columns: [
+        { header: "Product", dataKey: "prodNick" },
+        { header: "Qty", dataKey: "qty" },
+      ],
+      startY: finalY + titleToNextTable,
+      styles: { fontSize: tableFont },
+    });
+
+    finalY = doc.previousAutoTable.finalY;
+
+    doc.autoTable({
+      body: pastryPrep,
+      columns: [
+        { header: "Product", dataKey: "prodNick" },
+        { header: "Qty", dataKey: "qty" },
+      ],
+      startY: finalY + titleToNextTable,
+      styles: { fontSize: tableFont },
+    });
+
+    doc.save(`SetOut${loc}${delivDate}.pdf`);
+    }
+
+    
   
 
-const gatherSetOutInfo = (database) => {
-  let setOutData = compose.returnSetOutBreakDown(database,loc)
-  setSetOut(setOutData.setOut);
-  setPastryPrep(setOutData.pastryPrep)
-}
   
+  const header = (
+    <ButtonContainer>
+      <ButtonWrapper>
+        <Button
+          type="button"
+          onClick={exportPastryPrepPdf}
+          className="p-button-success"
+          data-pr-tooltip="PDF"
+        >
+          Print Long Driver North List
+        </Button>
+        
+      </ButtonWrapper>
+    </ButtonContainer>
+  );
+
   return (
     <React.Fragment>
       <WholeBox>
-        <h1>
-          {loc} Pastry Prep {convertDatetoBPBDate(delivDate)}
-        </h1>
-
-        <h2>Set Out</h2>
+        <h1>{loc} PASTRY PREP {convertDatetoBPBDate(delivDate)}</h1>
+        <div>{header}</div>
+        
+        <h3>Set Out</h3>
         <DataTable value={setOut} className="p-datatable-sm">
-          <Column field="forBake" header="Product"></Column>
-          <Column field="qty" header="Total"></Column>
+          <Column field="prodNick" header="Product"></Column>
+          <Column field="qty" header="Qty"></Column>
+         
         </DataTable>
 
-        <h2>Pastry Prep</h2>
+        <h3>Pastry Prep</h3>
         <DataTable value={pastryPrep} className="p-datatable-sm">
-          <Column field="forBake" header="Product"></Column>
-          <Column field="qty" header="Total"></Column>
+          <Column field="prodNick" header="Product"></Column>
+          <Column field="qty" header="Qty"></Column>
+         
         </DataTable>
+
       </WholeBox>
     </React.Fragment>
   );

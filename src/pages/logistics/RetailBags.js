@@ -99,12 +99,19 @@ function RetailBags() {
   const exportTestSticker = () => {
     
     const doc = new jsPDF({
-      orientation: "landscape",
+      orientation: "l",
       unit: "in",
-      format:[4,2]
+      format:[2,4]
     });
-    doc.setFontSize(20);
-    doc.text(5, 5, `Test Sticker`);
+    doc.setFontSize(30);
+    doc.text("Hello World",.5,.5);
+    doc.addPage({
+      format:[2,4],
+      orientation: "l"
+    })
+    doc.setFontSize(30);
+    doc.text("Second Sticker",.5,.5);
+
 
     
     
@@ -128,7 +135,7 @@ function RetailBags() {
           className="p-button-success"
           data-pr-tooltip="PDF"
         >
-          Print Retail Bag List
+          Print Test Sticker
         </Button>   
       </ButtonWrapper>
     </ButtonContainer>

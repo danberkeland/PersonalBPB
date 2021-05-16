@@ -459,6 +459,7 @@ export const getDough = /* GraphQL */ `
       batchSize
       mixedWhere
       components
+      oldDough
       createdAt
       updatedAt
     }
@@ -479,6 +480,7 @@ export const listDoughs = /* GraphQL */ `
         batchSize
         mixedWhere
         components
+        oldDough
         createdAt
         updatedAt
       }

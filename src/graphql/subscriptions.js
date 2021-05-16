@@ -572,6 +572,7 @@ export const onCreateDough = /* GraphQL */ `
       batchSize
       mixedWhere
       components
+      oldDough
       createdAt
       updatedAt
     }
@@ -587,6 +588,7 @@ export const onUpdateDough = /* GraphQL */ `
       batchSize
       mixedWhere
       components
+      oldDough
       createdAt
       updatedAt
     }
@@ -602,6 +604,7 @@ export const onDeleteDough = /* GraphQL */ `
       batchSize
       mixedWhere
       components
+      oldDough
       createdAt
       updatedAt
     }

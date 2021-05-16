@@ -31,12 +31,14 @@ const buildSetOutTemplate = (products, filt, loc) => {
 export default class ComposeSetOut {
   returnSetOutBreakDown = (database, loc) => {
     let setOut = this.getSetOut(database, loc);
+    let pastryPrep = this.getPastryPrep(database, loc)
 
     // setOut = handleAlmondConundrum(setOut, database, loc);
 
 
     return {
       setOut: setOut,
+      pastryPrep: pastryPrep,
     };
   };
 
@@ -51,12 +53,32 @@ export default class ComposeSetOut {
     return makeSetOut;
   }
 
+  getPastryPrep(database, loc) {
+    const [products, customers, routes, standing, orders] = database;
+    let makeSetOut = buildSetOutTemplate(products, this.pastryPrepFilter, loc);
+    let fullOrdersTwoDay = getFullMakeOrders(twoDay, database);
+    let fullOrdersTomorrow = getFullMakeOrders(tomorrow, database);
+    for (let make of makeSetOut) {
+      addSetOut(make, fullOrdersTwoDay, fullOrdersTomorrow, routes, loc);
+    }
+    return makeSetOut;
+  }
+
   setOutFilter = (prod,loc) => {
     let fil =
     (prod.bakedWhere.includes(loc) ||
               prod.bakedWhere.includes("Mixed")) &&      
               prod.packGroup === "baked pastries" &&
               prod.doughType === "Croissant"
+    return fil;
+  };
+
+  pastryPrepFilter = (prod,loc) => {
+    let fil =
+    (prod.bakedWhere.includes(loc) ||
+              prod.bakedWhere.includes("Mixed")) &&      
+              prod.packGroup === "baked pastries" &&
+              prod.doughType !== "Croissant"
     return fil;
   };
 }

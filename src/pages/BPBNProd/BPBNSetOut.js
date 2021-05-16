@@ -28,6 +28,7 @@ function BPBNSetOut({ loc }) {
   
   const { setIsLoading } = useContext(ToggleContext);
   const [ setOut, setSetOut ] = useState([])
+  const [ pastryPrep, setPastryPrep ] = useState([])
 
   useEffect(() => {
     promisedData(setIsLoading).then(database => gatherSetOutInfo(database));
@@ -37,17 +38,24 @@ function BPBNSetOut({ loc }) {
 const gatherSetOutInfo = (database) => {
   let setOutData = compose.returnSetOutBreakDown(database,loc)
   setSetOut(setOutData.setOut);
+  setPastryPrep(setOutData.pastryPrep)
 }
   
   return (
     <React.Fragment>
       <WholeBox>
         <h1>
-          {loc} Set Out {convertDatetoBPBDate(delivDate)}
+          {loc} Pastry Prep {convertDatetoBPBDate(delivDate)}
         </h1>
 
         <h2>Set Out</h2>
         <DataTable value={setOut} className="p-datatable-sm">
+          <Column field="forBake" header="Product"></Column>
+          <Column field="qty" header="Total"></Column>
+        </DataTable>
+
+        <h2>Pastry Prep</h2>
+        <DataTable value={pastryPrep} className="p-datatable-sm">
           <Column field="forBake" header="Product"></Column>
           <Column field="qty" header="Total"></Column>
         </DataTable>

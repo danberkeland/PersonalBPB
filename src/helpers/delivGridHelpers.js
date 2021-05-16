@@ -104,6 +104,10 @@ export const buildGridOrderArray = (filterServe, database) => {
       products[
         products.findIndex((prod) => prod["prodName"] === ord["prodName"])
       ].packSize,
+    weight:
+      products[
+        products.findIndex((prod) => prod["prodName"] === ord["prodName"])
+      ].weight,
     currentStock:
       products[
         products.findIndex((prod) => prod["prodName"] === ord["prodName"])

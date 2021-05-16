@@ -1,79 +1,112 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import { InputText } from "primereact/inputtext";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 
+import TimeAgo from "timeago-react"; // var TimeAgo = require('timeago-react');
+import us from "timeago.js/lib/lang/en_US";
+
+import swal from "@sweetalert/with-react";
+
+import { CustomerContext } from "../../dataContexts/CustomerContext";
+import {
+  ProductsContext,
+  ProductsLoad,
+} from "../../dataContexts/ProductsContext";
+import { OrdersContext } from "../../dataContexts/OrdersContext";
+import { StandingContext } from "../../dataContexts/StandingContext";
+import { HoldingContext } from "../../dataContexts/HoldingContext";
 import { ToggleContext } from "../../dataContexts/ToggleContext";
 
-import { API, graphqlOperation } from "aws-amplify";
 import { updateProduct } from "../../graphql/mutations";
 
-import jsPDF from "jspdf";
-import "jspdf-autotable";
-
-import { convertDatetoBPBDate, todayPlus } from "../../helpers/dateTimeHelpers";
-import { promisedData } from "../../helpers/databaseFetchers";
-import ComposeWhatToMake from "./BPBNSetOutUtils/composeWhatToMake";
+import { API, graphqlOperation } from "aws-amplify";
 
 import styled from "styled-components";
+
+const BasicContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 95%;
+
+  padding: 5px 10px;
+  margin: 4px auto;
+  box-sizing: border-box;
+`;
+
+const WholeBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+  margin: auto;
+  padding: 0 0 100px 0;
+`;
+
+const IngDetails = styled.div`
+  font-size: 0.8em;
+`;
 
 const clonedeep = require("lodash.clonedeep");
 
 const { DateTime } = require("luxon");
 
-const WholeBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 50%;
-  margin: auto;
-  padding: 0 0 100px 0;
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  width: 100%;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-content: flex-start;
-`;
-
-const ButtonWrapper = styled.div`
-  font-family: "Montserrat", sans-serif;
-  display: flex;
-  width: 60%;
-  flex-direction: row;
-  justify-content: space-between;
-  align-content: left;
-
-  background: #ffffff;
-`;
-
-const compose = new ComposeWhatToMake();
-
 function BPBNBuckets() {
-  const { setIsLoading } = useContext(ToggleContext);
-  const [whatToMake, setWhatToMake] = useState([]);
-  
+  const { products, setProducts, prodLoaded, setProdLoaded } =
+    useContext(ProductsContext);
+  const { setCustLoaded } = useContext(CustomerContext);
+  let { setHoldLoaded } = useContext(HoldingContext);
+  let { setOrdersLoaded } = useContext(OrdersContext);
+  let { setStandLoaded } = useContext(StandingContext);
 
-  let delivDate = todayPlus()[0];
+  const [signedIn, setSignedIn] = useState("null");
+  const [eodProds, setEODProds] = useState();
+  const [shelfBag, setShelfBag] = useState(false);
+  const [shelfEa, setShelfEa] = useState(false);
+  const [freezerBag, setFreezerBag] = useState(false);
+  const [freezerEa, setFreezerEa] = useState(false);
+
+  
+  useEffect(() => {
+    let prodsToMap = products.filter(
+      (prod) => prod.bakedWhere[0] === loc && prod.eodCount === true
+    );
+    setEODProds(prodsToMap);
+  }, [products]);
 
   useEffect(() => {
-    promisedData(setIsLoading).then((database) =>
-      gatherWhatToMakeInfo(database)
-    );
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const gatherWhatToMakeInfo = (database) => {
-    let whatToMakeData = compose.returnWhatToMakeBreakDown(
-      delivDate,
-      database
-      
-    );
-    setWhatToMake(whatToMakeData.whatToMake);
-    
-  };
+    if (eodProds) {
+      if (
+        eodProds.filter(
+          (prods) => prods.freezerThaw !== true && Number(prods.packSize) > 1
+        ).length > 0
+      ) {
+        setShelfBag(true);
+      }
+      if (
+        eodProds.filter(
+          (prods) => prods.freezerThaw !== true && Number(prods.packSize) === 1
+        ).length > 0
+      ) {
+        setShelfEa(true);
+      }
+      if (
+        eodProds.filter(
+          (prods) => prods.freezerThaw !== false && Number(prods.packSize) > 1
+        ).length > 0
+      ) {
+        setFreezerBag(true);
+      }
+      if (
+        eodProds.filter(
+          (prods) => prods.freezerThaw !== false && Number(prods.packSize) === 1
+        ).length > 0
+      ) {
+        setFreezerEa(true);
+      }
+    }
+  }, [eodProds]);
 
   const updateDBattr = async (id, attr, val) => {
     let addDetails = {
@@ -105,7 +138,6 @@ function BPBNBuckets() {
       console.log("error updating attribute.");
     }
   };
-
 
   const handleChange = (value) => {
     if (value.code === "Enter") {
@@ -143,21 +175,6 @@ function BPBNBuckets() {
     );
   };
 
-  
-  const header = (
-    <ButtonContainer>
-      <ButtonWrapper>
-        <Button
-          type="button"
-          onClick={exportPastryPrepPdf}
-          className="p-button-success"
-          data-pr-tooltip="PDF"
-        >
-          Print Prep List
-        </Button>
-      </ButtonWrapper>
-    </ButtonContainer>
-  );
 
   return (
     <React.Fragment>

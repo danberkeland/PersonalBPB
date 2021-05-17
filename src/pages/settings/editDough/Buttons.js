@@ -159,6 +159,7 @@ const Buttons = ({
       process: selectedDough.process,
       batchSize: selectedDough.batchSize,
       hydration: selectedDough.hydration,
+      buffer: selectedDough.buffer,
 
       _version: selectedDough["_version"],
     };

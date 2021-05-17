@@ -145,6 +145,7 @@ type Dough @model @auth(rules: [{allow: public}]) {
   mixedWhere: String
   components: [String]
   oldDough: Float
+  buffer: Float
 }
 
 type DoughComponent @model @auth(rules: [{allow: public}]) {

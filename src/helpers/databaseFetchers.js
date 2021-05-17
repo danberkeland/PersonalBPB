@@ -4,7 +4,9 @@ import {
   listRoutes,
   listStandings,
   listOrders,
-  listAltPricings
+  listAltPricings,
+  listDoughs,
+  listDoughComponents,
 } from "../graphql/queries";
 
 import { sortAtoZDataByIndex } from "../helpers/sortDataHelpers";
@@ -54,6 +56,24 @@ export const fetchStanding = async () => {
 };
 
 
+export const fetchDoughs = async () => {
+  let dough = await fetchFromDataBase(
+    listDoughs,
+    "listDoughs",
+    "1000"
+  );
+  return dough;
+}
+
+export const fetchDoughComponents = async () => {
+  let doughComponents = await fetchFromDataBase(
+    listDoughComponents,
+    "listDoughComponents",
+    "1000"
+  );
+  return doughComponents;
+};
+
 export const fetchAltPricing = async () => {
   let altPricing = await fetchFromDataBase(
     listAltPricings,
@@ -85,7 +105,9 @@ const fetchData = async (setIsLoading) => {
   let routes = await fetchRoutes();
   let standing = await fetchStanding();
   let orders = await fetchOrders();
-  let data = [products, customers, routes, standing, orders];
+  let doughs = await fetchDoughs();
+  let doughComponents = await fetchDoughComponents();
+  let data = [products, customers, routes, standing, orders, doughs, doughComponents];
   setIsLoading(false);
   return data;
 };

@@ -52,6 +52,11 @@ const DoughInfo = ({ selectedDough, setSelectedDough, setIsModified }) => {
           <InfoInput id="batchSize" />
           lb.
         </div>
+        <div className="p-col">
+          <label htmlFor="buffer">Buffer:</label>
+          <InfoInput id="buffer" />
+          lb.
+        </div>
       </div>
     </React.Fragment>
   );

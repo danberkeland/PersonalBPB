@@ -74,9 +74,9 @@ function BPBNBuckets() {
     let attr = e.target.id.split("_")[1];
     let qty = e.target.value;
 
-    let doughsToMod = clonedeep(doughs)
-    doughsToMod[doughsToMod.findIndex(dgh => dgh.id === id)][attr] = qty
-    setDoughs(doughsToMod)
+    let doughsToMod = clonedeep(doughs);
+    doughsToMod[doughsToMod.findIndex((dgh) => dgh.id === id)][attr] = qty;
+    setDoughs(doughsToMod);
 
     let updateDetails = {
       id: id,
@@ -93,7 +93,7 @@ function BPBNBuckets() {
   };
 
   const handleClick = (e, amt) => {
-    console.log(amt)
+    console.log(amt);
     let doughName = e.target.id.split("_")[0];
     let components = doughComponents.filter((dgh) => dgh.dough === doughName);
     let wetWeight = Number(
@@ -147,14 +147,21 @@ function BPBNBuckets() {
       doc.setFontSize(12);
       for (let item of dryFilt) {
         doc.text(`${item.componentName}`, 1.2, ct);
-        doc.text(`${((item.amount/dryTotals) * dryWeight).toFixed(2)}`, 0.3, ct);
+        doc.text(
+          `${((item.amount / dryTotals) * dryWeight).toFixed(2)}`,
+          0.3,
+          ct
+        );
         doc.text(`lb.`, 0.8, ct);
         ct += 0.24;
       }
     }
 
     let dryplusFilt = components.filter(
-      (dgh) => dgh.componentType === "dryplus"
+      (dgh) =>
+        dgh.componentType === "dryplus" &&
+        dgh.componentName !== "Salt" &&
+        dgh.componentName !== "Yeast"
     );
     if (dryplusFilt.length > 0) {
       for (let item of dryplusFilt) {
@@ -178,7 +185,13 @@ function BPBNBuckets() {
       let ct = 0.7;
       for (let item of wetFilt) {
         doc.text(`${item.componentName}`, 1.2, ct);
-        doc.text(`${((item.amount/wetTotals) * wetWeight*dryWeight*.01).toFixed(2)}`, 0.3, ct);
+        doc.text(
+          `${((item.amount / wetTotals) * wetWeight * dryWeight * 0.01).toFixed(
+            2
+          )}`,
+          0.3,
+          ct
+        );
         doc.text(`lb.`, 0.8, ct);
         ct += 0.24;
       }
@@ -193,17 +206,19 @@ function BPBNBuckets() {
     );
     for (let lev of levNameList) {
       let levFilt = doughComponents.filter((dgh) => dgh.dough === lev);
-      
-      let levList = doughComponents.filter((dgh) => dgh.dough === lev)
-      .map((it) => it.amount);
-    let levTotals;
-    levList.length > 0
-      ? (levTotals = levList.reduce(addUp))
-      : (levTotals = 0);
 
+      let levList = doughComponents
+        .filter((dgh) => dgh.dough === lev)
+        .map((it) => it.amount);
+      let levTotals;
+      levList.length > 0
+        ? (levTotals = levList.reduce(addUp))
+        : (levTotals = 0);
 
-      let levPercent = components[components.findIndex(comp => comp.componentName === lev)].amount*.01
-      console.log(levPercent)
+      let levPercent =
+        components[components.findIndex((comp) => comp.componentName === lev)]
+          .amount * 0.01;
+      console.log(levPercent);
       if (levFilt.length > 0) {
         doc.addPage({
           format: [2, 4],
@@ -216,28 +231,58 @@ function BPBNBuckets() {
         let ct = 0.7;
         for (let item of levFilt) {
           doc.text(`${item.componentName}`, 1.2, ct);
-          doc.text(`${((item.amount/levTotals)*levPercent*dryWeight).toFixed(2)}`, 0.3, ct);
+          doc.text(
+            `${((item.amount / levTotals) * levPercent * dryWeight).toFixed(
+              2
+            )}`,
+            0.3,
+            ct
+          );
           doc.text(`lb.`, 0.8, ct);
           ct += 0.24;
         }
       }
-      let postFilt = components.filter((dgh) => dgh.componentType === "post");
-      if (postFilt.length > 0) {
-        doc.addPage({
-          format: [2, 4],
-          orientation: "l",
-        });
-        doc.setFontSize(14);
-        doc.text(`${doughName} - Add ins`, 0.2, 0.36);
+    }
+    let postFilt = components.filter((dgh) => dgh.componentType === "post");
+    if (postFilt.length > 0) {
+      doc.addPage({
+        format: [2, 4],
+        orientation: "l",
+      });
+      doc.setFontSize(14);
+      doc.text(`${doughName} - Add ins`, 0.2, 0.36);
 
-        doc.setFontSize(12);
-        let ct = 0.7;
-        for (let item of postFilt) {
-          doc.text(`${item.componentName}`, 1.2, ct);
-          doc.text(`${(item.amount * dryWeight * 0.01).toFixed(2)}`, 0.3, ct);
-          doc.text(`lb.`, 0.8, ct);
-          ct += 0.24;
-        }
+      doc.setFontSize(12);
+      let ct = 0.7;
+      for (let item of postFilt) {
+        doc.text(`${item.componentName}`, 1.2, ct);
+        doc.text(`${(item.amount * dryWeight * 0.01).toFixed(2)}`, 0.3, ct);
+        doc.text(`lb.`, 0.8, ct);
+        ct += 0.24;
+      }
+    }
+
+    let saltyeastFilt = components.filter(
+      (dgh) =>
+        dgh.componentType === "dryplus" &&
+        (dgh.componentName === "Salt" ||
+        dgh.componentName === "Yeast")
+    );
+    if (saltyeastFilt.length > 0) {
+      doc.addPage({
+        format: [2, 4],
+        orientation: "l",
+      });
+      doc.setFontSize(14);
+      doc.text(`${doughName} - Salt & Yeast`, 0.2, 0.36);
+
+      doc.setFontSize(12);
+      let ct = 0.7;
+      for (let item of saltyeastFilt) {
+        doc.text(`${item.componentName}`, 1.2, ct);
+        doc.text(`${(item.amount * dryWeight * 0.01).toFixed(2)}`, 0.3, ct);
+        doc.text(`lb.`, 0.8, ct);
+        ct += 0.24;
       }
     }
 
@@ -287,7 +332,12 @@ function BPBNBuckets() {
                 key={dough.id + "_print"}
                 id={dough.doughName + "_print"}
                 onClick={(e) =>
-                  handleClick(e, (Number(dough.buffer)+ Number(dough.needed)-Number(dough.oldDough)))
+                  handleClick(
+                    e,
+                    Number(dough.buffer) +
+                      Number(dough.needed) -
+                      Number(dough.oldDough)
+                  )
                 }
                 label="Print Sticker Set"
                 className="p-button-rounded p-button-lg"

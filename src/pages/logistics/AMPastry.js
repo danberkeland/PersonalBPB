@@ -89,7 +89,7 @@ function AMPastry() {
     for (let past of AMPastry) {
       ind += 1;
       doc.setFontSize(14);
-      doc.text(`${past.customer}`, 0.1, 0.36);
+      doc.text(`${past.customer} ${convertDatetoBPBDate(delivDate)}`, 0.1, 0.36);
 
       doc.setFontSize(12);
       past.pl && doc.text(`Pl: ${past.pl}`, 0.2, 0.72);

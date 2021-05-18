@@ -82,6 +82,18 @@ function BPBNBuckets() {
     }
   };
 
+  const handleClick = (e, amt) => {
+    // gather list of components
+    // calculate wet
+    // calculate dry
+    // if levs, calc levs
+    // if adds, calc adds
+    // if extras, calc extras
+    // go item per item on list
+    //     print stickers
+
+  }
+
   return (
     <React.Fragment>
       <WholeBox>
@@ -122,7 +134,9 @@ function BPBNBuckets() {
                 </TwoColumnGrid>
               </div>
               <Button
-                key={dough.id + "print"}
+                key={dough.id + "_print"}
+                id = {dough.doughName}
+                onClick={e => handleClick(e, Number(dough.needed) + Number(dough.buffer) - Number(dough.oldDough))}
                 label="Print Sticker Set"
                 className="p-button-rounded p-button-lg"
                 icon="pi pi-print"

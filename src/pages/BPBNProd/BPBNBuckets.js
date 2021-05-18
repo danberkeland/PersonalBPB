@@ -75,7 +75,7 @@ function BPBNBuckets() {
     let qty = e.target.value;
 
     let doughsToMod = clonedeep(doughs)
-    doughsToMod[doughsToMod.findIndex(dgh => dgh.id === id)].[attr] = qty
+    doughsToMod[doughsToMod.findIndex(dgh => dgh.id === id)][attr] = qty
     setDoughs(doughsToMod)
 
     let updateDetails = {

@@ -105,6 +105,7 @@ export default class ComposeDough {
 
     for (let dgh of doughList){
       dgh.id = doughs[doughs.findIndex(d => d.doughName === dgh.doughName)].id
+      dgh.hydration = doughs[doughs.findIndex(d => d.doughName === dgh.doughName)].hydration
       dgh.oldDough = doughs[doughs.findIndex(d => d.doughName === dgh.doughName)].oldDough
       dgh.buffer = doughs[doughs.findIndex(d => d.doughName === dgh.doughName)].buffer
       dgh.needed = this.getDoughAmt(dgh.doughName, orderList).toFixed(2)

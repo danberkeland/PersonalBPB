@@ -13,6 +13,9 @@ import { updateDough } from "../../graphql/mutations";
 
 import { API, graphqlOperation } from "aws-amplify";
 
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+
 import styled from "styled-components";
 
 const WholeBox = styled.div`
@@ -31,6 +34,11 @@ const TwoColumnGrid = styled.div`
   padding: 5px;
 `;
 
+const addUp = (acc, val) => {
+  return acc + val;
+};
+
+const clonedeep = require("lodash.clonedeep");
 const compose = new ComposeDough();
 
 function BPBNBuckets() {
@@ -62,16 +70,18 @@ function BPBNBuckets() {
   };
 
   const updateDoughDB = async (e) => {
-   
     let id = e.target.id.split("_")[0];
     let attr = e.target.id.split("_")[1];
     let qty = e.target.value;
+
+    let doughsToMod = clonedeep(doughs)
+    doughsToMod[doughsToMod.findIndex(dgh => dgh.id === id)].[attr] = qty
+    setDoughs(doughsToMod)
 
     let updateDetails = {
       id: id,
       [attr]: qty,
     };
-    
 
     try {
       await API.graphql(
@@ -83,30 +93,170 @@ function BPBNBuckets() {
   };
 
   const handleClick = (e, amt) => {
-    // gather list of components
-    // calculate wet
-    // calculate dry
-    // if levs, calc levs
-    // if adds, calc adds
-    // if extras, calc extras
-    // go item per item on list
-    //     print stickers
+    console.log(amt)
+    let doughName = e.target.id.split("_")[0];
+    let components = doughComponents.filter((dgh) => dgh.dough === doughName);
+    let wetWeight = Number(
+      doughs[doughs.findIndex((dgh) => dgh.doughName === doughName)].hydration
+    );
+    let wetList = components
+      .filter((dgh) => dgh.componentType === "wet")
+      .map((it) => it.amount);
+    let wetTotals;
+    wetList.length > 0 ? (wetTotals = wetList.reduce(addUp)) : (wetTotals = 0);
+    let dryList = components
+      .filter((dgh) => dgh.componentType === "dry")
+      .map((it) => it.amount);
+    let dryTotals;
+    dryList.length > 0 ? (dryTotals = dryList.reduce(addUp)) : (dryTotals = 0);
+    let levList = components
+      .filter((dgh) => dgh.componentType === "lev")
+      .map((it) => it.amount);
+    let levTotals;
+    levList.length > 0 ? (levTotals = levList.reduce(addUp)) : (levTotals = 0);
+    let dryplusList = components
+      .filter((dgh) => dgh.componentType === "dryplus")
+      .map((it) => it.amount);
+    let dryplusTotals;
+    dryplusList.length > 0
+      ? (dryplusTotals = dryplusList.reduce(addUp))
+      : (dryplusTotals = 0);
+    let postList = components
+      .filter((dgh) => dgh.componentType === "post")
+      .map((it) => it.amount);
+    let postTotals;
+    postList.length > 0
+      ? (postTotals = postList.reduce(addUp))
+      : (postTotals = 0);
+    let dryWeight =
+      (100 / (100 + wetWeight + levTotals + dryplusTotals + postTotals)) * amt;
+    console.log(dryWeight);
 
-  }
+    const doc = new jsPDF({
+      orientation: "l",
+      unit: "in",
+      format: [2, 4],
+    });
+
+    let ct = 0.7;
+    let dryFilt = components.filter((dgh) => dgh.componentType === "dry");
+    if (dryFilt.length > 0) {
+      doc.setFontSize(14);
+      doc.text(`${doughName} - Dry`, 0.2, 0.36);
+
+      doc.setFontSize(12);
+      for (let item of dryFilt) {
+        doc.text(`${item.componentName}`, 1.2, ct);
+        doc.text(`${((item.amount/dryTotals) * dryWeight).toFixed(2)}`, 0.3, ct);
+        doc.text(`lb.`, 0.8, ct);
+        ct += 0.24;
+      }
+    }
+
+    let dryplusFilt = components.filter(
+      (dgh) => dgh.componentType === "dryplus"
+    );
+    if (dryplusFilt.length > 0) {
+      for (let item of dryplusFilt) {
+        doc.text(`${item.componentName}`, 1.2, ct);
+        doc.text(`${(item.amount * dryWeight * 0.01).toFixed(2)}`, 0.3, ct);
+        doc.text(`lb.`, 0.8, ct);
+        ct += 0.24;
+      }
+    }
+
+    let wetFilt = components.filter((dgh) => dgh.componentType === "wet");
+    if (wetFilt.length > 0) {
+      doc.addPage({
+        format: [2, 4],
+        orientation: "l",
+      });
+      doc.setFontSize(14);
+      doc.text(`${doughName} - Wet`, 0.2, 0.36);
+
+      doc.setFontSize(12);
+      let ct = 0.7;
+      for (let item of wetFilt) {
+        doc.text(`${item.componentName}`, 1.2, ct);
+        doc.text(`${((item.amount/wetTotals) * wetWeight*dryWeight*.01).toFixed(2)}`, 0.3, ct);
+        doc.text(`lb.`, 0.8, ct);
+        ct += 0.24;
+      }
+    }
+
+    let levNameList = Array.from(
+      new Set(
+        components
+          .filter((com) => com.componentType === "lev")
+          .map((it) => it.componentName)
+      )
+    );
+    for (let lev of levNameList) {
+      let levFilt = doughComponents.filter((dgh) => dgh.dough === lev);
+      
+      let levList = doughComponents.filter((dgh) => dgh.dough === lev)
+      .map((it) => it.amount);
+    let levTotals;
+    levList.length > 0
+      ? (levTotals = levList.reduce(addUp))
+      : (levTotals = 0);
+
+
+      let levPercent = components[components.findIndex(comp => comp.componentName === lev)].amount*.01
+      console.log(levPercent)
+      if (levFilt.length > 0) {
+        doc.addPage({
+          format: [2, 4],
+          orientation: "l",
+        });
+        doc.setFontSize(14);
+        doc.text(`${doughName} - ${lev}`, 0.2, 0.36);
+
+        doc.setFontSize(12);
+        let ct = 0.7;
+        for (let item of levFilt) {
+          doc.text(`${item.componentName}`, 1.2, ct);
+          doc.text(`${((item.amount/levTotals)*levPercent*dryWeight).toFixed(2)}`, 0.3, ct);
+          doc.text(`lb.`, 0.8, ct);
+          ct += 0.24;
+        }
+      }
+      let postFilt = components.filter((dgh) => dgh.componentType === "post");
+      if (postFilt.length > 0) {
+        doc.addPage({
+          format: [2, 4],
+          orientation: "l",
+        });
+        doc.setFontSize(14);
+        doc.text(`${doughName} - Add ins`, 0.2, 0.36);
+
+        doc.setFontSize(12);
+        let ct = 0.7;
+        for (let item of postFilt) {
+          doc.text(`${item.componentName}`, 1.2, ct);
+          doc.text(`${(item.amount * dryWeight * 0.01).toFixed(2)}`, 0.3, ct);
+          doc.text(`lb.`, 0.8, ct);
+          ct += 0.24;
+        }
+      }
+    }
+
+    doc.save(`${doughName}Stickers.pdf`);
+  };
 
   return (
     <React.Fragment>
       <WholeBox>
         <h1>BPBN Dough Stickers</h1>
         {doughs.map((dough) => (
-          <React.Fragment>
+          <React.Fragment key={dough.id + "_firstFrag"}>
             <h3>
               {dough.doughName}: (need {dough.needed} lb.) TOTAL:
               {Number(Number(dough.needed) + Number(dough.buffer))}
             </h3>
-            <TwoColumnGrid>
+            <TwoColumnGrid key={dough.id + "_first2Col"}>
               <div>
-                <TwoColumnGrid>
+                <TwoColumnGrid key={dough.id + "_second2Col"}>
                   <span>Old Dough:</span>
                   <div className="p-inputgroup">
                     <InputText
@@ -119,7 +269,7 @@ function BPBNBuckets() {
                     <span className="p-inputgroup-addon">lb.</span>
                   </div>
                 </TwoColumnGrid>
-                <TwoColumnGrid>
+                <TwoColumnGrid key={dough.id + "_third2Col"}>
                   <span>Buffer Dough:</span>
                   <div className="p-inputgroup">
                     <InputText
@@ -133,14 +283,18 @@ function BPBNBuckets() {
                   </div>
                 </TwoColumnGrid>
               </div>
-              <Button
+              <button
                 key={dough.id + "_print"}
-                id = {dough.doughName}
-                onClick={e => handleClick(e, Number(dough.needed) + Number(dough.buffer) - Number(dough.oldDough))}
+                id={dough.doughName + "_print"}
+                onClick={(e) =>
+                  handleClick(e, (Number(dough.buffer)+ Number(dough.needed)-Number(dough.oldDough)))
+                }
                 label="Print Sticker Set"
                 className="p-button-rounded p-button-lg"
                 icon="pi pi-print"
-              />
+              >
+                Print Sticker Set
+              </button>
             </TwoColumnGrid>
           </React.Fragment>
         ))}

@@ -153,5 +153,5 @@ type DoughComponent @model @auth(rules: [{allow: public}]) {
   dough: String
   componentType: String
   componentName: String
-  amount: Int
+  amount: Float
 }

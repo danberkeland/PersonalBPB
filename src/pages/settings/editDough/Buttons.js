@@ -10,6 +10,7 @@ import {
   createDough,
   createDoughComponent,
   deleteDoughComponent,
+  updateDoughComponent
 } from "../../../graphql/mutations";
 
 import { Button } from "primereact/button";
@@ -179,24 +180,70 @@ const Buttons = ({
       console.log("error on fetching Dough List", error);
     }
 
-    // remove all old dough components
-    await deleteComps();
-
-    // add all new dough components
     let addBackList = doughComponents.filter(
       (dgh) => dgh.dough === selectedDough.doughName
     );
+    console.log(addBackList);
+
     for (let comp of addBackList) {
-      const newDetails = {
-        dough: comp.dough,
-        componentType: comp.componentType,
-        componentName: comp.componentName,
-        amount: comp.amount,
-      };
-      if (Number(newDetails.amount > 0)) {
-        await createDghComp(newDetails);
+      console.log(comp)
+      if (comp.id && Number(comp.amount) === 0){
+        const newDetails = {
+          id: comp.id,
+        };
+        
+          try {
+            await API.graphql(
+              graphqlOperation(deleteDoughComponent, {
+                input: { ...newDetails },
+              })
+            );
+          } catch (error) {
+            console.log("error on fetching Dough List", error);
+          }
+        
+      }
+      else if (comp.id) {
+        const newDetails = {
+          id: comp.id,
+          dough: comp.dough,
+          componentType: comp.componentType,
+          componentName: comp.componentName,
+          amount: comp.amount,
+        };
+        
+          try {
+            await API.graphql(
+              graphqlOperation(updateDoughComponent, {
+                input: { ...newDetails },
+              })
+            );
+          } catch (error) {
+            console.log("error on fetching Dough List", error);
+          }
+        
+      } else {
+        const newDetails = {
+          dough: comp.dough,
+          componentType: comp.componentType,
+          componentName: comp.componentName,
+          amount: comp.amount,
+        };
+        
+        if (Number(newDetails.amount > 0)) {
+          try {
+            await API.graphql(
+              graphqlOperation(createDoughComponent, {
+                input: { ...newDetails },
+              })
+            );
+          } catch (error) {
+            console.log("error on fetching Dough List", error);
+          }
+        }
       }
     }
+    
     setIsReload(!isReload);
   };
 

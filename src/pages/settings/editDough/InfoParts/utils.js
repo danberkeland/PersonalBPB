@@ -24,7 +24,7 @@ export const updateItem = (value, itemToUpdate, itemInfo) => {
         item.componentName === itemInfo[1] &&
         item.componentType === itemInfo[2]
     )
-  ].amount = value.target.value;
+  ].amount = Number(value.target.value);
 };
 
 export const handleChange = (value, id, doughComponents, setIsModified) => {

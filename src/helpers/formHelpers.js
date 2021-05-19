@@ -11,6 +11,7 @@ export const setPickValue = (value, selected) => {
 export const setValue = (value, selected) => {
   if (value.code === "Enter") {
     let itemToUpdate = clonedeep(selected);
+    value.target.value === "true" ? value.target.value = true : 
     itemToUpdate[value.target.id] = value.target.value;
     document.getElementById(value.target.id).value = "";
     return itemToUpdate;
@@ -20,6 +21,7 @@ export const setValue = (value, selected) => {
 export const fixValue = (value, selected) => {
   let itemToUpdate = clonedeep(selected);
   if (value.target.value !== "") {
+    value.target.value === "true" ? value.target.value = true : 
     itemToUpdate[value.target.id] = value.target.value;
   }
   document.getElementById(value.target.id).value = "";

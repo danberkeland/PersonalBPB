@@ -460,6 +460,7 @@ export const getDough = /* GraphQL */ `
       mixedWhere
       components
       oldDough
+      isBakeReady
       buffer
       createdAt
       updatedAt
@@ -482,6 +483,7 @@ export const listDoughs = /* GraphQL */ `
         mixedWhere
         components
         oldDough
+        isBakeReady
         buffer
         createdAt
         updatedAt

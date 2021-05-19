@@ -161,6 +161,8 @@ const Buttons = ({
       batchSize: selectedDough.batchSize,
       hydration: selectedDough.hydration,
       buffer: selectedDough.buffer,
+      isBakeReady: selectedDough.isBakeReady,
+      mixedWhere: selectedDough.mixedWhere,
 
       _version: selectedDough["_version"],
     };

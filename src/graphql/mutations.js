@@ -666,6 +666,7 @@ export const createDough = /* GraphQL */ `
       mixedWhere
       components
       oldDough
+      isBakeReady
       buffer
       createdAt
       updatedAt
@@ -686,6 +687,7 @@ export const updateDough = /* GraphQL */ `
       mixedWhere
       components
       oldDough
+      isBakeReady
       buffer
       createdAt
       updatedAt
@@ -706,6 +708,7 @@ export const deleteDough = /* GraphQL */ `
       mixedWhere
       components
       oldDough
+      isBakeReady
       buffer
       createdAt
       updatedAt

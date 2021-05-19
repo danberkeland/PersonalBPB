@@ -1,10 +1,10 @@
-
 import {
   zerosDelivFilter,
   buildGridOrderArray,
 } from "../../../helpers/delivGridHelpers";
 
 import { getFullOrders } from "../../../helpers/CartBuildingHelpers";
+import { todayPlus } from "../../../helpers/dateTimeHelpers";
 
 import { sortZtoADataByIndex } from "../../../helpers/sortDataHelpers";
 import {
@@ -14,8 +14,10 @@ import {
   productReadyBeforeRouteStarts,
   customerIsOpen,
 } from "../../logistics/ByRoute/Parts/utils/utils";
-import { findIndex } from "lodash";
 
+
+let twoDay = todayPlus()[2];
+let oneDay = todayPlus()[1];
 
 const addRoutes = (delivDate, prodGrid, database) => {
   const [products, customers, routes, standing, orders] = database;
@@ -84,53 +86,90 @@ const addUp = (acc, val) => {
 export default class ComposeDough {
   returnDoughBreakDown = (delivDate, database, loc) => {
     let doughs = this.returnDoughs(delivDate, database, loc);
-    let doughComponents = this.returnDoughComponents(delivDate, database, loc)
+    let doughComponents = this.returnDoughComponents(delivDate, database, loc);
     return {
       doughs: doughs,
-      doughComponents: doughComponents
-      
+      doughComponents: doughComponents,
     };
   };
 
   returnDoughs = (delivDate, database, loc) => {
-    const [products, customers, routes, standing, orders, doughs, doughComponents] = database;
-    let orderList = getOrdersList(delivDate, database);
-   
-    let doughList = Array.from(new Set(doughs.filter(dgh => dgh.mixedWhere==="Carlton").map(dgh => dgh.doughName))).map(dgh => ({
+    const [
+      products,
+      customers,
+      routes,
+      standing,
+      orders,
+      doughs,
+      doughComponents,
+    ] = database;
+    let twoDayOrderList = getOrdersList(twoDay, database);
+    let oneDayOrderList = getOrdersList(oneDay, database);
+
+    let doughList = Array.from(
+      new Set(
+        doughs
+          .filter(
+            (dgh) =>
+              dgh.mixedWhere === "Carlton" && dgh.doughName !== "Baguette"
+          )
+          .map((dgh) => dgh.doughName)
+      )
+    ).map((dgh) => ({
       doughName: dgh,
+      isBakeReady:
+        doughs[doughs.findIndex((dg) => dg.doughName === dgh)].isBakeReady,
       oldDough: 0,
       buffer: 0,
-      needed: 0
-    }))
+      needed: 0,
+    }));
 
-    for (let dgh of doughList){
-      dgh.id = doughs[doughs.findIndex(d => d.doughName === dgh.doughName)].id
-      dgh.hydration = doughs[doughs.findIndex(d => d.doughName === dgh.doughName)].hydration
-      dgh.oldDough = doughs[doughs.findIndex(d => d.doughName === dgh.doughName)].oldDough
-      dgh.buffer = doughs[doughs.findIndex(d => d.doughName === dgh.doughName)].buffer
-      dgh.needed = this.getDoughAmt(dgh.doughName, orderList).toFixed(2)
+    for (let dgh of doughList) {
+      dgh.id =
+        doughs[doughs.findIndex((d) => d.doughName === dgh.doughName)].id;
+      dgh.hydration =
+        doughs[
+          doughs.findIndex((d) => d.doughName === dgh.doughName)
+        ].hydration;
+      dgh.oldDough =
+        doughs[doughs.findIndex((d) => d.doughName === dgh.doughName)].oldDough;
+      dgh.buffer =
+        doughs[doughs.findIndex((d) => d.doughName === dgh.doughName)].buffer;
+      if (dgh.isBakeReady === true) {
+        dgh.needed = this.getDoughAmt(dgh.doughName, oneDayOrderList).toFixed(
+          2
+        );
+      } else {
+        dgh.needed = this.getDoughAmt(dgh.doughName, twoDayOrderList).toFixed(
+          2
+        );
+      }
     }
     return doughList;
   };
 
   returnDoughComponents = (delivDate, database, loc) => {
-    const [products, customers, routes, standing, orders, doughs, doughComponents] = database;
-    let doughComponentInfo = doughComponents
+    const [
+      products,
+      customers,
+      routes,
+      standing,
+      orders,
+      doughs,
+      doughComponents,
+    ] = database;
+    let doughComponentInfo = doughComponents;
     return doughComponentInfo;
-    
   };
 
-  
-
   getDoughAmt = (doughName, orders) => {
-    
     let qtyAccToday = 0;
-    let qtyArray = orders.filter(ord => ord.doughType === doughName).map(ord => ord.qty * ord.weight)
+    let qtyArray = orders
+      .filter((ord) => ord.doughType === doughName)
+      .map((ord) => ord.qty * ord.weight);
     if (qtyArray.length > 0) {
       qtyAccToday = qtyArray.reduce(addUp);
     }
-    return qtyAccToday
-  }
-
-  
+    return qtyAccToday;
+  };
 }

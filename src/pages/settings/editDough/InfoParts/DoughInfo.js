@@ -40,9 +40,20 @@ const DoughInfo = ({ selectedDough, setSelectedDough, setIsModified }) => {
   return (
     <React.Fragment>
       <div className="p-grid p-ai-center">
+      <div className="p-grid p-ai-center">
         <div className="p-col">
           <div>Dough Name: {selectedDough.doughName}</div>
         </div>
+        <div className="p-col">
+          <label htmlFor="mixedWhere">Where:</label>
+          <InfoInput id="mixedWhere" />
+        </div>
+        <div className="p-col">
+          <label htmlFor="isBakeReady">Bake Same Day as Mix?</label>
+          <InfoInput id="isBakeReady" />
+        </div>
+      </div>
+      <div className="p-grid p-ai-center">
         <div className="p-col">
           <label htmlFor="hydration">Hydration</label>
           <InfoInput id="hydration" />%
@@ -57,6 +68,8 @@ const DoughInfo = ({ selectedDough, setSelectedDough, setIsModified }) => {
           <InfoInput id="buffer" />
           lb.
         </div>
+      </div>
+      
       </div>
     </React.Fragment>
   );

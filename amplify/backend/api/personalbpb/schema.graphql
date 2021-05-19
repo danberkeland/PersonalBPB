@@ -145,6 +145,7 @@ type Dough @model @auth(rules: [{allow: public}]) {
   mixedWhere: String
   components: [String]
   oldDough: Float
+  isBakeReady: Boolean
   buffer: Float
 }
 

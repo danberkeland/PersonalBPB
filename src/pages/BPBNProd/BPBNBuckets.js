@@ -143,6 +143,8 @@ function BPBNBuckets() {
     if (dryFilt.length > 0) {
       doc.setFontSize(14);
       doc.text(`${doughName} - Dry`, 0.2, 0.36);
+      doc.setFontSize(10)
+      doc.text(`${amt} lb. Batch`,2.9,.36)
 
       doc.setFontSize(12);
       for (let item of dryFilt) {
@@ -180,6 +182,8 @@ function BPBNBuckets() {
       });
       doc.setFontSize(14);
       doc.text(`${doughName} - Wet`, 0.2, 0.36);
+      doc.setFontSize(10)
+      doc.text(`${amt} lb. Batch`,2.9,.36)
 
       doc.setFontSize(12);
       let ct = 0.7;
@@ -226,6 +230,8 @@ function BPBNBuckets() {
         });
         doc.setFontSize(14);
         doc.text(`${doughName} - ${lev}`, 0.2, 0.36);
+        doc.setFontSize(10)
+        doc.text(`${amt} lb. Batch`,2.9,.36)
 
         doc.setFontSize(12);
         let ct = 0.7;
@@ -251,6 +257,8 @@ function BPBNBuckets() {
       });
       doc.setFontSize(14);
       doc.text(`${doughName} - Add ins`, 0.2, 0.36);
+      doc.setFontSize(10)
+      doc.text(`${amt} lb. Batch`,2.9,.36)
 
       doc.setFontSize(12);
       let ct = 0.7;
@@ -275,6 +283,8 @@ function BPBNBuckets() {
       });
       doc.setFontSize(14);
       doc.text(`${doughName} - Salt & Yeast`, 0.2, 0.36);
+      doc.setFontSize(10)
+      doc.text(`${amt} lb. Batch`,2.9,.36)
 
       doc.setFontSize(12);
       let ct = 0.7;

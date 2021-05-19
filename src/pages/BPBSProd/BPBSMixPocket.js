@@ -331,6 +331,18 @@ function BPBSMixPocket() {
         ct += 0.24;
       }
     }
+    doc.addPage({
+      format: [2, 4],
+      orientation: "l",
+    });
+    ct = 0.7;
+    for (let item of pockets){
+      doc.text(`${item.pocketSize}`, 1.2, ct);
+        doc.text(`${item.qty}`, 0.3, ct);
+        doc.text(`x.`, 0.8, ct);
+        ct += 0.24;
+    }
+
 
     doc.save(`${doughName}Stickers.pdf`);
   };

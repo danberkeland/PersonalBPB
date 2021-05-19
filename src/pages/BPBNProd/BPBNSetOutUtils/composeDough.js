@@ -136,7 +136,7 @@ export default class ComposeDough {
 
       let qtyToday = bakedTomorrow
         .filter((frz) => make.pocketSize === frz.weight)
-        .map((ord) => ord.qty);
+        .map((ord) => ord.qty*ord.packSize);
 
       if (qtyToday.length > 0) {
         qtyAccToday = qtyToday.reduce(addUp);
@@ -219,7 +219,7 @@ export default class ComposeDough {
     let qtyAccToday = 0;
     let qtyArray = orders
       .filter((ord) => ord.doughType === doughName)
-      .map((ord) => ord.qty * ord.weight);
+      .map((ord) => ord.qty * ord.weight * ord.packSize);
     if (qtyArray.length > 0) {
       qtyAccToday = qtyArray.reduce(addUp);
     }

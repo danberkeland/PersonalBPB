@@ -3,8 +3,25 @@ import React from "react";
 import "primeflex/primeflex.css";
 
 import { InputText } from "primereact/inputtext";
+import { Dropdown } from 'primereact/dropdown';
 
 import { setValue, fixValue } from "../../../../helpers/formHelpers";
+
+import styled from "styled-components";
+
+const InfoBoxes = styled.div`
+  display: flex;
+  width: 100%;
+  margin: auto;
+  padding: 10px;
+  justify-content: space-around;
+`;
+
+const Title = styled.div`
+  display: flex;
+  font-weight: bold;
+  font-size: 1.4em;
+  `
 
 const DoughInfo = ({ selectedDough, setSelectedDough, setIsModified }) => {
   const InputStyle = {
@@ -36,24 +53,47 @@ const DoughInfo = ({ selectedDough, setSelectedDough, setIsModified }) => {
       />
     );
   };
+  const mixedWhere = [
+    {label: 'Carlton', value: 'Carlton'},
+    {label: 'Prado', value: 'Prado'},
+    
+];
+
+const isBakeReady = [
+  {label: 'yes', value: true},
+  {label: 'no', value: false},
+];
+
+  const InfoDrop = ({ id, options }) => {
+    return (
+      <Dropdown
+        id={id}
+        options = {options}
+        value={selectedDough[id]}
+        onChange={onExit}
+      />
+    );
+  };
 
   return (
     <React.Fragment>
       <div className="p-grid p-ai-center">
-      <div className="p-grid p-ai-center">
+      <Title>
         <div className="p-col">
           <div>Dough Name: {selectedDough.doughName}</div>
         </div>
+      </Title>
+      <InfoBoxes>
         <div className="p-col">
           <label htmlFor="mixedWhere">Where:</label>
-          <InfoInput id="mixedWhere" />
+          <InfoDrop id="mixedWhere" options={mixedWhere}/>
         </div>
         <div className="p-col">
           <label htmlFor="isBakeReady">Bake Same Day as Mix?</label>
-          <InfoInput id="isBakeReady" />
+          <InfoDrop id="isBakeReady" options={isBakeReady}/>
         </div>
-      </div>
-      <div className="p-grid p-ai-center">
+      </InfoBoxes>
+      <InfoBoxes>
         <div className="p-col">
           <label htmlFor="hydration">Hydration</label>
           <InfoInput id="hydration" />%
@@ -68,7 +108,7 @@ const DoughInfo = ({ selectedDough, setSelectedDough, setIsModified }) => {
           <InfoInput id="buffer" />
           lb.
         </div>
-      </div>
+      </InfoBoxes>
       
       </div>
     </React.Fragment>

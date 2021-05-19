@@ -113,10 +113,22 @@ export default class ComposePastryPrep {
     setOutToday = this.makeAddQty(setOutToday);
     let twoDayPlains = this.makeAddQty(twoDayToday);
     let threeDayPlains = this.makeAddQty(threeDayToday);
-
+    let twoDayFreeze = 0;
+    let threeDayFreeze = 0;
+    try {
+      twoDayFreeze = twoDayPlains[0].qty
+    } catch {
+      twoDayFreeze = 0;
+    }
+    try {
+      threeDayFreeze = threeDayPlains[0].qty
+    } catch {
+      threeDayFreeze = 0;
+    }
+  
     if (loc === "Prado") {
       setOutToday[setOutToday.findIndex((set) => set.prodNick === "pl")].qty +=
-        twoDayPlains[0].qty + threeDayPlains[0].qty;
+      twoDayFreeze + threeDayFreeze;
     }
     return setOutToday;
   };
@@ -178,7 +190,19 @@ export default class ComposePastryPrep {
     setOutToday = this.makeAddQty(setOutToday);
     let twoDayPlains = this.makeAddQty(twoDayToday);
     let threeDayPlains = this.makeAddQty(threeDayToday);
-    let freezerAmt = twoDayPlains[0].qty + threeDayPlains[0].qty
+    let twoDayFreeze = 0;
+    let threeDayFreeze = 0;
+    try {
+      twoDayFreeze = twoDayPlains[0].qty
+    } catch {
+      twoDayFreeze = 0;
+    }
+    try {
+      threeDayFreeze = threeDayPlains[0].qty
+    } catch {
+      threeDayFreeze = 0;
+    }
+    let freezerAmt = twoDayFreeze + threeDayFreeze
     let newAlmondList = [
       {
         prodNick: "fridge",

@@ -18,6 +18,7 @@ import {
 
 let twoDay = todayPlus()[2];
 let oneDay = todayPlus()[1];
+let tomorrow = todayPlus()[1];
 
 const addRoutes = (delivDate, prodGrid, database) => {
   const [products, customers, routes, standing, orders] = database;
@@ -87,10 +88,62 @@ export default class ComposeDough {
   returnDoughBreakDown = (delivDate, database, loc) => {
     let doughs = this.returnDoughs(delivDate, database, loc);
     let doughComponents = this.returnDoughComponents(delivDate, database, loc);
+    let pockets = this.returnPockets(tomorrow ,database, loc)
     return {
       doughs: doughs,
       doughComponents: doughComponents,
+      pockets: pockets
     };
+  };
+
+  returnPockets = (delivDate, database, loc) => {
+    const [
+      products,
+      customers,
+      routes,
+      standing,
+      orders,
+      doughs,
+      doughComponents,
+    ] = database;
+    let pocketList = getOrdersList(tomorrow, database);
+    let pocketsToday = pocketList.filter((set) =>
+      this.pocketFilter(set, loc)
+    );
+    pocketsToday = this.makePocketQty(pocketsToday);
+
+   
+    return pocketsToday;
+  }
+
+  pocketFilter = (ord, loc) => {
+    return (     
+        ord.doughType === "French"
+    );
+  };
+
+  makePocketQty = (bakedTomorrow) => {
+    let makeList2 = Array.from(
+      new Set(bakedTomorrow.map((prod) => prod.weight))
+    ).map((mk) => ({
+      pocketSize: mk,
+      qty: 0,
+    }));
+    for (let make of makeList2) {
+      make.qty = 1;
+
+      let qtyAccToday = 0;
+
+      let qtyToday = bakedTomorrow
+        .filter((frz) => make.pocketSize === frz.weight)
+        .map((ord) => ord.qty);
+
+      if (qtyToday.length > 0) {
+        qtyAccToday = qtyToday.reduce(addUp);
+      }
+      make.qty = qtyAccToday;
+    }
+    return makeList2;
   };
 
   returnDoughs = (delivDate, database, loc) => {
@@ -111,7 +164,7 @@ export default class ComposeDough {
         doughs
           .filter(
             (dgh) =>
-              dgh.mixedWhere === "Carlton" && dgh.doughName !== "Baguette"
+              dgh.mixedWhere === loc && dgh.doughName !== "Baguette"
           )
           .map((dgh) => dgh.doughName)
       )

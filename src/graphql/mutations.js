@@ -136,6 +136,7 @@ export const createProduct = /* GraphQL */ `
       forBake
       bakeExtra
       batchSize
+      preshaped
       createdAt
       updatedAt
     }
@@ -171,6 +172,7 @@ export const updateProduct = /* GraphQL */ `
       forBake
       bakeExtra
       batchSize
+      preshaped
       createdAt
       updatedAt
     }
@@ -206,6 +208,7 @@ export const deleteProduct = /* GraphQL */ `
       forBake
       bakeExtra
       batchSize
+      preshaped
       createdAt
       updatedAt
     }

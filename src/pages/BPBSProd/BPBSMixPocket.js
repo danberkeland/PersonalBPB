@@ -36,6 +36,14 @@ const TwoColumnGrid = styled.div`
   padding: 5px;
 `;
 
+const ThreeColumnGrid = styled.div`
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  column-gap: 10px;
+  row-gap: 10px;
+  padding: 5px;
+`;
+
 const addUp = (acc, val) => {
   return acc + val;
 };
@@ -331,6 +339,7 @@ function BPBSMixPocket() {
         ct += 0.24;
       }
     }
+    if (doughName === "French"){
     doc.addPage({
       format: [2, 4],
       orientation: "l",
@@ -342,7 +351,7 @@ function BPBSMixPocket() {
         doc.text(`x.`, 0.8, ct);
         ct += 0.24;
     }
-
+  }
 
     doc.save(`${doughName}Stickers.pdf`);
   };
@@ -357,7 +366,7 @@ function BPBSMixPocket() {
               {dough.doughName}: (need {dough.needed} lb.) TOTAL:
               {Number(Number(dough.needed) + Number(dough.buffer))}
             </h3>
-            <TwoColumnGrid key={dough.id + "_first2Col"}>
+            <ThreeColumnGrid key={dough.id + "_first2Col"}>
               <div>
                 <TwoColumnGrid key={dough.id + "_second2Col"}>
                   <span>Old Dough:</span>
@@ -403,7 +412,22 @@ function BPBSMixPocket() {
               >
                 Print Sticker Set
               </button>
-            </TwoColumnGrid>
+              <button
+                key={dough.id + "_print"}
+                id={dough.doughName + "_print"}
+                onClick={(e) =>
+                  handleClick(
+                    e,
+                    Number(dough.batchSize)
+                  )
+                }
+                label="Print Sticker Set"
+                className="p-button-rounded p-button-lg"
+                icon="pi pi-print"
+              >
+                Print Default Sticker Set
+              </button>
+            </ThreeColumnGrid>
           </React.Fragment>
         ))}
         <WholeBox>

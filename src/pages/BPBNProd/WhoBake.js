@@ -3,6 +3,8 @@ import React, { useEffect, useState, useContext } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
+import { ColumnGroup } from "primereact/columngroup";
+import { Row } from "primereact/row";
 
 import { ToggleContext } from "../../dataContexts/ToggleContext";
 
@@ -11,11 +13,7 @@ import "jspdf-autotable";
 
 import { convertDatetoBPBDate, todayPlus } from "../../helpers/dateTimeHelpers";
 import { promisedData } from "../../helpers/databaseFetchers";
-import ComposeWhatToMake from "./BPBNSetOutUtils/composeWhatToMake";
-
-import { updateProduct } from "../../graphql/mutations";
-
-import { API, graphqlOperation } from "aws-amplify";
+import ComposePastryPrep from "./BPBNSetOutUtils/composePastryPrep";
 
 import styled from "styled-components";
 
@@ -46,51 +44,30 @@ const ButtonWrapper = styled.div`
   background: #ffffff;
 `;
 
-const compose = new ComposeWhatToMake();
+const compose = new ComposePastryPrep();
 
-function BPBNBaker2() {
+function WhoBake({ loc }) {
   const { setIsLoading } = useContext(ToggleContext);
-  const [whatToMake, setWhatToMake] = useState([]);
-  
+  const [setOut, setSetOut] = useState([]);
 
   let delivDate = todayPlus()[0];
 
   useEffect(() => {
     promisedData(setIsLoading).then((database) =>
-      gatherWhatToMakeInfo(database)
+      gatherPastryPrepInfo(database)
     );
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const gatherWhatToMakeInfo = (database) => {
-    let whatToMakeData = compose.returnWhatToMakeBreakDown(
+  const gatherPastryPrepInfo = (database) => {
+    let pastryPrepData = compose.returnPastryPrepBreakDown(
       delivDate,
-      database
-      
+      database,
+      loc
     );
-    setWhatToMake(whatToMakeData.whatToMake);
-    
+    setSetOut(pastryPrepData.setOut);
   };
 
-  const exportPastryPrepPdf = async () => {
-
-    // UPDATE preshaped Nombers
-    console.log(whatToMake)
-    for (let make of whatToMake){
-    let addDetails = {
-      id: make.id,
-      preshaped: make.qty,
-    };
-    try {
-      await API.graphql(
-        graphqlOperation(updateProduct, { input: { ...addDetails } })
-      );
-     
-    } catch (error) {
-      console.log("error on updating product", error);
-     
-    }
-  }
-
+  const exportPastryPrepPdf = () => {
     let finalY;
     let pageMargin = 20;
     let tableToNextTitle = 12;
@@ -103,29 +80,28 @@ function BPBNBaker2() {
     doc.text(
       pageMargin,
       20,
-      `WhatToMake ${convertDatetoBPBDate(delivDate)}`
+      `${loc} Pastry Prep ${convertDatetoBPBDate(delivDate)}`
     );
 
     finalY = 20;
 
     doc.setFontSize(titleFont);
-    doc.text(pageMargin, finalY + tableToNextTitle, `Shape List`);
+    doc.text(pageMargin, finalY + tableToNextTitle, `Set Out`);
 
     doc.autoTable({
-      body: whatToMake,
+      body: setOut,
       margin: pageMargin,
       columns: [
-        { header: "Product", dataKey: "forBake" },
-        { header: "Weight", dataKey: "weight" },
-        { header: "Dough", dataKey: "dough" },
+        { header: "Product", dataKey: "prodNick" },
         { header: "Qty", dataKey: "qty" },
       ],
       startY: finalY + titleToNextTable,
       styles: { fontSize: tableFont },
     });
 
-    
-    doc.save(`WhatToShape${delivDate}.pdf`);
+    finalY = doc.previousAutoTable.finalY;
+
+    doc.save(`SetOut${loc}${delivDate}.pdf`);
   };
 
   const header = (
@@ -137,31 +113,65 @@ function BPBNBaker2() {
           className="p-button-success"
           data-pr-tooltip="PDF"
         >
-          Print Prep List
+          Print {loc} Prep List
         </Button>
       </ButtonWrapper>
     </ButtonContainer>
+  );
+
+  const productTotal = () => {
+    let total = 0;
+    for (let prod of setOut) {
+      total += prod.qty;
+    }
+
+    return total;
+  };
+  let headerGroup = (
+    <ColumnGroup>
+      <Row>
+        <Column
+          header="Baguette"
+          colSpan={1}
+          headerStyle={{ textAlign: "left" }}
+        />
+      </Row>
+    </ColumnGroup>
+  );
+
+  let footerGroup = (
+    <ColumnGroup>
+      <Row>
+        <Column
+          footer="Totals:"
+          colSpan={1}
+          footerStyle={{ textAlign: "right" }}
+        />
+        <Column footer={productTotal} />
+      </Row>
+    </ColumnGroup>
   );
 
   return (
     <React.Fragment>
       <WholeBox>
         <h1>
-          What To Shape {convertDatetoBPBDate(delivDate)}
+          {loc} Who Bake {convertDatetoBPBDate(delivDate)}
         </h1>
         <div>{header}</div>
 
-        <h3>Set Out</h3>
-        <DataTable value={whatToMake} className="p-datatable-sm">
-          <Column field="forBake" header="Product"></Column>
-          <Column field="weight" header="Weight"></Column>
-          <Column field="dough" header="Dough"></Column>
+        <DataTable
+          value={setOut}
+          headerColumnGroup={headerGroup}
+          footerColumnGroup={footerGroup}
+          className="p-datatable-sm"
+        >
+          <Column field="prodNick" header="Product"></Column>
           <Column field="qty" header="Qty"></Column>
         </DataTable>
-
       </WholeBox>
     </React.Fragment>
   );
 }
 
-export default BPBNBaker2;
+export default WhoBake;

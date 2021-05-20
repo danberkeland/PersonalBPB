@@ -175,6 +175,7 @@ export default class ComposeDough {
       oldDough: 0,
       buffer: 0,
       needed: 0,
+      batchSize: 0,
     }));
 
     for (let dgh of doughList) {
@@ -188,6 +189,8 @@ export default class ComposeDough {
         doughs[doughs.findIndex((d) => d.doughName === dgh.doughName)].oldDough;
       dgh.buffer =
         doughs[doughs.findIndex((d) => d.doughName === dgh.doughName)].buffer;
+        dgh.batchSize =
+        doughs[doughs.findIndex((d) => d.doughName === dgh.doughName)].batchSize;
       if (dgh.isBakeReady === true) {
         dgh.needed = this.getDoughAmt(dgh.doughName, oneDayOrderList).toFixed(
           2

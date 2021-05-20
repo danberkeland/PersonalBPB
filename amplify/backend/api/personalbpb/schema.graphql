@@ -50,6 +50,7 @@ type Product @model @auth(rules: [{allow: public}]) {
   forBake: String
   bakeExtra: Int
   batchSize: Int
+  preshaped: Int
 }
 
 type Order @model @auth(rules: [{allow: public}]) {

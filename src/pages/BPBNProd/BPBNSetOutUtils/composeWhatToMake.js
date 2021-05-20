@@ -112,6 +112,7 @@ export default class ComposeWhatToMake {
   };
 
   makeAddQty = (bakedTomorrow) => {
+    console.log("bakedTomorrow",bakedTomorrow)
     let makeList2 = Array.from(
       new Set(bakedTomorrow.map((prod) => prod.forBake))
     ).map((mk) => ({
@@ -135,6 +136,7 @@ export default class ComposeWhatToMake {
       make.qty = qtyAccToday;
       make.dough = bakedTomorrow[bakedTomorrow.findIndex(baked => baked.forBake === make.forBake)].doughType
       make.weight = bakedTomorrow[bakedTomorrow.findIndex(baked => baked.forBake === make.forBake)].weight
+      make.id = bakedTomorrow[bakedTomorrow.findIndex(baked => baked.forBake === make.forBake)].prodID
       
     }
     return makeList2;

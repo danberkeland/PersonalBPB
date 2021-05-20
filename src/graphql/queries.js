@@ -99,6 +99,7 @@ export const getProduct = /* GraphQL */ `
       forBake
       bakeExtra
       batchSize
+      preshaped
       createdAt
       updatedAt
     }
@@ -136,6 +137,7 @@ export const listProducts = /* GraphQL */ `
         forBake
         bakeExtra
         batchSize
+        preshaped
         createdAt
         updatedAt
       }

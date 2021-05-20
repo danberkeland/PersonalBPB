@@ -58,8 +58,8 @@ function Nav() {
       {label: 'BPBN Baker 2', command:()=>{ window.location="/BPBNProd/BPBNBaker2"; }},
       {label: 'BPBN Set Out', command:()=>{ window.location="/BPBNProd/BPBNSetOut"; }},
       {label: 'BPBN Buckets', command:()=>{ window.location="/BPBNProd/Buckets"; }},
-      {label: 'BPBN EOD Count', command:()=>{ window.location="/EODCounts/BPBNCounts"; }},
-      {label: 'Dough Calculator', command:()=>{ window.location="/doughCalc/doughCalc"; }},
+      {label: 'Who Bake', command:()=>{ window.location="/BPBNProd/WhoBake"; }},
+      {label: 'WhoShape', command:()=>{ window.location="/BPBNProd/WhoShape"; }},
 
    ]
 
@@ -113,7 +113,8 @@ function Nav() {
    const settingsitems = [
       {label: 'Edit Zones', command:()=>{ window.location="/settings/editZones"; }},
       {label: 'Edit Routes', command:()=>{ window.location="/settings/editRoutes"; }},
-      {label: 'Edit Doughs', command:()=>{ window.location="/settings/editDough"; }}
+      {label: 'Edit Doughs', command:()=>{ window.location="/settings/editDough"; }},
+      {label: 'Notes', command:()=>{ window.location="/settings/Notes"; }}
 
    ];
 

@@ -658,3 +658,42 @@ export const onDeleteDoughComponent = /* GraphQL */ `
     }
   }
 `;
+export const onCreateNotes = /* GraphQL */ `
+  subscription OnCreateNotes {
+    onCreateNotes {
+      id
+      note
+      forWhom
+      byWhom
+      when
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateNotes = /* GraphQL */ `
+  subscription OnUpdateNotes {
+    onUpdateNotes {
+      id
+      note
+      forWhom
+      byWhom
+      when
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteNotes = /* GraphQL */ `
+  subscription OnDeleteNotes {
+    onDeleteNotes {
+      id
+      note
+      forWhom
+      byWhom
+      when
+      createdAt
+      updatedAt
+    }
+  }
+`;

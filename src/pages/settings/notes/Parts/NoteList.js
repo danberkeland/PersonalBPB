@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 
 import styled from "styled-components";
 
@@ -6,7 +6,6 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { ScrollPanel } from "primereact/scrollpanel";
 
-import { ProductsContext } from "../../../dataContexts/ProductsContext";
 
 const ListWrapper = styled.div`
   font-family: "Montserrat", sans-serif;
@@ -16,38 +15,33 @@ const ListWrapper = styled.div`
   background: #ffffff;
 `;
 
-const ProductList = ({ selectedProduct, setSelectedProduct }) => {
-  const { products } = useContext(ProductsContext);
+const NoteList = ({ selectedNote, setSelectedNote, notes }) => {
+  
 
-  const handleSelection = (e) => {
-    
-    setSelectedProduct(e.value);
+  const handleSelection = (e) => {   
+    setSelectedNote(e.value);
   };
 
   return (
     <ListWrapper>
       <ScrollPanel style={{ width: "100%", height: "100vh" }}>
         <DataTable
-          value={products}
+          value={notes}
           className="p-datatable-striped"
-          selection={selectedProduct}
+          selection={selectedNote}
           onSelectionChange={handleSelection}
           selectionMode="single"
           dataKey="id"
         >
           <Column
-            field="prodName"
-            header="Product"
+            field="when"
+            header="Date"
             sortable
-            filter
-            filterPlaceholder="Search by name"
           ></Column>
           <Column
-            field="nickName"
-            header="Nickname"
+            field="note"
+            header="Note"
             sortable
-            filter
-            filterPlaceholder="Search by nickname"
           ></Column>
         </DataTable>
       </ScrollPanel>
@@ -55,4 +49,4 @@ const ProductList = ({ selectedProduct, setSelectedProduct }) => {
   );
 };
 
-export default ProductList;
+export default NoteList;

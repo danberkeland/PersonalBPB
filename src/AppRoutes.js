@@ -8,7 +8,7 @@ import Ordering from './pages/ordering/Ordering'
 
 import EditRoutes from './pages/settings/editRoutes/editRoutes'
 import EditZones from './pages/settings/editZones/editZones'
-import Notes from './pages/settings/Notes'
+import Notes from './pages/settings/notes/Notes'
 import BPBS from './BPBS'
 import BPBN from './BPBN'
 import Croix from './Croix'

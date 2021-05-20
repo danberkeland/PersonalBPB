@@ -10,7 +10,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 
 import { convertDatetoBPBDate, todayPlus } from "../../helpers/dateTimeHelpers";
-import { promisedData } from "../../helpers/databaseFetchers";
+import { promisedData, notesData } from "../../helpers/databaseFetchers";
 import ComposeNorthList from "./utils/composeNorthList";
 
 import styled from "styled-components";
@@ -61,6 +61,7 @@ function NorthList() {
   const [columnsOtherRustics, setColumnsOtherRustics] = useState([]);
   const [columnsRetailStuff, setColumnsRetailStuff] = useState([]);
   const [columnsEarlyDeliveries, setColumnsEarlyDeliveries] = useState([]);
+  const [notes, setNotes] = useState([])
 
   let delivDate = todayPlus()[0];
 
@@ -89,6 +90,12 @@ function NorthList() {
 
   useEffect(() => {
     promisedData(setIsLoading).then((database) => gatherMakeInfo(database));
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    notesData(setIsLoading).then((notes) =>
+      setNotes(notes.filter(note => note.when === convertDatetoBPBDate(delivDate)))
+    );
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const gatherMakeInfo = (database) => {
@@ -123,7 +130,20 @@ function NorthList() {
     doc.text(pageMargin, 20, `North Driver ${convertDatetoBPBDate(delivDate)}`);
 
     finalY = 20;
+    doc.setFontSize(titleFont);
+    doc.text(pageMargin, finalY + tableToNextTitle, `Driver Notes`);
 
+    doc.autoTable({
+      body: notes,
+      columns: [
+        { header: "Date", dataKey: "when" },
+        { header: "Note", dataKey: "note" },
+      ],
+      startY: finalY + titleToNextTable,
+      styles: { fontSize: tableFont },
+    });
+
+    finalY = doc.previousAutoTable.finalY;
     doc.setFontSize(titleFont);
     doc.text(pageMargin, finalY + tableToNextTitle, `Frozen and Baked Croix`);
 
@@ -266,6 +286,12 @@ function NorthList() {
         <h1>LONG DRIVER</h1>
         <div>{header}</div>
         <h1>AM North Run {convertDatetoBPBDate(delivDate)}</h1>
+        <h3>Driver Notes</h3>
+        <DataTable value={notes} className="p-datatable-sm">
+          <Column field="when" header="Date"></Column>
+          <Column field="note" header="Note"></Column>
+         
+        </DataTable>
         <h3>Frozen and Baked Croix</h3>
         <DataTable value={croixNorth} className="p-datatable-sm">
           <Column field="prodNick" header="Product"></Column>

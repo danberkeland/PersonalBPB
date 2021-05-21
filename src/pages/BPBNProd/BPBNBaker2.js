@@ -51,7 +51,6 @@ const compose = new ComposeWhatToMake();
 function BPBNBaker2() {
   const { setIsLoading } = useContext(ToggleContext);
   const [whatToMake, setWhatToMake] = useState([]);
-  
 
   let delivDate = todayPlus()[0];
 
@@ -62,34 +61,26 @@ function BPBNBaker2() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const gatherWhatToMakeInfo = (database) => {
-    let whatToMakeData = compose.returnWhatToMakeBreakDown(
-      delivDate,
-      database
-      
-    );
+    let whatToMakeData = compose.returnWhatToMakeBreakDown(delivDate, database);
     setWhatToMake(whatToMakeData.whatToMake);
-    
   };
 
   const exportPastryPrepPdf = async () => {
-
     // UPDATE preshaped Nombers
-    console.log(whatToMake)
-    for (let make of whatToMake){
-    let addDetails = {
-      id: make.id,
-      preshaped: make.qty,
-    };
-    try {
-      await API.graphql(
-        graphqlOperation(updateProduct, { input: { ...addDetails } })
-      );
-     
-    } catch (error) {
-      console.log("error on updating product", error);
-     
+    console.log(whatToMake);
+    for (let make of whatToMake) {
+      let addDetails = {
+        id: make.id,
+        preshaped: make.qty,
+      };
+      try {
+        await API.graphql(
+          graphqlOperation(updateProduct, { input: { ...addDetails } })
+        );
+      } catch (error) {
+        console.log("error on updating product", error);
+      }
     }
-  }
 
     let finalY;
     let pageMargin = 20;
@@ -100,11 +91,7 @@ function BPBNBaker2() {
 
     const doc = new jsPDF("p", "mm", "a4");
     doc.setFontSize(20);
-    doc.text(
-      pageMargin,
-      20,
-      `WhatToMake ${convertDatetoBPBDate(delivDate)}`
-    );
+    doc.text(pageMargin, 20, `WhatToMake ${convertDatetoBPBDate(delivDate)}`);
 
     finalY = 20;
 
@@ -124,7 +111,6 @@ function BPBNBaker2() {
       styles: { fontSize: tableFont },
     });
 
-    
     doc.save(`WhatToShape${delivDate}.pdf`);
   };
 
@@ -146,9 +132,7 @@ function BPBNBaker2() {
   return (
     <React.Fragment>
       <WholeBox>
-        <h1>
-          What To Shape {convertDatetoBPBDate(delivDate)}
-        </h1>
+        <h1>What To Shape {convertDatetoBPBDate(delivDate)}</h1>
         <div>{header}</div>
 
         <h3>Set Out</h3>
@@ -158,7 +142,6 @@ function BPBNBaker2() {
           <Column field="dough" header="Dough"></Column>
           <Column field="qty" header="Qty"></Column>
         </DataTable>
-
       </WholeBox>
     </React.Fragment>
   );

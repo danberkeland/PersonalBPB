@@ -104,9 +104,7 @@ export default class ComposeWhatToMake {
   whatToMakeFilter = (ord, loc) => {
     return (
       ord.where.includes("Carlton") &&
-      ord.packGroup === "rustic breads" &&
-      ord.forBake !== "Baguette" &&
-      ord.forBake !== "Epi"
+      ord.packGroup === "rustic breads"
       
     );
   };

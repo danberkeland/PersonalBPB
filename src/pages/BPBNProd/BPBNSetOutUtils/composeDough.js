@@ -156,6 +156,7 @@ export default class ComposeDough {
     for (let make of whatToMakeToday) {
       qty += Number(make.qty * make.weight)
     }
+    console.log(qty)
     return Math.ceil(qty/80);
   }
 

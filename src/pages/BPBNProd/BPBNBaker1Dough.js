@@ -112,7 +112,8 @@ function BPBNBaker1Dough() {
   let bcWeight = bcCount * 1.4
   let fullPockets = Math.floor(bagAndEpiCount/16)
   let extraPockets = bagAndEpiCount % 16
-  let bucketSets = Math.ceil(bagDoughTwoDays/80)
+  let bucketSets = bagDoughTwoDays
+  console.log(bagDoughTwoDays)
   
 
   const updateDoughDB = async (e) => {
@@ -138,7 +139,25 @@ function BPBNBaker1Dough() {
     }
   };
 
-  const exportPastryPrepPdf = async (dough) => {
+  const exportPastryPrepPdf = async () => {
+
+    // UPDATE preshaped Nombers
+    console.log(doughs);
+    let updateDetails = {
+      id: doughs[0].id,
+      bucketSets: bucketSets,
+    };
+
+    try {
+      await API.graphql(
+        graphqlOperation(updateDough, { input: { ...updateDetails } })
+      );
+    } catch (error) {
+      console.log("error on fetching Dough List", error);
+    }
+  
+    
+
     let finalY;
     let pageMargin = 20;
     let tableToNextTitle = 8;
@@ -471,17 +490,17 @@ function BPBNBaker1Dough() {
               <div>Old Dough</div>
               <div>{dough.oldDough} lb.</div>
               <div>50 lb. Bread Flour</div>
-              <div>{Math.floor((0.575 * baseNum(dough, 1)) / 50)}</div>
+              <div>{Math.floor((0.575 * baseNum(dough, 1) - (bucketSets * 19.22)) / 50)}</div>
               <div>25 lb. Bucket Water</div>
-              <div>{Math.floor((0.372 * baseNum(dough, 1)) / 25)}</div>
+              <div>{Math.floor((0.372 * baseNum(dough, 1)- (bucketSets * 19.22)) / 25)}</div>
               <div> </div>
               <div> </div>
               <div>Bread Flour</div>
-              <div>{((0.575 * baseNum(dough, 1)) % 50).toFixed(2)} lb.</div>
+              <div>{((0.575 * baseNum(dough, 1)- (bucketSets * 19.22)) % 50).toFixed(2)} lb.</div>
               <div>Whole Wheat Flour</div>
               <div>{(0.038 * baseNum(dough, 1)).toFixed(2)} lb.</div>
               <div>Water</div>
-              <div>{((0.372 * baseNum(dough, 1)) % 25).toFixed(2)} lb.</div>
+              <div>{((0.372 * baseNum(dough, 1)- (bucketSets * 19.22)) % 25).toFixed(2)} lb.</div>
               <div>Salt</div>
               <div>{(0.013 * baseNum(dough, 1)).toFixed(2)} lb.</div>
               <div>Yeast</div>

@@ -464,6 +464,7 @@ export const getDough = /* GraphQL */ `
       oldDough
       isBakeReady
       buffer
+      bucketSets
       createdAt
       updatedAt
     }
@@ -487,6 +488,7 @@ export const listDoughs = /* GraphQL */ `
         oldDough
         isBakeReady
         buffer
+        bucketSets
         createdAt
         updatedAt
       }

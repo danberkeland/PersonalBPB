@@ -67,6 +67,7 @@ function AppRoutes() {
           <Route path="/BPBNProd/WhoBake" component={WhoBake} />
           <Route path="/BPBNProd/WhoShape" component={WhoShape} />
           <Route path="/doughCalc/doughCalc" component={DoughCalc} />
+          <Route path="/BPBNProd/BPBNSetOut" render={(props)=><BPBNSetOut {...props} loc={'Carlton'} />} />
 
           <Route path="/BPBSProd/BPBSWhatToMake" component={BPBSWhatToMake} />
           <Route path="/BPBSProd/BPBSMixPocket" component={BPBSMixPocket} />

@@ -148,6 +148,7 @@ type Dough @model @auth(rules: [{allow: public}]) {
   oldDough: Float
   isBakeReady: Boolean
   buffer: Float
+  bucketSets: Int
 }
 
 type DoughComponent @model @auth(rules: [{allow: public}]) {

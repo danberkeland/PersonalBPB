@@ -17,6 +17,7 @@ import {
 
 const clonedeep = require("lodash.clonedeep");
 let tomorrow = todayPlus()[1];
+let twoDay = todayPlus()[2];
 
 const addRoutes = (delivDate, prodGrid, database) => {
   const [products, customers, routes, standing, orders] = database;
@@ -85,12 +86,16 @@ const addUp = (acc, val) => {
 export default class ComposeWhatToMake {
   returnWhatToMakeBreakDown = (delivDate, database, loc) => {
     let whatToMake = this.returnWhatToMake(delivDate, database, loc);
+   
     return {
       whatToMake: whatToMake,
+     
       
     };
   };
 
+
+  
   returnWhatToMake = (delivDate, database) => {
     const [products, customers, routes, standing, orders] = database;
     let whatToMakeList = getOrdersList(delivDate, database);

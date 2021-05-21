@@ -7,7 +7,7 @@ import { Button } from "primereact/button";
 
 import { promisedData } from "../../helpers/databaseFetchers";
 import ComposeDough from "./BPBNSetOutUtils/composeDough";
-import { todayPlus } from "../../helpers/dateTimeHelpers";
+import { convertDatetoBPBDate, todayPlus } from "../../helpers/dateTimeHelpers";
 
 import { updateDough } from "../../graphql/mutations";
 
@@ -73,9 +73,15 @@ function BPBNBaker1Dough() {
 
   const [doughs, setDoughs] = useState([]);
   const [doughComponents, setDoughComponents] = useState([]);
-
+  const [bagAndEpiCount, setBagAndEpiCount] = useState([]);
+  const [oliveCount, setOliveCount] = useState([]);
+  const [bcCount, setBcCount] = useState([]);
+  const [bagDoughTwoDays, setBagDoughTwoDays] = useState([]);
+  
+  
   let tomorrow = todayPlus()[1];
   let today = todayPlus()[0];
+  let twoDay = todayPlus()[2];
 
   useEffect(() => {
     promisedData(setIsLoading).then((database) => gatherDoughInfo(database));
@@ -85,6 +91,10 @@ function BPBNBaker1Dough() {
     let doughData = compose.returnDoughBreakDown(tomorrow, database, "Carlton");
     setDoughs(doughData.Baker1Dough);
     setDoughComponents(doughData.Baker1DoughComponents);
+    setBagAndEpiCount(doughData.bagAndEpiCount);
+    setOliveCount(doughData.oliveCount);
+    setBcCount(doughData.bcCount);
+    setBagDoughTwoDays(doughData.bagDoughTwoDays);
   };
 
   const handleChange = (e) => {
@@ -96,6 +106,14 @@ function BPBNBaker1Dough() {
   const handleBlur = (e) => {
     updateDoughDB(e);
   };
+  
+  let baguetteBins = Math.ceil(bagAndEpiCount/24)
+  let oliveWeight = oliveCount * 1.4
+  let bcWeight = bcCount * 1.4
+  let fullPockets = Math.floor(bagAndEpiCount/16)
+  let extraPockets = bagAndEpiCount % 16
+  let bucketSets = Math.ceil(bagDoughTwoDays/80)
+  
 
   const updateDoughDB = async (e) => {
     let id = e.target.id.split("_")[0];
@@ -121,8 +139,6 @@ function BPBNBaker1Dough() {
   };
 
   const exportPastryPrepPdf = async (dough) => {
-
-    
     let finalY;
     let pageMargin = 20;
     let tableToNextTitle = 8;
@@ -131,116 +147,259 @@ function BPBNBaker1Dough() {
     let titleFont = 14;
     let nextColumn = 50;
 
-    let ct = 16
+    let ct = 16;
     const doc = new jsPDF("p", "mm", "a4");
     doc.setFontSize(20);
-    
-    
-    
-      
-      doc.text(pageMargin,ct += tableToNextTitle,`Baguette Mix #1`);
-      doc.setFontSize(12);
-      doc.text(pageMargin,ct += tableToNextTitle,`Bucket Sets`);
-      doc.text(pageMargin + nextColumn,ct,`${doughs[0].bucketSets} (L and P)`);
-      doc.text(pageMargin,ct += tableToNextTitle,`Old Dough`);
-      doc.text(pageMargin + nextColumn,ct,`${doughs[0].oldDough} lb.`);
-      doc.text(pageMargin,ct += tableToNextTitle,`50 lb. Bread Flour`);
-      doc.text(pageMargin + nextColumn,ct,`${Math.floor((0.575 * baseNum(doughs[0],1)) / 50)}`);
-      doc.text(pageMargin,ct += tableToNextTitle,`25 lb. Bucket Water`);
-      doc.text(pageMargin + nextColumn,ct,`${Math.floor((0.372 * baseNum(doughs[0],1)) / 25)}`);
-      doc.text(pageMargin,ct += tableToNextTitle,`Bread Flour`);
-      doc.text(pageMargin + nextColumn,ct,`${((0.575 * baseNum(doughs[0],1)) % 50).toFixed(2)} lb.`);
-      doc.text(pageMargin,ct += tableToNextTitle,`Whole Wheat Flour`);
-      doc.text(pageMargin + nextColumn,ct,`${(0.038 * baseNum(doughs[0],1)).toFixed(2)} lb.`);
-      doc.text(pageMargin,ct += tableToNextTitle,`Water`);
-      doc.text(pageMargin + nextColumn,ct,`${((0.372 * baseNum(doughs[0],1)) % 25).toFixed(2)} lb.`);
-      doc.text(pageMargin,ct += tableToNextTitle,`Salt`);
-      doc.text(pageMargin + nextColumn,ct,`${(0.013 * baseNum(doughs[0],1)).toFixed(2)} lb.`);
-      doc.text(pageMargin,ct += tableToNextTitle,`Yeast`);
-      doc.text(pageMargin + nextColumn,ct,`${(0.002 * baseNum(doughs[0],1)).toFixed(2)} lb.`);
-      
-      if (doughs[0].bucketSets>2) {
-    
-      doc.text(pageMargin,ct += tableToNextTitle,`Baguette Mix #2`);
+    doc.text(
+      pageMargin,
+      20,
+      `What To Mix ${convertDatetoBPBDate(today)}`
+    );
+
+    ct +=10
+    doc.text(pageMargin, (ct += tableToNextTitle), `Baguette Mix #1`);
+    doc.setFontSize(12);
+    doc.text(pageMargin, (ct += tableToNextTitle), `Bucket Sets`);
+    doc.text(pageMargin + nextColumn, ct, `${doughs[0].bucketSets} (L and P)`);
+    doc.text(pageMargin, (ct += tableToNextTitle), `Old Dough`);
+    doc.text(pageMargin + nextColumn, ct, `${doughs[0].oldDough} lb.`);
+    doc.text(pageMargin, (ct += tableToNextTitle), `50 lb. Bread Flour`);
+    doc.text(
+      pageMargin + nextColumn,
+      ct,
+      `${Math.floor((0.575 * baseNum(doughs[0], 1)) / 50)}`
+    );
+    doc.text(pageMargin, (ct += tableToNextTitle), `25 lb. Bucket Water`);
+    doc.text(
+      pageMargin + nextColumn,
+      ct,
+      `${Math.floor((0.372 * baseNum(doughs[0], 1)) / 25)}`
+    );
+    doc.text(pageMargin, (ct += tableToNextTitle), `Bread Flour`);
+    doc.text(
+      pageMargin + nextColumn,
+      ct,
+      `${((0.575 * baseNum(doughs[0], 1)) % 50).toFixed(2)} lb.`
+    );
+    doc.text(pageMargin, (ct += tableToNextTitle), `Whole Wheat Flour`);
+    doc.text(
+      pageMargin + nextColumn,
+      ct,
+      `${(0.038 * baseNum(doughs[0], 1)).toFixed(2)} lb.`
+    );
+    doc.text(pageMargin, (ct += tableToNextTitle), `Water`);
+    doc.text(
+      pageMargin + nextColumn,
+      ct,
+      `${((0.372 * baseNum(doughs[0], 1)) % 25).toFixed(2)} lb.`
+    );
+    doc.text(pageMargin, (ct += tableToNextTitle), `Salt`);
+    doc.text(
+      pageMargin + nextColumn,
+      ct,
+      `${(0.013 * baseNum(doughs[0], 1)).toFixed(2)} lb.`
+    );
+    doc.text(pageMargin, (ct += tableToNextTitle), `Yeast`);
+    doc.text(
+      pageMargin + nextColumn,
+      ct,
+      `${(0.002 * baseNum(doughs[0], 1)).toFixed(2)} lb.`
+    );
+
+    if (doughs[0].bucketSets > 2) {
+      doc.text(pageMargin, (ct += tableToNextTitle), `Baguette Mix #2`);
       doc.setFontSize(14);
-      doc.text(pageMargin,ct += tableToNextTitle,`Bucket Sets`);
-      doc.text(pageMargin + nextColumn,ct,`${doughs[0].bucketSets} (L and P)`);
-      doc.text(pageMargin,ct += tableToNextTitle,`Old Dough`);
-      doc.text(pageMargin + nextColumn,ct,`${doughs[0].oldDough} lb.`);
-      doc.text(pageMargin,ct += tableToNextTitle,`50 lb. Bread Flour`);
-      doc.text(pageMargin + nextColumn,ct,`${Math.floor((0.575 * baseNum(doughs[0],2)) / 50)}`);
-      doc.text(pageMargin,ct += tableToNextTitle,`25 lb. Bucket Water`);
-      doc.text(pageMargin + nextColumn,ct,`${Math.floor((0.372 * baseNum(doughs[0],2)) / 25)}`);
-      doc.text(pageMargin,ct += tableToNextTitle,`Bread Flour`);
-      doc.text(pageMargin + nextColumn,ct,`${((0.575 * baseNum(doughs[0],2)) % 50).toFixed(2)} lb.`);
-      doc.text(pageMargin,ct += tableToNextTitle,`Whole Wheat Flour`);
-      doc.text(pageMargin + nextColumn,ct,`${(0.038 * baseNum(doughs[0],2)).toFixed(2)} lb.`);
-      doc.text(pageMargin,ct += tableToNextTitle,`Water`);
-      doc.text(pageMargin + nextColumn,ct,`${((0.372 * baseNum(doughs[0],2)) % 25).toFixed(2)} lb.`);
-      doc.text(pageMargin,ct += tableToNextTitle,`Salt`);
-      doc.text(pageMargin + nextColumn,ct,`${(0.013 * baseNum(doughs[0],2)).toFixed(2)} lb.`);
-      doc.text(pageMargin,ct += tableToNextTitle,`Yeast`);
-      doc.text(pageMargin + nextColumn,ct,`${(0.002 * baseNum(doughs[0],2)).toFixed(2)} lb.`);    
+      doc.text(pageMargin, (ct += tableToNextTitle), `Bucket Sets`);
+      doc.text(
+        pageMargin + nextColumn,
+        ct,
+        `${doughs[0].bucketSets} (L and P)`
+      );
+      doc.text(pageMargin, (ct += tableToNextTitle), `Old Dough`);
+      doc.text(pageMargin + nextColumn, ct, `${doughs[0].oldDough} lb.`);
+      doc.text(pageMargin, (ct += tableToNextTitle), `50 lb. Bread Flour`);
+      doc.text(
+        pageMargin + nextColumn,
+        ct,
+        `${Math.floor((0.575 * baseNum(doughs[0], 2)) / 50)}`
+      );
+      doc.text(pageMargin, (ct += tableToNextTitle), `25 lb. Bucket Water`);
+      doc.text(
+        pageMargin + nextColumn,
+        ct,
+        `${Math.floor((0.372 * baseNum(doughs[0], 2)) / 25)}`
+      );
+      doc.text(pageMargin, (ct += tableToNextTitle), `Bread Flour`);
+      doc.text(
+        pageMargin + nextColumn,
+        ct,
+        `${((0.575 * baseNum(doughs[0], 2)) % 50).toFixed(2)} lb.`
+      );
+      doc.text(pageMargin, (ct += tableToNextTitle), `Whole Wheat Flour`);
+      doc.text(
+        pageMargin + nextColumn,
+        ct,
+        `${(0.038 * baseNum(doughs[0], 2)).toFixed(2)} lb.`
+      );
+      doc.text(pageMargin, (ct += tableToNextTitle), `Water`);
+      doc.text(
+        pageMargin + nextColumn,
+        ct,
+        `${((0.372 * baseNum(doughs[0], 2)) % 25).toFixed(2)} lb.`
+      );
+      doc.text(pageMargin, (ct += tableToNextTitle), `Salt`);
+      doc.text(
+        pageMargin + nextColumn,
+        ct,
+        `${(0.013 * baseNum(doughs[0], 2)).toFixed(2)} lb.`
+      );
+      doc.text(pageMargin, (ct += tableToNextTitle), `Yeast`);
+      doc.text(
+        pageMargin + nextColumn,
+        ct,
+        `${(0.002 * baseNum(doughs[0], 2)).toFixed(2)} lb.`
+      );
+    }
 
-  }
+    if (doughs[0].bucketSets > 4) {
+      doc.text(pageMargin, (ct += tableToNextTitle), `Baguette Mix #2`);
+      doc.setFontSize(14);
+      doc.text(pageMargin, (ct += tableToNextTitle), `Bucket Sets`);
+      doc.text(
+        pageMargin + nextColumn,
+        ct,
+        `${doughs[0].bucketSets} (L and P)`
+      );
+      doc.text(pageMargin, (ct += tableToNextTitle), `Old Dough`);
+      doc.text(pageMargin + nextColumn, ct, `${doughs[0].oldDough} lb.`);
+      doc.text(pageMargin, (ct += tableToNextTitle), `50 lb. Bread Flour`);
+      doc.text(
+        pageMargin + nextColumn,
+        ct,
+        `${Math.floor((0.575 * baseNum(doughs[0], 3)) / 50)}`
+      );
+      doc.text(pageMargin, (ct += tableToNextTitle), `25 lb. Bucket Water`);
+      doc.text(
+        pageMargin + nextColumn,
+        ct,
+        `${Math.floor((0.372 * baseNum(doughs[0], 3)) / 25)}`
+      );
+      doc.text(pageMargin, (ct += tableToNextTitle), `Bread Flour`);
+      doc.text(
+        pageMargin + nextColumn,
+        ct,
+        `${((0.575 * baseNum(doughs[0], 3)) % 50).toFixed(2)} lb.`
+      );
+      doc.text(pageMargin, (ct += tableToNextTitle), `Whole Wheat Flour`);
+      doc.text(
+        pageMargin + nextColumn,
+        ct,
+        `${(0.038 * baseNum(doughs[0], 3)).toFixed(2)} lb.`
+      );
+      doc.text(pageMargin, (ct += tableToNextTitle), `Water`);
+      doc.text(
+        pageMargin + nextColumn,
+        ct,
+        `${((0.372 * baseNum(doughs[0], 3)) % 25).toFixed(2)} lb.`
+      );
+      doc.text(pageMargin, (ct += tableToNextTitle), `Salt`);
+      doc.text(
+        pageMargin + nextColumn,
+        ct,
+        `${(0.013 * baseNum(doughs[0], 2)).toFixed(2)} lb.`
+      );
+      doc.text(pageMargin, (ct += tableToNextTitle), `Yeast`);
+      doc.text(
+        pageMargin + nextColumn,
+        ct,
+        `${(0.002 * baseNum(doughs[0], 2)).toFixed(2)} lb.`
+      );
+    }
+    doc.setFontSize(20);
 
-  if (doughs[0].bucketSets>4) {
-    
-    doc.text(pageMargin,ct += tableToNextTitle,`Baguette Mix #2`);
-    doc.setFontSize(14);
-    doc.text(pageMargin,ct += tableToNextTitle,`Bucket Sets`);
-    doc.text(pageMargin + nextColumn,ct,`${doughs[0].bucketSets} (L and P)`);
-    doc.text(pageMargin,ct += tableToNextTitle,`Old Dough`);
-    doc.text(pageMargin + nextColumn,ct,`${doughs[0].oldDough} lb.`);
-    doc.text(pageMargin,ct += tableToNextTitle,`50 lb. Bread Flour`);
-    doc.text(pageMargin + nextColumn,ct,`${Math.floor((0.575 * baseNum(doughs[0],3)) / 50)}`);
-    doc.text(pageMargin,ct += tableToNextTitle,`25 lb. Bucket Water`);
-    doc.text(pageMargin + nextColumn,ct,`${Math.floor((0.372 * baseNum(doughs[0],3)) / 25)}`);
-    doc.text(pageMargin,ct += tableToNextTitle,`Bread Flour`);
-    doc.text(pageMargin + nextColumn,ct,`${((0.575 * baseNum(doughs[0],3)) % 50).toFixed(2)} lb.`);
-    doc.text(pageMargin,ct += tableToNextTitle,`Whole Wheat Flour`);
-    doc.text(pageMargin + nextColumn,ct,`${(0.038 * baseNum(doughs[0],3)).toFixed(2)} lb.`);
-    doc.text(pageMargin,ct += tableToNextTitle,`Water`);
-    doc.text(pageMargin + nextColumn,ct,`${((0.372 * baseNum(doughs[0],3)) % 25).toFixed(2)} lb.`);
-    doc.text(pageMargin,ct += tableToNextTitle,`Salt`);
-    doc.text(pageMargin + nextColumn,ct,`${(0.013 * baseNum(doughs[0],2)).toFixed(2)} lb.`);
-    doc.text(pageMargin,ct += tableToNextTitle,`Yeast`);
-    doc.text(pageMargin + nextColumn,ct,`${(0.002 * baseNum(doughs[0],2)).toFixed(2)} lb.`);    
+    doc.text(pageMargin, (ct += tableToNextTitle+10), `Bins`);
+    doc.setFontSize(12);
+    doc.text(pageMargin, (ct += tableToNextTitle), `Baguette (27.7)`);
+      doc.text(
+        pageMargin + nextColumn,
+        ct,
+        `${baguetteBins}`
+      );
+      doc.text(pageMargin, (ct += tableToNextTitle), `Olive Herb`);
+      doc.text(
+        pageMargin + nextColumn,
+        ct,
+        `${oliveWeight} lb.`
+      );
+      doc.text(pageMargin, (ct += tableToNextTitle), `Blue Cheese Walnut`);
+      doc.text(
+        pageMargin + nextColumn,
+        ct,
+        `${bcWeight} lb.`
+      );
 
-}
-    
+      doc.setFontSize(20);
+
+      doc.text(pageMargin, (ct += tableToNextTitle+10), `Pocket Pans`);
+      doc.setFontSize(12);
+      doc.text(pageMargin, (ct += tableToNextTitle), `Full (16 per pan)`);
+        doc.text(
+          pageMargin + nextColumn,
+          ct,
+          `${fullPockets}`
+        );
+        doc.text(pageMargin, (ct += tableToNextTitle), `Extra`);
+        doc.text(
+          pageMargin + nextColumn,
+          ct,
+          `${extraPockets}`
+        );
+
+        doc.setFontSize(20);
+
+        doc.text(pageMargin, (ct += tableToNextTitle+10), `Bucket Sets`);
+        doc.setFontSize(12);
+        doc.text(pageMargin, (ct += tableToNextTitle), `Water (25 lb.)`);
+          doc.text(
+            pageMargin + nextColumn,
+            ct,
+            `${bucketSets}`
+          );
+
     doc.save(`BaguetteMix${today}.pdf`);
   };
 
-  const baseNum = (dough,mixNum) => {
-    let divider
+  const baseNum = (dough, mixNum) => {
+    let divider;
     switch (Number(dough.bucketSets)) {
       case 3:
-        if (mixNum===1){
-          divider = .666
+        if (mixNum === 1) {
+          divider = 0.666;
         } else {
-          divider = .333
+          divider = 0.333;
         }
         break;
       case 4:
-        divider = 2
+        divider = 2;
         break;
       case 5:
-        if (mixNum===1 || mixNum===2){
-          divider = .666
+        if (mixNum === 1 || mixNum === 2) {
+          divider = 0.666;
         } else {
-          divider = .333
+          divider = 0.333;
         }
         break;
       case 6:
-        divider = 3
+        divider = 3;
         break;
       default:
-        divider = 1
+        divider = 1;
     }
 
-
-    return (Number(dough.buffer) + Number(dough.needed) - Number(dough.oldDough))/divider;
+    return (
+      (Number(dough.buffer) + Number(dough.needed) - Number(dough.oldDough)) /
+      divider
+    );
   };
 
   const header = (
@@ -260,9 +419,7 @@ function BPBNBaker1Dough() {
 
   return (
     <React.Fragment>
-      
       <WholeBox>
-      
         <h1>BPBN Baguette Mix</h1>
         <div>{header}</div>
         {doughs.map((dough) => (
@@ -305,7 +462,6 @@ function BPBNBaker1Dough() {
                   </div>
                 </TwoColumnGrid>
               </div>
-              
             </TwoColumnGrid>
 
             <h2>Baguette Mix #1</h2>
@@ -315,21 +471,21 @@ function BPBNBaker1Dough() {
               <div>Old Dough</div>
               <div>{dough.oldDough} lb.</div>
               <div>50 lb. Bread Flour</div>
-              <div>{Math.floor((0.575 * baseNum(dough,1)) / 50)}</div>
+              <div>{Math.floor((0.575 * baseNum(dough, 1)) / 50)}</div>
               <div>25 lb. Bucket Water</div>
-              <div>{Math.floor((0.372 * baseNum(dough,1)) / 25)}</div>
+              <div>{Math.floor((0.372 * baseNum(dough, 1)) / 25)}</div>
               <div> </div>
               <div> </div>
               <div>Bread Flour</div>
-              <div>{((0.575 * baseNum(dough,1)) % 50).toFixed(2)} lb.</div>
+              <div>{((0.575 * baseNum(dough, 1)) % 50).toFixed(2)} lb.</div>
               <div>Whole Wheat Flour</div>
-              <div>{(0.038 * baseNum(dough,1)).toFixed(2)} lb.</div>
+              <div>{(0.038 * baseNum(dough, 1)).toFixed(2)} lb.</div>
               <div>Water</div>
-              <div>{((0.372 * baseNum(dough,1)) % 25).toFixed(2)} lb.</div>
+              <div>{((0.372 * baseNum(dough, 1)) % 25).toFixed(2)} lb.</div>
               <div>Salt</div>
-              <div>{(0.013 * baseNum(dough,1)).toFixed(2)} lb.</div>
+              <div>{(0.013 * baseNum(dough, 1)).toFixed(2)} lb.</div>
               <div>Yeast</div>
-              <div>{(0.002 * baseNum(dough,1)).toFixed(2)} lb.</div>
+              <div>{(0.002 * baseNum(dough, 1)).toFixed(2)} lb.</div>
             </TwoColumnGrid>
 
             {dough.bucketSets > 2 && (
@@ -341,19 +497,19 @@ function BPBNBaker1Dough() {
                   <div>Old Dough</div>
                   <div>{dough.oldDough} lb.</div>
                   <div>50 lb. Bread Flour</div>
-                  <div>{Math.floor((0.575 * baseNum(dough,2)) / 50)}</div>
+                  <div>{Math.floor((0.575 * baseNum(dough, 2)) / 50)}</div>
                   <div>25 lb. Bucket Water</div>
-                  <div>{Math.floor((0.372 * baseNum(dough,2)) / 25)}</div>
+                  <div>{Math.floor((0.372 * baseNum(dough, 2)) / 25)}</div>
                   <div> </div>
                   <div> </div>
                   <div>Bread Flour</div>
-                  <div>{((0.575 * baseNum(dough,2)) % 50).toFixed(2)} lb.</div>
+                  <div>{((0.575 * baseNum(dough, 2)) % 50).toFixed(2)} lb.</div>
                   <div>Whole Wheat Flour</div>
-                  <div>{(0.038 * baseNum(dough,2)).toFixed(2)} lb.</div>
+                  <div>{(0.038 * baseNum(dough, 2)).toFixed(2)} lb.</div>
                   <div>Water</div>
-                  <div>{((0.372 * baseNum(dough,2)) % 25).toFixed(2)} lb.</div>
+                  <div>{((0.372 * baseNum(dough, 2)) % 25).toFixed(2)} lb.</div>
                   <div>Salt</div>
-                  <div>{(0.013 * baseNum(dough,2)).toFixed(2)} lb.</div>
+                  <div>{(0.013 * baseNum(dough, 2)).toFixed(2)} lb.</div>
                   <div>Yeast</div>
                   <div>{(0.002 * baseNum(dough)).toFixed(2)} lb.</div>
                 </TwoColumnGrid>
@@ -368,26 +524,50 @@ function BPBNBaker1Dough() {
                   <div>Old Dough</div>
                   <div>{dough.oldDough} lb.</div>
                   <div>50 lb. Bread Flour</div>
-                  <div>{Math.floor((0.575 * baseNum(dough,3)) / 50)}</div>
+                  <div>{Math.floor((0.575 * baseNum(dough, 3)) / 50)}</div>
                   <div>25 lb. Bucket Water</div>
-                  <div>{Math.floor((0.372 * baseNum(dough,3)) / 25)}</div>
+                  <div>{Math.floor((0.372 * baseNum(dough, 3)) / 25)}</div>
                   <div> </div>
                   <div> </div>
                   <div>Bread Flour</div>
-                  <div>{((0.575 * baseNum(dough,3)) % 50).toFixed(2)} lb.</div>
+                  <div>{((0.575 * baseNum(dough, 3)) % 50).toFixed(2)} lb.</div>
                   <div>Whole Wheat Flour</div>
-                  <div>{(0.038 * baseNum(dough,3)).toFixed(2)} lb.</div>
+                  <div>{(0.038 * baseNum(dough, 3)).toFixed(2)} lb.</div>
                   <div>Water</div>
-                  <div>{((0.372 * baseNum(dough,3)) % 25).toFixed(2)} lb.</div>
+                  <div>{((0.372 * baseNum(dough, 3)) % 25).toFixed(2)} lb.</div>
                   <div>Salt</div>
-                  <div>{(0.013 * baseNum(dough,3)).toFixed(2)} lb.</div>
+                  <div>{(0.013 * baseNum(dough, 3)).toFixed(2)} lb.</div>
                   <div>Yeast</div>
-                  <div>{(0.002 * baseNum(dough,3)).toFixed(2)} lb.</div>
+                  <div>{(0.002 * baseNum(dough, 3)).toFixed(2)} lb.</div>
                 </TwoColumnGrid>
               </React.Fragment>
             )}
           </React.Fragment>
         ))}
+
+        <h2>Bins</h2>
+        <TwoColumnGrid>
+          <div>Baguette (27.7)</div>
+          <div>{baguetteBins}</div>
+          <div>Olive</div>
+          <div>{oliveWeight}</div>
+          <div>BC Walnut</div>
+          <div>{bcWeight}</div>
+        </TwoColumnGrid>
+
+        <h2>Pocket Pans</h2>
+        <TwoColumnGrid>
+          <div>Full (16 per pan)</div>
+          <div>{fullPockets}</div>
+          <div>Extra</div>
+          <div>{extraPockets}</div>
+        </TwoColumnGrid>
+
+        <h2>Bucket Sets</h2>
+        <TwoColumnGrid>
+          <div>Bucket Sets</div>
+          <div>{bucketSets}</div>
+        </TwoColumnGrid>
       </WholeBox>
     </React.Fragment>
   );

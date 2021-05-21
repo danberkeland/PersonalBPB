@@ -92,15 +92,73 @@ export default class ComposeDough {
     let Baker1Dough = this.returnBaker1Doughs(delivDate, database, loc);
     let Baker1DoughComponents = this.returnBaker1DoughComponents(delivDate, database, loc);
     let Baker1Pockets = this.returnBaker1Pockets(tomorrow ,database, loc)
+    let bagAndEpiCount = this.returnbagAndEpiCount(tomorrow, database, loc);
+    let oliveCount = this.returnoliveCount(tomorrow, database, loc);
+    let bcCount = this.returnbcCount(tomorrow, database, loc);
+    let bagDoughTwoDays = this.returnBagDoughTwoDays(twoDay, database, loc);
     return {
       doughs: doughs,
       doughComponents: doughComponents,
       pockets: pockets,
       Baker1Dough: Baker1Dough,
       Baker1DoughComponents: Baker1DoughComponents,
-      Baker1Pockets: Baker1Pockets
+      Baker1Pockets: Baker1Pockets,
+      bagAndEpiCount: bagAndEpiCount,
+      oliveCount: oliveCount,
+      bcCount: bcCount,
+      bagDoughTwoDays: bagDoughTwoDays
     };
   };
+
+  returnbagAndEpiCount = (delivDate, database) => {
+    const [products, customers, routes, standing, orders] = database;
+    let whatToMakeList = getOrdersList(delivDate, database);
+    let whatToMakeToday = whatToMakeList.filter((set) => this.whatToMakeFilter(set)).filter(bag => bag.forBake === "Baguette" || bag.forBake === "Epi")
+    let whatToMake = this.makeAddQty(whatToMakeToday);
+    let qty = 0
+    for (let make of whatToMake) {
+      qty += Number(make.qty)
+    }
+    console.log(qty)
+    return qty;
+  };
+
+  returnoliveCount = (delivDate, database) => {
+    const [products, customers, routes, standing, orders] = database;
+    let whatToMakeList = getOrdersList(delivDate, database);
+    let whatToMakeToday = whatToMakeList.filter((set) => this.whatToMakeFilter(set)).filter(bag => bag.forBake === "Olive Herb")
+    let whatToMake = this.makeAddQty(whatToMakeToday);
+    let qty = 0
+    for (let make of whatToMake) {
+      qty += Number(make.qty)
+    }
+    return qty;
+  };
+
+  returnbcCount = (delivDate, database) => {
+    const [products, customers, routes, standing, orders] = database;
+    let whatToMakeList = getOrdersList(delivDate, database);
+    let whatToMakeToday = whatToMakeList.filter((set) => this.whatToMakeFilter(set)).filter(bag => bag.forBake === "Blue Cheese Walnut")
+    let whatToMake = this.makeAddQty(whatToMakeToday);
+    let qty = 0
+    for (let make of whatToMake) {
+      qty += Number(make.qty)
+    }
+    return qty;
+  };
+
+
+  returnBagDoughTwoDays = (delivDate, database) => {
+    const [products, customers, routes, standing, orders] = database;
+    let whatToMakeList = getOrdersList(delivDate, database);
+    let whatToMakeToday = whatToMakeList.filter((set) => this.whatToMakeFilter(set)).filter(bag => bag.doughType==="Baguette")
+    let qty = 0
+    for (let make of whatToMakeToday) {
+      qty += Number(make.qty * make.weight)
+    }
+    return Math.ceil(qty/80);
+  }
+
 
   returnPockets = (delivDate, database, loc) => {
     const [
@@ -267,6 +325,15 @@ export default class ComposeDough {
    
     return pocketsToday;
   }
+
+  whatToMakeFilter = (ord, loc) => {
+    return (
+      ord.where.includes("Carlton") &&
+      ord.packGroup === "rustic breads" 
+      
+      
+    );
+  };
   
   baker1PocketFilter = (ord, loc) => {
     return (     
@@ -369,6 +436,74 @@ export default class ComposeDough {
     let doughComponentInfo = doughComponents;
     return doughComponentInfo;
   };
+
+  makeAddQty = (bakedTomorrow) => {
+    console.log("bakedTomorrow",bakedTomorrow)
+    let makeList2 = Array.from(
+      new Set(bakedTomorrow.map((prod) => prod.forBake))
+    ).map((mk) => ({
+      forBake: mk,
+      qty: 0,
+      short: 0,
+      needEarly: 0
+    }));
+    for (let make of makeList2) {
+      make.qty = 1;
+
+      let qtyAccToday = 0;
+
+      let qtyToday = bakedTomorrow
+        .filter((frz) => make.forBake === frz.forBake)
+        .map((ord) => ord.qty);
+
+      if (qtyToday.length > 0) {
+        qtyAccToday = qtyToday.reduce(addUp);
+      }
+
+      let pocketsAccToday = 0;
+
+      let pocketsToday = bakedTomorrow
+        .filter((frz) => make.forBake === frz.forBake)
+        .map((ord) => ord.preshaped);
+
+      if (pocketsToday.length > 0) {
+        pocketsAccToday = qtyAccToday-pocketsToday[0]
+      }
+
+      if (pocketsAccToday>0) {
+          make.short = "Short "+pocketsAccToday
+      } else if (pocketsAccToday<0) {
+        pocketsAccToday = -pocketsAccToday
+        make.short = "Over "+pocketsAccToday
+    } else {
+        make.short = ""
+    }
+
+    let needEarlyAccToday = 0;
+
+      let needEarlyToday = bakedTomorrow
+        .filter((frz) => make.forBake === frz.forBake && frz.routeDepart==="Carlton" && frz.zone !== "Carlton Retail")
+        .map((ord) => ord.qty);
+
+      if (needEarlyToday.length > 0) {
+        needEarlyAccToday = needEarlyToday.reduce(addUp);
+      }
+      
+      if (needEarlyAccToday>0) {
+        make.needEarly = needEarlyAccToday}
+     else {
+      make.needEarly = ""
+  }
+
+      make.qty = qtyAccToday
+      
+     
+    }
+    return makeList2;
+  };
+
   
 }
+
+
 

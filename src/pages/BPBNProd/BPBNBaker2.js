@@ -99,6 +99,7 @@ function BPBNBaker2() {
     doc.text(pageMargin, finalY + tableToNextTitle, `Shape List`);
 
     doc.autoTable({
+      theme: 'plain',
       body: whatToMake,
       margin: pageMargin,
       columns: [

@@ -9,15 +9,13 @@ import Ordering from './pages/ordering/Ordering'
 import EditRoutes from './pages/settings/editRoutes/editRoutes'
 import EditZones from './pages/settings/editZones/editZones'
 import Notes from './pages/settings/notes/Notes'
-import BPBS from './BPBS'
-import BPBN from './BPBN'
-import Croix from './Croix'
+
 import Customers from './pages/customers/Customers'
 import Products from './pages/products/Products'
 import ByRoute from './pages/logistics/ByRoute/ByRoute'
 import ByProduct from './pages/logistics/ByProduct/ByProduct'
 import Billing from './pages/billing/Billing'
-import Admin from './Admin'
+
 import Loader from './Loader'
 import BPBNBaker1 from './pages/BPBNProd/BPBNBaker1';
 import BPBNBaker2 from './pages/BPBNProd/BPBNBaker2';
@@ -77,13 +75,11 @@ function AppRoutes() {
           <Route path="/doughCalc/doughCalc" component={DoughCalc} />
 
 
-          <Route path="/bpbs" component={BPBS} />
-          <Route path="/bpbn" component={BPBN} />
-          <Route path="/croix" component={Croix} />
+         
           <Route path="/products" component={Products} />
           <Route path="/customers" component={Customers} />
           <Route path="/billing" component={Billing} />
-          <Route path="/admin" component={Admin} />
+         
           <Route path="/" exact component={Ordering} />
 
           <Route path="/test" exact component={TestComponent} />

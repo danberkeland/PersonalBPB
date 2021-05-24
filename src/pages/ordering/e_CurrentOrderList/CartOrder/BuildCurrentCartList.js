@@ -8,6 +8,8 @@ import { OrdersContext } from "../../../../dataContexts/OrdersContext";
 import { StandingContext } from "../../../../dataContexts/StandingContext";
 import { ToggleContext } from "../../../../dataContexts/ToggleContext";
 
+import { v4 as uuidv4 } from 'uuid';
+
 import styled from "styled-components";
 
 import { buildCurrentOrder } from "../../../../helpers/CartBuildingHelpers";
@@ -85,7 +87,7 @@ const BuildCurrentCartList = () => {
         <label>QTY</label>
         <label>PREV</label>
         {currentCartList.map((order) => (
-          <React.Fragment key={order["prodName"] + "b"}>
+          <React.Fragment key={uuidv4() + "b"}>
             <TrashCan>
               <Button
                 icon="pi pi-trash"
@@ -94,19 +96,19 @@ const BuildCurrentCartList = () => {
                 onClick={(e) => {
                   handleQtyModify(order["prodName"], 0);
                 }}
-                key={order["prodName"] + "e"}
+                key={uuidv4() + "e"}
                 name={order["prodName"]}
                 data-qty={order["qty"]}
                 id={order["prodName"]}
               />
             </TrashCan>
-            <label key={order["prodName"]}>{order["prodName"]}</label>
+            <label key={uuidv4()}>{order["prodName"]}</label>
             <InputBox>
               <input
                 type="text"
                 size="3"
                 maxLength="4"
-                key={order["prodName"] + "c"}
+                key={uuidv4() + "c"}
                 id={order["prodName"] + "item"}
                 name={order["prodName"]}
                 data-qty={order["qty"]}
@@ -120,7 +122,7 @@ const BuildCurrentCartList = () => {
               ></input>
             </InputBox>
             <Previous>
-              <label key={order["prodName"] + "d"}>
+              <label key={uuidv4() + "d"}>
                 {order["SO"] === order["qty"] ? "" : order["SO"]}
               </label>
             </Previous>

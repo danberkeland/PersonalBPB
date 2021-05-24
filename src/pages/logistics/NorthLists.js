@@ -119,7 +119,7 @@ function NorthList() {
 
   const exportNorthListPdf = () => {
     let finalY;
-    let pageMargin = 10;
+    let pageMargin = 40;
     let tableToNextTitle = 12;
     let titleToNextTable = tableToNextTitle + 4;
     let tableFont = 11;
@@ -135,6 +135,11 @@ function NorthList() {
 
     doc.autoTable({
       body: notes,
+      theme: 'grid',
+        margin: {
+          left: 40,
+          right: 40,
+        },
       columns: [
         { header: "Date", dataKey: "when" },
         { header: "Note", dataKey: "note" },
@@ -149,6 +154,11 @@ function NorthList() {
 
     doc.autoTable({
       body: croixNorth,
+      theme: 'grid',
+        margin: {
+          left: 40,
+          right: 80,
+        },
       columns: [
         { header: "Product", dataKey: "prodNick" },
         { header: "Qty", dataKey: "qty" },
@@ -164,6 +174,11 @@ function NorthList() {
 
       doc.autoTable({
         body: pocketsNorth,
+        theme: 'grid',
+        margin: {
+          left: 40,
+          right: 60,
+        },
         columns: columnsPocketsNorth,
         startY: finalY + titleToNextTable,
         styles: { fontSize: tableFont },
@@ -177,6 +192,7 @@ function NorthList() {
 
       doc.autoTable({
         body: shelfProdsNorth,
+        theme: 'plain',
         columns: columnsShelfProdsNorth,
         startY: finalY + titleToNextTable,
         styles: { fontSize: tableFont },
@@ -191,6 +207,7 @@ function NorthList() {
 
       doc.autoTable({
         body: CarltonToPrado,
+        theme: 'plain',
         columns: columnsCarltonToPrado,
         startY: finalY + titleToNextTable,
         styles: { fontSize: tableFont },
@@ -215,6 +232,7 @@ function NorthList() {
     if (columnsBaguettes.length > 0) {
       doc.autoTable({
         body: Baguettes,
+        theme: 'plain',
         columns: columnsBaguettes,
         startY: finalY + titleToNextTable,
         styles: { fontSize: tableFont },
@@ -225,6 +243,7 @@ function NorthList() {
 
       doc.autoTable({
         pageBreak: "avoid",
+        theme: 'plain',
         body: otherRustics,
         columns: columnsOtherRustics,
         startY: finalY + titleToNextTable,
@@ -236,6 +255,7 @@ function NorthList() {
 
       doc.autoTable({
         body: retailStuff,
+        theme: 'plain',
         columns: columnsRetailStuff,
         startY: finalY + titleToNextTable,
         styles: { fontSize: tableFont },
@@ -246,6 +266,7 @@ function NorthList() {
 
       doc.autoTable({
         body: earlyDeliveries,
+        theme: 'plain',
         columns: columnsEarlyDeliveries,
         startY: finalY + titleToNextTable,
         styles: { fontSize: tableFont },

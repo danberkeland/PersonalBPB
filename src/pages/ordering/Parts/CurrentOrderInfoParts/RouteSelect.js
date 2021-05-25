@@ -12,7 +12,7 @@ const clonedeep = require("lodash.clonedeep");
 const RouteSelect = ({ database, setDatabase, customerGroup }) => {
   const [products, customers, routes, standing, orders] = database;
 
-  const { setModifications } = useContext(ToggleContext);
+  const { setModifications, cartList } = useContext(ToggleContext);
 
   const { chosen, route, setRoute, delivDate, currentCartList, setCurrentCartList } =
     useContext(CurrentDataContext);
@@ -77,7 +77,8 @@ const RouteSelect = ({ database, setDatabase, customerGroup }) => {
         name="delivery"
         onChange={(e) => handleSetRoute(e.value)}
         checked={route === "deliv"}
-        disabled={currentCartList.length !== 0 ? false : true}
+        disabled={((currentCartList.length !== 0) || (cartList === true)) ? false : true}
+        
       />
       <label htmlFor="delivery">Delivery</label>
       <RadioButton
@@ -85,7 +86,7 @@ const RouteSelect = ({ database, setDatabase, customerGroup }) => {
         name="delivery"
         onChange={(e) => handleSetRoute(e.value)}
         checked={route === "slopick"}
-        disabled={currentCartList.length !== 0 ? false : true}
+        disabled={((currentCartList.length !== 0) || (cartList === true)) ? false : true}
       />
       <label htmlFor="pickupSLO">Pick up SLO</label>
 
@@ -94,7 +95,7 @@ const RouteSelect = ({ database, setDatabase, customerGroup }) => {
         name="delivery"
         onChange={(e) => handleSetRoute(e.value)}
         checked={route === "atownpick"}
-        disabled={currentCartList.length !== 0 ? false : true}
+        disabled={((currentCartList.length !== 0) || (cartList === true)) ? false : true}
       />
       <label htmlFor="pickupAtown">Pick up Carlton</label>
     </React.Fragment>

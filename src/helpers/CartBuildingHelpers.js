@@ -39,9 +39,9 @@ export const buildStandList = (chosen, delivDate, standing, route, ponote) => {
     (standing) =>
       standing["custName"].match(wildcardRegExp(`${chosen}`))
   );
-  if (delivDate === today){
-    builtStandList = builtStandList.filter(stand => stand.isStand===true)
-  }
+ 
+  builtStandList = builtStandList.filter(stand => stand.isStand===true)
+  
   let convertedStandList = convertStandListtoStandArray(
     builtStandList,
     delivDate,

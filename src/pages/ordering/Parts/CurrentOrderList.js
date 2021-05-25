@@ -22,9 +22,9 @@ const CurrentOrderList = ({ database, setDatabase }) => {
       ) : (
         <React.Fragment>
           <div className="currentStandingList">
-            <StandingOrderEntry />
+            <StandingOrderEntry database={database} setDatabase={setDatabase}/>
           </div>
-          <AddStandingOrderEntry />
+          <AddStandingOrderEntry database={database} setDatabase={setDatabase}/>
         </React.Fragment>
       )}
     </React.Fragment>

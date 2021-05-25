@@ -5,7 +5,6 @@ import swal from "@sweetalert/with-react";
 import { Button } from "primereact/button";
 
 import { ToggleContext } from "../../../../dataContexts/ToggleContext";
-import { StandingContext } from "../../../../dataContexts/StandingContext";
 import { CurrentDataContext } from "../../../../dataContexts/CurrentDataContext";
 
 import styled from "styled-components";
@@ -39,8 +38,8 @@ const entryZero = {
 
 const clonedeep = require("lodash.clonedeep");
 
-const BuildCurrentStandingList = () => {
-  const { standing } = useContext(StandingContext);
+const BuildCurrentStandingList = ({ database, setDatabase }) => {
+  const [products, customers, routes, standing, orders] = database;
   const { setStandList, setModifications } = useContext(ToggleContext);
   const { chosen, standArray, setStandArray } = useContext(CurrentDataContext);
 

@@ -12,7 +12,7 @@ const clonedeep = require("lodash.clonedeep");
 const PONote = ({ database, setDatabase }) => {
   const [products, customers, routes, standing, orders] = database;
 
-  const { setModifications } = useContext(ToggleContext);
+  const { cartList, setModifications } = useContext(ToggleContext);
 
   const { chosen, route, setRoute, ponote, setPonote, delivDate, currentCartList } =
     useContext(CurrentDataContext);
@@ -85,7 +85,7 @@ const PONote = ({ database, setDatabase }) => {
           placeholder={ponote}
           onChange={(e) => handleChange(e)}
           onBlur={(e) => handleBlur(e)}
-          disabled={currentCartList.length !== 0 ? false : true}
+          disabled={((currentCartList.length !== 0) || (cartList === true)) ? false : true}
           
         />
         <label htmlFor="in">

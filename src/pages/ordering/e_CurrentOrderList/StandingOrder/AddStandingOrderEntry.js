@@ -1,14 +1,8 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState } from "react";
 
-import { CurrentDataContext } from "../../../../dataContexts/CurrentDataContext";
-import { OrdersContext } from "../../../../dataContexts/OrdersContext";
-import { ProductsContext } from "../../../../dataContexts/ProductsContext";
-import { ToggleContext } from "../../../../dataContexts/ToggleContext";
-
-import { Button } from "primereact/button";
-import { Dropdown } from "primereact/dropdown";
-
-import { findAvailableProducts } from "../../../../helpers/sortDataHelpers";
+import AddProduct from "./AddStandingOrderParts/AddProduct";
+import ProductList from "./AddStandingOrderParts/ProductList";
+import StandOrHold from "./AddStandingOrderParts/StandOrHold";
 
 import styled from "styled-components";
 
@@ -21,95 +15,29 @@ const AddProductButtons = styled.div`
   padding: 10px 0;
 `;
 
-const clonedeep = require("lodash.clonedeep");
-
-const AddStandingOrderEntryItem = () => {
-  const { products } = useContext(ProductsContext);
-  const { orders } = useContext(OrdersContext);
-  const { chosen, delivDate, standArray, setStandArray } = useContext(
-    CurrentDataContext
-  );
-  const { standList, setStandList } = useContext(ToggleContext);
-
+const AddStandingOrderEntryItem = ({ database }) => {
+  const [standHold, setStandHold] = useState();
   const [pickedProduct, setPickedProduct] = useState();
   const [productList, setProductList] = useState();
 
-  const [standHold, setStandHold] = useState();
-
-  useEffect(() => {
-    standList ? setStandHold("MAKE H.O.") : setStandHold("MAKE S.O.");
-  }, [standList]);
-
-  useEffect(() => {
-    let availableProducts = findAvailableProducts(
-      products,
-      orders,
-      chosen,
-      delivDate
-    );
-    setProductList(availableProducts);
-  }, [products, orders, chosen, delivDate]);
-
-  const handleChange = (e) => {
-    setPickedProduct(e.target.value.prodName);
-  };
-
-  const handleAdd = () => {
-    let newList = clonedeep(standArray);
-
-    if (pickedProduct !== "" && pickedProduct) {
-      let newOrder = {
-        prodName: pickedProduct,
-        custName: chosen,
-        isStand: standList ? true : false,
-        Sun: 0,
-        Mon: 0,
-        Tue: 0,
-        Wed: 0,
-        Thu: 0,
-        Fri: 0,
-        Sat: 0,
-      };
-      newList.push(newOrder);
-    }
-    setStandArray(newList);
-
-    setPickedProduct("");
-  };
-
-  const handleStandHold = () => {
-    let newStand = !standList;
-   
-    setStandList(newStand);
-  };
-
   return (
     <AddProductButtons>
-      <Dropdown
-        options={productList}
-        optionLabel="prodName"
-        placeholder={
-          pickedProduct === "" ? "Select a Product ..." : pickedProduct
-        }
-        value={pickedProduct}
-        onChange={handleChange}
-        disabled={chosen !== "  " ? false : true}
+      <ProductList
+        database={database}
+        pickedProduct={pickedProduct}
+        setPickedProduct={setPickedProduct}
+        productList={productList}
+        setProductList={setProductList}
       />
-      <Button
-        label="ADD"
-        disabled={chosen === "  " || pickedProduct === ""}
-        icon="pi pi-plus"
-        onClick={handleAdd}
+      <AddProduct
+        database={database}
+        pickedProduct={pickedProduct}
+        setPickedProduct={setPickedProduct}
       />
-
-      <Button
-        className={
-          !standList
-            ? "p-button-raised p-button-rounded p-button-danger"
-            : "p-button-raised p-button-rounded p-button-success"
-        }
-        onClick={handleStandHold}
-        label={standHold}
+      <StandOrHold
+        database={database}
+        standHold={standHold}
+        setStandHold={setStandHold}
       />
     </AddProductButtons>
   );

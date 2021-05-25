@@ -40,6 +40,7 @@ const Previous = styled.div`
 `;
 
 const BuildCurrentCartList = () => {
+  
   const { orders } = useContext(OrdersContext);
   const { standing } = useContext(StandingContext);
   const {
@@ -50,11 +51,13 @@ const BuildCurrentCartList = () => {
     ponote,
     route,
   } = useContext(CurrentDataContext);
-  const { setModifications } = useContext(ToggleContext);
-
+  const { modifications, setModifications } = useContext(ToggleContext);
+  
   useEffect(() => {
+    let currentOrderList
     if (chosen !== "  ") {
-      let currentOrderList = buildCurrentOrder(
+      
+      currentOrderList = buildCurrentOrder(
         chosen,
         delivDate,
         orders,
@@ -63,10 +66,10 @@ const BuildCurrentCartList = () => {
         ponote
       );
       currentOrderList = currentOrderList.filter((order) => order["qty"] !== 0);
-        
+      console.log("update", currentOrderList)
       setCurrentCartList(currentOrderList);
     }
-  }, [chosen, delivDate, orders, standing, route, ponote]);
+  }, [chosen,delivDate]);
 
   const handleQtyModify = (prodName, qty) => {
     let cartToMod = clonedeep(currentCartList);
@@ -76,7 +79,7 @@ const BuildCurrentCartList = () => {
     setCurrentCartList(cartToMod);
     setModifications(true);
   };
-
+  
   return (
     <React.Fragment>
       <OrderGrid>

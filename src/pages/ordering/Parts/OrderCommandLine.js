@@ -40,6 +40,8 @@ const OrderCommandLine = () => {
     setDelivDate,
     route,
     ponote,
+    currentCartList,
+    setCurrentCartList,
   } = useContext(CurrentDataContext);
   const { orders, setOrders } = useContext(OrdersContext);
   const { customers } = useContext(CustomerContext);
@@ -133,6 +135,7 @@ const OrderCommandLine = () => {
     }
   };
 
+
   const checkForProducts = (entry) => {
     if (testEntryForProduct(entry)) {
       let enteredProducts = createArrayofEnteredProducts(entry);
@@ -151,23 +154,26 @@ const OrderCommandLine = () => {
         orders,
         standing
       );
-      let ordersToModify = [...orders];
+      let ordersToModify = [...currentCartList];
+      
       if (custOrderList.length > 0) {
         ordersToModify = buildOrdersToModify(
-          orders,
+          currentCartList,
           chosen,
           delivDate,
           ordersToUpdate,
           custOrderList
         );
       }
+      
       let addedOrdersToUpdate = addUpdatesToOrders(
         chosen,
         delivDate,
         ordersToUpdate,
         ordersToModify
       );
-      setOrders(addedOrdersToUpdate);
+      console.log(addedOrdersToUpdate)
+      setCurrentCartList(addedOrdersToUpdate);
       setModifications(true);
     }
   };

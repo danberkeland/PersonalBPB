@@ -124,7 +124,9 @@ export const buildCurrentOrder = (
   ponote
 ) => {
   let cartList = buildCartList(chosen, delivDate, orders);
+  console.log("cartList", cartList)
   let standList = buildStandList(chosen, delivDate, standing, route, ponote);
+  console.log("standList",standList)
   let currentOrderList = compileOrderList(cartList, standList);
 
   return currentOrderList;

@@ -1,11 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 
-import { CustomerContext } from "../../../dataContexts/CustomerContext";
+
 import { CurrentDataContext } from "../../../dataContexts/CurrentDataContext";
 import { ToggleContext } from "../../../dataContexts/ToggleContext";
-import { OrdersContext } from "../../../dataContexts/OrdersContext";
-import { StandingContext } from "../../../dataContexts/StandingContext";
-import { HoldingContext } from "../../../dataContexts/HoldingContext";
 
 import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
@@ -66,21 +63,17 @@ const so = {
   color: "rgb(66, 97, 201)",
 };
 
-const CurrentOrderInfo = () => {
+const CurrentOrderInfo = ({ database }) => {
   const {
     cartList,
     standList,
-    setStandList,
     orderTypeWhole,
     setModifications,
   } = useContext(ToggleContext);
 
   const [orderType, setOrderType] = useState();
 
-  const { orders } = useContext(OrdersContext);
-  const { standing } = useContext(StandingContext);
-  const { holding } = useContext(HoldingContext);
-  const { customers } = useContext(CustomerContext);
+
   const {
     chosen,
     route,
@@ -129,9 +122,13 @@ const CurrentOrderInfo = () => {
       }
     }
    
-    let orderCheck = orders.filter(
+    let orderCheck = currentCartList.filter(
       (ord) => ord["custName"] === chosen && ord["delivDate"] === convertDatetoBPBDate(delivDate)
     );
+    console.log("orderCheck", orderCheck)
+    console.log(orderCheck.length)
+    try{console.log(orderCheck[0].route)}catch{console.log("no route")}
+   
     
     if (orderCheck.length > 0) {
       switch (orderCheck[0].route) {
@@ -145,12 +142,12 @@ const CurrentOrderInfo = () => {
           setRoute("deliv");
       }
     }
-  }, [chosen, delivDate]);
+  }, [currentCartList]);
 
   useEffect(() => {
     setPonote("");
 
-    let orderCheck = orders.filter(
+    let orderCheck = currentCartList.filter(
       (ord) =>
         ord["custName"] === chosen &&
         ord["delivDate"] === convertDatetoBPBDate(delivDate)

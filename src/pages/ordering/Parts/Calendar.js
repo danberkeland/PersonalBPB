@@ -4,8 +4,6 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 
 import { CurrentDataContext } from "../../../dataContexts/CurrentDataContext";
-import { StandingContext } from "../../../dataContexts/StandingContext";
-import { OrdersContext } from "../../../dataContexts/OrdersContext";
 import { ToggleContext } from "../../../dataContexts/ToggleContext";
 
 import {
@@ -15,7 +13,7 @@ import {
 } from "../../../helpers/calendarBuildHelper";
 
 
-const Calendar = () => {
+const Calendar = ({ database }) => {
   const {
     chosen,
     delivDate,
@@ -23,10 +21,9 @@ const Calendar = () => {
     calendarEvents,
     setCalendarEvents,
   } = useContext(CurrentDataContext);
-  const { standing } = useContext(StandingContext);
-  const { orders } = useContext(OrdersContext);
   const { setModifications } = useContext(ToggleContext)
 
+  
 
   useEffect(() => {
     let backToStandingArray = CreateStandingArray(standing, chosen);

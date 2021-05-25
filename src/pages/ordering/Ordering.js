@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 
 import Calendar from "./Parts/Calendar";
 import CurrentOrderInfo from "./Parts/CurrentOrderInfo";
@@ -6,21 +6,8 @@ import CurrentOrderList from "./Parts/CurrentOrderList";
 import OrderCommandLine from "./Parts/OrderCommandLine";
 import OrderEntryButtons from "./Parts/OrderEntryButtons";
 
-import {
-  CustomerContext,
-  CustomerLoad,
-} from "../../dataContexts/CustomerContext";
-import { OrdersContext, OrdersLoad } from "../../dataContexts/OrdersContext";
-import {
-  ProductsContext,
-  ProductsLoad,
-} from "../../dataContexts/ProductsContext";
-import {
-  StandingContext,
-  StandingLoad,
-} from "../../dataContexts/StandingContext";
-import { HoldingContext, HoldingLoad } from "../../dataContexts/HoldingContext";
-import { CurrentDataContext } from "../../dataContexts/CurrentDataContext";
+import { promisedData } from "../../helpers/databaseFetchers";
+
 import { ToggleContext } from "../../dataContexts/ToggleContext";
 
 import styled from "styled-components";
@@ -44,54 +31,26 @@ const BasicContainer = styled.div`
   box-sizing: border-box;
 `;
 
-function Ordering(props) {
-  const { standLoaded } = useContext(StandingContext);
-  const { prodLoaded } = useContext(ProductsContext);
-  const { custLoaded } = useContext(CustomerContext);
-  const { ordersLoaded } = useContext(OrdersContext);
-  const { holdLoaded } = useContext(HoldingContext);
-  const { setChosen } = useContext(CurrentDataContext);
-  const { setCartList } = useContext(ToggleContext);
+function Ordering() {
+  const { setIsLoading } = useContext(ToggleContext);
+  const [database, setDatabase ] = useState([])
 
   useEffect(() => {
-    if (props.location.search) {
-      setChosen(
-        props.location.search
-          .split("&")[1]
-          .split("=")[1]
-          .replace(/%20/g, " ")
-          .replace(/%27/g, "'")
-      );
-      if (
-        props.location.search
-          .split("&")[0]
-          .split("=")[1]
-          .replace(/%20/g, " ")
-          .replace(/%27/g, "'") === "true"
-      ) {
-        setCartList(true);
-      } else {
-        setCartList(false);
-      }
-    }
-  }, []);
-
+    promisedData(setIsLoading).then((database) => setDatabase(database));
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  
+  console.log(database)
+  
   return (
     <MainWindow>
-      {!ordersLoaded ? <OrdersLoad /> : ""}
-      {!custLoaded ? <CustomerLoad /> : ""}
-      {!prodLoaded ? <ProductsLoad /> : ""}
-      {!standLoaded ? <StandingLoad /> : ""}
-      {!holdLoaded ? <HoldingLoad /> : ""}
-
       <BasicContainer>
-        <Calendar />
+        <Calendar database = {database}/>
       </BasicContainer>
       <BasicContainer>
-        <OrderCommandLine />
-        <CurrentOrderInfo />
-        <CurrentOrderList />
-        <OrderEntryButtons />
+        <OrderCommandLine database = {database}/>
+        <CurrentOrderInfo database = {database}/>
+        <CurrentOrderList database = {database}/>
+        <OrderEntryButtons database = {database}/>
       </BasicContainer>
     </MainWindow>
   );

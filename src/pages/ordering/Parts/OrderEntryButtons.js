@@ -7,6 +7,7 @@ import { HoldingContext } from "../../../dataContexts/HoldingContext";
 import { ToggleContext } from "../../../dataContexts/ToggleContext";
 
 import { convertDatetoBPBDate } from "../../../helpers/dateTimeHelpers";
+import { buildCurrentOrder } from "../../../helpers/CartBuildingHelpers"
 
 import {
   updateOrder,
@@ -34,6 +35,7 @@ function OrderEntryButtons() {
   const { route, ponote } = useContext(CurrentDataContext);
   const {
     setChosen,
+    setDelivDate,
     delivDate,
     chosen,
     currentCartList,
@@ -88,7 +90,10 @@ function OrderEntryButtons() {
   };
 
   const handleAddUpdate = async () => {
-    setIsLoading(true);
+    //setIsLoading(true);
+    let ordToModify
+    console.log(route)
+    console.log("orders",orders)
     if (cartList) {
       
       for (let ord of currentCartList) {
@@ -110,17 +115,38 @@ function OrderEntryButtons() {
           updateDetails.id = ord["id"];
           updateDetails._version = ord["_version"];
           try {
-            await API.graphql(
+            const newUpdate = await API.graphql(
               graphqlOperation(updateOrder, { input: { ...updateDetails } })
             );
+            updateDetails.id = newUpdate.data.updateOrder.id
+            let ind = orders.findIndex(ord => ord.id = updateDetails.id)
+            ordToModify = clonedeep(orders)
+            ordToModify[ind].qty = updateDetails.qty
+            ordToModify[ind].prodName = updateDetails.prodName
+            ordToModify[ind].custName = updateDetails.custName
+            ordToModify[ind].PONote = updateDetails.PONote
+            ordToModify[ind].route = updateDetails.route
+            ordToModify[ind].SO = updateDetails.SO
+            ordToModify[ind].isWhole = updateDetails.isWhole
+            ordToModify[ind].delivDate = updateDetails.delivDate
+            ordToModify[ind].timeStamp = updateDetails.timeStamp
+            setOrders(ordToModify)
+
+            
+            
           } catch (error) {
             console.log("error on updating Orders", error);
           }
         } else {
           try {
-            await API.graphql(
+            const newCreate = await API.graphql(
               graphqlOperation(createOrder, { input: { ...updateDetails } })
             );
+            updateDetails.id = newCreate.data.createOrder.id
+            ordToModify = clonedeep(orders)
+            ordToModify.push(updateDetails)
+            setOrders(ordToModify)
+            
           } catch (error) {
             console.log("error on creating Orders", error);
           }
@@ -178,6 +204,7 @@ function OrderEntryButtons() {
         }
       }
     }
+    
     setModifications(false);
     setStandLoaded(false);
     setHoldLoaded(false);

@@ -1,19 +1,8 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState } from "react";
 
-import { CurrentDataContext } from "../../../../dataContexts/CurrentDataContext";
-import { OrdersContext } from "../../../../dataContexts/OrdersContext";
-import { ProductsContext } from "../../../../dataContexts/ProductsContext";
-import { ToggleContext } from "../../../../dataContexts/ToggleContext";
-
-import { convertDatetoBPBDate } from "../../../../helpers/dateTimeHelpers";
-import {
-  findAvailableProducts,
-  decideWhetherToAddOrModify,
-} from "../../../../helpers/sortDataHelpers";
-
-import { Button } from "primereact/button";
-import { Dropdown } from "primereact/dropdown";
-import { InputText } from "primereact/inputtext";
+import ProductList from './AddCartEntryParts/ProductList'
+import Quantity from './AddCartEntryParts/Quantity'
+import AddProduct from './AddCartEntryParts/AddProduct'
 
 import styled from "styled-components";
 
@@ -26,75 +15,16 @@ const AddProductButtons = styled.div`
   padding: 10px 0;
 `;
 
-const AddCartEntryItem = () => {
-  const { products } = useContext(ProductsContext);
-  const { orders, setOrders } = useContext(OrdersContext);
-  const { chosen, delivDate, route, ponote, currentCartList } = useContext(
-    CurrentDataContext
-  );
-  const { orderTypeWhole } = useContext(ToggleContext);
+const AddCartEntryItem = ({ database }) => {
 
   const [pickedProduct, setPickedProduct] = useState();
-  const [productList, setProductList] = useState();
-
-  useEffect(() => {
-    let availableProducts = findAvailableProducts(
-      products,
-      currentCartList,
-      chosen,
-      delivDate
-    );
-    setProductList(availableProducts);
-  }, [products, orders, chosen, delivDate]);
-
-  const handleChange = (e) => {
-    setPickedProduct(e.target.value);
-  };
-
-  const handleAdd = () => {
-    let qty = Number(document.getElementById("addedProdQty").value);
-
-    let newOrder = {
-      qty: qty,
-      prodName: pickedProduct.prodName,
-      custName: chosen,
-      PONote: ponote,
-      route: route,
-      SO: 0,
-      isWhole: orderTypeWhole,
-      delivDate: convertDatetoBPBDate(delivDate),
-    };
-    let newOrderList = decideWhetherToAddOrModify(orders, newOrder, delivDate);
-    setOrders(newOrderList);
-    document.getElementById("addedProdQty").value = null;
-    setPickedProduct("");
-  };
+  
 
   return (
     <AddProductButtons>
-      <Dropdown
-        options={productList}
-        optionLabel="prodName"
-        placeholder="Select a product"
-        name="products"
-        value={pickedProduct}
-        onChange={handleChange}
-        disabled={chosen !== "  " ? false : true}
-      />
-      <span className="p-float-label">
-        <InputText
-          id="addedProdQty"
-          size="10"
-          disabled={chosen !== "  " ? false : true}
-        />
-        <label htmlFor="qty">Quantity</label>
-      </span>
-      <Button
-        label="ADD"
-        disabled={chosen === "  " || pickedProduct === ""}
-        icon="pi pi-plus"
-        onClick={() => handleAdd()}
-      />
+      <ProductList database={database} pickedProduct={pickedProduct} setPickedProduct={setPickedProduct}/>
+      <Quantity />
+      <AddProduct database={database} pickedProduct={pickedProduct} setPickedProduct={setPickedProduct}/>
     </AddProductButtons>
   );
 };

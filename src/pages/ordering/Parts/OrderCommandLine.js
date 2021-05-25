@@ -47,6 +47,7 @@ const OrderCommandLine = ({ database, setDatabase }) => {
   } = useContext(CurrentDataContext);
 
   const {
+    cartList,
     orderTypeWhole,
     setOrderTypeWhole,
     setRouteIsOn,
@@ -214,7 +215,7 @@ const OrderCommandLine = ({ database, setDatabase }) => {
     <React.Fragment>
       <CommandLine>
         <span className="p-float-label">
-          <InputText id="orderCommand" size="50" onKeyUp={handleInput} />
+          <InputText id="orderCommand" size="50" onKeyUp={handleInput} disabled={cartList === true ? false : true}/>
           <label htmlFor="orderCommand">
             Enter Customers, Orders, Dates ...
           </label>

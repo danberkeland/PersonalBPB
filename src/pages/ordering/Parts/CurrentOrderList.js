@@ -15,7 +15,7 @@ const CurrentOrderList = ({ database }) => {
       {cartList ? (
         <React.Fragment>
           <div className="currentOrderList">
-            <CartEntryItem />
+            <CartEntryItem database={database}/>
           </div>
           <AddCartEntryItem database={database}/>
         </React.Fragment>

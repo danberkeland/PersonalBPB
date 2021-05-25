@@ -2,10 +2,10 @@ import React from "react";
 
 import BuildCurrentCartList from "./BuildCurrentCartList";
 
-const CartEntryItem = () => {
+const CartEntryItem = ({ database }) => {
   return (
     <React.Fragment>
-      <BuildCurrentCartList />
+      <BuildCurrentCartList database={database}/>
     </React.Fragment>
   );
 };

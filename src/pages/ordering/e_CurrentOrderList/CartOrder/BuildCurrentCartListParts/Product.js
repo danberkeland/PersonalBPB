@@ -6,6 +6,7 @@ import { ToggleContext } from "../../../../../dataContexts/ToggleContext";
 import { v4 as uuidv4 } from "uuid";
 
 import styled from "styled-components";
+import { convertDatetoBPBDate } from "../../../../../helpers/dateTimeHelpers";
 
 const clonedeep = require("lodash.clonedeep");
 
@@ -13,20 +14,38 @@ const InputBox = styled.div`
   width: 50%;
 `;
 
-const Product = ({ order }) => {
+const Product = ({ order, database, setDatabase }) => {
+  const [products, customers, routes, standing, orders] = database;
   const {
     currentCartList,
     setCurrentCartList,
+    chosen,
+    delivDate
   } = useContext(CurrentDataContext);
   const { setModifications } = useContext(ToggleContext);
 
 
-  const handleQtyModify = (prodName, qty) => {
-    let cartToMod = clonedeep(currentCartList);
-    let ind = cartToMod.findIndex((cur) => cur["prodName"] === prodName);
-    cartToMod[ind]["qty"] = qty;
+  const handleQtyModify = (prodName, e) => {
+    if (e.code === "Enter"){
+    let qty = Number(e.target.value)
+    let ordToMod = clonedeep(orders)
+    let ind = ordToMod.findIndex(ord => ord.prodName === prodName && ord.custName === chosen && ord.delivDate === convertDatetoBPBDate(delivDate))
+    ordToMod[ind].qty = qty;
+    let DBToUpdate = clonedeep(database)
+    DBToUpdate[4] = ordToMod
+    setDatabase(DBToUpdate)
+    setModifications(true);
+    }
+  };
 
-    setCurrentCartList(cartToMod);
+  const handleBlur = (prodName, e) => {
+    let qty = Number(e.target.value)
+    let ordToMod = clonedeep(orders)
+    let ind = ordToMod.findIndex(ord => ord.prodName === prodName && ord.custName === chosen && ord.delivDate === convertDatetoBPBDate(delivDate))
+    ordToMod[ind].qty = qty;
+    let DBToUpdate = clonedeep(database)
+    DBToUpdate[4] = ordToMod
+    setDatabase(DBToUpdate)
     setModifications(true);
   };
 
@@ -44,10 +63,10 @@ const Product = ({ order }) => {
           data-qty={order["qty"]}
           placeholder={order["qty"]}
           onKeyUp={(e) => {
-            handleQtyModify(order["prodName"], Number(e.target.value));
+            handleQtyModify(order["prodName"], e);
           }}
           onBlur={(e) => {
-            e.target.value = null;
+            handleBlur(order["prodName"], e);
           }}
         ></input>
       </InputBox>

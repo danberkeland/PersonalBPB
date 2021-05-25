@@ -31,7 +31,7 @@ const FulfillOptions = styled.div`
   justify-items: left;
 `;
 
-const CurrentOrderInfo = ({ database }) => {
+const CurrentOrderInfo = ({ database, setDatabase }) => {
 
   const [products, customers, routes, standing, orders] = database;
 
@@ -44,7 +44,7 @@ const CurrentOrderInfo = ({ database }) => {
       <CurrentInfo>
         <FulfillOptions>
           <CustomerGroup database={database} customerGroup={customerGroup} setCustomerGroup={setCustomerGroup}/>
-          <RouteSelect database={database} customerGroup={customerGroup} />
+          <RouteSelect database={database} setDatabase={setDatabase} customerGroup={customerGroup} />
         </FulfillOptions>
 
         <SpecialInfo>

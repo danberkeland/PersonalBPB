@@ -49,9 +49,9 @@ function Ordering() {
         <Calendar database={database}/>
       </BasicContainer>
       <BasicContainer>
-        <OrderCommandLine database={database}/>
-        <CurrentOrderInfo database={database}/>
-        <CurrentOrderList database={database}/>
+        <OrderCommandLine database={database} setDatabase={setDatabase}/>
+        <CurrentOrderInfo database={database} setDatabase={setDatabase}/>
+        <CurrentOrderList database={database} setDatabase={setDatabase}/>
         <OrderEntryButtons database={database}/>
       </BasicContainer>
     </MainWindow>

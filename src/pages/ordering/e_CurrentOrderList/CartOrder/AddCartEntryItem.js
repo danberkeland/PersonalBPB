@@ -15,7 +15,7 @@ const AddProductButtons = styled.div`
   padding: 10px 0;
 `;
 
-const AddCartEntryItem = ({ database }) => {
+const AddCartEntryItem = ({ database, setDatabase }) => {
 
   const [pickedProduct, setPickedProduct] = useState();
   
@@ -24,7 +24,7 @@ const AddCartEntryItem = ({ database }) => {
     <AddProductButtons>
       <ProductList database={database} pickedProduct={pickedProduct} setPickedProduct={setPickedProduct}/>
       <Quantity />
-      <AddProduct database={database} pickedProduct={pickedProduct} setPickedProduct={setPickedProduct}/>
+      <AddProduct database={database} setDatabase={setDatabase} pickedProduct={pickedProduct} setPickedProduct={setPickedProduct}/>
     </AddProductButtons>
   );
 };

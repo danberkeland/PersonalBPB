@@ -1,10 +1,7 @@
 import React, { useContext } from "react";
 
 import { CurrentDataContext } from "../../../dataContexts/CurrentDataContext";
-import { OrdersContext } from "../../../dataContexts/OrdersContext";
-import { CustomerContext } from "../../../dataContexts/CustomerContext";
-import { StandingContext } from "../../../dataContexts/StandingContext";
-import { ProductsContext } from "../../../dataContexts/ProductsContext";
+
 import { ToggleContext } from "../../../dataContexts/ToggleContext";
 
 import {
@@ -32,7 +29,12 @@ const CommandLine = styled.span`
   display: flex;
 `;
 
-const OrderCommandLine = () => {
+const clonedeep = require("lodash.clonedeep");
+
+const OrderCommandLine = ({ database, setDatabase }) => {
+
+  const [products, customers, routes, standing, orders] = database;
+
   const {
     chosen,
     setChosen,
@@ -40,11 +42,10 @@ const OrderCommandLine = () => {
     setDelivDate,
     route,
     ponote,
+    currentCartList,
+    setCurrentCartList
   } = useContext(CurrentDataContext);
-  const { orders, setOrders } = useContext(OrdersContext);
-  const { customers } = useContext(CustomerContext);
-  const { standing } = useContext(StandingContext);
-  const { products } = useContext(ProductsContext);
+
   const {
     orderTypeWhole,
     setOrderTypeWhole,
@@ -68,8 +69,9 @@ const OrderCommandLine = () => {
         delivDate: convertDatetoBPBDate(delivDate),
       };
       newRetailCustList.push(newRetailCustEntry);
-
-      setOrders(newRetailCustList);
+      let DBtoUpdate = clonedeep(database)
+      DBtoUpdate.orders = newRetailCustList
+      setDatabase(DBtoUpdate);
       setDelivDate(tomorrow);
       setChosen(newRetailCustName);
       setModifications(true);
@@ -145,12 +147,14 @@ const OrderCommandLine = () => {
         orderTypeWhole,
         delivDate
       );
+      
       let custOrderList = buildCurrentOrder(
         chosen,
         delivDate,
         orders,
         standing
       );
+      
       let ordersToModify = [...orders];
       if (custOrderList.length > 0) {
         ordersToModify = buildOrdersToModify(
@@ -158,7 +162,9 @@ const OrderCommandLine = () => {
           chosen,
           delivDate,
           ordersToUpdate,
-          custOrderList
+          custOrderList,
+          ponote,
+          route
         );
       }
       let addedOrdersToUpdate = addUpdatesToOrders(
@@ -167,7 +173,11 @@ const OrderCommandLine = () => {
         ordersToUpdate,
         ordersToModify
       );
-      setOrders(addedOrdersToUpdate);
+     
+      let DBToUpdate = clonedeep(database)
+      DBToUpdate[4] = addedOrdersToUpdate
+      setDatabase(DBToUpdate)
+     
       setModifications(true);
     }
   };

@@ -8,7 +8,9 @@ import { decideWhetherToAddOrModify } from "../../../../../helpers/sortDataHelpe
 
 import { Button } from "primereact/button";
 
-const AddProduct = ({ database, pickedProduct, setPickedProduct }) => {
+const clonedeep = require("lodash.clonedeep");
+
+const AddProduct = ({ database, setDatabase, pickedProduct, setPickedProduct }) => {
   const [products, customers, routes, standing, orders] = database;
   const {
     chosen,
@@ -34,11 +36,14 @@ const AddProduct = ({ database, pickedProduct, setPickedProduct }) => {
       delivDate: convertDatetoBPBDate(delivDate),
     };
     let newOrderList = decideWhetherToAddOrModify(
-      currentCartList,
+      orders,
       newOrder,
       delivDate
     );
-    setCurrentCartList(newOrderList);
+    
+    let DBToUpdate = clonedeep(database)
+    DBToUpdate[4] = newOrderList
+    setDatabase(DBToUpdate)
     document.getElementById("addedProdQty").value = null;
     setPickedProduct("");
   };

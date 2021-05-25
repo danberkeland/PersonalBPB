@@ -175,7 +175,10 @@ export const buildOrdersToModify = (
   chosen,
   delivDate,
   ordersToUpdate,
-  custOrderList
+  custOrderList,
+  ponote,
+  route
+
 ) => {
   let ordersToModify = [...orders];
   for (let orderToUpdate of ordersToUpdate) {
@@ -191,6 +194,8 @@ export const buildOrdersToModify = (
           ordersToModify[index]["qty"] = orderToUpdate["qty"];
         } else {
           orderToUpdate["SO"] = custOrder["SO"];
+          orderToUpdate.ponote = ponote;
+          orderToUpdate.route = route;
           ordersToModify.push(orderToUpdate);
         }
       }

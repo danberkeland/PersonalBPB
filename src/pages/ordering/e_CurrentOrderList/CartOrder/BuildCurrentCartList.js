@@ -28,7 +28,7 @@ const TrashCanContainer = styled.div`
   border: none;
 `;
 
-const BuildCurrentCartList = ({ database }) => {
+const BuildCurrentCartList = ({ database, setDatabase }) => {
   const [products, customers, routes, standing, orders] = database;
   const {
     chosen,
@@ -67,13 +67,13 @@ const BuildCurrentCartList = ({ database }) => {
         <label>PRODUCT</label>
         <label>QTY</label>
         <label>PREV</label>
-        {currentCartList.map((order) => (
+        {currentCartList.filter(curr => curr.qty !==0).map((order) => (
           <React.Fragment key={uuidv4() + "b"}>
             <TrashCanContainer>
-              <TrashCan order={order} />
+              <TrashCan order={order} database={database} setDatabase={setDatabase} />
             </TrashCanContainer>
 
-            <Product order={order} />
+            <Product order={order} database={database} setDatabase={setDatabase}/>
             <Previous order={order}/>
               
           </React.Fragment>

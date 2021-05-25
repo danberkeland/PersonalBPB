@@ -48,7 +48,7 @@ const CurrentOrderInfo = ({ database, setDatabase }) => {
         </FulfillOptions>
 
         <SpecialInfo>
-          <PONote database={database} />
+          <PONote database={database} setDatabase={setDatabase}/>
         </SpecialInfo>
       </CurrentInfo>
     </React.Fragment>

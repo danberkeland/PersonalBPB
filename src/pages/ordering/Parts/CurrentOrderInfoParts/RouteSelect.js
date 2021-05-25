@@ -77,6 +77,7 @@ const RouteSelect = ({ database, setDatabase, customerGroup }) => {
         name="delivery"
         onChange={(e) => handleSetRoute(e.value)}
         checked={route === "deliv"}
+        disabled={currentCartList.length !== 0 ? false : true}
       />
       <label htmlFor="delivery">Delivery</label>
       <RadioButton
@@ -84,6 +85,7 @@ const RouteSelect = ({ database, setDatabase, customerGroup }) => {
         name="delivery"
         onChange={(e) => handleSetRoute(e.value)}
         checked={route === "slopick"}
+        disabled={currentCartList.length !== 0 ? false : true}
       />
       <label htmlFor="pickupSLO">Pick up SLO</label>
 
@@ -92,6 +94,7 @@ const RouteSelect = ({ database, setDatabase, customerGroup }) => {
         name="delivery"
         onChange={(e) => handleSetRoute(e.value)}
         checked={route === "atownpick"}
+        disabled={currentCartList.length !== 0 ? false : true}
       />
       <label htmlFor="pickupAtown">Pick up Carlton</label>
     </React.Fragment>

@@ -7,12 +7,14 @@ import { InputText } from "primereact/inputtext";
 
 import { convertDatetoBPBDate } from "../../../../helpers/dateTimeHelpers";
 
-const PONote = ({ database }) => {
+const clonedeep = require("lodash.clonedeep");
+
+const PONote = ({ database, setDatabase }) => {
   const [products, customers, routes, standing, orders] = database;
 
   const { setModifications } = useContext(ToggleContext);
 
-  const { chosen, route, setRoute, ponote, setPonote, delivDate } =
+  const { chosen, route, setRoute, ponote, setPonote, delivDate, currentCartList } =
     useContext(CurrentDataContext);
 
   const orderCheck = () => {
@@ -39,19 +41,52 @@ const PONote = ({ database }) => {
     }
   }, [chosen, delivDate, database]);
 
-  const handleSetPonote = (e) => {
-    setPonote(e);
-    setModifications(true);
+  const handleChange = (e) => {
+    if (e.code === "Enter"){
+      let ordToMod = clonedeep(orders)
+    
+      for (let ord of ordToMod){
+        if (ord.custName === chosen && ord.delivDate === convertDatetoBPBDate(delivDate)){
+          ord.PONote = e.target.value
+        }
+      }
+      let DBToMod = clonedeep(database)
+      DBToMod[4] = ordToMod
+      setDatabase(DBToMod)
+      setModifications(true);
+      setPonote(e.target.value);
+      document.getElementById("inPo").value = "";
+
+    }
+  };
+
+  const handleBlur = (e) => {
+    let ordToMod = clonedeep(orders)
+    
+    for (let ord of ordToMod){
+      if (ord.custName === chosen && ord.delivDate === convertDatetoBPBDate(delivDate)){
+        ord.PONote = e.target.value
+      }
+    }
+    let DBToMod = clonedeep(database)
+      DBToMod[4] = ordToMod
+      setDatabase(DBToMod)
+      setModifications(true);
+      setPonote(e.target.value);
+      document.getElementById("inPo").value = "";
   };
 
   return (
     <React.Fragment>
       <span className="p-float-label">
         <InputText
-          id="in"
+          id="inPo"
           size="50"
-          value={ponote}
-          onChange={(e) => handleSetPonote(e.target.value)}
+          placeholder={ponote}
+          onChange={(e) => handleChange(e)}
+          onBlur={(e) => handleBlur(e)}
+          disabled={currentCartList.length !== 0 ? false : true}
+          
         />
         <label htmlFor="in">
           {ponote === "" ? "PO#/Special Instructions..." : ""}

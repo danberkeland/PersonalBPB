@@ -20,33 +20,13 @@ const Product = ({ order, database, setDatabase }) => {
     currentCartList,
     setCurrentCartList,
     chosen,
-    delivDate
+    delivDate,
+    route,
+    ponote
   } = useContext(CurrentDataContext);
   const { setModifications } = useContext(ToggleContext);
 
-
-  const handleQtyModify = (prodName, e) => {
-    if (e.code === "Enter"){
-    let qty = Number(e.target.value)
-    let ordToMod = clonedeep(orders)
-    let ind = ordToMod.findIndex(ord => ord.prodName === prodName && ord.custName === chosen && ord.delivDate === convertDatetoBPBDate(delivDate))
-    console.log(ind)
-    if (ind>-1){
-    ordToMod[ind].qty = qty;
-    } else {
-      // find item in currentCartOrder
-      // adjust item qty and SO
-      // add item to orders
-    }
-    let DBToUpdate = clonedeep(database)
-    DBToUpdate[4] = ordToMod
-    setDatabase(DBToUpdate)
-    setModifications(true);
-    }
-  };
-
-  const handleBlur = (prodName, e) => {
-    if (e.target.value){
+  const updateProduct = (prodName, e) => {
     let qty = Number(e.target.value)
     let ordToMod = clonedeep(orders)
     let ind = ordToMod.findIndex(ord => ord.prodName === prodName && ord.custName === chosen && ord.delivDate === convertDatetoBPBDate(delivDate))
@@ -55,13 +35,29 @@ const Product = ({ order, database, setDatabase }) => {
       ordToMod[ind].qty = qty;
       } else{
         // find item in currentCartOrder
-        // adjust item qty and SO
-        // add item to orders
+        let cartInd = currentCartList.findIndex(curr => curr.prodName === prodName)
+        console.log("cartInd",cartInd)
+        currentCartList[cartInd].route = route;
+        currentCartList[cartInd].PONote = ponote;
+        currentCartList[cartInd].qty = qty;
+        console.log(currentCartList[cartInd])
+        ordToMod.push(currentCartList[cartInd])
       }
     let DBToUpdate = clonedeep(database)
     DBToUpdate[4] = ordToMod
     setDatabase(DBToUpdate)
-    setModifications(true);
+    setModifications(true)
+  }
+
+  const handleQtyModify = (prodName, e) => {
+    if (e.code === "Enter"){
+    updateProduct(prodName,e)
+    }
+  };
+
+  const handleBlur = (prodName, e) => {
+    if (e.target.value){
+    updateProduct(prodName,e)
   }
   };
 

@@ -36,7 +36,8 @@ export const createRetailOrderCustomers = (orders) => {
   let special = orders.filter((order) => order["isWhole"] === false);
   special = special.map((order) => ({ custName: order["custName"] }));
   let unique = [...new Set(special.map((spec) => spec.custName))];
-  unique = unique.map((uni) => ({ name: uni }));
+  unique = unique.map((uni) => ({ custName: uni }));
+  sortAtoZDataByIndex(unique, "custName")
   return unique;
 };
 

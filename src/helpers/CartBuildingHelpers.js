@@ -69,8 +69,7 @@ const convertStandListtoStandArray = (
     qty: order[dayOfWeek],
     prodName: order["prodName"],
     custName: order["custName"],
-    PONote: ponote,
-    route: route,
+    
     isWhole: true,
     delivDate: convertDatetoBPBDate(delivDate),
     timeStamp: order["timeStamp"],

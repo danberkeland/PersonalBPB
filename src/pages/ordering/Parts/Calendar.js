@@ -60,7 +60,7 @@ const Calendar = ({ database }) => {
   const handleDateSelect = (selectInfo) => {
     document.getElementById("orderCommand").focus();
     setDelivDate(selectInfo.dateStr);
-    setModifications(false)
+    
   
   };
 

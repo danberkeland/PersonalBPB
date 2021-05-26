@@ -31,7 +31,7 @@ const CustomerGroup = ({ database, customerGroup, setCustomerGroup }) => {
   const handleChosen = (chosen) => {
     setChosen(chosen);
     setDelivDate(tomorrow());
-    setModifications(false);
+   
   };
 
   return (

@@ -11,7 +11,7 @@ const AddProduct = ({ database, pickedProduct, setPickedProduct }) => {
  
   const { chosen, standArray, setStandArray } =
     useContext(CurrentDataContext);
-  const { standList } = useContext(ToggleContext);
+  const { standList, setModifications } = useContext(ToggleContext);
   
   const handleAdd = () => {
     let newList = clonedeep(standArray);
@@ -32,6 +32,7 @@ const AddProduct = ({ database, pickedProduct, setPickedProduct }) => {
       newList.push(newOrder);
     }
     setStandArray(newList);
+    setModifications(true)
 
     setPickedProduct("");
   };

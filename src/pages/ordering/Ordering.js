@@ -33,12 +33,13 @@ const BasicContainer = styled.div`
 function Ordering() {
 
   const [ database, setDatabase ] = useState([])
-  const { reload, setIsLoading } = useContext(ToggleContext)
+  const { reload, setIsLoading, setModifications } = useContext(ToggleContext)
   
   useEffect(() => {
     promisedData(setIsLoading).then((database) =>
       setDatabase(database)
     );
+   
   }, [reload]); // eslint-disable-line react-hooks/exhaustive-deps
 
 

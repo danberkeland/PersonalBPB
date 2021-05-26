@@ -43,50 +43,53 @@ const PONote = ({ database, setDatabase }) => {
       setPonote("");
       let checkOrder = orderCheck();
       if (checkOrder) {
-        setPonote(checkOrder.PONote); //Double check this attribute for spelling
+        setPonote(checkOrder.PONote);
       }
     }
   }, [chosen, delivDate, database]);
 
-  const handleChange = (e) => {
-    if (e.code === "Enter") {
-      let ordToMod = clonedeep(orders);
+  const updateOrders = (e) => {
+    let ordToMod = clonedeep(orders);
 
-      for (let ord of ordToMod) {
-        if (
-          ord.custName === chosen &&
-          ord.delivDate === convertDatetoBPBDate(delivDate)
-        ) {
-          ord.PONote = e.target.value;
+    for (let ord of ordToMod) {
+      if (
+        ord.custName === chosen &&
+        ord.delivDate === convertDatetoBPBDate(delivDate)
+      ) {
+        ord.PONote = e.target.value;
+      }
+
+      if (
+        ordToMod.filter(
+          (ord) =>
+            ord.custName === chosen &&
+            ord.delivDate === convertDatetoBPBDate(delivDate)
+        ).length === 0
+      ) {
+        for (let curr of currentCartList) {
+          curr.PONote = ponote;
+          ordToMod.push(curr);
         }
       }
-      let DBToMod = clonedeep(database);
-      DBToMod[4] = ordToMod;
-      setDatabase(DBToMod);
-      setModifications(true);
-      setPonote(e.target.value);
-      document.getElementById("inPo").value = "";
+    }
+    let DBToMod = clonedeep(database);
+    DBToMod[4] = ordToMod;
+    setDatabase(DBToMod);
+    setModifications(true)
+    
+    setPonote(e.target.value);
+    document.getElementById("inPo").value = "";
+  };
+
+  const handleChange = (e) => {
+    if (e.code === "Enter") {
+      updateOrders(e);
     }
   };
 
   const handleBlur = (e) => {
     if (e.target.value) {
-      let ordToMod = clonedeep(orders);
-
-      for (let ord of ordToMod) {
-        if (
-          ord.custName === chosen &&
-          ord.delivDate === convertDatetoBPBDate(delivDate)
-        ) {
-          ord.PONote = e.target.value;
-        }
-      }
-      let DBToMod = clonedeep(database);
-      DBToMod[4] = ordToMod;
-      setDatabase(DBToMod);
-      setModifications(true);
-      setPonote(e.target.value);
-      document.getElementById("inPo").value = "";
+      updateOrders(e);
     }
   };
 

@@ -20,7 +20,7 @@ const AddProduct = ({ database, setDatabase, pickedProduct, setPickedProduct }) 
     currentCartList,
     setCurrentCartList,
   } = useContext(CurrentDataContext);
-  const { orderTypeWhole } = useContext(ToggleContext);
+  const { orderTypeWhole, setModifications } = useContext(ToggleContext);
 
   const handleAdd = () => {
     let qty = Number(document.getElementById("addedProdQty").value);
@@ -44,6 +44,7 @@ const AddProduct = ({ database, setDatabase, pickedProduct, setPickedProduct }) 
     let DBToUpdate = clonedeep(database)
     DBToUpdate[4] = newOrderList
     setDatabase(DBToUpdate)
+    setModifications(true)
     document.getElementById("addedProdQty").value = null;
     setPickedProduct("");
   };

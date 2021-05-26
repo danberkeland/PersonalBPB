@@ -75,7 +75,7 @@ const OrderCommandLine = ({ database, setDatabase }) => {
       setDatabase(DBtoUpdate);
       setDelivDate(tomorrow);
       setChosen(newRetailCustName);
-      setModifications(true);
+    
       return;
     }
 
@@ -90,7 +90,7 @@ const OrderCommandLine = ({ database, setDatabase }) => {
           setRouteIsOn(true);
           setDelivDate(tomorrow);
           setOrderTypeWhole(true);
-          setModifications(false)
+        
           return;
         }
       }
@@ -179,7 +179,7 @@ const OrderCommandLine = ({ database, setDatabase }) => {
       DBToUpdate[4] = addedOrdersToUpdate
       setDatabase(DBToUpdate)
      
-      setModifications(true);
+     
     }
   };
 

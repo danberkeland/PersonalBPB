@@ -6,7 +6,7 @@ import { Button } from "primereact/button";
 
 
 const StandOrHold = ({ standHold, setStandHold }) => {
-  const { standList, setStandList } = useContext(ToggleContext);
+  const { standList, setStandList, setModifications } = useContext(ToggleContext);
 
   useEffect(() => {
     standList ? setStandHold("MAKE H.O.") : setStandHold("MAKE S.O.");
@@ -14,7 +14,7 @@ const StandOrHold = ({ standHold, setStandHold }) => {
 
   const handleStandHold = () => {
     let newStand = !standList;
-
+    setModifications(true)
     setStandList(newStand);
   };
 

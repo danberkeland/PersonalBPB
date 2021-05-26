@@ -14,8 +14,14 @@ const RouteSelect = ({ database, setDatabase, customerGroup }) => {
 
   const { setModifications, cartList } = useContext(ToggleContext);
 
-  const { chosen, route, setRoute, delivDate, currentCartList, setCurrentCartList } =
-    useContext(CurrentDataContext);
+  const {
+    chosen,
+    route,
+    setRoute,
+    delivDate,
+    currentCartList,
+    setCurrentCartList,
+  } = useContext(CurrentDataContext);
 
   useEffect(() => {
     if (customerGroup) {
@@ -36,8 +42,9 @@ const RouteSelect = ({ database, setDatabase, customerGroup }) => {
       if (currentCartList) {
         let orderCheck = currentCartList.filter(
           (ord) =>
-            ord["custName"] === chosen &&
-            ord["delivDate"] === convertDatetoBPBDate(delivDate)
+            ord.custName === chosen &&
+            ord.delivDate === convertDatetoBPBDate(delivDate) &&
+            Number(ord.qty > 0)
         );
 
         if (orderCheck.length > 0) {
@@ -57,17 +64,35 @@ const RouteSelect = ({ database, setDatabase, customerGroup }) => {
   }, [chosen, delivDate, customerGroup, currentCartList]);
 
   const handleSetRoute = (e) => {
-    let ordToMod = clonedeep(orders)
-    
-    for (let ord of ordToMod){
-      if (ord.custName === chosen && ord.delivDate === convertDatetoBPBDate(delivDate)){
-        ord.route = e
+    let ordToMod = clonedeep(orders);
+
+    for (let ord of ordToMod) {
+      if (
+        ord.custName === chosen &&
+        ord.delivDate === convertDatetoBPBDate(delivDate)
+      ) {
+        ord.route = e;
+      }
+
+      if (
+        ordToMod.filter(
+          (ord) =>
+            ord.custName === chosen &&
+            ord.delivDate === convertDatetoBPBDate(delivDate)
+        ).length === 0
+      ) {
+        for (let curr of currentCartList) {
+          curr.route = route;
+          ordToMod.push(curr);
+        }
       }
     }
-    let DBToMod = clonedeep(database)
-    DBToMod[4] = ordToMod
-    setDatabase(DBToMod)
-    setModifications(true);
+
+    let DBToMod = clonedeep(database);
+    DBToMod[4] = ordToMod;
+    setDatabase(DBToMod);
+    setModifications(true)
+    
   };
 
   return (
@@ -77,8 +102,9 @@ const RouteSelect = ({ database, setDatabase, customerGroup }) => {
         name="delivery"
         onChange={(e) => handleSetRoute(e.value)}
         checked={route === "deliv"}
-        disabled={((currentCartList.length !== 0) || (cartList === true)) ? false : true}
-        
+        disabled={
+          currentCartList.length !== 0 || cartList === true ? false : true
+        }
       />
       <label htmlFor="delivery">Delivery</label>
       <RadioButton
@@ -86,7 +112,9 @@ const RouteSelect = ({ database, setDatabase, customerGroup }) => {
         name="delivery"
         onChange={(e) => handleSetRoute(e.value)}
         checked={route === "slopick"}
-        disabled={((currentCartList.length !== 0) || (cartList === true)) ? false : true}
+        disabled={
+          currentCartList.length !== 0 || cartList === true ? false : true
+        }
       />
       <label htmlFor="pickupSLO">Pick up SLO</label>
 
@@ -95,7 +123,9 @@ const RouteSelect = ({ database, setDatabase, customerGroup }) => {
         name="delivery"
         onChange={(e) => handleSetRoute(e.value)}
         checked={route === "atownpick"}
-        disabled={((currentCartList.length !== 0) || (cartList === true)) ? false : true}
+        disabled={
+          currentCartList.length !== 0 || cartList === true ? false : true
+        }
       />
       <label htmlFor="pickupAtown">Pick up Carlton</label>
     </React.Fragment>

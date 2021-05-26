@@ -145,7 +145,7 @@ function AddUpdate({ database, setDatabase }) {
     }
     //setReload(!reload)
     setIsLoading(false);
-    setModifications(false);
+   
     document.getElementById("orderCommand").focus();
   };
 

@@ -57,7 +57,7 @@ function OrderEntryButtons({ database, setDatabase }) {
       ord["qty"] = 0;
     }
     setCurrentCartList(cartToMod);
-    setModifications(true);
+ 
   };
 
   

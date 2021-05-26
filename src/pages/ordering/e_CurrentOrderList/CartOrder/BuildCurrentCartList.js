@@ -41,7 +41,8 @@ const BuildCurrentCartList = ({ database, setDatabase }) => {
   } = useContext(CurrentDataContext);
 
   const {
-    reload
+    reload,
+    setModifications
   } = useContext(ToggleContext)
 
   useEffect(() => {
@@ -55,12 +56,17 @@ const BuildCurrentCartList = ({ database, setDatabase }) => {
           route,
           ponote
         );
-        
-
+       
+        for (let curr in currentOrderList){
+          if (curr.SO !== curr.qty){
+            setModifications(true)
+          }
+        }
         setCurrentCartList(currentOrderList);
+       
       }
     }
-  }, [chosen, delivDate, orders, standing,reload]);
+  }, [chosen, delivDate, orders, standing, reload]);
 
   
   return (

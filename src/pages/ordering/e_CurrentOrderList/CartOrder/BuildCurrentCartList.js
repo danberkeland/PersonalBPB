@@ -11,6 +11,7 @@ import { v4 as uuidv4 } from "uuid";
 import styled from "styled-components";
 
 import { buildCurrentOrder } from "../../../../helpers/CartBuildingHelpers";
+import { ToggleContext } from "../../../../dataContexts/ToggleContext";
 
 const OrderGrid = styled.div`
   width: 100%;
@@ -39,6 +40,10 @@ const BuildCurrentCartList = ({ database, setDatabase }) => {
     route,
   } = useContext(CurrentDataContext);
 
+  const {
+    reload
+  } = useContext(ToggleContext)
+
   useEffect(() => {
     if (database.length > 0) {
       if (chosen !== "  ") {
@@ -50,14 +55,12 @@ const BuildCurrentCartList = ({ database, setDatabase }) => {
           route,
           ponote
         );
-        currentOrderList = currentOrderList.filter(
-          (order) => order["qty"] !== 0
-        );
+        
 
         setCurrentCartList(currentOrderList);
       }
     }
-  }, [chosen, delivDate, orders, standing]);
+  }, [chosen, delivDate, orders, standing,reload]);
 
   
   return (

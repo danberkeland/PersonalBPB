@@ -14,8 +14,15 @@ const PONote = ({ database, setDatabase }) => {
 
   const { cartList, setModifications } = useContext(ToggleContext);
 
-  const { chosen, route, setRoute, ponote, setPonote, delivDate, currentCartList } =
-    useContext(CurrentDataContext);
+  const {
+    chosen,
+    route,
+    setRoute,
+    ponote,
+    setPonote,
+    delivDate,
+    currentCartList,
+  } = useContext(CurrentDataContext);
 
   const orderCheck = () => {
     let orderCheck = orders.filter(
@@ -42,38 +49,45 @@ const PONote = ({ database, setDatabase }) => {
   }, [chosen, delivDate, database]);
 
   const handleChange = (e) => {
-    if (e.code === "Enter"){
-      let ordToMod = clonedeep(orders)
-    
-      for (let ord of ordToMod){
-        if (ord.custName === chosen && ord.delivDate === convertDatetoBPBDate(delivDate)){
-          ord.PONote = e.target.value
+    if (e.code === "Enter") {
+      let ordToMod = clonedeep(orders);
+
+      for (let ord of ordToMod) {
+        if (
+          ord.custName === chosen &&
+          ord.delivDate === convertDatetoBPBDate(delivDate)
+        ) {
+          ord.PONote = e.target.value;
         }
       }
-      let DBToMod = clonedeep(database)
-      DBToMod[4] = ordToMod
-      setDatabase(DBToMod)
+      let DBToMod = clonedeep(database);
+      DBToMod[4] = ordToMod;
+      setDatabase(DBToMod);
       setModifications(true);
       setPonote(e.target.value);
       document.getElementById("inPo").value = "";
-
     }
   };
 
   const handleBlur = (e) => {
-    let ordToMod = clonedeep(orders)
-    
-    for (let ord of ordToMod){
-      if (ord.custName === chosen && ord.delivDate === convertDatetoBPBDate(delivDate)){
-        ord.PONote = e.target.value
+    if (e.target.value) {
+      let ordToMod = clonedeep(orders);
+
+      for (let ord of ordToMod) {
+        if (
+          ord.custName === chosen &&
+          ord.delivDate === convertDatetoBPBDate(delivDate)
+        ) {
+          ord.PONote = e.target.value;
+        }
       }
-    }
-    let DBToMod = clonedeep(database)
-      DBToMod[4] = ordToMod
-      setDatabase(DBToMod)
+      let DBToMod = clonedeep(database);
+      DBToMod[4] = ordToMod;
+      setDatabase(DBToMod);
       setModifications(true);
       setPonote(e.target.value);
       document.getElementById("inPo").value = "";
+    }
   };
 
   return (
@@ -85,8 +99,9 @@ const PONote = ({ database, setDatabase }) => {
           placeholder={ponote}
           onChange={(e) => handleChange(e)}
           onBlur={(e) => handleBlur(e)}
-          disabled={((currentCartList.length !== 0) || (cartList === true)) ? false : true}
-          
+          disabled={
+            currentCartList.length !== 0 || cartList === true ? false : true
+          }
         />
         <label htmlFor="in">
           {ponote === "" ? "PO#/Special Instructions..." : ""}

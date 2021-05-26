@@ -33,13 +33,13 @@ const BasicContainer = styled.div`
 function Ordering() {
 
   const [ database, setDatabase ] = useState([])
-  const { setIsLoading } = useContext(ToggleContext)
+  const { reload, setIsLoading } = useContext(ToggleContext)
   
   useEffect(() => {
     promisedData(setIsLoading).then((database) =>
       setDatabase(database)
     );
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [reload]); // eslint-disable-line react-hooks/exhaustive-deps
 
 
   return (
@@ -52,7 +52,7 @@ function Ordering() {
         <OrderCommandLine database={database} setDatabase={setDatabase}/>
         <CurrentOrderInfo database={database} setDatabase={setDatabase}/>
         <CurrentOrderList database={database} setDatabase={setDatabase}/>
-        <OrderEntryButtons database={database}/>
+        <OrderEntryButtons database={database} setDatabase={setDatabase}/>
       </BasicContainer>
     </MainWindow>
   );

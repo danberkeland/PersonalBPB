@@ -30,7 +30,14 @@ const Product = ({ order, database, setDatabase }) => {
     let qty = Number(e.target.value)
     let ordToMod = clonedeep(orders)
     let ind = ordToMod.findIndex(ord => ord.prodName === prodName && ord.custName === chosen && ord.delivDate === convertDatetoBPBDate(delivDate))
+    console.log(ind)
+    if (ind>-1){
     ordToMod[ind].qty = qty;
+    } else {
+      // find item in currentCartOrder
+      // adjust item qty and SO
+      // add item to orders
+    }
     let DBToUpdate = clonedeep(database)
     DBToUpdate[4] = ordToMod
     setDatabase(DBToUpdate)
@@ -39,14 +46,23 @@ const Product = ({ order, database, setDatabase }) => {
   };
 
   const handleBlur = (prodName, e) => {
+    if (e.target.value){
     let qty = Number(e.target.value)
     let ordToMod = clonedeep(orders)
     let ind = ordToMod.findIndex(ord => ord.prodName === prodName && ord.custName === chosen && ord.delivDate === convertDatetoBPBDate(delivDate))
-    ordToMod[ind].qty = qty;
+    console.log(ind)
+    if (ind>-1){
+      ordToMod[ind].qty = qty;
+      } else{
+        // find item in currentCartOrder
+        // adjust item qty and SO
+        // add item to orders
+      }
     let DBToUpdate = clonedeep(database)
     DBToUpdate[4] = ordToMod
     setDatabase(DBToUpdate)
     setModifications(true);
+  }
   };
 
   return (

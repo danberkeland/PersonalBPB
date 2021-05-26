@@ -71,6 +71,7 @@ const BuildCurrentStandingList = ({ database, setDatabase }) => {
     adjustedStanding[ind]["Fri"] = 0;
     adjustedStanding[ind]["Sat"] = 0;
     setStandArray(adjustedStanding);
+    setModifications(true)
     
   };
 

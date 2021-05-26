@@ -25,6 +25,7 @@ const TrashCan = ({ order, database, setDatabase }) => {
     let DBToUpdate = clonedeep(database)
     DBToUpdate[4] = ordToMod
     setDatabase(DBToUpdate)
+    setModifications(true)
    
   };
 

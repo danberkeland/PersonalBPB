@@ -88,6 +88,12 @@ function WhoBake() {
     doc.setFontSize(titleFont);
     doc.text(pageMargin, finalY + tableToNextTitle, `Set Out`);
     for (let ord of allOrdersList) {
+
+      let total = 0
+      for ( let num of allOrders.filter((fil) => fil.forBake === ord)){
+        total = total + num.qty
+      }
+
     doc.autoTable({
       body: allOrders.filter((fil) => fil.forBake === ord),
       margin: pageMargin,
@@ -100,8 +106,10 @@ function WhoBake() {
     });
 
     finalY = doc.previousAutoTable.finalY;
+      doc.text(pageMargin+100, finalY+8, `Total: ${total}`)
+      finalY=finalY+10
   }
-    doc.save(`WhoBake${delivDate}.pdf`);
+    doc.save(`WhoShape${delivDate}.pdf`);
   };
   
   const header = (
@@ -152,7 +160,7 @@ function WhoBake() {
         <h1>
           Who Shape {convertDatetoBPBDate(delivDate)}
         </h1>
-        {/*<div>{header}</div>*/}
+        <div>{header}</div>
         {allOrdersList && allOrdersList.map((all) => (
           <React.Fragment>
           <h3>{all}</h3>

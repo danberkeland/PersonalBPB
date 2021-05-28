@@ -136,7 +136,7 @@ function BPBNBaker2() {
         <h1>What To Shape {convertDatetoBPBDate(delivDate)}</h1>
         <div>{header}</div>
 
-        <h3>Set Out</h3>
+        <h3>What To Shape</h3>
         <DataTable value={whatToMake} className="p-datatable-sm">
           <Column field="forBake" header="Product"></Column>
           <Column field="weight" header="Weight"></Column>

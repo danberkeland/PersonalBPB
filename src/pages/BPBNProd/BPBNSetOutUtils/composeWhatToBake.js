@@ -108,7 +108,7 @@ export default class ComposeWhatToMake {
   whatToMakeFilter = (ord, loc) => {
     return (
       ord.where.includes("Carlton") &&
-      ord.packGroup === "rustic breads" 
+      (ord.packGroup === "rustic breads" || ord.packGroup === "retail")
       
       
     );
@@ -172,7 +172,7 @@ export default class ComposeWhatToMake {
       make.needEarly = ""
   }
 
-      make.qty = qtyAccToday
+  make.qty = qtyAccToday
       
      
     }

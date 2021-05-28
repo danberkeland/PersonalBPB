@@ -104,7 +104,7 @@ export default class ComposeWhatToMake {
   whatToMakeFilter = (ord, loc) => {
     return (
       ord.where.includes("Carlton") &&
-      ord.packGroup === "rustic breads"
+      (ord.packGroup === "rustic breads" || ord.packGroup === "retail")
       
     );
   };
@@ -131,7 +131,7 @@ export default class ComposeWhatToMake {
       if (qtyToday.length > 0) {
         qtyAccToday = qtyToday.reduce(addUp);
       }
-      make.qty = qtyAccToday;
+      make.qty = qtyAccToday * bakedTomorrow[bakedTomorrow.findIndex(baked => baked.forBake === make.forBake)].packSize;
       make.dough = bakedTomorrow[bakedTomorrow.findIndex(baked => baked.forBake === make.forBake)].doughType
       make.weight = bakedTomorrow[bakedTomorrow.findIndex(baked => baked.forBake === make.forBake)].weight
       make.id = bakedTomorrow[bakedTomorrow.findIndex(baked => baked.forBake === make.forBake)].prodID

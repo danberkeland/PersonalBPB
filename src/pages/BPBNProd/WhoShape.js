@@ -3,6 +3,8 @@ import React, { useEffect, useState, useContext } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
+import { ColumnGroup } from "primereact/columngroup";
+import { Row } from "primereact/row";
 
 import { ToggleContext } from "../../dataContexts/ToggleContext";
 
@@ -124,6 +126,26 @@ function WhoBake() {
     Array.from(new Set(allOrdersList))
   );
 
+  const footerGroup = (e) => {
+    let total = 0;
+    for (let prod of e) {
+      total += prod.qty;
+    }
+
+    return (
+      <ColumnGroup>
+        <Row>
+          <Column
+            footer="Total:"
+            colSpan={1}
+            footerStyle={{ textAlign: "right" }}
+          />
+          <Column footer={total} />
+        </Row>
+      </ColumnGroup>
+    );
+  };
+
   return (
     <React.Fragment>
       <WholeBox>
@@ -138,6 +160,9 @@ function WhoBake() {
             value={allOrders.filter((fil) => fil.forBake === all)}
             
             className="p-datatable-sm"
+            footerColumnGroup={footerGroup(
+              allOrders.filter((fil) => fil.forBake === all)
+            )}
           >
             <Column field="custName" header="Customer"></Column>
             <Column field="qty" header="Qty"></Column>

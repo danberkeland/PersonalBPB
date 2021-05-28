@@ -14,6 +14,7 @@ import {
   productReadyBeforeRouteStarts,
   customerIsOpen,
 } from "../../logistics/ByRoute/Parts/utils/utils";
+import { whenTransitionDone } from "@fullcalendar/common";
 
 const addRoutes = (delivDate, prodGrid, database) => {
   const [products, customers, routes, standing, orders] = database;
@@ -87,16 +88,20 @@ export default class ComposeAllOrders {
   returnAllOrders = (delivDate, database, loc) => {
     const [products, customers, routes, standing, orders] = database;
     let allOrdersList = getOrdersList(delivDate, database);
+    
     let allOrdersToday = allOrdersList.filter((set) =>
       this.allOrdersFilter(set, loc)
     );
-    console.log(allOrdersToday);
+    
+    for (let ord of allOrdersToday){
+      ord.qty = ord.qty*ord.packSize
+    }
     return allOrdersToday;
   };
 
   allOrdersFilter = (ord, loc) => {
     return (
-      (ord.where.includes(loc) && ord.packGroup === "rustic breads") ||
+      (ord.packGroup === "rustic breads" || (ord.packGroup === "retail" && ord.where.includes(loc))) ||
       (ord.routeDepart === "Carlton" &&
         ord.packGroup === "baked pastries" &&
         ord.doughType !== "Croissant") || 

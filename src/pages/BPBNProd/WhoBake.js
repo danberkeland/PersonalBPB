@@ -3,6 +3,8 @@ import React, { useEffect, useState, useContext } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
+import { ColumnGroup } from "primereact/columngroup";
+import { Row } from "primereact/row";
 
 import { ToggleContext } from "../../dataContexts/ToggleContext";
 
@@ -43,7 +45,6 @@ const ButtonWrapper = styled.div`
   background: #ffffff;
 `;
 
-
 const compose = new ComposeAllOrders();
 
 function WhoBake() {
@@ -64,9 +65,10 @@ function WhoBake() {
       database,
       "Carlton"
     );
+
     setAllOrders(allOrdersData.allOrders);
   };
-  
+
   const exportWhoBakePdf = () => {
     let finalY;
     let pageMargin = 20;
@@ -77,33 +79,29 @@ function WhoBake() {
 
     const doc = new jsPDF("p", "mm", "a4");
     doc.setFontSize(20);
-    doc.text(
-      pageMargin,
-      20,
-      `Who Bake ${convertDatetoBPBDate(delivDate)}`
-    );
+    doc.text(pageMargin, 20, `Who Bake ${convertDatetoBPBDate(delivDate)}`);
 
     finalY = 20;
 
     doc.setFontSize(titleFont);
     doc.text(pageMargin, finalY + tableToNextTitle, `Set Out`);
     for (let ord of allOrdersList) {
-    doc.autoTable({
-      body: allOrders.filter((fil) => fil.forBake === ord),
-      margin: pageMargin,
-      columns: [
-        { header: ord, dataKey: "custName" },
-        { header: "Qty", dataKey: "qty" },
-      ],
-      startY: finalY + titleToNextTable,
-      styles: { fontSize: tableFont },
-    });
+      doc.autoTable({
+        body: allOrders.filter((fil) => fil.forBake === ord),
+        margin: pageMargin,
+        columns: [
+          { header: ord, dataKey: "custName" },
+          { header: "Qty", dataKey: "qty" },
+        ],
+        startY: finalY + titleToNextTable,
+        styles: { fontSize: tableFont },
+      });
 
-    finalY = doc.previousAutoTable.finalY;
-  }
+      finalY = doc.previousAutoTable.finalY;
+    }
     doc.save(`WhoBake${delivDate}.pdf`);
   };
-  
+
   const header = (
     <ButtonContainer>
       <ButtonWrapper>
@@ -118,35 +116,52 @@ function WhoBake() {
       </ButtonWrapper>
     </ButtonContainer>
   );
-    
-  
-  
-  
-  let allOrdersList = allOrders.map((all) => all.forBake).filter(all => all !== null)
-  allOrdersList = sortAtoZDataByIndex(
-    Array.from(new Set(allOrdersList))
+
+  let allOrdersList = Array.from(
+    new Set(allOrders.map((all) => all.forBake).filter((all) => all !== null))
   );
+
+  const footerGroup = (e) => {
+    let total = 0;
+    for (let prod of e) {
+      total += prod.qty;
+    }
+
+    return (
+      <ColumnGroup>
+        <Row>
+          <Column
+            footer="Total:"
+            colSpan={1}
+            footerStyle={{ textAlign: "right" }}
+          />
+          <Column footer={total} />
+        </Row>
+      </ColumnGroup>
+    );
+  };
 
   return (
     <React.Fragment>
       <WholeBox>
-        <h1>
-          Who Bake {convertDatetoBPBDate(delivDate)}
-        </h1>
+        <h1>Who Bake {convertDatetoBPBDate(delivDate)}</h1>
         <div>{header}</div>
-        {allOrdersList && allOrdersList.map((all) => (
-          <React.Fragment>
-          <h3>{all}</h3>
-          <DataTable
-            value={allOrders.filter((fil) => fil.forBake === all)}
-            
-            className="p-datatable-sm"
-          >
-            <Column field="custName" header="Customer"></Column>
-            <Column field="qty" header="Qty"></Column>
-          </DataTable>
-          </React.Fragment>
-        ))}
+        {allOrdersList &&
+          allOrdersList.map((all) => (
+            <React.Fragment>
+              <h3>{all}</h3>
+              <DataTable
+                value={allOrders.filter((fil) => fil.forBake === all)}
+                className="p-datatable-sm"
+                footerColumnGroup={footerGroup(
+                  allOrders.filter((fil) => fil.forBake === all)
+                )}
+              >
+                <Column field="custName" header="Customer"></Column>
+                <Column field="qty" header="Qty"></Column>
+              </DataTable>
+            </React.Fragment>
+          ))}
       </WholeBox>
     </React.Fragment>
   );

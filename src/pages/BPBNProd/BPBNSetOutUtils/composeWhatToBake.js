@@ -131,7 +131,7 @@ export default class ComposeWhatToMake {
 
       let qtyToday = bakedTomorrow
         .filter((frz) => make.forBake === frz.forBake)
-        .map((ord) => ord.qty);
+        .map((ord) => ord.qty*ord.packSize);
 
       if (qtyToday.length > 0) {
         qtyAccToday = qtyToday.reduce(addUp);

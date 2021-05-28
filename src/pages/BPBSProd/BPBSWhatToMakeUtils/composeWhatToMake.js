@@ -1,5 +1,6 @@
 import { todayPlus } from "../../../helpers/dateTimeHelpers";
 import { getFullOrders } from "../../../helpers/CartBuildingHelpers";
+import { getFullProdOrders } from "../../../helpers/CartBuildingHelpers";
 import {
   addProdAttr,
   addFresh,
@@ -26,6 +27,12 @@ const makeProds = (products, filt) => {
 
 const getFullMakeOrders = (delivDate, database) => {
   let fullOrder = getFullOrders(delivDate, database);
+  fullOrder = addProdAttr(fullOrder, database); // adds forBake, packSize, currentStock
+  return fullOrder;
+};
+
+const getFullProdMakeOrders = (delivDate, database) => {
+  let fullOrder = getFullProdOrders(delivDate, database);
   fullOrder = addProdAttr(fullOrder, database); // adds forBake, packSize, currentStock
   return fullOrder;
 };
@@ -93,7 +100,7 @@ export default class ComposeWhatToMake {
     const [products, customers, routes, standing, orders] = database;
     let makeShelfProds = makeProds(products, this.shelfProdsFilter);
     let fullOrdersToday = getFullMakeOrders(today, database);
-    let fullOrdersTomorrow = getFullMakeOrders(tomorrow, database);
+    let fullOrdersTomorrow = getFullProdMakeOrders(tomorrow, database);
     for (let make of makeShelfProds) {
       addShelf(make, fullOrdersToday, fullOrdersTomorrow, products, routes);
       addNeedEarly(make, products);
@@ -115,7 +122,7 @@ export default class ComposeWhatToMake {
     const [products, customers, routes, standing, orders] = database;
     let makeFreezerProds = makeProds(products, this.freezerProdsFilter);
     let fullOrdersToday = getFullMakeOrders(today, database);
-    let fullOrdersTomorrow = getFullMakeOrders(tomorrow, database);
+    let fullOrdersTomorrow = getFullProdMakeOrders(tomorrow, database);
     for (let make of makeFreezerProds) {
       addShelf(make, fullOrdersToday, fullOrdersTomorrow, products, routes);
       addNeedEarly(make, products);

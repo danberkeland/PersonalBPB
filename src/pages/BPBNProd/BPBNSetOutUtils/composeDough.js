@@ -3,7 +3,7 @@ import {
   buildGridOrderArray,
 } from "../../../helpers/delivGridHelpers";
 
-import { getFullOrders } from "../../../helpers/CartBuildingHelpers";
+import { getFullProdOrders } from "../../../helpers/CartBuildingHelpers";
 import { todayPlus } from "../../../helpers/dateTimeHelpers";
 
 import { sortZtoADataByIndex } from "../../../helpers/sortDataHelpers";
@@ -73,7 +73,7 @@ const addRoutes = (delivDate, prodGrid, database) => {
 };
 
 const getOrdersList = (delivDate, database) => {
-  let fullOrder = getFullOrders(delivDate, database);
+  let fullOrder = getFullProdOrders(delivDate, database);
   fullOrder = zerosDelivFilter(fullOrder, delivDate, database);
   fullOrder = buildGridOrderArray(fullOrder, database);
   fullOrder = addRoutes(delivDate, fullOrder, database);

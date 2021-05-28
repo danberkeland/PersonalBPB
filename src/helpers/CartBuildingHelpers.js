@@ -17,6 +17,14 @@ export const getFullOrders = (delivDate, database) => {
    return fullOrder;
  };
 
+ export const getFullProdOrders = (delivDate, database) => {
+  const [ products, customers, routes, standing, orders ] = database
+   let buildOrders = buildCartList("*", delivDate, orders);
+   let buildStand = buildProdStandList("*", delivDate, standing);
+   let fullOrder = compileFullOrderList(buildOrders, buildStand);
+   return fullOrder;
+ };
+
 export const buildCartList = (chosen, delivDate, orders) => {
   let BPBDate = convertDatetoBPBDate(delivDate);
   let filteredOrders = clonedeep(orders);
@@ -41,6 +49,24 @@ export const buildStandList = (chosen, delivDate, standing, route, ponote) => {
   );
  
   builtStandList = builtStandList.filter(stand => stand.isStand===true)
+  
+  let convertedStandList = convertStandListtoStandArray(
+    builtStandList,
+    delivDate,
+    route,
+    ponote
+  );
+  return convertedStandList;
+};
+
+export const buildProdStandList = (chosen, delivDate, standing, route, ponote) => {
+  let filteredStanding = clonedeep(standing);
+  let builtStandList = [];
+  builtStandList = filteredStanding.filter(
+    (standing) =>
+      standing["custName"].match(wildcardRegExp(`${chosen}`))
+  );
+ 
   
   let convertedStandList = convertStandListtoStandArray(
     builtStandList,

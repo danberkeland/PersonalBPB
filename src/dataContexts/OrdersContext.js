@@ -38,38 +38,25 @@ export const OrdersProvider = (props) => {
 };
 
 export const OrdersLoad = () => {
-
-  
-  const { orders, setOrders, setOrdersLoaded } = useContext(
-    OrdersContext
-  );
-  const { readyForSq, setReadyForSq, setReadyForWeekly } = useContext(ToggleContext)
-  const { products } = useContext(ProductsContext)
- 
+  const { orders, setOrders, setOrdersLoaded } = useContext(OrdersContext);
+  const { readyForSq, setReadyForSq, setReadyForWeekly } =
+    useContext(ToggleContext);
+  const { products } = useContext(ProductsContext);
 
   useEffect(() => {
     buildOrders();
-  },[]);
-
-  
+  }, []);
 
   useEffect(() => {
-    if(orders.length>0 &&
-      products.length>0){
-        setReadyForSq(true)
-      }
-  },[orders,products])
-
-  useEffect(()=> {
-    if (readyForSq){
-      fetchSq(orders)
+    if (orders.length > 0 && products.length > 0) {
+      setReadyForSq(true);
     }
-  },[readyForSq])
-  
+  }, [orders, products]);
+
   const buildOrders = async () => {
     let ord = await fetchOrders();
-    setOrders(ord)
-    setOrdersLoaded(true); 
+    setOrders(ord);
+    setOrdersLoaded(true);
   };
 
   const fetchOrders = async () => {
@@ -90,7 +77,7 @@ export const OrdersLoad = () => {
       console.log("error on fetching Orders List", error);
     }
   };
-  
+
   const fetchSq = async (ords) => {
     try {
       let response = await fetch(
@@ -152,15 +139,10 @@ export const OrdersLoad = () => {
         }
       }
       setOrders(ords);
-      
-      
-      
     } catch {
       console.log("Request Failed");
     }
   };
-  
-  
-  
+
   return <React.Fragment></React.Fragment>;
 };

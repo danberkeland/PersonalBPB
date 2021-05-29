@@ -121,6 +121,7 @@ export default class ComposeWhatToMake {
     ).map((mk) => ({
       forBake: mk,
       qty: 0,
+      shaped: 0,
       short: 0,
       needEarly: 0
     }));
@@ -145,6 +146,7 @@ export default class ComposeWhatToMake {
 
       if (pocketsToday.length > 0) {
         pocketsAccToday = qtyAccToday-pocketsToday[0]
+        make.shaped = pocketsToday[0]
       }
 
       if (pocketsAccToday>0) {
@@ -159,7 +161,11 @@ export default class ComposeWhatToMake {
     let needEarlyAccToday = 0;
 
       let needEarlyToday = bakedTomorrow
-        .filter((frz) => make.forBake === frz.forBake && frz.routeDepart==="Carlton" && frz.zone !== "Carlton Retail")
+        .filter((frz) => make.forBake === frz.forBake && 
+          frz.routeDepart==="Carlton" && 
+          frz.routeArrive==="Carlton" && 
+          frz.zone !== "Carlton Retail" &&
+          frz.zone !== "atownpick")
         .map((ord) => ord.qty);
 
       if (needEarlyToday.length > 0) {

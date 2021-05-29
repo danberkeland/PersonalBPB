@@ -136,6 +136,7 @@ function BPBNBaker1() {
         <DataTable value={whatToMake} className="p-datatable-sm">
           <Column field="forBake" header="Product"></Column>
           <Column field="qty" header="Qty"></Column>
+          <Column field="shaped" header="Shaped"></Column>
           <Column field="short" header="Short"></Column>
           <Column field="needEarly" header="Need Early"></Column>
         </DataTable>

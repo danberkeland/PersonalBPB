@@ -143,11 +143,21 @@ export default class ComposeWhatToMake {
       let pocketsToday = bakedTomorrow
         .filter((frz) => make.forBake === frz.forBake)
         .map((ord) => ord.preshaped);
+        console.log(pocketsToday)
 
       if (pocketsToday.length > 0) {
         pocketsAccToday = qtyAccToday-pocketsToday[0]
-        make.shaped = pocketsToday[0]
       }
+
+      let shapedSum = bakedTomorrow
+        .filter((frz) => make.forBake === frz.forBake)
+        .map((ord) => ord.preshaped);
+      console.log(shapedSum)
+
+        if (shapedSum.length > 0) {
+          
+          make.shaped=shapedSum[0]
+        }
 
       if (pocketsAccToday>0) {
           make.short = "Short "+pocketsAccToday

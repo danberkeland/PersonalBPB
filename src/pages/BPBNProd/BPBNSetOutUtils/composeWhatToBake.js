@@ -115,7 +115,6 @@ export default class ComposeWhatToMake {
   };
 
   makeAddQty = (bakedTomorrow) => {
-    console.log("bakedTomorrow",bakedTomorrow)
     let makeList2 = Array.from(
       new Set(bakedTomorrow.map((prod) => prod.forBake))
     ).map((mk) => ({
@@ -143,7 +142,7 @@ export default class ComposeWhatToMake {
       let pocketsToday = bakedTomorrow
         .filter((frz) => make.forBake === frz.forBake)
         .map((ord) => ord.preshaped);
-        console.log(pocketsToday)
+
 
       if (pocketsToday.length > 0) {
         pocketsAccToday = qtyAccToday-pocketsToday[0]
@@ -152,7 +151,6 @@ export default class ComposeWhatToMake {
       let shapedSum = bakedTomorrow
         .filter((frz) => make.forBake === frz.forBake)
         .map((ord) => ord.preshaped);
-      console.log(shapedSum)
 
         if (shapedSum.length > 0) {
           

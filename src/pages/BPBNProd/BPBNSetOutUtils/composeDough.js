@@ -15,7 +15,6 @@ import {
   customerIsOpen,
 } from "../../logistics/ByRoute/Parts/utils/utils";
 
-
 let twoDay = todayPlus()[2];
 let oneDay = todayPlus()[1];
 let tomorrow = todayPlus()[1];
@@ -88,10 +87,14 @@ export default class ComposeDough {
   returnDoughBreakDown = (delivDate, database, loc) => {
     let doughs = this.returnDoughs(delivDate, database, loc);
     let doughComponents = this.returnDoughComponents(delivDate, database, loc);
-    let pockets = this.returnPockets(tomorrow ,database, loc)
+    let pockets = this.returnPockets(tomorrow, database, loc);
     let Baker1Dough = this.returnBaker1Doughs(delivDate, database, loc);
-    let Baker1DoughComponents = this.returnBaker1DoughComponents(delivDate, database, loc);
-    let Baker1Pockets = this.returnBaker1Pockets(tomorrow ,database, loc)
+    let Baker1DoughComponents = this.returnBaker1DoughComponents(
+      delivDate,
+      database,
+      loc
+    );
+    let Baker1Pockets = this.returnBaker1Pockets(tomorrow, database, loc);
     let bagAndEpiCount = this.returnbagAndEpiCount(tomorrow, database, loc);
     let oliveCount = this.returnoliveCount(tomorrow, database, loc);
     let bcCount = this.returnbcCount(tomorrow, database, loc);
@@ -106,31 +109,37 @@ export default class ComposeDough {
       bagAndEpiCount: bagAndEpiCount,
       oliveCount: oliveCount,
       bcCount: bcCount,
-      bagDoughTwoDays: bagDoughTwoDays
+      bagDoughTwoDays: bagDoughTwoDays,
     };
   };
 
   returnbagAndEpiCount = (delivDate, database) => {
     const [products, customers, routes, standing, orders] = database;
     let whatToMakeList = getOrdersList(delivDate, database);
-    let whatToMakeToday = whatToMakeList.filter((set) => this.whatToMakeFilter(set)).filter(bag => bag.forBake === "Baguette" || bag.forBake === "Epi")
+
+    let whatToMakeToday = whatToMakeList
+      .filter((set) => this.whatToMakeFilter(set))
+      .filter((bag) => bag.forBake === "Baguette" || bag.forBake === "Epi");
+
     let whatToMake = this.makeAddQty(whatToMakeToday);
-    let qty = 0
+    let qty = 0;
     for (let make of whatToMake) {
-      qty += Number(make.qty)
+      qty += Number(make.qty);
     }
-    console.log(qty)
+
     return qty;
   };
 
   returnoliveCount = (delivDate, database) => {
     const [products, customers, routes, standing, orders] = database;
     let whatToMakeList = getOrdersList(delivDate, database);
-    let whatToMakeToday = whatToMakeList.filter((set) => this.whatToMakeFilter(set)).filter(bag => bag.forBake === "Olive Herb")
+    let whatToMakeToday = whatToMakeList
+      .filter((set) => this.whatToMakeFilter(set))
+      .filter((bag) => bag.forBake === "Olive Herb");
     let whatToMake = this.makeAddQty(whatToMakeToday);
-    let qty = 0
+    let qty = 0;
     for (let make of whatToMake) {
-      qty += Number(make.qty)
+      qty += Number(make.qty);
     }
     return qty;
   };
@@ -138,28 +147,30 @@ export default class ComposeDough {
   returnbcCount = (delivDate, database) => {
     const [products, customers, routes, standing, orders] = database;
     let whatToMakeList = getOrdersList(delivDate, database);
-    let whatToMakeToday = whatToMakeList.filter((set) => this.whatToMakeFilter(set)).filter(bag => bag.forBake === "Blue Cheese Walnut")
+    let whatToMakeToday = whatToMakeList
+      .filter((set) => this.whatToMakeFilter(set))
+      .filter((bag) => bag.forBake === "Blue Cheese Walnut");
     let whatToMake = this.makeAddQty(whatToMakeToday);
-    let qty = 0
+    let qty = 0;
     for (let make of whatToMake) {
-      qty += Number(make.qty)
+      qty += Number(make.qty);
     }
     return qty;
   };
 
-
   returnBagDoughTwoDays = (delivDate, database) => {
     const [products, customers, routes, standing, orders] = database;
     let whatToMakeList = getOrdersList(delivDate, database);
-    let whatToMakeToday = whatToMakeList.filter((set) => this.whatToMakeFilter(set)).filter(bag => bag.doughType==="Baguette")
-    let qty = 0
+    let whatToMakeToday = whatToMakeList
+      .filter((set) => this.whatToMakeFilter(set))
+      .filter((bag) => bag.doughType === "Baguette");
+    let qty = 0;
     for (let make of whatToMakeToday) {
-      qty += Number(make.qty * make.weight)
+      qty += Number(make.qty * make.weight);
     }
-    console.log(qty)
-    return Math.ceil(qty/80);
-  }
 
+    return Math.floor(qty / 83);
+  };
 
   returnPockets = (delivDate, database, loc) => {
     const [
@@ -172,19 +183,14 @@ export default class ComposeDough {
       doughComponents,
     ] = database;
     let pocketList = getOrdersList(tomorrow, database);
-    let pocketsToday = pocketList.filter((set) =>
-      this.pocketFilter(set, loc)
-    );
+    let pocketsToday = pocketList.filter((set) => this.pocketFilter(set, loc));
     pocketsToday = this.makePocketQty(pocketsToday);
 
-   
     return pocketsToday;
-  }
+  };
 
   pocketFilter = (ord, loc) => {
-    return (     
-        ord.doughType === "French"
-    );
+    return ord.doughType === "French";
   };
 
   makePocketQty = (bakedTomorrow) => {
@@ -201,7 +207,7 @@ export default class ComposeDough {
 
       let qtyToday = bakedTomorrow
         .filter((frz) => make.pocketSize === frz.weight)
-        .map((ord) => ord.qty*ord.packSize);
+        .map((ord) => ord.qty * ord.packSize);
 
       if (qtyToday.length > 0) {
         qtyAccToday = qtyToday.reduce(addUp);
@@ -228,8 +234,7 @@ export default class ComposeDough {
       new Set(
         doughs
           .filter(
-            (dgh) =>
-              dgh.mixedWhere === loc && dgh.doughName !== "Baguette"
+            (dgh) => dgh.mixedWhere === loc && dgh.doughName !== "Baguette"
           )
           .map((dgh) => dgh.doughName)
       )
@@ -254,8 +259,10 @@ export default class ComposeDough {
         doughs[doughs.findIndex((d) => d.doughName === dgh.doughName)].oldDough;
       dgh.buffer =
         doughs[doughs.findIndex((d) => d.doughName === dgh.doughName)].buffer;
-        dgh.batchSize =
-        doughs[doughs.findIndex((d) => d.doughName === dgh.doughName)].batchSize;
+      dgh.batchSize =
+        doughs[
+          doughs.findIndex((d) => d.doughName === dgh.doughName)
+        ].batchSize;
       if (dgh.isBakeReady === true) {
         dgh.needed = this.getDoughAmt(dgh.doughName, oneDayOrderList).toFixed(
           2
@@ -302,10 +309,8 @@ export default class ComposeDough {
     if (qtyArray.length > 0) {
       qtyAccToday = qtyArray.reduce(addUp);
     }
-    console.log("preshaped", qtyAccToday)
     return qtyAccToday;
   };
-
 
   returnBaker1Pockets = (delivDate, database, loc) => {
     const [
@@ -322,28 +327,21 @@ export default class ComposeDough {
       this.baker1PocketFilter(set, loc)
     );
     pocketsToday = this.makePocketQty(pocketsToday);
-  
-   
+
     return pocketsToday;
-  }
+  };
 
   whatToMakeFilter = (ord, loc) => {
     return (
       ord.where.includes("Carlton") &&
-      ord.packGroup === "rustic breads" 
-      
-      
+      (ord.packGroup === "rustic breads" || ord.packGroup === "retail")
     );
   };
-  
+
   baker1PocketFilter = (ord, loc) => {
-    return (     
-        ord.doughType === "Baguette"
-    );
+    return ord.doughType === "Baguette";
   };
-  
-  
-  
+
   returnBaker1Doughs = (delivDate, database, loc) => {
     const [
       products,
@@ -356,13 +354,12 @@ export default class ComposeDough {
     ] = database;
     let twoDayOrderList = getOrdersList(twoDay, database);
     let oneDayOrderList = getOrdersList(oneDay, database);
-  
+
     let doughList = Array.from(
       new Set(
         doughs
           .filter(
-            (dgh) =>
-              dgh.mixedWhere === loc && dgh.doughName === "Baguette"
+            (dgh) => dgh.mixedWhere === loc && dgh.doughName === "Baguette"
           )
           .map((dgh) => dgh.doughName)
       )
@@ -377,12 +374,14 @@ export default class ComposeDough {
       short: 0,
       bucketSets: 0,
     }));
-  
+
     for (let dgh of doughList) {
       dgh.id =
         doughs[doughs.findIndex((d) => d.doughName === dgh.doughName)].id;
-        dgh.bucketSets =
-        doughs[doughs.findIndex((d) => d.doughName === dgh.doughName)].bucketSets;
+      dgh.bucketSets =
+        doughs[
+          doughs.findIndex((d) => d.doughName === dgh.doughName)
+        ].bucketSets;
       dgh.hydration =
         doughs[
           doughs.findIndex((d) => d.doughName === dgh.doughName)
@@ -391,8 +390,10 @@ export default class ComposeDough {
         doughs[doughs.findIndex((d) => d.doughName === dgh.doughName)].oldDough;
       dgh.buffer =
         doughs[doughs.findIndex((d) => d.doughName === dgh.doughName)].buffer;
-        dgh.batchSize =
-        doughs[doughs.findIndex((d) => d.doughName === dgh.doughName)].batchSize;
+      dgh.batchSize =
+        doughs[
+          doughs.findIndex((d) => d.doughName === dgh.doughName)
+        ].batchSize;
       if (dgh.isBakeReady === true) {
         dgh.needed = this.getDoughAmt(dgh.doughName, oneDayOrderList).toFixed(
           2
@@ -404,26 +405,27 @@ export default class ComposeDough {
       }
       let preshaped;
       if (dgh.isBakeReady === true) {
-        preshaped = this.getPreshapedDoughAmt(dgh.doughName, oneDayOrderList).toFixed(
-          2
-        );
+        preshaped = this.getPreshapedDoughAmt(
+          dgh.doughName,
+          oneDayOrderList
+        ).toFixed(2);
       } else {
-        preshaped = this.getPreshapedDoughAmt(dgh.doughName, twoDayOrderList).toFixed(
-          2
-        );
+        preshaped = this.getPreshapedDoughAmt(
+          dgh.doughName,
+          twoDayOrderList
+        ).toFixed(2);
       }
-      console.log("needed",Number(dgh.needed))
-      console.log("preshaped",Number(preshaped))
-      if ((Number(dgh.needed) - Number(preshaped))>0){
-        dgh.short = (Number(preshaped)-Number(dgh.needed)).toFixed(2)
+
+      if (Number(dgh.needed) - Number(preshaped) > 0) {
+        dgh.short = (Number(preshaped) - Number(dgh.needed)).toFixed(2);
       } else {
-        dgh.short = 0
+        dgh.short = 0;
       }
     }
-    
+
     return doughList;
   };
-  
+
   returnBaker1DoughComponents = (delivDate, database, loc) => {
     const [
       products,
@@ -439,14 +441,13 @@ export default class ComposeDough {
   };
 
   makeAddQty = (bakedTomorrow) => {
-    console.log("bakedTomorrow",bakedTomorrow)
     let makeList2 = Array.from(
       new Set(bakedTomorrow.map((prod) => prod.forBake))
     ).map((mk) => ({
       forBake: mk,
       qty: 0,
       short: 0,
-      needEarly: 0
+      needEarly: 0,
     }));
     for (let make of makeList2) {
       make.qty = 1;
@@ -468,43 +469,41 @@ export default class ComposeDough {
         .map((ord) => ord.preshaped);
 
       if (pocketsToday.length > 0) {
-        pocketsAccToday = qtyAccToday-pocketsToday[0]
+        pocketsAccToday = qtyAccToday - pocketsToday[0];
       }
 
-      if (pocketsAccToday>0) {
-          make.short = "Short "+pocketsAccToday
-      } else if (pocketsAccToday<0) {
-        pocketsAccToday = -pocketsAccToday
-        make.short = "Over "+pocketsAccToday
-    } else {
-        make.short = ""
-    }
+      if (pocketsAccToday > 0) {
+        make.short = "Short " + pocketsAccToday;
+      } else if (pocketsAccToday < 0) {
+        pocketsAccToday = -pocketsAccToday;
+        make.short = "Over " + pocketsAccToday;
+      } else {
+        make.short = "";
+      }
 
-    let needEarlyAccToday = 0;
+      let needEarlyAccToday = 0;
 
       let needEarlyToday = bakedTomorrow
-        .filter((frz) => make.forBake === frz.forBake && frz.routeDepart==="Carlton" && frz.zone !== "Carlton Retail")
+        .filter(
+          (frz) =>
+            make.forBake === frz.forBake &&
+            frz.routeDepart === "Carlton" &&
+            frz.zone !== "Carlton Retail"
+        )
         .map((ord) => ord.qty);
 
       if (needEarlyToday.length > 0) {
         needEarlyAccToday = needEarlyToday.reduce(addUp);
       }
-      
-      if (needEarlyAccToday>0) {
-        make.needEarly = needEarlyAccToday}
-     else {
-      make.needEarly = ""
-  }
 
-      make.qty = qtyAccToday
-      
-     
+      if (needEarlyAccToday > 0) {
+        make.needEarly = needEarlyAccToday;
+      } else {
+        make.needEarly = "";
+      }
+
+      make.qty = qtyAccToday;
     }
     return makeList2;
   };
-
-  
 }
-
-
-

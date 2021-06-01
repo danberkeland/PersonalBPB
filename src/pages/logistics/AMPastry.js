@@ -47,7 +47,11 @@ const compose = new ComposeAMPastry();
 function AMPastry() {
   const { setIsLoading } = useContext(ToggleContext);
   const [AMPastry, setAMPastry] = useState([]);
+  const [AMOthers, setAMOthers] = useState([]);
+
   const [columnsAMPastry, setColumnsAMPastry] = useState([]);
+  const [columnsAMOthers, setColumnsAMOthers] = useState([]);
+
 
   let delivDate = todayPlus()[0];
 
@@ -67,6 +71,7 @@ function AMPastry() {
   };
 
   const dynamicColumnsAMPastry = createDynamic(columnsAMPastry);
+  const dynamicColumnsAMOthers = createDynamic(columnsAMOthers)
 
   useEffect(() => {
     promisedData(setIsLoading).then((database) => gatherMakeInfo(database));
@@ -76,6 +81,8 @@ function AMPastry() {
     let AMPastryData = compose.returnAMPastryBreakDown(delivDate, database);
     setAMPastry(AMPastryData.AMPastry);
     setColumnsAMPastry(AMPastryData.columnsAMPastry);
+    setAMOthers(AMPastryData.AMOthers);
+    setColumnsAMOthers(AMPastryData.columnsAMOthers)
   };
 
   const exportAMPastryStickers = () => {
@@ -159,6 +166,7 @@ function AMPastry() {
         >
           Print AM Pastry List
         </Button>
+
       </ButtonWrapper>
     </ButtonContainer>
   );
@@ -178,6 +186,14 @@ function AMPastry() {
             >
               {dynamicColumnsAMPastry}
             </DataTable>{" "}
+            {/*
+            <h3>AM Others</h3>
+            <DataTable
+              className="p-datatable-gridlines p-datatable-sm p-datatable-striped"
+              value={AMOthers}
+            >
+              {dynamicColumnsAMOthers}
+            </DataTable>{" "} */}
           </React.Fragment>
         )}
       </WholeBox>

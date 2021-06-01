@@ -89,7 +89,7 @@ const isBakeReady = [
           <InfoDrop id="mixedWhere" options={mixedWhere}/>
         </div>
         <div className="p-col">
-          <label htmlFor="isBakeReady">Bake Same Day as Mix?</label>
+          <label htmlFor="isBakeReady">One Day from scale to bake?</label>
           <InfoDrop id="isBakeReady" options={isBakeReady}/>
         </div>
       </InfoBoxes>

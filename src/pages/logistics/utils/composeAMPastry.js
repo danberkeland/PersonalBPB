@@ -145,12 +145,21 @@ import {
         delivDate,
         database
       );
+
+      let AMOthers = this.returnAMOthers(database);
+      
+      let columnsAMOthers = this.returnColumnsAMOthers(
+        delivDate,
+        database
+      );
   
       // [freshProds, shelfProds] = handleFrenchConundrum(freshProds, shelfProds);
   
       return {
         AMPastry: AMPastry,
         columnsAMPastry: columnsAMPastry,
+        AMOthers: AMOthers,
+        columnsAMOthers: columnsAMOthers
       };
     };
   
@@ -182,6 +191,38 @@ import {
         return [];
       }
     };
+
+    returnAMOthers = (database) => {
+      let custos = makeOrders(today, database, this.AMPastryFilter);
+      custos = Array.from(new Set(custos.map(cust => cust.customer)))
+      let shelfProds = makeOrders(today, database, this.AMOthersFilter);
+      console.log(shelfProds)
+      shelfProds = shelfProds.filter(shelf => custos.includes(shelf.customer))
+      return shelfProds;
+    };
+  
+    AMOthersFilter = (ord) => {
+      return (
+        
+        ord.packGroup !== "baked pastries" &&
+        ord.routeDepart === "Prado"
+      );
+    };
+  
+    returnColumnsAMOthers = (delivDate, database) => {
+      let filteredOrders = getProdNickNames(
+        delivDate,
+        database,
+        this.AMOthersFilter
+      );
+      console.log(filteredOrders)
+      if (filteredOrders.length > 0) {
+        return createColumns(filteredOrders);
+      } else {
+        return [];
+      }
+    };
+
 
   }
   

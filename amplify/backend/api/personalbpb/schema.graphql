@@ -93,6 +93,7 @@ type Holding @model @auth(rules: [{allow: public}]) {
   Thu: Int
   Fri: Int
   Sat: Int
+  Test: String
 }
 
 type Route @model @auth(rules: [{allow: public}]) {

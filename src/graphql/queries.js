@@ -100,6 +100,8 @@ export const getProduct = /* GraphQL */ `
       bakeExtra
       batchSize
       preshaped
+      prepreshaped
+      updatePreDate
       createdAt
       updatedAt
     }
@@ -138,6 +140,8 @@ export const listProducts = /* GraphQL */ `
         bakeExtra
         batchSize
         preshaped
+        prepreshaped
+        updatePreDate
         createdAt
         updatedAt
       }
@@ -249,6 +253,7 @@ export const getHolding = /* GraphQL */ `
       Thu
       Fri
       Sat
+      Test
       createdAt
       updatedAt
     }
@@ -273,6 +278,7 @@ export const listHoldings = /* GraphQL */ `
         Thu
         Fri
         Sat
+        Test
         createdAt
         updatedAt
       }

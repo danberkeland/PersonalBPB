@@ -71,7 +71,7 @@ function BPBNBaker2() {
     for (let make of whatToMake) {
       let addDetails = {
         id: make.id,
-        preshaped: make.qty,
+        prepreshaped: make.qty,
       };
       try {
         await API.graphql(

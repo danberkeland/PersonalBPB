@@ -18,6 +18,7 @@ import {
 const clonedeep = require("lodash.clonedeep");
 let tomorrow = todayPlus()[1];
 let twoDay = todayPlus()[2];
+let today = todayPlus()[0];
 
 const addRoutes = (delivDate, prodGrid, database) => {
   const [products, customers, routes, standing, orders] = database;

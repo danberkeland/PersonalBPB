@@ -5,17 +5,20 @@ import CurrentOrderInfo from "./Parts/CurrentOrderInfo";
 import CurrentOrderList from "./Parts/CurrentOrderList";
 import OrderCommandLine from "./Parts/OrderCommandLine";
 import OrderEntryButtons from "./Parts/OrderEntryButtons";
-import { createOrder } from "../../graphql/mutations";
+import { createOrder, updateProduct } from "../../graphql/mutations";
 
 import { API, graphqlOperation } from "aws-amplify";
+import { todayPlus } from "../../helpers/dateTimeHelpers";
 
 import { promisedData } from "../../helpers/databaseFetchers";
 
 import styled from "styled-components";
 import { ToggleContext } from "../../dataContexts/ToggleContext";
 
-
 const clonedeep = require("lodash.clonedeep");
+
+let tomorrow = todayPlus()[1];
+let today = todayPlus()[0];
 
 const MainWindow = styled.div`
   font-family: "Montserrat", sans-serif;
@@ -36,19 +39,56 @@ const BasicContainer = styled.div`
   box-sizing: border-box;
 `;
 
-
 function Ordering() {
   const [database, setDatabase] = useState([]);
   const { reload, setIsLoading, setModifications } = useContext(ToggleContext);
 
   const loadDatabase = async (database) => {
     const [products, customers, routes, standing, orders] = database;
-    let ordsToUpdate = clonedeep(orders)
-    setDatabase(database)
-    let ord = await fetchSq(database);
-   console.log("ord",ord)
-    for (let newOrd of ord) {
+
+   
+    let prodsToUpdate = clonedeep(products)
+    for (let prod of prodsToUpdate){
+      if (prod.updatePreDate !== tomorrow){
+        prod.updatePreDate = today
+      }
+      if (prod.updatePreDate === today){
+        prod.preshaped = prod.prepreshaped
+        prod.updatePreDate = tomorrow
+
+      }
+    }
+
+    let DBToMod = clonedeep(database);
+    DBToMod[0] = prodsToUpdate;
+    setDatabase(DBToMod);
+
+    for (let prod of prodsToUpdate){
       
+      let prodToUpdate = {
+        id: prod.id,
+        preshaped: prod.preshaped,
+        prepreshaped: prod.prepreshaped,
+        updatePreDate: prod.updatePreDate      
+      };
+      try {
+        await API.graphql(
+          graphqlOperation(updateProduct, { input: { ...prodToUpdate } })
+        );
+
+      } catch (error) {
+        console.log("error on creating Orders", error);
+      }
+    }
+    
+
+
+    let ordsToUpdate = clonedeep(orders);
+    setDatabase(database);
+    let ord = await fetchSq(database);
+    if (ord){
+    console.log("ord", ord);
+    for (let newOrd of ord) {
       let qty = Number(newOrd["qty"]);
       let dt = new Date().toISOString();
       let delivDate = newOrd["delivDate"].split("T")[0];
@@ -56,19 +96,19 @@ function Ordering() {
       delivDate = delivDate[1] + "/" + delivDate[2] + "/" + delivDate[0];
 
       let locIDBPBN = "16VS30T9E7CM9";
-      console.log(newOrd.location)
-      console.log(locIDBPBN)
-      let rt="slopick";
+      console.log(newOrd.location);
+      console.log(locIDBPBN);
+      let rt = "slopick";
       let custName = newOrd["custName"];
 
       let prodName =
         products[
           products.findIndex((prod) => newOrd["item"].includes(prod.squareID))
         ]["prodName"];
-     
+
       if (newOrd.location === locIDBPBN) {
         rt = "atownpick";
-      } 
+      }
 
       let itemToAdd = {
         SO: qty,
@@ -81,7 +121,7 @@ function Ordering() {
         prodName: prodName,
         route: rt,
       };
-     
+
       // Search orders for object, if doesn't exist, add:
       let ind = orders.findIndex(
         (ord) => ord["custName"] === custName && ord["prodName"] === prodName
@@ -101,7 +141,10 @@ function Ordering() {
     let DBToMod = clonedeep(database);
     DBToMod[4] = ordsToUpdate;
     setDatabase(DBToMod);
+  } else {
+    console.log("Square orders did not load")
   }
+  };
 
   const fetchSq = async () => {
     try {
@@ -111,19 +154,15 @@ function Ordering() {
 
       let newOrders = await response.json();
       newOrders = JSON.parse(newOrders);
-      return newOrders
+      return newOrders;
     } catch {
-      console.log("Error on Square load")
+      console.log("Error on Square load");
     }
-
   };
-
 
   useEffect(() => {
     promisedData(setIsLoading).then((database) => loadDatabase(database));
   }, [reload]); // eslint-disable-line react-hooks/exhaustive-deps
-
-
 
   return (
     <MainWindow>

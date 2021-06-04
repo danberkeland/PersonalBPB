@@ -137,6 +137,8 @@ export const createProduct = /* GraphQL */ `
       bakeExtra
       batchSize
       preshaped
+      prepreshaped
+      updatePreDate
       createdAt
       updatedAt
     }
@@ -173,6 +175,8 @@ export const updateProduct = /* GraphQL */ `
       bakeExtra
       batchSize
       preshaped
+      prepreshaped
+      updatePreDate
       createdAt
       updatedAt
     }
@@ -209,6 +213,8 @@ export const deleteProduct = /* GraphQL */ `
       bakeExtra
       batchSize
       preshaped
+      prepreshaped
+      updatePreDate
       createdAt
       updatedAt
     }
@@ -363,6 +369,7 @@ export const createHolding = /* GraphQL */ `
       Thu
       Fri
       Sat
+      Test
       createdAt
       updatedAt
     }
@@ -385,6 +392,7 @@ export const updateHolding = /* GraphQL */ `
       Thu
       Fri
       Sat
+      Test
       createdAt
       updatedAt
     }
@@ -407,6 +415,7 @@ export const deleteHolding = /* GraphQL */ `
       Thu
       Fri
       Sat
+      Test
       createdAt
       updatedAt
     }

@@ -104,6 +104,14 @@ export const buildGridOrderArray = (filterServe, database) => {
       products[
         products.findIndex((prod) => prod["prodName"] === ord["prodName"])
       ].preshaped,
+      prepreshaped:
+      products[
+        products.findIndex((prod) => prod["prodName"] === ord["prodName"])
+      ].prepreshaped,
+      updatePreDate:
+      products[
+        products.findIndex((prod) => prod["prodName"] === ord["prodName"])
+      ].updatePreDate,
     prodID:
       products[
         products.findIndex((prod) => prod["prodName"] === ord["prodName"])

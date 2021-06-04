@@ -51,6 +51,8 @@ type Product @model @auth(rules: [{allow: public}]) {
   bakeExtra: Int
   batchSize: Int
   preshaped: Int
+  prepreshaped: Int
+  updatePreDate: String
 }
 
 type Order @model @auth(rules: [{allow: public}]) {

@@ -31,7 +31,10 @@ export const todayPlus = () => {
   let threeDay = DateTime.now().setZone("America/Los_Angeles").plus({ days: 3 });
   let threeDaySend = threeDay.toString().split("T")[0];
 
-  return [todaySend, tomorrowSend, twoDaySend, threeDaySend];
+  let yesterday = DateTime.now().setZone("America/Los_Angeles").minus({ days: 1 });
+  let yesterdaySend = yesterday.toString().split("T")[0];
+
+  return [todaySend, tomorrowSend, twoDaySend, threeDaySend, yesterdaySend];
 };
 
 export const daysOfTheWeek = () => {

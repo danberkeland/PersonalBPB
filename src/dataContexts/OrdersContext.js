@@ -1,6 +1,7 @@
 import React, { useState, createContext, useContext, useEffect } from "react";
 
 import { sortAtoZDataByIndex } from "../helpers/sortDataHelpers";
+import { convertDatetoBPBDate, todayPlus } from "../helpers/dateTimeHelpers";
 
 import { listOrders } from "../graphql/queries";
 import { createOrder } from "../graphql/mutations";
@@ -10,6 +11,8 @@ import { ProductsContext } from "./ProductsContext";
 import { ToggleContext } from "./ToggleContext";
 
 require("dotenv").config();
+
+let yesterday = convertDatetoBPBDate(todayPlus()[4]);
 
 export const OrdersContext = createContext();
 
@@ -60,10 +63,16 @@ export const OrdersLoad = () => {
   };
 
   const fetchOrders = async () => {
+
+    let filt = {
+      delivDate: { gt: yesterday },
+    };
+    
     try {
       const ordData = await API.graphql(
         graphqlOperation(listOrders, {
           limit: "5000",
+          filter: filt
         })
       );
       const ordList = ordData.data.listOrders.items;

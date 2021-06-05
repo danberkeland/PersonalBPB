@@ -11,13 +11,38 @@ import {
 } from "../graphql/queries";
 
 import { sortAtoZDataByIndex } from "../helpers/sortDataHelpers";
+import { convertDatetoBPBDate, todayPlus } from "../helpers/dateTimeHelpers";
 
 import { API, graphqlOperation } from "aws-amplify";
+
+const { DateTime } = require("luxon");
+
+let yesterday = convertDatetoBPBDate(todayPlus()[4]);
+console.log(yesterday);
+
+const buildDateTime = (string) => {
+  return DateTime.fromFormat(string, "yyyy/dd/MM").toISO();
+};
 
 const fetchFromDataBase = async (baseFunc, base, limit) => {
   try {
     const data = await API.graphql(
       graphqlOperation(baseFunc, { limit: limit })
+    );
+    const list = data.data[base].items;
+    return list;
+  } catch (error) {
+    console.log(`error on fetching ${base} data`, error);
+  }
+};
+
+const fetchFromDataBaseWithFilter = async (baseFunc, base, limit, filt) => {
+  try {
+    const data = await API.graphql(
+      graphqlOperation(baseFunc, {
+        limit: limit,
+        filter: filt,
+      })
     );
     const list = data.data[base].items;
     return list;
@@ -56,15 +81,10 @@ export const fetchStanding = async () => {
   return sortedData;
 };
 
-
 export const fetchDoughs = async () => {
-  let dough = await fetchFromDataBase(
-    listDoughs,
-    "listDoughs",
-    "1000"
-  );
+  let dough = await fetchFromDataBase(listDoughs, "listDoughs", "1000");
   return dough;
-}
+};
 
 export const fetchDoughComponents = async () => {
   let doughComponents = await fetchFromDataBase(
@@ -82,19 +102,24 @@ export const fetchAltPricing = async () => {
     "1000"
   );
   return altPricing;
-}
+};
 
 export const fetchNotes = async () => {
-  let notes = await fetchFromDataBase(
-    listNotess,
-    "listNotess",
-    "1000"
-  );
+  let notes = await fetchFromDataBase(listNotess, "listNotess", "1000");
   return notes;
-}
+};
 
 export const fetchOrders = async () => {
-  let ordList = await fetchFromDataBase(listOrders, "listOrders", "5000");
+  let filt = {
+    delivDate: { gt: yesterday },
+  };
+
+  let ordList = await fetchFromDataBaseWithFilter(
+    listOrders,
+    "listOrders",
+    "5000",
+    filt
+  );
   let noDelete = ordList.filter((cust) => cust["_deleted"] !== true);
   let sortedData = sortAtoZDataByIndex(noDelete, "timeStamp");
   sortedData = sortAtoZDataByIndex(sortedData, "prodName");
@@ -117,11 +142,18 @@ const fetchData = async (setIsLoading) => {
   let orders = await fetchOrders();
   let doughs = await fetchDoughs();
   let doughComponents = await fetchDoughComponents();
-  let data = [products, customers, routes, standing, orders, doughs, doughComponents];
+  let data = [
+    products,
+    customers,
+    routes,
+    standing,
+    orders,
+    doughs,
+    doughComponents,
+  ];
   setIsLoading(false);
   return data;
 };
-
 
 export const notesData = (setIsLoading) => {
   const all = new Promise((resolve, reject) => {
@@ -130,14 +162,13 @@ export const notesData = (setIsLoading) => {
   return all;
 };
 
-const fetchNotesData = async (setIsLoading) => { 
+const fetchNotesData = async (setIsLoading) => {
   setIsLoading(true);
   let notes = await fetchNotes();
   setIsLoading(false);
-  if (!notes){ 
-    return []
+  if (!notes) {
+    return [];
   } else {
     return notes;
   }
-  
 };

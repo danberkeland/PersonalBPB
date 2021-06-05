@@ -18,6 +18,7 @@ import {
 let twoDay = todayPlus()[2];
 let oneDay = todayPlus()[1];
 let tomorrow = todayPlus()[1];
+let today = todayPlus()[0];
 
 const addRoutes = (delivDate, prodGrid, database) => {
   const [products, customers, routes, standing, orders] = database;

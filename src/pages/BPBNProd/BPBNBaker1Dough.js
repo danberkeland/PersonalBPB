@@ -48,8 +48,7 @@ function BPBNBaker1Dough({
   setBcCount,
   bagDoughTwoDays,
   setBagDoughTwoDays,
-  setTitleInfo,
-  setMix1Info,
+  
 }) {
   const { setIsLoading } = useContext(ToggleContext);
 
@@ -110,7 +109,10 @@ function BPBNBaker1Dough({
   };
 
   const doughMixList = (dough) => {
-    let mixes = Math.ceil(dough.needed / 210);
+    let doughTotal =
+      Number(dough.needed) + Number(dough.buffer) + Number(dough.short);
+
+    let mixes = Math.ceil(doughTotal / 210);
     let multiple1 = 1 / mixes;
     let multiple2 = 1 / mixes;
     let multiple3 = 1 / mixes;
@@ -145,8 +147,6 @@ function BPBNBaker1Dough({
 
     let doughName = dough.doughName;
     let doughNeeded = dough.needed;
-    let doughTotal =
-      Number(dough.needed) + Number(dough.buffer) + Number(dough.short);
     let doughShort = Number(dough.short);
 
     //  Set up Mix 1

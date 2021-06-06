@@ -14,6 +14,7 @@ import { promisedData } from "../../helpers/databaseFetchers";
 import ComposeWhatToBake from "./BPBNSetOutUtils/composeWhatToBake";
 
 import BPBNBaker1Dough from "./BPBNBaker1Dough"
+import BPBNBaker1WhatToPrep from "./BPBNBaker1WhatToPrep.js"
 
 
 import styled from "styled-components";
@@ -50,6 +51,13 @@ const compose = new ComposeWhatToBake();
 function BPBNBaker1() {
   const { setIsLoading } = useContext(ToggleContext);
   const [whatToMake, setWhatToMake] = useState([]);
+  const [whatToPrep, setWhatToPrep] = useState([]);
+  const [doughs, setDoughs] = useState([]);
+  const [doughComponents, setDoughComponents] = useState([]);
+  const [bagAndEpiCount, setBagAndEpiCount] = useState([]);
+  const [oliveCount, setOliveCount] = useState([]);
+  const [bcCount, setBcCount] = useState([]);
+  const [bagDoughTwoDays, setBagDoughTwoDays] = useState([]);
   
 
   let delivDate = todayPlus()[0];
@@ -94,13 +102,32 @@ function BPBNBaker1() {
     doc.text(pageMargin, finalY + tableToNextTitle, `Bake List`);
 
     doc.autoTable({
+      theme: 'grid',
       body: whatToMake,
       margin: pageMargin,
       columns: [
         { header: "Product", dataKey: "forBake" },
         { header: "Qty", dataKey: "qty" },
+        { header: "Shaped", dataKey: "shaped" },
         { header: "Short", dataKey: "short" },
         { header: "Need Early", dataKey: "needEarly" },
+      ],
+      startY: finalY + titleToNextTable,
+      styles: { fontSize: tableFont },
+    });
+
+    finalY = doc.previousAutoTable.finalY + tableToNextTitle;
+
+    doc.setFontSize(titleFont);
+    doc.text(pageMargin, finalY + tableToNextTitle, `Prep List`);
+
+    doc.autoTable({
+      theme: 'grid',
+      body: whatToPrep,
+      margin: pageMargin,
+      columns: [
+        { header: "Product", dataKey: "prodName" },
+        { header: "Qty", dataKey: "qty" },
       ],
       startY: finalY + titleToNextTable,
       styles: { fontSize: tableFont },
@@ -141,7 +168,13 @@ function BPBNBaker1() {
           <Column field="needEarly" header="Need Early"></Column>
         </DataTable>
       </WholeBox>
-      <BPBNBaker1Dough />
+      <BPBNBaker1WhatToPrep whatToPrep={whatToPrep} setWhatToPrep={setWhatToPrep} />
+      <BPBNBaker1Dough doughs={doughs} setDoughs={setDoughs}
+        doughComponents={doughComponents} setDoughComponents={setDoughComponents}
+        bagAndEpiCount={bagAndEpiCount} setBagAndEpiCount={setBagAndEpiCount}
+        oliveCount={oliveCount} setOliveCount={setOliveCount}
+        bcCount={bcCount} setBcCount={setBcCount}
+        bagDoughTwoDays={bagDoughTwoDays} setBagDoughTwoDays={setBagDoughTwoDays}/>
     </React.Fragment>
   );
 }

@@ -1,20 +1,16 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 
 import { ToggleContext } from "../../dataContexts/ToggleContext";
 
 import { InputText } from "primereact/inputtext";
-import { Button } from "primereact/button";
 
 import { promisedData } from "../../helpers/databaseFetchers";
 import ComposeDough from "./BPBNSetOutUtils/composeDough";
-import { convertDatetoBPBDate, todayPlus } from "../../helpers/dateTimeHelpers";
+import { todayPlus } from "../../helpers/dateTimeHelpers";
 
 import { updateDough } from "../../graphql/mutations";
 
 import { API, graphqlOperation } from "aws-amplify";
-
-import jsPDF from "jspdf";
-import "jspdf-autotable";
 
 import styled from "styled-components";
 
@@ -34,53 +30,26 @@ const TwoColumnGrid = styled.div`
   padding: 5px;
 `;
 
-const ThreeColumnGrid = styled.div`
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  column-gap: 10px;
-  row-gap: 10px;
-  padding: 5px;
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  width: 100%;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-content: flex-start;
-`;
-
-const ButtonWrapper = styled.div`
-  font-family: "Montserrat", sans-serif;
-  display: flex;
-  width: 60%;
-  flex-direction: row;
-  justify-content: space-between;
-  align-content: left;
-
-  background: #ffffff;
-`;
-
-const addUp = (acc, val) => {
-  return acc + val;
-};
-
 const clonedeep = require("lodash.clonedeep");
 const compose = new ComposeDough();
 
-function BPBNBaker1Dough() {
+function BPBNBaker1Dough({
+  doughs,
+  setDoughs,
+  doughComponents,
+  setDoughComponents,
+  bagAndEpiCount,
+  setBagAndEpiCount,
+  oliveCount,
+  setOliveCount,
+  bcCount,
+  setBcCount,
+  bagDoughTwoDays,
+  setBagDoughTwoDays,
+}) {
   const { setIsLoading } = useContext(ToggleContext);
 
-  const [doughs, setDoughs] = useState([]);
-  const [doughComponents, setDoughComponents] = useState([]);
-  const [bagAndEpiCount, setBagAndEpiCount] = useState([]);
-  const [oliveCount, setOliveCount] = useState([]);
-  const [bcCount, setBcCount] = useState([]);
-  const [bagDoughTwoDays, setBagDoughTwoDays] = useState([]);
-
   let tomorrow = todayPlus()[1];
-  let today = todayPlus()[0];
-  let twoDay = todayPlus()[2];
 
   useEffect(() => {
     promisedData(setIsLoading).then((database) => gatherDoughInfo(database));
@@ -105,8 +74,6 @@ function BPBNBaker1Dough() {
   const handleBlur = (e) => {
     updateDoughDB(e);
   };
-
-  
 
   let baguetteBins = Math.ceil(bagAndEpiCount / 24);
   let oliveWeight = (oliveCount * 1.4).toFixed(2);
@@ -137,273 +104,6 @@ function BPBNBaker1Dough() {
       console.log("error on fetching Dough List", error);
     }
   };
-  /*
-  const exportPastryPrepPdf = async () => {
-
-    // UPDATE preshaped Nombers
-    console.log(doughs);
-    let updateDetails = {
-      id: doughs[0].id,
-      bucketSets: bucketSets,
-    };
-
-    try {
-      await API.graphql(
-        graphqlOperation(updateDough, { input: { ...updateDetails } })
-      );
-    } catch (error) {
-      console.log("error on fetching Dough List", error);
-    }
-  
-    
-
-    let finalY;
-    let pageMargin = 20;
-    let tableToNextTitle = 8;
-    let titleToNextTable = tableToNextTitle + 4;
-    let tableFont = 11;
-    let titleFont = 14;
-    let nextColumn = 50;
-
-    let ct = 16;
-    const doc = new jsPDF("p", "mm", "a4");
-    doc.setFontSize(20);
-    doc.text(
-      pageMargin,
-      20,
-      `What To Mix ${convertDatetoBPBDate(today)}`
-    );
-
-    ct +=10
-    doc.text(pageMargin, (ct += tableToNextTitle), `Baguette Mix #1`);
-    doc.setFontSize(12);
-    doc.text(pageMargin, (ct += tableToNextTitle), `Bucket Sets`);
-    doc.text(pageMargin + nextColumn, ct, `${doughs[0].bucketSets} (L and P)`);
-    doc.text(pageMargin, (ct += tableToNextTitle), `Old Dough`);
-    doc.text(pageMargin + nextColumn, ct, `${doughs[0].oldDough} lb.`);
-    doc.text(pageMargin, (ct += tableToNextTitle), `50 lb. Bread Flour`);
-    doc.text(
-      pageMargin + nextColumn,
-      ct,
-      `${Math.floor((0.575 * baseNum(doughs[0], 1)) / 50)}`
-    );
-    doc.text(pageMargin, (ct += tableToNextTitle), `25 lb. Bucket Water`);
-    doc.text(
-      pageMargin + nextColumn,
-      ct,
-      `${Math.floor((0.372 * baseNum(doughs[0], 1)) / 25)}`
-    );
-    doc.text(pageMargin, (ct += tableToNextTitle), `Bread Flour`);
-    doc.text(
-      pageMargin + nextColumn,
-      ct,
-      `${((0.575 * baseNum(doughs[0], 1)) % 50).toFixed(2)} lb.`
-    );
-    doc.text(pageMargin, (ct += tableToNextTitle), `Whole Wheat Flour`);
-    doc.text(
-      pageMargin + nextColumn,
-      ct,
-      `${(0.038 * baseNum(doughs[0], 1)).toFixed(2)} lb.`
-    );
-    doc.text(pageMargin, (ct += tableToNextTitle), `Water`);
-    doc.text(
-      pageMargin + nextColumn,
-      ct,
-      `${((0.372 * baseNum(doughs[0], 1)) % 25).toFixed(2)} lb.`
-    );
-    doc.text(pageMargin, (ct += tableToNextTitle), `Salt`);
-    doc.text(
-      pageMargin + nextColumn,
-      ct,
-      `${(0.013 * baseNum(doughs[0], 1)).toFixed(2)} lb.`
-    );
-    doc.text(pageMargin, (ct += tableToNextTitle), `Yeast`);
-    doc.text(
-      pageMargin + nextColumn,
-      ct,
-      `${(0.002 * baseNum(doughs[0], 1)).toFixed(2)} lb.`
-    );
-
-    if (doughs[0].bucketSets > 2) {
-      doc.text(pageMargin, (ct += tableToNextTitle), `Baguette Mix #2`);
-      doc.setFontSize(14);
-      doc.text(pageMargin, (ct += tableToNextTitle), `Bucket Sets`);
-      doc.text(
-        pageMargin + nextColumn,
-        ct,
-        `${doughs[0].bucketSets} (L and P)`
-      );
-      doc.text(pageMargin, (ct += tableToNextTitle), `Old Dough`);
-      doc.text(pageMargin + nextColumn, ct, `${doughs[0].oldDough} lb.`);
-      doc.text(pageMargin, (ct += tableToNextTitle), `50 lb. Bread Flour`);
-      doc.text(
-        pageMargin + nextColumn,
-        ct,
-        `${Math.floor((0.575 * baseNum(doughs[0], 2)) / 50)}`
-      );
-      doc.text(pageMargin, (ct += tableToNextTitle), `25 lb. Bucket Water`);
-      doc.text(
-        pageMargin + nextColumn,
-        ct,
-        `${Math.floor((0.372 * baseNum(doughs[0], 2)) / 25)}`
-      );
-      doc.text(pageMargin, (ct += tableToNextTitle), `Bread Flour`);
-      doc.text(
-        pageMargin + nextColumn,
-        ct,
-        `${((0.575 * baseNum(doughs[0], 2)) % 50).toFixed(2)} lb.`
-      );
-      doc.text(pageMargin, (ct += tableToNextTitle), `Whole Wheat Flour`);
-      doc.text(
-        pageMargin + nextColumn,
-        ct,
-        `${(0.038 * baseNum(doughs[0], 2)).toFixed(2)} lb.`
-      );
-      doc.text(pageMargin, (ct += tableToNextTitle), `Water`);
-      doc.text(
-        pageMargin + nextColumn,
-        ct,
-        `${((0.372 * baseNum(doughs[0], 2)) % 25).toFixed(2)} lb.`
-      );
-      doc.text(pageMargin, (ct += tableToNextTitle), `Salt`);
-      doc.text(
-        pageMargin + nextColumn,
-        ct,
-        `${(0.013 * baseNum(doughs[0], 2)).toFixed(2)} lb.`
-      );
-      doc.text(pageMargin, (ct += tableToNextTitle), `Yeast`);
-      doc.text(
-        pageMargin + nextColumn,
-        ct,
-        `${(0.002 * baseNum(doughs[0], 2)).toFixed(2)} lb.`
-      );
-    }
-
-    if (doughs[0].bucketSets > 4) {
-      doc.text(pageMargin, (ct += tableToNextTitle), `Baguette Mix #2`);
-      doc.setFontSize(14);
-      doc.text(pageMargin, (ct += tableToNextTitle), `Bucket Sets`);
-      doc.text(
-        pageMargin + nextColumn,
-        ct,
-        `${doughs[0].bucketSets} (L and P)`
-      );
-      doc.text(pageMargin, (ct += tableToNextTitle), `Old Dough`);
-      doc.text(pageMargin + nextColumn, ct, `${doughs[0].oldDough} lb.`);
-      doc.text(pageMargin, (ct += tableToNextTitle), `50 lb. Bread Flour`);
-      doc.text(
-        pageMargin + nextColumn,
-        ct,
-        `${Math.floor((0.575 * baseNum(doughs[0], 3)) / 50)}`
-      );
-      doc.text(pageMargin, (ct += tableToNextTitle), `25 lb. Bucket Water`);
-      doc.text(
-        pageMargin + nextColumn,
-        ct,
-        `${Math.floor((0.372 * baseNum(doughs[0], 3)) / 25)}`
-      );
-      doc.text(pageMargin, (ct += tableToNextTitle), `Bread Flour`);
-      doc.text(
-        pageMargin + nextColumn,
-        ct,
-        `${((0.575 * baseNum(doughs[0], 3)) % 50).toFixed(2)} lb.`
-      );
-      doc.text(pageMargin, (ct += tableToNextTitle), `Whole Wheat Flour`);
-      doc.text(
-        pageMargin + nextColumn,
-        ct,
-        `${(0.038 * baseNum(doughs[0], 3)).toFixed(2)} lb.`
-      );
-      doc.text(pageMargin, (ct += tableToNextTitle), `Water`);
-      doc.text(
-        pageMargin + nextColumn,
-        ct,
-        `${((0.372 * baseNum(doughs[0], 3)) % 25).toFixed(2)} lb.`
-      );
-      doc.text(pageMargin, (ct += tableToNextTitle), `Salt`);
-      doc.text(
-        pageMargin + nextColumn,
-        ct,
-        `${(0.013 * baseNum(doughs[0], 2)).toFixed(2)} lb.`
-      );
-      doc.text(pageMargin, (ct += tableToNextTitle), `Yeast`);
-      doc.text(
-        pageMargin + nextColumn,
-        ct,
-        `${(0.002 * baseNum(doughs[0], 2)).toFixed(2)} lb.`
-      );
-    }
-    doc.setFontSize(20);
-
-    doc.text(pageMargin, (ct += tableToNextTitle+10), `Bins`);
-    doc.setFontSize(12);
-    doc.text(pageMargin, (ct += tableToNextTitle), `Baguette (27.7)`);
-      doc.text(
-        pageMargin + nextColumn,
-        ct,
-        `${baguetteBins}`
-      );
-      doc.text(pageMargin, (ct += tableToNextTitle), `Olive Herb`);
-      doc.text(
-        pageMargin + nextColumn,
-        ct,
-        `${oliveWeight} lb.`
-      );
-      doc.text(pageMargin, (ct += tableToNextTitle), `Blue Cheese Walnut`);
-      doc.text(
-        pageMargin + nextColumn,
-        ct,
-        `${bcWeight} lb.`
-      );
-
-      doc.setFontSize(20);
-
-      doc.text(pageMargin, (ct += tableToNextTitle+10), `Pocket Pans`);
-      doc.setFontSize(12);
-      doc.text(pageMargin, (ct += tableToNextTitle), `Full (16 per pan)`);
-        doc.text(
-          pageMargin + nextColumn,
-          ct,
-          `${fullPockets}`
-        );
-        doc.text(pageMargin, (ct += tableToNextTitle), `Extra`);
-        doc.text(
-          pageMargin + nextColumn,
-          ct,
-          `${extraPockets}`
-        );
-
-        doc.setFontSize(20);
-
-        doc.text(pageMargin, (ct += tableToNextTitle+10), `Bucket Sets`);
-        doc.setFontSize(12);
-        doc.text(pageMargin, (ct += tableToNextTitle), `Water (25 lb.)`);
-          doc.text(
-            pageMargin + nextColumn,
-            ct,
-            `${bucketSets}`
-          );
-
-    doc.save(`BaguetteMix${today}.pdf`);
-  };
-  */
-  
-  /*
-  const header = (
-    <ButtonContainer>
-      <ButtonWrapper>
-        <Button
-          type="button"
-          onClick={exportPastryPrepPdf}
-          className="p-button-success"
-          data-pr-tooltip="PDF"
-        >
-          Print Baguette Mix
-        </Button>
-      </ButtonWrapper>
-    </ButtonContainer>
-  );
-    */
 
   const doughMixList = (dough) => {
     let mixes = Math.ceil(dough.needed / 210);
@@ -411,21 +111,21 @@ function BPBNBaker1Dough() {
     let multiple2 = 1 / mixes;
     let multiple3 = 1 / mixes;
 
-    if (mixes===2 && dough.bucketSets===3){
-      multiple1 *= 1.33
-      multiple2 *= .66
+    if (mixes === 2 && dough.bucketSets === 3) {
+      multiple1 *= 1.33;
+      multiple2 *= 0.66;
     }
 
-    if (mixes===3 && dough.bucketSets===4){
-      multiple1 *=1.5
-      multiple2 *=.75
-      multiple3 *=.75
+    if (mixes === 3 && dough.bucketSets === 4) {
+      multiple1 *= 1.5;
+      multiple2 *= 0.75;
+      multiple3 *= 0.75;
     }
 
-    if (mixes===3 && dough.bucketSets===5){
-      multiple1 *=1.2
-      multiple2 *=1.2
-      multiple3 *=.60
+    if (mixes === 3 && dough.bucketSets === 5) {
+      multiple1 *= 1.2;
+      multiple2 *= 1.2;
+      multiple3 *= 0.6;
     }
     let oldDoughAdjusted = dough.oldDough;
     let stickerAmount = Number(
@@ -436,7 +136,6 @@ function BPBNBaker1Dough() {
       oldDoughAdjusted = stickerAmount / 3;
     }
     stickerAmount -= oldDoughAdjusted;
-
 
     return (
       <React.Fragment key={dough.id + "_firstFrag"}>

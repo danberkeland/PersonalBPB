@@ -1,7 +1,8 @@
 export const getMixInfo = (doughs, infoWrap) => {
+  console.log(infoWrap)
     let dough = doughs[0];
     let multiple = [];
-  
+    
     let baguetteBins = Math.ceil(infoWrap.bagAndEpiCount / 24);
     let oliveWeight = (infoWrap.oliveCount * 1.4).toFixed(2);
     let bcWeight = (infoWrap.bcCount * 1.4).toFixed(2);
@@ -10,8 +11,14 @@ export const getMixInfo = (doughs, infoWrap) => {
     let bucketSets = infoWrap.bagDoughTwoDays;
 
     let info = {
-        baguetteBins,oliveWeight,bcWeight,fullPockets,extraPockets
+        baguetteBins : baguetteBins,
+        oliveWeight: oliveWeight,
+        bcWeight: bcWeight,
+        fullPockets: fullPockets,
+        extraPockets : extraPockets,
+        bucketSets: bucketSets
     }
+    
   
     let doughTotal =
       Number(dough.needed) + Number(dough.buffer) + Number(dough.short);

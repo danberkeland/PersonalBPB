@@ -48,31 +48,37 @@ const compose = new ComposeWhatToBake();
 
 function BPBNBaker1() {
   const { setIsLoading } = useContext(ToggleContext);
-  const [whatToMake, setWhatToMake] = useState([]);
-  const [whatToPrep, setWhatToPrep] = useState([]);
+  const [whatToMake, setWhatToMake] = useState();
+  const [whatToPrep, setWhatToPrep] = useState();
   const [doughs, setDoughs] = useState([]);
   const [doughComponents, setDoughComponents] = useState([]);
   const [bagAndEpiCount, setBagAndEpiCount] = useState([]);
   const [oliveCount, setOliveCount] = useState([]);
   const [bcCount, setBcCount] = useState([]);
   const [bagDoughTwoDays, setBagDoughTwoDays] = useState([]);
+  const [infoWrap, setInfoWrap] = useState({})
 
   let delivDate = todayPlus()[0];
 
-  let infoWrap = {
-    whatToMake,
-    whatToPrep,
-    setBagAndEpiCount,
-    oliveCount,
-    bcCount,
-    bagDoughTwoDays,
-  };
+  useEffect(() => {
+    
+    setInfoWrap({
+      whatToMake: whatToMake,
+      whatToPrep: whatToPrep,
+      bagAndEpiCount: bagAndEpiCount,
+      oliveCount: oliveCount,
+      bcCount: bcCount,
+      bagDoughTwoDays: bagDoughTwoDays,
+    })
+  },[whatToMake, whatToPrep, oliveCount, bcCount, bagDoughTwoDays, bagAndEpiCount])
+  
 
   useEffect(() => {
     promisedData(setIsLoading).then((database) =>
       gatherWhatToMakeInfo(database)
     );
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
 
   const gatherWhatToMakeInfo = (database) => {
     let whatToMakeData = compose.returnWhatToMakeBreakDown(delivDate, database);
@@ -121,14 +127,13 @@ function BPBNBaker1() {
         setDoughs={setDoughs}
         doughComponents={doughComponents}
         setDoughComponents={setDoughComponents}
-        bagAndEpiCount={bagAndEpiCount}
         setBagAndEpiCount={setBagAndEpiCount}
-        oliveCount={oliveCount}
         setOliveCount={setOliveCount}
-        bcCount={bcCount}
         setBcCount={setBcCount}
-        bagDoughTwoDays={bagDoughTwoDays}
         setBagDoughTwoDays={setBagDoughTwoDays}
+
+
+        infoWrap={infoWrap}
       />
     </React.Fragment>
   );

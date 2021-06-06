@@ -93,6 +93,7 @@ function WhoBake() {
       }
 
       doc.autoTable({
+        theme: "grid",
         body: allOrders.filter((fil) => fil.forBake === ord),
         margin: pageMargin,
         columns: [

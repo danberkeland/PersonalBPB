@@ -4,7 +4,7 @@ import {
   buildGridOrderArray,
 } from "../../../helpers/delivGridHelpers";
 
-import { getFullOrders } from "../../../helpers/CartBuildingHelpers";
+import { getFullOrders, getFullProdOrders } from "../../../helpers/CartBuildingHelpers";
 
 import { sortZtoADataByIndex } from "../../../helpers/sortDataHelpers";
 import {
@@ -14,7 +14,7 @@ import {
   productReadyBeforeRouteStarts,
   customerIsOpen,
 } from "../../logistics/ByRoute/Parts/utils/utils";
-import { whenTransitionDone } from "@fullcalendar/common";
+
 
 const addRoutes = (delivDate, prodGrid, database) => {
   const [products, customers, routes, standing, orders] = database;
@@ -68,8 +68,15 @@ const addRoutes = (delivDate, prodGrid, database) => {
   return prodGrid;
 };
 
-const getOrdersList = (delivDate, database) => {
-  let fullOrder = getFullOrders(delivDate, database);
+const getOrdersList = (delivDate, database,prod) => {
+  let fullOrder
+  if (prod===true){
+    
+  fullOrder = getFullProdOrders(delivDate, database);
+  } else {
+    fullOrder = getFullOrders(delivDate, database);
+  }
+  console.log(fullOrder)
   fullOrder = zerosDelivFilter(fullOrder, delivDate, database);
   fullOrder = buildGridOrderArray(fullOrder, database);
   fullOrder = addRoutes(delivDate, fullOrder, database);
@@ -77,17 +84,17 @@ const getOrdersList = (delivDate, database) => {
 };
 
 export default class ComposeAllOrders {
-  returnAllOrdersBreakDown = (delivDate, database, loc) => {
-    let allOrders = this.returnAllOrders(delivDate, database, loc);
+  returnAllOrdersBreakDown = (delivDate, database, loc, prod) => {
+    let allOrders = this.returnAllOrders(delivDate, database, loc, prod);
 
     return {
       allOrders: allOrders,
     };
   };
 
-  returnAllOrders = (delivDate, database, loc) => {
+  returnAllOrders = (delivDate, database, loc, prod) => {
     const [products, customers, routes, standing, orders] = database;
-    let allOrdersList = getOrdersList(delivDate, database);
+    let allOrdersList = getOrdersList(delivDate, database, prod);
     
     let allOrdersToday = allOrdersList.filter((set) =>
       this.allOrdersFilter(set, loc)

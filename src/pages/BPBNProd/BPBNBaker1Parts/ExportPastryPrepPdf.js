@@ -5,6 +5,10 @@ import { convertDatetoBPBDate } from "../../../helpers/dateTimeHelpers";
 import { mixFormula } from "./MixFormula";
 import { getMixInfo } from "./GetMixInfo";
 
+import { binInfo } from "./BinInfo";
+import { panAmount } from "./PanAmount";
+import { bucketAmount } from "./BucketAmount";
+
 let finalY;
 let pageMargin = 20;
 let tableToNextTitle = 12;
@@ -81,6 +85,60 @@ export const ExportPastryPrepPdf = async (delivDate, doughs, infoWrap) => {
 
     finalY = doc.previousAutoTable.finalY + tableToNextTitle;
   }
+
+  doc.addPage();
+  finalY = 20;
+
+  doc.setFontSize(titleFont);
+    doc.text(pageMargin, finalY + tableToNextTitle, `Bins`);
+
+    doc.autoTable({
+      theme: "grid",
+      body: binInfo(doughs, infoWrap),
+      margin: pageMargin,
+      columns: [
+        { header: "Ingredient", dataKey: "title" },
+        { header: "Amount", dataKey: "amount" },
+      ],
+      startY: finalY + titleToNextTable,
+      styles: { fontSize: tableFont },
+    });
+
+    finalY = doc.previousAutoTable.finalY + tableToNextTitle;
+
+    doc.setFontSize(titleFont);
+    doc.text(pageMargin, finalY + tableToNextTitle, `Pans`);
+
+    doc.autoTable({
+      theme: "grid",
+      body: panAmount(doughs, infoWrap),
+      margin: pageMargin,
+      columns: [
+        { header: "Ingredient", dataKey: "title" },
+        { header: "Amount", dataKey: "amount" },
+      ],
+      startY: finalY + titleToNextTable,
+      styles: { fontSize: tableFont },
+    });
+
+    finalY = doc.previousAutoTable.finalY + tableToNextTitle;
+
+    doc.setFontSize(titleFont);
+    doc.text(pageMargin, finalY + tableToNextTitle, `Buckets`);
+
+    doc.autoTable({
+      theme: "grid",
+      body: bucketAmount(doughs, infoWrap),
+      margin: pageMargin,
+      columns: [
+        { header: "Ingredient", dataKey: "title" },
+        { header: "Amount", dataKey: "amount" },
+      ],
+      startY: finalY + titleToNextTable,
+      styles: { fontSize: tableFont },
+    });
+
+    finalY = doc.previousAutoTable.finalY + tableToNextTitle;
 
   doc.save(`WhatToShape${delivDate}.pdf`);
 };

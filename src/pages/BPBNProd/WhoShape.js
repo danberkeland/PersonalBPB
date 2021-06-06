@@ -63,10 +63,13 @@ function WhoBake() {
     let allOrdersData = compose.returnAllOrdersBreakDown(
       delivDate,
       database,
-      "Carlton"
+      "Carlton",
+      true
     );
     setAllOrders(allOrdersData.allOrders);
   };
+
+
   const exportWhoBakePdf = () => {
     let finalY;
     let pageMargin = 20;
@@ -87,6 +90,8 @@ function WhoBake() {
 
     doc.setFontSize(titleFont);
     doc.text(pageMargin, finalY + tableToNextTitle, `Set Out`);
+
+  
     for (let ord of allOrdersList) {
 
       let total = 0
@@ -94,8 +99,11 @@ function WhoBake() {
         total = total + num.qty
       }
 
+    let body = allOrders.filter((fil) => fil.forBake === ord)
+
     doc.autoTable({
-      body: allOrders.filter((fil) => fil.forBake === ord),
+      theme: "grid",
+      body: body,
       margin: pageMargin,
       columns: [
         { header: ord, dataKey: "custName" },
@@ -131,7 +139,7 @@ function WhoBake() {
   
   let allOrdersList = allOrders.map((all) => all.forBake).filter(all => all !== null)
   allOrdersList = sortAtoZDataByIndex(
-    Array.from(new Set(allOrdersList))
+    Array.from(new Set(allOrdersList)),"forBake"
   );
 
   const footerGroup = (e) => {

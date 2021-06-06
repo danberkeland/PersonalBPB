@@ -13,6 +13,10 @@ import { convertDatetoBPBDate, todayPlus } from "../../helpers/dateTimeHelpers";
 import { promisedData } from "../../helpers/databaseFetchers";
 import ComposePastryPrep from "./BPBNSetOutUtils/composePastryPrep";
 
+import { updateProduct } from "../../graphql/mutations";
+
+import { API, graphqlOperation } from "aws-amplify";
+
 import styled from "styled-components";
 
 const WholeBox = styled.div`
@@ -69,7 +73,21 @@ function BPBNSetOut({ loc }) {
     setAlmondPrep(pastryPrepData.almondPrep);
   };
 
-  const exportPastryPrepPdf = () => {
+  const exportPastryPrepPdf = async () => {
+    console.log(setOut)
+    for (let set of setOut) {
+      let addDetails = {
+        id: set.id,
+        prepreshaped: set.qty,
+      };
+      try {
+        await API.graphql(
+          graphqlOperation(updateProduct, { input: { ...addDetails } })
+        );
+      } catch (error) {
+        console.log("error on updating product", error);
+      }
+    }
     let finalY;
     let pageMargin = 20;
     let tableToNextTitle = 12;

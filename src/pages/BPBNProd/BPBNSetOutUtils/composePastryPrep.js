@@ -110,9 +110,9 @@ export default class ComposePastryPrep {
       this.threeDayAlFilter(set, loc)
     );
 
-    setOutToday = this.makeAddQty(setOutToday);
-    let twoDayPlains = this.makeAddQty(twoDayToday);
-    let threeDayPlains = this.makeAddQty(threeDayToday);
+    setOutToday = this.makeAddQty(setOutToday, products);
+    let twoDayPlains = this.makeAddQty(twoDayToday,products);
+    let threeDayPlains = this.makeAddQty(threeDayToday,products);
     let twoDayFreeze = 0;
     let threeDayFreeze = 0;
     try {
@@ -143,11 +143,11 @@ export default class ComposePastryPrep {
   };
 
   twoDayFrozenFilter = (ord, loc) => {
-    return ord.prodNick === "fral";
+    return ord.prodNick === "fral" && loc === "Prado";
   };
 
   threeDayAlFilter = (ord, loc) => {
-    return ord.routeDepart === "Carlton" && ord.prodNick === "al";
+    return ord.routeDepart === loc && ord.prodNick === "al";
   };
 
   returnPastryPrep = (delivDate, database, loc) => {
@@ -156,7 +156,7 @@ export default class ComposePastryPrep {
     let setOutToday = setOutList.filter((set) =>
       this.pastryPrepFilter(set, loc)
     );
-    setOutToday = this.makeAddQty(setOutToday);
+    setOutToday = this.makeAddQty(setOutToday, products);
 
    
     return setOutToday;
@@ -187,9 +187,9 @@ export default class ComposePastryPrep {
       this.threeDayAlFilter(set, loc)
     );
 
-    setOutToday = this.makeAddQty(setOutToday);
-    let twoDayPlains = this.makeAddQty(twoDayToday);
-    let threeDayPlains = this.makeAddQty(threeDayToday);
+    setOutToday = this.makeAddQty(setOutToday,products);
+    let twoDayPlains = this.makeAddQty(twoDayToday,products);
+    let threeDayPlains = this.makeAddQty(threeDayToday,products);
     let twoDayFreeze = 0;
     let threeDayFreeze = 0;
     try {
@@ -224,7 +224,8 @@ export default class ComposePastryPrep {
     )
   };
 
-  makeAddQty = (bakedTomorrow) => {
+  makeAddQty = (bakedTomorrow, products) => {
+    console.log(products)
     let makeList2 = Array.from(
       new Set(bakedTomorrow.map((prod) => prod.prodNick))
     ).map((mk) => ({
@@ -244,6 +245,9 @@ export default class ComposePastryPrep {
         qtyAccToday = qtyToday.reduce(addUp);
       }
       make.qty = qtyAccToday;
+      make.id = products[products.findIndex(prod => prod.nickName === make.prodNick)].id
+     
+     
     }
     return makeList2;
   };

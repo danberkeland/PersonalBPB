@@ -3,6 +3,8 @@ import React, { useEffect, useContext } from "react";
 import { ToggleContext } from "../../dataContexts/ToggleContext";
 
 import { InputText } from "primereact/inputtext";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
 
 import { promisedData } from "../../helpers/databaseFetchers";
 import ComposeDough from "./BPBNSetOutUtils/composeDough";
@@ -46,6 +48,8 @@ function BPBNBaker1Dough({
   setBcCount,
   bagDoughTwoDays,
   setBagDoughTwoDays,
+  setTitleInfo,
+  setMix1Info,
 }) {
   const { setIsLoading } = useContext(ToggleContext);
 
@@ -137,14 +141,122 @@ function BPBNBaker1Dough({
     }
     stickerAmount -= oldDoughAdjusted;
 
+    // set up Title Info
+
+    let doughName = dough.doughName;
+    let doughNeeded = dough.needed;
+    let doughTotal =
+      Number(dough.needed) + Number(dough.buffer) + Number(dough.short);
+    let doughShort = Number(dough.short);
+
+    //  Set up Mix 1
+
+    let Mix1BucketSets = Math.round(dough.bucketSets * multiple1);
+    let Mix1OldDough = dough.oldDough * multiple1;
+    let Mix150lbFlour = Math.floor(
+      ((0.575 * stickerAmount - bucketSets * 19.22) * multiple1) / 50
+    );
+    let Mix125lbWater = Math.floor(
+      ((0.372 * stickerAmount - bucketSets * 19.22) * multiple1) / 25
+    );
+    let Mix1BreadFlour = (
+      ((0.575 * stickerAmount - bucketSets * 19.22) * multiple1) %
+      50
+    ).toFixed(2);
+    let Mix1WholeWheat = (0.038 * stickerAmount * multiple1).toFixed(2);
+    let Mix1Water = (
+      ((0.372 * stickerAmount - bucketSets * 19.22) * multiple1) %
+      25
+    ).toFixed(2);
+    let Mix1Salt = (0.013 * stickerAmount * multiple1).toFixed(2);
+    let Mix1Yeast = (0.002 * stickerAmount * multiple1).toFixed(2);
+
+    let mix1Info = [
+      { title: "Bucket Sets", amount: Mix1BucketSets + " (L and P)" },
+      { title: "Old Dough", amount: Mix1OldDough + " lb." },
+      { title: "50 lb. Bread Flour", amount: Mix150lbFlour },
+      { title: "25 lb. Bucket Water", amount: Mix125lbWater },
+      { title: "Bread Flour", amount: Mix1BreadFlour + " lb." },
+      { title: "Whole Wheat Flour", amount: Mix1WholeWheat + " lb." },
+      { title: "Water", amount: Mix1Water + " lb." },
+      { title: "Salt", amount: Mix1Salt + " lb." },
+      { title: "Yeast", amount: Mix1Yeast + " lb." },
+    ];
+
+    //  Set up Mix 2
+
+    let Mix2BucketSets = Math.round(dough.bucketSets * multiple2);
+    let Mix2OldDough = dough.oldDough * multiple2;
+    let Mix250lbFlour = Math.floor(
+      ((0.575 * stickerAmount - bucketSets * 19.22) * multiple2) / 50
+    );
+    let Mix225lbWater = Math.floor(
+      ((0.372 * stickerAmount - bucketSets * 19.22) * multiple2) / 25
+    );
+    let Mix2BreadFlour = (
+      ((0.575 * stickerAmount - bucketSets * 19.22) * multiple2) %
+      50
+    ).toFixed(2);
+    let Mix2WholeWheat = (0.038 * stickerAmount * multiple2).toFixed(2);
+    let Mix2Water = (
+      ((0.372 * stickerAmount - bucketSets * 19.22) * multiple2) %
+      25
+    ).toFixed(2);
+    let Mix2Salt = (0.013 * stickerAmount * multiple2).toFixed(2);
+    let Mix2Yeast = (0.002 * stickerAmount * multiple2).toFixed(2);
+
+    let mix2Info = [
+      { title: "Bucket Sets", amount: Mix2BucketSets + " (L and P)" },
+      { title: "Old Dough", amount: Mix2OldDough + " lb." },
+      { title: "50 lb. Bread Flour", amount: Mix250lbFlour },
+      { title: "25 lb. Bucket Water", amount: Mix225lbWater },
+      { title: "Bread Flour", amount: Mix2BreadFlour + " lb." },
+      { title: "Whole Wheat Flour", amount: Mix2WholeWheat + " lb." },
+      { title: "Water", amount: Mix2Water + " lb." },
+      { title: "Salt", amount: Mix2Salt + " lb." },
+      { title: "Yeast", amount: Mix2Yeast + " lb." },
+    ];
+
+    //  Set up Mix 3
+
+    let Mix3BucketSets = Math.round(dough.bucketSets * multiple3);
+    let Mix3OldDough = dough.oldDough * multiple3;
+    let Mix350lbFlour = Math.floor(
+      ((0.575 * stickerAmount - bucketSets * 19.22) * multiple3) / 50
+    );
+    let Mix325lbWater = Math.floor(
+      ((0.372 * stickerAmount - bucketSets * 19.22) * multiple3) / 25
+    );
+    let Mix3BreadFlour = (
+      ((0.575 * stickerAmount - bucketSets * 19.22) * multiple3) %
+      50
+    ).toFixed(2);
+    let Mix3WholeWheat = (0.038 * stickerAmount * multiple3).toFixed(2);
+    let Mix3Water = (
+      ((0.372 * stickerAmount - bucketSets * 19.22) * multiple3) %
+      25
+    ).toFixed(2);
+    let Mix3Salt = (0.013 * stickerAmount * multiple3).toFixed(2);
+    let Mix3Yeast = (0.002 * stickerAmount * multiple3).toFixed(2);
+
+    let mix3Info = [
+      { title: "Bucket Sets", amount: Mix3BucketSets + " (L and P)" },
+      { title: "Old Dough", amount: Mix3OldDough + " lb." },
+      { title: "50 lb. Bread Flour", amount: Mix350lbFlour },
+      { title: "25 lb. Bucket Water", amount: Mix325lbWater },
+      { title: "Bread Flour", amount: Mix3BreadFlour + " lb." },
+      { title: "Whole Wheat Flour", amount: Mix3WholeWheat + " lb." },
+      { title: "Water", amount: Mix3Water + " lb." },
+      { title: "Salt", amount: Mix3Salt + " lb." },
+      { title: "Yeast", amount: Mix3Yeast + " lb." },
+    ];
+
+
     return (
       <React.Fragment key={dough.id + "_firstFrag"}>
         <h3>
-          {dough.doughName}: (need {dough.needed} lb.) TOTAL:
-          {Number(
-            Number(dough.needed) + Number(dough.buffer) + Number(dough.short)
-          )}{" "}
-          SHORT: {Number(dough.short)}
+          {doughName}: (need {doughNeeded} lb.) TOTAL:
+          {doughTotal} SHORT: {doughShort}
         </h3>
         <TwoColumnGrid key={dough.id + "_first2Col"}>
           <div>
@@ -178,145 +290,27 @@ function BPBNBaker1Dough({
         </TwoColumnGrid>
 
         <h2>Baguette Mix #1</h2>
-        <TwoColumnGrid>
-          <div>Bucket Sets</div>
-          <div>{Math.round(dough.bucketSets * multiple1)} (L and P)</div>
-          <div>Old Dough</div>
-          <div>{dough.oldDough * multiple1} lb.</div>
-          <div>50 lb. Bread Flour</div>
-          <div>
-            {Math.floor(
-              ((0.575 * stickerAmount - bucketSets * 19.22) * multiple1) / 50
-            )}
-          </div>
-          <div>25 lb. Bucket Water</div>
-          <div>
-            {Math.floor(
-              ((0.372 * stickerAmount - bucketSets * 19.22) * multiple1) / 25
-            )}
-          </div>
-          <div> </div>
-          <div> </div>
-          <div>Bread Flour</div>
-          <div>
-            {(
-              ((0.575 * stickerAmount - bucketSets * 19.22) * multiple1) %
-              50
-            ).toFixed(2)}{" "}
-            lb.
-          </div>
-          <div>Whole Wheat Flour</div>
-          <div>{(0.038 * stickerAmount * multiple1).toFixed(2)} lb.</div>
-          <div>Water</div>
-          <div>
-            {(
-              ((0.372 * stickerAmount - bucketSets * 19.22) * multiple1) %
-              25
-            ).toFixed(2)}{" "}
-            lb.
-          </div>
-          <div>Salt</div>
-          <div>{(0.013 * stickerAmount * multiple1).toFixed(2)} lb.</div>
-          <div>Yeast</div>
-          <div>{(0.002 * stickerAmount * multiple1).toFixed(2)} lb.</div>
-        </TwoColumnGrid>
+        <DataTable value={mix1Info} className="p-datatable-sm">
+          <Column field="title" header="Ingredient"></Column>
+          <Column field="amount" header="Amount"></Column>
+        </DataTable>
 
         {mixes > 1 && (
           <React.Fragment>
             <h2>Baguette Mix #2</h2>
-            <TwoColumnGrid>
-              <div>Bucket Sets</div>
-              <div>{Math.round(dough.bucketSets * multiple2)} (L and P)</div>
-              <div>Old Dough</div>
-              <div>{dough.oldDough * multiple2} lb.</div>
-              <div>50 lb. Bread Flour</div>
-              <div>
-                {Math.floor(
-                  ((0.575 * stickerAmount - bucketSets * 19.22) * multiple2) /
-                    50
-                )}
-              </div>
-              <div>25 lb. Bucket Water</div>
-              <div>
-                {Math.floor(
-                  ((0.372 * stickerAmount - bucketSets * 19.22) * multiple2) /
-                    25
-                )}
-              </div>
-              <div> </div>
-              <div> </div>
-              <div>Bread Flour</div>
-              <div>
-                {(
-                  ((0.575 * stickerAmount - bucketSets * 19.22) * multiple2) %
-                  50
-                ).toFixed(2)}{" "}
-                lb.
-              </div>
-              <div>Whole Wheat Flour</div>
-              <div>{(0.038 * stickerAmount * multiple2).toFixed(2)} lb.</div>
-              <div>Water</div>
-              <div>
-                {(
-                  ((0.372 * stickerAmount - bucketSets * 19.22) * multiple2) %
-                  25
-                ).toFixed(2)}{" "}
-                lb.
-              </div>
-              <div>Salt</div>
-              <div>{(0.013 * stickerAmount * multiple2).toFixed(2)} lb.</div>
-              <div>Yeast</div>
-              <div>{(0.002 * stickerAmount * multiple2).toFixed(2)} lb.</div>
-            </TwoColumnGrid>
+            <DataTable value={mix2Info} className="p-datatable-sm">
+              <Column field="title" header="Ingredient"></Column>
+              <Column field="amount" header="Amount"></Column>
+            </DataTable>
           </React.Fragment>
         )}
         {mixes > 2 && (
           <React.Fragment>
             <h2>Baguette Mix #3</h2>
-            <TwoColumnGrid>
-              <div>Bucket Sets</div>
-              <div>{Math.round(dough.bucketSets * multiple3)} (L and P)</div>
-              <div>Old Dough</div>
-              <div>{dough.oldDough * multiple3} lb.</div>
-              <div>50 lb. Bread Flour</div>
-              <div>
-                {Math.floor(
-                  ((0.575 * stickerAmount - bucketSets * 19.22) * multiple3) /
-                    50
-                )}
-              </div>
-              <div>25 lb. Bucket Water</div>
-              <div>
-                {Math.floor(
-                  ((0.372 * stickerAmount - bucketSets * 19.22) * multiple3) /
-                    25
-                )}
-              </div>
-              <div> </div>
-              <div> </div>
-              <div>Bread Flour</div>
-              <div>
-                {(
-                  ((0.575 * stickerAmount - bucketSets * 19.22) * multiple3) %
-                  50
-                ).toFixed(2)}{" "}
-                lb.
-              </div>
-              <div>Whole Wheat Flour</div>
-              <div>{(0.038 * stickerAmount * multiple3).toFixed(2)} lb.</div>
-              <div>Water</div>
-              <div>
-                {(
-                  ((0.372 * stickerAmount - bucketSets * 19.22) * multiple3) %
-                  25
-                ).toFixed(2)}{" "}
-                lb.
-              </div>
-              <div>Salt</div>
-              <div>{(0.013 * stickerAmount * multiple3).toFixed(2)} lb.</div>
-              <div>Yeast</div>
-              <div>{(0.002 * stickerAmount * multiple3).toFixed(2)} lb.</div>
-            </TwoColumnGrid>
+            <DataTable value={mix3Info} className="p-datatable-sm">
+              <Column field="title" header="Ingredient"></Column>
+              <Column field="amount" header="Amount"></Column>
+            </DataTable>
           </React.Fragment>
         )}
       </React.Fragment>
@@ -326,8 +320,7 @@ function BPBNBaker1Dough({
     <React.Fragment>
       <WholeBox>
         <h1>BPBN Baguette Mix</h1>
-        {/*<div>{header}</div>*/}
-        {doughs.map((dough) => doughMixList(dough))}
+        {doughs[0] && doughMixList(doughs[0])}
 
         <h2>Bins</h2>
         <TwoColumnGrid>

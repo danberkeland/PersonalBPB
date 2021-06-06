@@ -110,7 +110,7 @@ function BPBNBaker1Dough({
 
   const doughMixList = (dough) => {
     let doughTotal =
-      Number(dough.needed) + Number(dough.buffer) + Number(dough.short);
+      (Number(dough.needed) + Number(dough.buffer) + Number(dough.short)).toFixed(2);
 
     let mixes = Math.ceil(doughTotal / 210);
     let multiple1 = 1 / mixes;

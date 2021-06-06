@@ -9,8 +9,6 @@ import { convertDatetoBPBDate, todayPlus } from "../../helpers/dateTimeHelpers";
 import { promisedData } from "../../helpers/databaseFetchers";
 import ComposeWhatToPrep from "./BPBNSetOutUtils/composeWhatToPrep";
 
-
-
 import styled from "styled-components";
 
 const WholeBox = styled.div`
@@ -21,13 +19,10 @@ const WholeBox = styled.div`
   padding: 0 0 100px 0;
 `;
 
-
-
 const compose = new ComposeWhatToPrep();
 
 function BPBNBaker1WhatToPrep({ whatToPrep, setWhatToPrep }) {
   const { setIsLoading } = useContext(ToggleContext);
-  
 
   let delivDate = todayPlus()[0];
 
@@ -38,30 +33,20 @@ function BPBNBaker1WhatToPrep({ whatToPrep, setWhatToPrep }) {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const gatherWhatToPrepInfo = (database) => {
-    let whatToPrepData = compose.returnWhatToPrepBreakDown(
-      delivDate,
-      database
-      
-    );
+    let whatToPrepData = compose.returnWhatToPrepBreakDown(delivDate, database);
     setWhatToPrep(whatToPrepData.whatToPrep);
-    
   };
 
-  
- 
   return (
     <React.Fragment>
       <WholeBox>
-        <h1>
-          What To Prep {convertDatetoBPBDate(delivDate)}
-        </h1>
-       
+        <h1>What To Prep {convertDatetoBPBDate(delivDate)}</h1>
+
         <DataTable value={whatToPrep} className="p-datatable-sm">
           <Column field="prodName" header="Product"></Column>
           <Column field="qty" header="Qty"></Column>
         </DataTable>
       </WholeBox>
-      
     </React.Fragment>
   );
 }

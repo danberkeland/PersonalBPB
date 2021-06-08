@@ -41,12 +41,13 @@ const BasicContainer = styled.div`
 
 function Ordering() {
   const [database, setDatabase] = useState([]);
-  const { reload, setIsLoading, setModifications } = useContext(ToggleContext);
+  const { reload, setIsLoading, setModifications, ordersHasBeenChanged, setOrdersHasBeenChanged } = useContext(ToggleContext);
 
   const loadDatabase = async (database) => {
+    setIsLoading(true)
     const [products, customers, routes, standing, orders] = database;
 
-   
+    if(ordersHasBeenChanged){
     let prodsToUpdate = clonedeep(products)
     for (let prod of prodsToUpdate){
       if (prod.updatePreDate !== tomorrow){
@@ -78,11 +79,12 @@ function Ordering() {
 
       } catch (error) {
         console.log("error on creating Orders", error);
+        setIsLoading(false)
       }
     }
     
 
-
+    
     let ordsToUpdate = clonedeep(orders);
     setDatabase(database);
     let ord = await fetchSq(database);
@@ -135,6 +137,7 @@ function Ordering() {
           ordsToUpdate.push(itemToAdd);
         } catch (error) {
           console.log("error on creating Orders", error);
+          setIsLoading(false)
         }
       }
     }
@@ -143,7 +146,10 @@ function Ordering() {
     setDatabase(DBToMod);
   } else {
     console.log("Square orders did not load")
-  }
+  }} 
+  setDatabase(database);
+  setIsLoading(false)
+  setOrdersHasBeenChanged(false)
   };
 
   const fetchSq = async () => {

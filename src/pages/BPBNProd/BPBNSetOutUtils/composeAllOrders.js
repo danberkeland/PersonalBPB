@@ -79,7 +79,7 @@ const getOrdersList = (delivDate, database,prod) => {
   } else {
     fullOrder = getFullOrders(delivDate, database);
   }
-  console.log(fullOrder)
+ 
   fullOrder = zerosDelivFilter(fullOrder, delivDate, database);
   fullOrder = buildGridOrderArray(fullOrder, database);
   fullOrder = addRoutes(delivDate, fullOrder, database);
@@ -102,7 +102,7 @@ export default class ComposeAllOrders {
   returnAllOrders = (delivDate, database, loc, prod) => {
     const [products, customers, routes, standing, orders] = database;
     let allOrdersList = getOrdersList(delivDate, database, prod);
-    
+    console.log(allOrdersList)
     let allOrdersToday = allOrdersList.filter((set) =>
       this.allOrdersFilter(set, loc)
     );

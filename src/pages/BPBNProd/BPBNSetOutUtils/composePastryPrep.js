@@ -14,6 +14,7 @@ import {
   productReadyBeforeRouteStarts,
   customerIsOpen,
 } from "../../logistics/ByRoute/Parts/utils/utils";
+import { set } from "lodash";
 
 const clonedeep = require("lodash.clonedeep");
 let tomorrow = todayPlus()[1];
@@ -103,14 +104,21 @@ export default class ComposePastryPrep {
     let twoDayList = getOrdersList(twoDay, database);
     let threeDayList = getOrdersList(threeDay, database);
     let setOutToday = setOutList.filter((set) => this.setOutFilter(set, loc));
+   
     let twoDayToday = twoDayList.filter((set) =>
       this.twoDayFrozenFilter(set, loc)
     );
     let threeDayToday = threeDayList.filter((set) =>
       this.threeDayAlFilter(set, loc)
     );
-
+    console.log(setOutToday)
+    for (let setout of setOutToday){
+      if (setout.custName==="Back Porch Bakery"){
+        setout.qty /= 2
+      }
+    }
     setOutToday = this.makeAddQty(setOutToday, products);
+    console.log(setOutToday)
     let twoDayPlains = this.makeAddQty(twoDayToday,products);
     let threeDayPlains = this.makeAddQty(threeDayToday,products);
     let twoDayFreeze = 0;

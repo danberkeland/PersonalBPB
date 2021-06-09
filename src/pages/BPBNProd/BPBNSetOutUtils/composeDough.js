@@ -15,6 +15,7 @@ import {
   customerIsOpen,
 } from "../../logistics/ByRoute/Parts/utils/utils";
 
+let threeDay = todayPlus()[3];
 let twoDay = todayPlus()[2];
 let oneDay = todayPlus()[1];
 let tomorrow = todayPlus()[1];
@@ -218,6 +219,29 @@ export default class ComposeDough {
     return makeList2;
   };
 
+  makeFilter = (ord, loc) => {
+    return (
+      
+      ord.where.includes("Carlton") &&
+      (ord.packGroup === "rustic breads" || ord.packGroup === "retail") &&
+      ((ord.routeStart >= 8 && ord.routeDepart === "Prado") ||
+        ord.routeDepart === "Carlton" ||
+        ord.zone === "Prado Retail" ||
+        ord.zone === "slopick")
+    );
+  };
+
+  addOnFilter = (ord, loc) => {
+    return (
+      
+      ord.where.includes("Carlton") &&
+      (ord.packGroup === "rustic breads" || ord.packGroup === "retail") &&
+      ((ord.routeStart < 8 && ord.routeDepart === "Prado") &&
+        ord.zone !== "Prado Retail" &&
+        ord.zone !== "slopick")
+    );
+  };
+
   returnDoughs = (delivDate, database, loc) => {
     const [
       products,
@@ -228,9 +252,35 @@ export default class ComposeDough {
       doughs,
       doughComponents,
     ] = database;
-    let twoDayOrderList = getOrdersList(twoDay, database);
     let oneDayOrderList = getOrdersList(oneDay, database);
+    let oneDayMake = oneDayOrderList.filter((set) =>
+      this.makeFilter(set)
+    );
 
+    let twoDayOrderAddOn = getOrdersList(twoDay, database);
+    let twoDayAddon = twoDayOrderAddOn.filter((set) =>
+      this.addOnFilter(set)
+    );
+
+    oneDayOrderList = oneDayMake.concat(twoDayAddon)
+   
+    // add two day, filter, and concat
+    
+    // add three day, filter, and concat
+    let twoDayOrderList = getOrdersList(twoDay, database);
+    let twoDayMake = twoDayOrderList.filter((set) =>
+      this.makeFilter(set)
+    );
+
+    let threeDayOrderAddOn = getOrdersList(threeDay, database);
+    let threeDayAddon = threeDayOrderAddOn.filter((set) =>
+      this.addOnFilter(set)
+    );
+
+    twoDayOrderList = twoDayMake.concat(threeDayAddon)
+    
+   
+    
     let doughList = Array.from(
       new Set(
         doughs
@@ -250,6 +300,7 @@ export default class ComposeDough {
     }));
 
     for (let dgh of doughList) {
+      console.log(dgh)
       dgh.id =
         doughs[doughs.findIndex((d) => d.doughName === dgh.doughName)].id;
       dgh.hydration =
@@ -269,9 +320,13 @@ export default class ComposeDough {
           2
         );
       } else {
+        console.log(dgh.doughName)
+        console.log(twoDayOrderList)
         dgh.needed = this.getDoughAmt(dgh.doughName, twoDayOrderList).toFixed(
           2
+          
         );
+        console.log(dgh.needed)
       }
     }
     return doughList;
@@ -292,6 +347,7 @@ export default class ComposeDough {
   };
 
   getDoughAmt = (doughName, orders) => {
+    console.log(orders)
     let qtyAccToday = 0;
     let qtyArray = orders
       .filter((ord) => ord.doughType === doughName)

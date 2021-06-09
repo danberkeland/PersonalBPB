@@ -17,6 +17,7 @@ import {
 
 const clonedeep = require("lodash.clonedeep");
 let tomorrow = todayPlus()[1];
+let twoDay = todayPlus()[2];
 
 const addRoutes = (delivDate, prodGrid, database) => {
   const [products, customers, routes, standing, orders] = database;
@@ -91,23 +92,50 @@ export default class ComposeWhatToMake {
     };
   };
 
+  // START
   returnWhatToMake = (delivDate, database) => {
     const [products, customers, routes, standing, orders] = database;
     let whatToMakeList = getOrdersList(tomorrow, database);
-    let whatToMakeToday = whatToMakeList.filter((set) => this.whatToMakeFilter(set));
-    let whatToMake = this.makeAddQty(whatToMakeToday);
-    console.log(whatToMake)
-    
+    let whatToMakeToday = whatToMakeList.filter((set) =>
+      this.whatToMakeFilter(set)
+    );
+    console.log(whatToMakeToday);
+
+    let whatToMakeTomList = getOrdersList(twoDay, database);
+    let whatToMakeTomorrow = whatToMakeTomList.filter((set) =>
+      this.whatToMakeTomFilter(set)
+    );
+    console.log(whatToMakeTomorrow);
+    let MakeList = whatToMakeToday.concat(whatToMakeTomorrow)
+    let whatToMake = this.makeAddQty(MakeList);
+
     return whatToMake;
   };
 
   whatToMakeFilter = (ord, loc) => {
     return (
-      ord.where.includes("Carlton") &&
-      (ord.packGroup === "rustic breads" || ord.packGroup === "retail")
       
+      ord.where.includes("Carlton") &&
+      (ord.packGroup === "rustic breads" || ord.packGroup === "retail") &&
+      ((ord.routeStart >= 8 && ord.routeDepart === "Prado") ||
+        ord.routeDepart === "Carlton" ||
+        ord.zone === "Prado Retail" ||
+        ord.zone === "slopick")
     );
   };
+
+  whatToMakeTomFilter = (ord, loc) => {
+    return (
+      
+      ord.where.includes("Carlton") &&
+      (ord.packGroup === "rustic breads" || ord.packGroup === "retail") &&
+      ((ord.routeStart < 8 && ord.routeDepart === "Prado") &&
+        ord.zone !== "Prado Retail" &&
+        ord.zone !== "slopick")
+    );
+  };
+  // END
+
 
   makeAddQty = (bakedTomorrow) => {
     console.log("bakedTomorrow",bakedTomorrow)

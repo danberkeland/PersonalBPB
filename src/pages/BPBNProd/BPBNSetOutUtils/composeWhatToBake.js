@@ -87,31 +87,51 @@ const addUp = (acc, val) => {
 export default class ComposeWhatToMake {
   returnWhatToMakeBreakDown = (delivDate, database, loc) => {
     let whatToMake = this.returnWhatToMake(delivDate, database, loc);
-   
+
     return {
       whatToMake: whatToMake,
-     
-      
     };
   };
 
-
-  
   returnWhatToMake = (delivDate, database) => {
     const [products, customers, routes, standing, orders] = database;
     let whatToMakeList = getOrdersList(delivDate, database);
-    let whatToMakeToday = whatToMakeList.filter((set) => this.whatToMakeFilter(set));
-    let whatToMake = this.makeAddQty(whatToMakeToday);
-    
+    let whatToMakeToday = whatToMakeList.filter((set) =>
+      this.whatToMakeFilter(set)
+    );
+    console.log(whatToMakeToday);
+
+    let whatToMakeTomList = getOrdersList(tomorrow, database);
+    let whatToMakeTomorrow = whatToMakeTomList.filter((set) =>
+      this.whatToMakeTomFilter(set)
+    );
+    console.log(whatToMakeTomorrow);
+    let MakeList = whatToMakeToday.concat(whatToMakeTomorrow)
+    let whatToMake = this.makeAddQty(MakeList);
+
     return whatToMake;
   };
 
   whatToMakeFilter = (ord, loc) => {
     return (
+      
       ord.where.includes("Carlton") &&
-      (ord.packGroup === "rustic breads" || ord.packGroup === "retail")
+      (ord.packGroup === "rustic breads" || ord.packGroup === "retail") &&
+      ((ord.routeStart >= 8 && ord.routeDepart === "Prado") ||
+        ord.routeDepart === "Carlton" ||
+        ord.zone === "Prado Retail" ||
+        ord.zone === "slopick")
+    );
+  };
+
+  whatToMakeTomFilter = (ord, loc) => {
+    return (
       
-      
+      ord.where.includes("Carlton") &&
+      (ord.packGroup === "rustic breads" || ord.packGroup === "retail") &&
+      ((ord.routeStart < 8 && ord.routeDepart === "Prado") &&
+        ord.zone !== "Prado Retail" &&
+        ord.zone !== "slopick")
     );
   };
 
@@ -123,7 +143,7 @@ export default class ComposeWhatToMake {
       qty: 0,
       shaped: 0,
       short: 0,
-      needEarly: 0
+      needEarly: 0,
     }));
     for (let make of makeList2) {
       make.qty = 1;
@@ -132,7 +152,7 @@ export default class ComposeWhatToMake {
 
       let qtyToday = bakedTomorrow
         .filter((frz) => make.forBake === frz.forBake)
-        .map((ord) => ord.qty*ord.packSize);
+        .map((ord) => ord.qty * ord.packSize);
 
       if (qtyToday.length > 0) {
         qtyAccToday = qtyToday.reduce(addUp);
@@ -144,52 +164,51 @@ export default class ComposeWhatToMake {
         .filter((frz) => make.forBake === frz.forBake)
         .map((ord) => ord.preshaped);
 
-
       if (pocketsToday.length > 0) {
-        pocketsAccToday = qtyAccToday-pocketsToday[0]
+        pocketsAccToday = qtyAccToday - pocketsToday[0];
       }
 
       let shapedSum = bakedTomorrow
         .filter((frz) => make.forBake === frz.forBake)
         .map((ord) => ord.preshaped);
 
-        if (shapedSum.length > 0) {
-          
-          make.shaped=shapedSum[0]
-        }
+      if (shapedSum.length > 0) {
+        make.shaped = shapedSum[0];
+      }
 
-      if (pocketsAccToday>0) {
-          make.short = "Short "+pocketsAccToday
-      } else if (pocketsAccToday<0) {
-        pocketsAccToday = -pocketsAccToday
-        make.short = "Over "+pocketsAccToday
-    } else {
-        make.short = ""
-    }
+      if (pocketsAccToday > 0) {
+        make.short = "Short " + pocketsAccToday;
+      } else if (pocketsAccToday < 0) {
+        pocketsAccToday = -pocketsAccToday;
+        make.short = "Over " + pocketsAccToday;
+      } else {
+        make.short = "";
+      }
 
-    let needEarlyAccToday = 0;
+      let needEarlyAccToday = 0;
 
       let needEarlyToday = bakedTomorrow
-        .filter((frz) => make.forBake === frz.forBake && 
-          frz.routeDepart==="Carlton" && 
-          frz.routeArrive==="Carlton" && 
-          frz.zone !== "Carlton Retail" &&
-          frz.zone !== "atownpick")
+        .filter(
+          (frz) =>
+            make.forBake === frz.forBake &&
+            frz.routeDepart === "Carlton" &&
+            frz.routeArrive === "Carlton" &&
+            frz.zone !== "Carlton Retail" &&
+            frz.zone !== "atownpick"
+        )
         .map((ord) => ord.qty);
 
       if (needEarlyToday.length > 0) {
         needEarlyAccToday = needEarlyToday.reduce(addUp);
       }
-      
-      if (needEarlyAccToday>0) {
-        make.needEarly = needEarlyAccToday}
-     else {
-      make.needEarly = ""
-  }
 
-  make.qty = qtyAccToday
-      
-     
+      if (needEarlyAccToday > 0) {
+        make.needEarly = needEarlyAccToday;
+      } else {
+        make.needEarly = "";
+      }
+
+      make.qty = qtyAccToday;
     }
     return makeList2;
   };

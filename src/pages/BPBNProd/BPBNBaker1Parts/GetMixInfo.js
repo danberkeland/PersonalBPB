@@ -1,5 +1,5 @@
 export const getMixInfo = (doughs, infoWrap) => {
-  console.log(infoWrap)
+  
     let dough = doughs[0];
     let multiple = [];
     

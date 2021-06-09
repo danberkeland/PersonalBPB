@@ -66,7 +66,7 @@ function WhoBake() {
       "Carlton"
     );
 
-    setAllOrders(allOrdersData.allOrders);
+    setAllOrders(allOrdersData.whoBake);
   };
 
   const exportWhoBakePdf = () => {

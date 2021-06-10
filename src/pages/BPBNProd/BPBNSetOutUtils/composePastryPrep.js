@@ -4,7 +4,7 @@ import {
   buildGridOrderArray,
 } from "../../../helpers/delivGridHelpers";
 
-import { getFullOrders } from "../../../helpers/CartBuildingHelpers";
+import { getFullProdOrders } from "../../../helpers/CartBuildingHelpers";
 
 import { sortZtoADataByIndex } from "../../../helpers/sortDataHelpers";
 import {
@@ -74,7 +74,7 @@ const addRoutes = (delivDate, prodGrid, database) => {
 };
 
 const getOrdersList = (delivDate, database) => {
-  let fullOrder = getFullOrders(delivDate, database);
+  let fullOrder = getFullProdOrders(delivDate, database);
   fullOrder = zerosDelivFilter(fullOrder, delivDate, database);
   fullOrder = buildGridOrderArray(fullOrder, database);
   fullOrder = addRoutes(delivDate, fullOrder, database);
@@ -111,14 +111,22 @@ export default class ComposePastryPrep {
     let threeDayToday = threeDayList.filter((set) =>
       this.threeDayAlFilter(set, loc)
     );
-    console.log(setOutToday)
+  
     for (let setout of setOutToday){
       if (setout.custName==="Back Porch Bakery"){
         setout.qty /= 2
       }
     }
+    for (let setout of twoDayToday){
+      if (setout.custName==="Back Porch Bakery"){
+        setout.qty /= 2
+      }
+    }
+    console.log("setOut",setOutToday)
+    console.log("2Day",twoDayToday)
+    console.log("3Day",threeDayToday)
     setOutToday = this.makeAddQty(setOutToday, products);
-    console.log(setOutToday)
+   
     let twoDayPlains = this.makeAddQty(twoDayToday,products);
     let threeDayPlains = this.makeAddQty(threeDayToday,products);
     let twoDayFreeze = 0;
@@ -143,7 +151,8 @@ export default class ComposePastryPrep {
 
   setOutFilter = (ord, loc) => {
     return (
-      ord.routeDepart === loc &&
+      (ord.routeDepart === loc || ord.custName==="Back Porch Bakery") &&
+      ord.custName !== "BPB Extras" &&
       ord.packGroup === "baked pastries" &&
       ord.prodNick !== "al" &&
       ord.doughType === "Croissant"
@@ -151,11 +160,12 @@ export default class ComposePastryPrep {
   };
 
   twoDayFrozenFilter = (ord, loc) => {
-    return ord.prodNick === "fral" && loc === "Prado";
+    return (ord.prodNick === "fral" || (ord.prodNick==="al" && (ord.routeDepart===loc || ord.custName==="Back Porch Bakery"))) &&
+    ord.custName !== "BPB Extras";
   };
 
   threeDayAlFilter = (ord, loc) => {
-    return ord.routeDepart === loc && ord.prodNick === "al";
+    return ord.routeDepart === "Carlton" && ord.prodNick === "al" &&  ord.custName !== "BPB Extras";
   };
 
   returnPastryPrep = (delivDate, database, loc) => {
@@ -188,14 +198,20 @@ export default class ComposePastryPrep {
     let setOutList = getOrdersList(tomorrow, database);
     let twoDayList = getOrdersList(twoDay, database);
     let threeDayList = getOrdersList(threeDay, database);
-    let setOutToday = setOutList.filter((set) => this.setOutFilter(set, loc));
+    let setOutToday = setOutList.filter((set) => this.almondPrepFilter(set, loc));
     let twoDayToday = twoDayList.filter((set) =>
       this.twoDayFrozenFilter(set, loc)
     );
     let threeDayToday = threeDayList.filter((set) =>
       this.threeDayAlFilter(set, loc)
     );
-
+    
+    for (let setout of setOutToday){
+      if (setout.custName==="Back Porch Bakery"){
+        setout.qty /= 2
+      }
+    }
+    console.log(twoDayToday)
     setOutToday = this.makeAddQty(setOutToday,products);
     let twoDayPlains = this.makeAddQty(twoDayToday,products);
     let threeDayPlains = this.makeAddQty(threeDayToday,products);
@@ -223,7 +239,8 @@ export default class ComposePastryPrep {
   };
 
   almondPrepFilter = (ord, loc) => {
-    return ord.prodNick === "al";
+    return (ord.prodNick === "al" && (ord.routeDepart === loc || ord.custName === "Back Porch Bakery")) &&
+    ord.custName !== "BPB Extras";
   };
 
   almondFridgePrepFilter = (ord, loc) => {

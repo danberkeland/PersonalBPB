@@ -164,6 +164,7 @@ export default class ComposePastryPrep {
     let setOutToday = setOutList.filter((set) =>
       this.pastryPrepFilter(set, loc)
     );
+    console.log("setOutToday",setOutToday)
     setOutToday = this.makeAddQty(setOutToday, products);
 
    

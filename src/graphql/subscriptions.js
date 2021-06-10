@@ -588,6 +588,8 @@ export const onCreateDough = /* GraphQL */ `
       isBakeReady
       buffer
       bucketSets
+      preBucketSets
+      updatePreBucket
       createdAt
       updatedAt
     }
@@ -607,6 +609,8 @@ export const onUpdateDough = /* GraphQL */ `
       isBakeReady
       buffer
       bucketSets
+      preBucketSets
+      updatePreBucket
       createdAt
       updatedAt
     }
@@ -626,6 +630,8 @@ export const onDeleteDough = /* GraphQL */ `
       isBakeReady
       buffer
       bucketSets
+      preBucketSets
+      updatePreBucket
       createdAt
       updatedAt
     }

@@ -97,6 +97,7 @@ export default class ComposeWhatToMake {
   returnWhatToPrep = (delivDate, database) => {
     const [products, customers, routes, standing, orders] = database;
     let whatToPrepList = getOrdersList(delivDate, database);
+    console.log(whatToPrepList)
     let whatToPrepListTom = getOrdersList(tomorrow, database);
     let whatToMakeToday = whatToPrepList.filter((set) =>
       this.whatToPrepFilter(set)
@@ -104,11 +105,11 @@ export default class ComposeWhatToMake {
     let whatToMakeTomorrow = whatToPrepListTom.filter((set) =>
       this.whatToPrepTomFilter(set)
     );
+    
     let whatToMake = this.makeAddQty(whatToMakeToday);
     let whatToMakeTom = this.makeAddQty(whatToMakeTomorrow);
 
-    console.log(whatToMake)
-    console.log(whatToMakeTom)
+    
     whatToMake = whatToMake.concat(whatToMakeTom)
     return whatToMake;
   };
@@ -119,7 +120,8 @@ export default class ComposeWhatToMake {
       ord.packGroup !== "rustic breads" &&
       ord.doughType !== "Croissant" &&
       ord.packGroup !== "retail" &&
-      ord.routeDepart === "Carlton" &&
+      ord.packGroup !== "cafe menu" &&
+      (ord.routeDepart === "Carlton"  || ord.route==="Pick up Carlton") &&
       ord.when < 14
     );
   };

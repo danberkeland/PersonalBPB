@@ -471,6 +471,8 @@ export const getDough = /* GraphQL */ `
       isBakeReady
       buffer
       bucketSets
+      preBucketSets
+      updatePreBucket
       createdAt
       updatedAt
     }
@@ -495,6 +497,8 @@ export const listDoughs = /* GraphQL */ `
         isBakeReady
         buffer
         bucketSets
+        preBucketSets
+        updatePreBucket
         createdAt
         updatedAt
       }

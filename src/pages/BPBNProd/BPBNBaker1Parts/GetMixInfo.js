@@ -9,6 +9,7 @@ export const getMixInfo = (doughs, infoWrap) => {
     let fullPockets = Math.floor(infoWrap.bagAndEpiCount / 16);
     let extraPockets = infoWrap.bagAndEpiCount % 16;
     let bucketSets = infoWrap.bagDoughTwoDays;
+    
 
     let info = {
         baguetteBins : baguetteBins,

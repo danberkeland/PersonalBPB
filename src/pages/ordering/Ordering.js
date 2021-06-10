@@ -5,7 +5,7 @@ import CurrentOrderInfo from "./Parts/CurrentOrderInfo";
 import CurrentOrderList from "./Parts/CurrentOrderList";
 import OrderCommandLine from "./Parts/OrderCommandLine";
 import OrderEntryButtons from "./Parts/OrderEntryButtons";
-import { createOrder, updateProduct } from "../../graphql/mutations";
+import { createOrder, updateDough, updateProduct } from "../../graphql/mutations";
 
 import { API, graphqlOperation } from "aws-amplify";
 import { todayPlus } from "../../helpers/dateTimeHelpers";
@@ -45,10 +45,12 @@ function Ordering() {
 
   const loadDatabase = async (database) => {
     setIsLoading(true)
-    const [products, customers, routes, standing, orders] = database;
+    const [products, customers, routes, standing, orders, doughs] = database;
 
     if(ordersHasBeenChanged){
     let prodsToUpdate = clonedeep(products)
+    let doughsToUpdate = clonedeep(doughs)
+
     for (let prod of prodsToUpdate){
       if (prod.updatePreDate !== tomorrow){
         prod.updatePreDate = today
@@ -60,8 +62,25 @@ function Ordering() {
       }
     }
 
+    for (let dgh of doughsToUpdate){
+      
+      if (dgh.updatePreBucket !== tomorrow){
+        dgh.updatePreBucket = today
+      }
+      if (dgh.updatePreBucket === today){
+        console.log("buck",dgh.bucketSets)
+        console.log("pre",dgh.preBucketSets)
+        dgh.bucketSets = dgh.preBucketSets
+        dgh.updatePreBucket = tomorrow
+       
+
+      }
+    }
+
     let DBToMod = clonedeep(database);
     DBToMod[0] = prodsToUpdate;
+    DBToMod[5] = doughsToUpdate;
+    console.log(doughsToUpdate)
     setDatabase(DBToMod);
 
     for (let prod of prodsToUpdate){
@@ -75,6 +94,25 @@ function Ordering() {
       try {
         await API.graphql(
           graphqlOperation(updateProduct, { input: { ...prodToUpdate } })
+        );
+
+      } catch (error) {
+        console.log("error on creating Orders", error);
+        setIsLoading(false)
+      }
+    }
+
+    for (let dgh of doughsToUpdate){
+      
+      let doughToUpdate = {
+        id: dgh.id,
+        bucketSets: dgh.bucketSets,
+        preBucketSets: dgh.preBucketSets,
+        updatePreBucket: dgh.updatePreBucket      
+      };
+      try {
+        await API.graphql(
+          graphqlOperation(updateDough, { input: { ...doughToUpdate } })
         );
 
       } catch (error) {

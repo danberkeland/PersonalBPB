@@ -3,12 +3,13 @@ import { getMixInfo } from './GetMixInfo'
 export const mixFormula = (doughs, infoWrap, multi) => {
     //  Set up Mix 1
   
-    let [dough, multiple, stickerAmount, bucketSets, mixes] = getMixInfo(
+    let [dough, multiple, stickerAmount, bucketSets, mixes,info] = getMixInfo(
       doughs,
       infoWrap
     );
-  
+    console.log(info.bucketSets)
     let Mix1BucketSets = Math.round(dough.bucketSets * multiple[multi]);
+    
     let Mix1OldDough = dough.oldDough * multiple[multi];
     let Mix150lbFlour = Math.floor(
       ((0.575 * stickerAmount - bucketSets * 19.22) * multiple[multi]) / 50

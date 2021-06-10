@@ -25,6 +25,7 @@ const groups = [
   { packGroup: "rolls" },
   { packGroup: "focaccia" },
   { packGroup: "retail" },
+  { packGroup: "cafe menu" },
 
 ];
 

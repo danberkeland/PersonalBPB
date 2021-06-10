@@ -200,7 +200,7 @@ export default class ComposePastryPrep {
     let threeDayList = getOrdersList(threeDay, database);
     let setOutToday = setOutList.filter((set) => this.almondPrepFilter(set, loc));
     let twoDayToday = twoDayList.filter((set) =>
-      this.twoDayFrozenFilter(set, loc)
+      this.frozenAlmondFilter(set, loc)
     );
     let threeDayToday = threeDayList.filter((set) =>
       this.threeDayAlFilter(set, loc)
@@ -247,6 +247,12 @@ export default class ComposePastryPrep {
     return (
       ord.prodNick === "al" &&
       ord.routeDepart === "Prado"
+    )
+  };
+
+  frozenAlmondFilter = (ord, loc) => {
+    return (
+      ord.prodNick === "fral" 
     )
   };
 

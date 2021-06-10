@@ -212,6 +212,7 @@ function EODCounts({ loc }) {
   };
 
   const lastCount = (e) => {
+    console.log(e)
     let updated = e.updatedAt
     return (<IngDetails>
     <div>

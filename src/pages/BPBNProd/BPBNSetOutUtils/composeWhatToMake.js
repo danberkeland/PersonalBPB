@@ -96,6 +96,7 @@ export default class ComposeWhatToMake {
   returnWhatToMake = (delivDate, database) => {
     const [products, customers, routes, standing, orders] = database;
     let whatToMakeList = getOrdersList(tomorrow, database);
+    console.log(whatToMakeList)
     let whatToMakeToday = whatToMakeList.filter((set) =>
       this.whatToMakeFilter(set)
     );
@@ -119,8 +120,9 @@ export default class ComposeWhatToMake {
       (ord.packGroup === "rustic breads" || ord.packGroup === "retail") &&
       ((ord.routeStart >= 8 && ord.routeDepart === "Prado") ||
         ord.routeDepart === "Carlton" ||
-        ord.zone === "Prado Retail" ||
-        ord.zone === "slopick")
+        ord.route === "Pick up Carlton" ||
+        ord.route === "Pick up SLO" 
+        )
     );
   };
 
@@ -129,9 +131,9 @@ export default class ComposeWhatToMake {
       
       ord.where.includes("Carlton") &&
       (ord.packGroup === "rustic breads" || ord.packGroup === "retail") &&
-      ((ord.routeStart < 8 && ord.routeDepart === "Prado") &&
-        ord.zone !== "Prado Retail" &&
-        ord.zone !== "slopick")
+      ((ord.routeStart < 8 && ord.routeDepart === "Prado") 
+        
+        )
     );
   };
   // END

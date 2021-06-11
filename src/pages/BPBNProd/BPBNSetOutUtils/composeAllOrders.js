@@ -153,23 +153,26 @@ export default class ComposeAllOrders {
       (ord.packGroup === "rustic breads" || ord.packGroup === "retail") &&
       ((ord.routeStart >= 8 && ord.routeDepart === "Prado") ||
         ord.routeDepart === "Carlton" ||
-        ord.zone === "Prado Retail" ||
-        ord.zone === "slopick")
+        ord.route === "Pick up Carlton" ||
+        ord.route === "Pick up SLO" 
+        )
+    );
+  };
+
+  whoBakeTomorrowFilter = (ord, loc) => {
+    return (
+      
+      ord.where.includes("Carlton") &&
+      (ord.packGroup === "rustic breads" || ord.packGroup === "retail") &&
+      ((ord.routeStart < 8 && ord.routeDepart === "Prado") ||
+        ord.routeDepart === "Carlton" ||
+        ord.route === "Pick up Carlton" ||
+        ord.route === "Pick up SLO" 
+        )
     );
   };
 
  
-
-  whoBakeTomorrowFilter = (ord, loc) => {
-    return (
-      ord.where.includes("Carlton") &&
-      (ord.packGroup === "rustic breads" || ord.packGroup === "retail") &&
-      ((ord.routeStart < 8 && ord.routeDepart === "Prado") &&
-        ord.zone !== "Prado Retail" &&
-        ord.zone !== "slopick")
-      
-    );
-  };
 
   returnWhoShape = (delivDate, database, loc, prod) => {
     const [products, customers, routes, standing, orders] = database;

@@ -106,7 +106,7 @@ export default class ComposeAllOrders {
     let allOrdersToday = allOrdersList.filter((set) =>
       this.allOrdersFilter(set, loc)
     );
-    
+    console.log(allOrdersToday)
     for (let ord of allOrdersToday){
       ord.qty = ord.qty*ord.packSize
     }
@@ -116,7 +116,7 @@ export default class ComposeAllOrders {
   allOrdersFilter = (ord, loc) => {
     return (
       (ord.packGroup === "rustic breads" || (ord.packGroup === "retail" && ord.where.includes(loc))) ||
-      (ord.routeDepart === "Carlton" &&
+      (ord.routeDepart === "Carlton"  &&
         ord.packGroup === "baked pastries" &&
         ord.doughType !== "Croissant") || 
         ord.doughType === "Ciabatta"
@@ -127,13 +127,13 @@ export default class ComposeAllOrders {
   returnWhoBake = (delivDate, database, loc, prod) => {
     const [products, customers, routes, standing, orders] = database;
     let whoBakeTodayList = getOrdersList(today, database, prod);
-    
+    console.log(whoBakeTodayList)
     let whoBakeToday = whoBakeTodayList.filter((set) =>
       this.whoBakeTodayFilter(set, loc)
     );
-
+    console.log(whoBakeToday)
     let whoBakeTomorrowList = getOrdersList(tomorrow, database, prod);
-    
+    console.log(whoBakeTomorrowList)
     let whoBakeTomorrow = whoBakeTomorrowList.filter((set) =>
       this.whoBakeTomorrowFilter(set, loc)
     );
@@ -164,10 +164,8 @@ export default class ComposeAllOrders {
       
       ord.where.includes("Carlton") &&
       (ord.packGroup === "rustic breads" || ord.packGroup === "retail") &&
-      ((ord.routeStart < 8 && ord.routeDepart === "Prado") ||
-        ord.routeDepart === "Carlton" ||
-        ord.route === "Pick up Carlton" ||
-        ord.route === "Pick up SLO" 
+      ((ord.routeStart < 8 && ord.routeDepart === "Prado") 
+        
         )
     );
   };
@@ -177,11 +175,11 @@ export default class ComposeAllOrders {
   returnWhoShape = (delivDate, database, loc, prod) => {
     const [products, customers, routes, standing, orders] = database;
     let whoShapeTodayList = getOrdersList(tomorrow, database, prod);
-    
+    console.log(whoShapeTodayList)
     let whoShapeToday = whoShapeTodayList.filter((set) =>
       this.whoShapeTodayFilter(set, loc)
     );
-
+    console.log(whoShapeToday)
     let whoShapeTomorrowList = getOrdersList(twoDay, database, prod);
     
     let whoShapeTomorrow = whoShapeTomorrowList.filter((set) =>
@@ -203,8 +201,9 @@ export default class ComposeAllOrders {
       (ord.packGroup === "rustic breads" || ord.packGroup === "retail") &&
       ((ord.routeStart >= 8 && ord.routeDepart === "Prado") ||
         ord.routeDepart === "Carlton" ||
-        ord.zone === "Prado Retail" ||
-        ord.zone === "slopick")
+        ord.route === "Pick up Carlton" ||
+        ord.route === "Pick up SLO" 
+        )
     );
   };
 
@@ -212,12 +211,12 @@ export default class ComposeAllOrders {
 
   whoShapeTomorrowFilter = (ord, loc) => {
     return (
+      
       ord.where.includes("Carlton") &&
       (ord.packGroup === "rustic breads" || ord.packGroup === "retail") &&
-      ((ord.routeStart < 8 && ord.routeDepart === "Prado") &&
-        ord.zone !== "Prado Retail" &&
-        ord.zone !== "slopick")
-      
+      ((ord.routeStart < 8 && ord.routeDepart === "Prado") 
+        
+        )
     );
   };
 }

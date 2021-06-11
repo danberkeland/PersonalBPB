@@ -119,8 +119,9 @@ export default class ComposeWhatToMake {
       (ord.packGroup === "rustic breads" || ord.packGroup === "retail") &&
       ((ord.routeStart >= 8 && ord.routeDepart === "Prado") ||
         ord.routeDepart === "Carlton" ||
-        ord.zone === "Prado Retail" ||
-        ord.zone === "slopick")
+        ord.route === "Pick up Carlton" ||
+        ord.route === "Pick up SLO" 
+        )
     );
   };
 
@@ -129,9 +130,9 @@ export default class ComposeWhatToMake {
       
       ord.where.includes("Carlton") &&
       (ord.packGroup === "rustic breads" || ord.packGroup === "retail") &&
-      ((ord.routeStart < 8 && ord.routeDepart === "Prado") &&
-        ord.zone !== "Prado Retail" &&
-        ord.zone !== "slopick")
+      ((ord.routeStart < 8 && ord.routeDepart === "Prado") 
+        
+        )
     );
   };
 

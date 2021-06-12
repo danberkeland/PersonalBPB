@@ -6,14 +6,14 @@ let tomorrow = todayPlus()[1];
 let twoDay = todayPlus()[2];
 
 export default class ComposeWhatToMake {
-  returnWhatToMakeBreakDown = (delivDate, database, loc) => {
-    let whatToMake = this.returnWhatToMake(delivDate, database, loc);
+  returnWhatToMakeBreakDown = (database) => {
+    let whatToMake = this.returnWhatToMake(database);
     return {
       whatToMake: whatToMake,
     };
   };
 
-  returnWhatToMake = (delivDate, database) => {
+  returnWhatToMake = (database) => {
     let whatToMake = this.makeAddQty(
       getOrdersList(tomorrow, database, true)
         .filter((set) => DayOneFilter(set))

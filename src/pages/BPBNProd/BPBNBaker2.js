@@ -11,7 +11,7 @@ import "jspdf-autotable";
 
 import { convertDatetoBPBDate, todayPlus } from "../../helpers/dateTimeHelpers";
 import { promisedData } from "../../helpers/databaseFetchers";
-import ComposeWhatToMake from "./BPBNSetOutUtils/composeWhatToMake";
+import ComposeWhatToMake from "./Utils/composeWhatToMake";
 
 import { updateProduct } from "../../graphql/mutations";
 
@@ -61,7 +61,7 @@ function BPBNBaker2() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const gatherWhatToMakeInfo = (database) => {
-    let whatToMakeData = compose.returnWhatToMakeBreakDown(delivDate, database);
+    let whatToMakeData = compose.returnWhatToMakeBreakDown(database);
     setWhatToMake(whatToMakeData.whatToMake);
   };
 

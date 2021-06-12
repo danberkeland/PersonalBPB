@@ -8,7 +8,7 @@ import { ToggleContext } from "../../dataContexts/ToggleContext";
 
 import { convertDatetoBPBDate, todayPlus } from "../../helpers/dateTimeHelpers";
 import { promisedData } from "../../helpers/databaseFetchers";
-import ComposeWhatToBake from "./BPBNSetOutUtils/composeWhatToBake";
+import ComposeWhatToBake from "./Utils/composeWhatToBake";
 
 import BPBNBaker1Dough from "./BPBNBaker1Dough";
 import BPBNBaker1WhatToPrep from "./BPBNBaker1WhatToPrep.js";

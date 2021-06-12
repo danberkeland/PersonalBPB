@@ -8,7 +8,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 
 import { promisedData } from "../../helpers/databaseFetchers";
-import ComposeDough from "../BPBNProd/BPBNSetOutUtils/composeDough";
+import ComposeDough from "../BPBNProd/Utils/composeDough";
 import { todayPlus } from "../../helpers/dateTimeHelpers";
 
 import { updateDough } from "../../graphql/mutations";

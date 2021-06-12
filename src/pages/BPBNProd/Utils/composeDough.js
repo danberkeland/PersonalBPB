@@ -10,31 +10,23 @@ import {
 } from "./utils";
 
 import {
-  DayOneFilter,
-  DayTwoFilter,
   pocketFilter,
   baker1PocketFilter,
   baguette,
   noBaguette,
 } from "./filters";
 
-let threeDay = todayPlus()[3];
 let twoDay = todayPlus()[2];
 let oneDay = todayPlus()[1];
 let tomorrow = todayPlus()[1];
 
 export default class ComposeDough {
-  returnDoughBreakDown = (delivDate, database, loc) => {
-    let doughs = this.returnDoughs(delivDate, database, loc);
-    let doughComponents = this.returnDoughComponents(delivDate, database, loc);
-    let pockets = this.returnPockets(tomorrow, database, loc);
-    let Baker1Dough = this.returnBaker1Doughs(delivDate, database, loc);
-    let Baker1DoughComponents = this.returnBaker1DoughComponents(
-      delivDate,
-      database,
-      loc
-    );
-    let Baker1Pockets = this.returnBaker1Pockets(tomorrow, database, loc);
+  returnDoughBreakDown = (database, loc) => {
+    let doughs = this.returnDoughs(noBaguette, database, loc);
+    let doughComponents = this.returnDoughComponents(database);
+    let pockets = this.returnPockets(database, loc);
+    let Baker1Dough = this.returnDoughs(baguette, database, loc);
+    let Baker1Pockets = this.returnBaker1Pockets(database, loc);
     let bagAndEpiCount = this.returnbagAndEpiCount(tomorrow, database, loc);
     let oliveCount = this.returnoliveCount(tomorrow, database, loc);
     let bcCount = this.returnbcCount(tomorrow, database, loc);
@@ -44,7 +36,7 @@ export default class ComposeDough {
       doughComponents: doughComponents,
       pockets: pockets,
       Baker1Dough: Baker1Dough,
-      Baker1DoughComponents: Baker1DoughComponents,
+      Baker1DoughComponents: doughComponents,
       Baker1Pockets: Baker1Pockets,
       bagAndEpiCount: bagAndEpiCount,
       oliveCount: oliveCount,
@@ -89,7 +81,7 @@ export default class ComposeDough {
     return Math.floor(qty / 83);
   };
 
-  returnPockets = (delivDate, database, loc) => {
+  returnPockets = (database, loc) => {
     let pocketsToday = getOrdersList(tomorrow, database, true).filter((set) =>
       pocketFilter(set, loc)
     );
@@ -98,84 +90,12 @@ export default class ComposeDough {
     return pocketsToday;
   };
 
-  returnDoughs = (delivDate, database, loc) => {
-    const doughs = database[5];
-
-    const ordersFor = (when, filt) => {
-      return getOrdersList(when, database, true).filter((set) => filt(set));
-    };
-    let oneDayOrderList = ordersFor(oneDay, DayOneFilter).concat(
-      ordersFor(twoDay, DayTwoFilter)
-    );
-    let twoDayOrderList = ordersFor(twoDay, DayOneFilter).concat(
-      ordersFor(threeDay, DayTwoFilter)
-    );
-
-    let doughList = doughListComp(doughs, noBaguette, loc);
-
-    for (let dgh of doughList) {
-      let doughInd =
-        doughs[doughs.findIndex((d) => d.doughName === dgh.doughName)];
-      dgh.id = doughInd.id;
-      dgh.hydration = doughInd.hydration;
-      dgh.oldDough = doughInd.oldDough;
-      dgh.buffer = doughInd.buffer;
-      dgh.batchSize = doughInd.batchSize;
-      if (dgh.isBakeReady === true) {
-        dgh.needed = this.getDoughAmt(dgh.doughName, oneDayOrderList).toFixed(
-          2
-        );
-      } else {
-        dgh.needed = this.getDoughAmt(dgh.doughName, twoDayOrderList).toFixed(
-          2
-        );
-      }
-    }
-    return doughList;
-  };
-
-  returnDoughComponents = (delivDate, database, loc) => {
-    const doughComponents = database[6];
-    let doughComponentInfo = doughComponents;
-    return doughComponentInfo;
-  };
-
-  getDoughAmt = (doughName, orders) => {
-    let qtyAccToday = 0;
-    let qtyArray = orders
-      .filter((ord) => ord.doughType === doughName)
-      .map((ord) => ord.qty * ord.weight * ord.packSize);
-    if (qtyArray.length > 0) {
-      qtyAccToday = qtyArray.reduce(addUp);
-    }
-    return qtyAccToday;
-  };
-
-  getPreshapedDoughAmt = (doughName, orders) => {
-    let qtyAccToday = 0;
-    let qtyArray = orders
-      .filter((ord) => ord.doughType === doughName)
-      .map((ord) => Number(ord.preshaped) * ord.weight * ord.packSize);
-    if (qtyArray.length > 0) {
-      qtyAccToday = qtyArray.reduce(addUp);
-    }
-    return qtyAccToday;
-  };
-
-  returnBaker1Pockets = (delivDate, database, loc) => {
-    let pocketList = getOrdersList(tomorrow, database, true);
-    let pocketsToday = pocketList.filter((set) => baker1PocketFilter(set, loc));
-    pocketsToday = makePocketQty(pocketsToday);
-
-    return pocketsToday;
-  };
-
-  returnBaker1Doughs = (delivDate, database, loc) => {
+  returnDoughs = (filt, database, loc) => {
     const doughs = database[5];
     let twoDayOrderList = getOrdersList(twoDay, database, true);
     let oneDayOrderList = getOrdersList(oneDay, database, true);
 
-    let doughList = doughListComp(doughs, baguette, loc);
+    let doughList = doughListComp(doughs, filt, loc);
 
     for (let dgh of doughList) {
       let doughInd =
@@ -218,10 +138,40 @@ export default class ComposeDough {
     return doughList;
   };
 
-  returnBaker1DoughComponents = (delivDate, database, loc) => {
+  returnDoughComponents = (database) => {
     const doughComponents = database[6];
     let doughComponentInfo = doughComponents;
     return doughComponentInfo;
+  };
+
+  getDoughAmt = (doughName, orders) => {
+    let qtyAccToday = 0;
+    let qtyArray = orders
+      .filter((ord) => ord.doughType === doughName)
+      .map((ord) => ord.qty * ord.weight * ord.packSize);
+    if (qtyArray.length > 0) {
+      qtyAccToday = qtyArray.reduce(addUp);
+    }
+    return qtyAccToday;
+  };
+
+  getPreshapedDoughAmt = (doughName, orders) => {
+    let qtyAccToday = 0;
+    let qtyArray = orders
+      .filter((ord) => ord.doughType === doughName)
+      .map((ord) => Number(ord.preshaped) * ord.weight * ord.packSize);
+    if (qtyArray.length > 0) {
+      qtyAccToday = qtyArray.reduce(addUp);
+    }
+    return qtyAccToday;
+  };
+
+  returnBaker1Pockets = (database, loc) => {
+    let pocketList = getOrdersList(tomorrow, database, true);
+    let pocketsToday = pocketList.filter((set) => baker1PocketFilter(set, loc));
+    pocketsToday = makePocketQty(pocketsToday);
+
+    return pocketsToday;
   };
 
   makeAddQty = (bakedTomorrow) => {

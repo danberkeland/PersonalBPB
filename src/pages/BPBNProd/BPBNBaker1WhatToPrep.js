@@ -7,7 +7,7 @@ import { ToggleContext } from "../../dataContexts/ToggleContext";
 
 import { convertDatetoBPBDate, todayPlus } from "../../helpers/dateTimeHelpers";
 import { promisedData } from "../../helpers/databaseFetchers";
-import ComposeWhatToPrep from "./BPBNSetOutUtils/composeWhatToPrep";
+import ComposeWhatToPrep from "./Utils/composeWhatToPrep";
 
 import styled from "styled-components";
 

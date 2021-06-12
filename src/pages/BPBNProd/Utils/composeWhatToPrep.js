@@ -7,8 +7,8 @@ import { whatToPrepFilter, whatToPrepTomFilter } from "./filters";
 let tomorrow = todayPlus()[1];
 
 export default class ComposeWhatToMake {
-  returnWhatToPrepBreakDown = (delivDate, database, loc) => {
-    let whatToPrep = this.returnWhatToPrep(delivDate, database, loc);
+  returnWhatToPrepBreakDown = (delivDate, database) => {
+    let whatToPrep = this.returnWhatToPrep(delivDate, database);
 
     return {
       whatToPrep: whatToPrep,
@@ -16,7 +16,6 @@ export default class ComposeWhatToMake {
   };
 
   returnWhatToPrep = (delivDate, database) => {
-    const [products, customers, routes, standing, orders] = database;
     let whatToPrepList = getOrdersList(delivDate, database);
     console.log(whatToPrepList);
     let whatToPrepListTom = getOrdersList(tomorrow, database);

@@ -17,9 +17,9 @@ let threeDay = todayPlus()[3];
 
 export default class ComposePastryPrep {
   returnPastryPrepBreakDown = (delivDate, database, loc) => {
-    let setOut = this.returnSetOut(delivDate, database, loc);
-    let pastryPrep = this.returnPastryPrep(delivDate, database, loc);
-    let almondPrep = this.returnAlmondPrep(delivDate, database, loc);
+    let setOut = this.returnSetOut(database, loc);
+    let pastryPrep = this.returnPastryPrep(database, loc);
+    let almondPrep = this.returnAlmondPrep(database, loc);
 
     return {
       setOut: setOut,
@@ -28,7 +28,7 @@ export default class ComposePastryPrep {
     };
   };
 
-  returnSetOut = (delivDate, database, loc) => {
+  returnSetOut = (database, loc) => {
     const products = database[0];
     let setOutList = getOrdersList(tomorrow, database, true);
     let twoDayList = getOrdersList(twoDay, database, true);
@@ -73,7 +73,7 @@ export default class ComposePastryPrep {
     return setOutToday;
   };
 
-  returnPastryPrep = (delivDate, database, loc) => {
+  returnPastryPrep = (database, loc) => {
     const products = database[0];
     let setOutList = getOrdersList(tomorrow, database, true);
     let setOutToday = setOutList.filter((set) => pastryPrepFilter(set, loc));
@@ -81,7 +81,7 @@ export default class ComposePastryPrep {
     return setOutToday;
   };
 
-  returnAlmondPrep = (delivDate, database, loc) => {
+  returnAlmondPrep = (database, loc) => {
     const products = database[0];
     let setOutList = getOrdersList(tomorrow, database, true);
     let twoDayList = getOrdersList(twoDay, database, true);

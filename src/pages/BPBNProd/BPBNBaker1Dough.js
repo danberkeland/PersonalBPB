@@ -7,7 +7,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 
 import { promisedData } from "../../helpers/databaseFetchers";
-import ComposeDough from "./BPBNSetOutUtils/composeDough";
+import ComposeDough from "./Utils/composeDough";
 import { todayPlus } from "../../helpers/dateTimeHelpers";
 
 import { getMixInfo } from "./BPBNBaker1Parts/GetMixInfo";
@@ -67,7 +67,7 @@ function BPBNBaker1Dough({
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const gatherDoughInfo = (database) => {
-    let doughData = compose.returnDoughBreakDown(tomorrow, database, "Carlton");
+    let doughData = compose.returnDoughBreakDown(database, "Carlton");
     setDoughs(doughData.Baker1Dough);
     setDoughComponents(doughData.Baker1DoughComponents);
     setBagAndEpiCount(doughData.bagAndEpiCount)

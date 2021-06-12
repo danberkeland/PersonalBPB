@@ -3,11 +3,9 @@ import React, { useState, useEffect, useContext } from "react";
 import { ToggleContext } from "../../dataContexts/ToggleContext";
 
 import { InputText } from "primereact/inputtext";
-import { Button } from "primereact/button";
 
 import { promisedData } from "../../helpers/databaseFetchers";
-import ComposeDough from "./BPBNSetOutUtils/composeDough";
-import { todayPlus } from "../../helpers/dateTimeHelpers";
+import ComposeDough from "./Utils/composeDough";
 
 import { updateDough } from "../../graphql/mutations";
 
@@ -55,14 +53,12 @@ function BPBNBuckets() {
   const [doughs, setDoughs] = useState([]);
   const [doughComponents, setDoughComponents] = useState([]);
 
-  let twoDay = todayPlus()[2];
-
   useEffect(() => {
     promisedData(setIsLoading).then((database) => gatherDoughInfo(database));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const gatherDoughInfo = (database) => {
-    let doughData = compose.returnDoughBreakDown(twoDay, database, "Carlton");
+    let doughData = compose.returnDoughBreakDown(database, "Carlton");
     setDoughs(doughData.doughs);
     setDoughComponents(doughData.doughComponents);
   };
@@ -151,8 +147,8 @@ function BPBNBuckets() {
     if (dryFilt.length > 0) {
       doc.setFontSize(14);
       doc.text(`${doughName} - Dry`, 0.2, 0.36);
-      doc.setFontSize(10)
-      doc.text(`${amt} lb. Batch`,2.9,.36)
+      doc.setFontSize(10);
+      doc.text(`${amt} lb. Batch`, 2.9, 0.36);
 
       doc.setFontSize(12);
       for (let item of dryFilt) {
@@ -190,8 +186,8 @@ function BPBNBuckets() {
       });
       doc.setFontSize(14);
       doc.text(`${doughName} - Wet`, 0.2, 0.36);
-      doc.setFontSize(10)
-      doc.text(`${amt} lb. Batch`,2.9,.36)
+      doc.setFontSize(10);
+      doc.text(`${amt} lb. Batch`, 2.9, 0.36);
 
       doc.setFontSize(12);
       let ct = 0.7;
@@ -238,8 +234,8 @@ function BPBNBuckets() {
         });
         doc.setFontSize(14);
         doc.text(`${doughName} - ${lev}`, 0.2, 0.36);
-        doc.setFontSize(10)
-        doc.text(`${amt} lb. Batch`,2.9,.36)
+        doc.setFontSize(10);
+        doc.text(`${amt} lb. Batch`, 2.9, 0.36);
 
         doc.setFontSize(12);
         let ct = 0.7;
@@ -265,8 +261,8 @@ function BPBNBuckets() {
       });
       doc.setFontSize(14);
       doc.text(`${doughName} - Add ins`, 0.2, 0.36);
-      doc.setFontSize(10)
-      doc.text(`${amt} lb. Batch`,2.9,.36)
+      doc.setFontSize(10);
+      doc.text(`${amt} lb. Batch`, 2.9, 0.36);
 
       doc.setFontSize(12);
       let ct = 0.7;
@@ -281,8 +277,7 @@ function BPBNBuckets() {
     let saltyeastFilt = components.filter(
       (dgh) =>
         dgh.componentType === "dryplus" &&
-        (dgh.componentName === "Salt" ||
-        dgh.componentName === "Yeast")
+        (dgh.componentName === "Salt" || dgh.componentName === "Yeast")
     );
     if (saltyeastFilt.length > 0) {
       doc.addPage({
@@ -291,8 +286,8 @@ function BPBNBuckets() {
       });
       doc.setFontSize(14);
       doc.text(`${doughName} - Salt & Yeast`, 0.2, 0.36);
-      doc.setFontSize(10)
-      doc.text(`${amt} lb. Batch`,2.9,.36)
+      doc.setFontSize(10);
+      doc.text(`${amt} lb. Batch`, 2.9, 0.36);
 
       doc.setFontSize(12);
       let ct = 0.7;
@@ -366,12 +361,7 @@ function BPBNBuckets() {
               <button
                 key={dough.id + "_print"}
                 id={dough.doughName + "_print"}
-                onClick={(e) =>
-                  handleClick(
-                    e,
-                    Number(dough.batchSize)
-                  )
-                }
+                onClick={(e) => handleClick(e, Number(dough.batchSize))}
                 label="Print Sticker Set"
                 className="p-button-rounded p-button-lg"
                 icon="pi pi-print"
@@ -381,7 +371,6 @@ function BPBNBuckets() {
             </ThreeColumnGrid>
           </React.Fragment>
         ))}
-        
       </WholeBox>
     </React.Fragment>
   );

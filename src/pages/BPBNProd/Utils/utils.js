@@ -258,3 +258,24 @@ export const doughListComp = (doughs, filt,loc)=> {
       bucketSets: 0,
   }));
 }
+
+
+let pageMargin = 20;
+let tableToNextTitle = 12;
+let titleToNextTable = tableToNextTitle + 4;
+let tableFont = 11;
+let titleFont = 14;
+
+
+export const buildTable = (title, doc, body, col, finalY) => {
+  doc.setFontSize(titleFont);
+  doc.text(pageMargin, finalY + tableToNextTitle, title);
+  doc.autoTable({
+    theme: "grid",
+    body: body,
+    margin: pageMargin,
+    columns: col,
+    startY: finalY + titleToNextTable,
+    styles: { fontSize: tableFont },
+  });
+};

@@ -13,7 +13,7 @@ import "jspdf-autotable";
 
 import { convertDatetoBPBDate, todayPlus } from "../../helpers/dateTimeHelpers";
 import { promisedData } from "../../helpers/databaseFetchers";
-import ComposeAllOrders from "./BPBNSetOutUtils/composeAllOrders";
+import ComposeAllOrders from "./Utils/composeAllOrders";
 
 import styled from "styled-components";
 import { sortAtoZDataByIndex } from "../../helpers/sortDataHelpers";

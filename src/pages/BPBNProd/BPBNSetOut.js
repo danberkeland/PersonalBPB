@@ -11,7 +11,7 @@ import "jspdf-autotable";
 
 import { convertDatetoBPBDate, todayPlus } from "../../helpers/dateTimeHelpers";
 import { promisedData } from "../../helpers/databaseFetchers";
-import ComposePastryPrep from "./BPBNSetOutUtils/composePastryPrep";
+import ComposePastryPrep from "./Utils/composePastryPrep";
 
 import { updateProduct } from "../../graphql/mutations";
 

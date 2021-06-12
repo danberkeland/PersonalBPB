@@ -16,6 +16,19 @@ let titleToNextTable = tableToNextTitle + 4;
 let tableFont = 11;
 let titleFont = 14;
 
+const buildTable = (title, doc, body, col) => {
+  doc.setFontSize(titleFont);
+  doc.text(pageMargin, finalY + tableToNextTitle, title);
+  doc.autoTable({
+    theme: "grid",
+    body: body,
+    margin: pageMargin,
+    columns: col,
+    startY: finalY + titleToNextTable,
+    styles: { fontSize: tableFont },
+  });
+};
+
 export const ExportPastryPrepPdf = async (delivDate, doughs, infoWrap) => {
   let mixes = getMixInfo(doughs, infoWrap)[4];
 
@@ -25,63 +38,40 @@ export const ExportPastryPrepPdf = async (delivDate, doughs, infoWrap) => {
 
   finalY = 20;
 
-  doc.setFontSize(titleFont);
-  doc.text(pageMargin, finalY + tableToNextTitle, `Bake List`);
-
-  doc.autoTable({
-    theme: "grid",
-    body: infoWrap.whatToMake,
-    margin: pageMargin,
-    columns: [
-      { header: "Product", dataKey: "forBake" },
-      { header: "Qty", dataKey: "qty" },
-      { header: "Shaped", dataKey: "shaped" },
-      { header: "Short", dataKey: "short" },
-      { header: "Need Early", dataKey: "needEarly" },
-    ],
-    startY: finalY + titleToNextTable,
-    styles: { fontSize: tableFont },
-  });
+  let col = [
+    { header: "Product", dataKey: "forBake" },
+    { header: "Qty", dataKey: "qty" },
+    { header: "Shaped", dataKey: "shaped" },
+    { header: "Short", dataKey: "short" },
+    { header: "Need Early", dataKey: "needEarly" },
+  ];
+  buildTable(`Bake List`, doc, infoWrap.whatToMake, col);
 
   finalY = doc.previousAutoTable.finalY + tableToNextTitle;
 
-  doc.setFontSize(titleFont);
-  doc.text(pageMargin, finalY + tableToNextTitle, `Prep List`);
-
-  doc.autoTable({
-    theme: "grid",
-    body: infoWrap.whatToPrep,
-    margin: pageMargin,
-    columns: [
-      { header: "Product", dataKey: "prodName" },
-      { header: "Qty", dataKey: "qty" },
-    ],
-    startY: finalY + titleToNextTable,
-    styles: { fontSize: tableFont },
-  });
+  col = [
+    { header: "Product", dataKey: "prodName" },
+    { header: "Qty", dataKey: "qty" },
+  ];
+  buildTable(`Prep List`, doc, infoWrap.whatToPrep, col);
 
   finalY = doc.previousAutoTable.finalY + tableToNextTitle;
 
   doc.addPage();
   finalY = 20;
 
-  console.log(getMixInfo(doughs, infoWrap))
+  col = [
+    { header: "Item", dataKey: "title" },
+    { header: "Amount", dataKey: "amount" },
+  ];
 
   for (let i = 0; i < mixes; i++) {
-    doc.setFontSize(titleFont);
-    doc.text(pageMargin, finalY + tableToNextTitle, `Baguette Mix #${i + 1}`);
-
-    doc.autoTable({
-      theme: "grid",
-      body: mixFormula(doughs, infoWrap, i),
-      margin: pageMargin,
-      columns: [
-        { header: "Ingredient", dataKey: "title" },
-        { header: "Amount", dataKey: "amount" },
-      ],
-      startY: finalY + titleToNextTable,
-      styles: { fontSize: tableFont },
-    });
+    buildTable(
+      `Baguette Mix #${i + 1}`,
+      doc,
+      mixFormula(doughs, infoWrap, i),
+      col  
+    );
 
     finalY = doc.previousAutoTable.finalY + tableToNextTitle;
   }
@@ -89,56 +79,14 @@ export const ExportPastryPrepPdf = async (delivDate, doughs, infoWrap) => {
   doc.addPage();
   finalY = 20;
 
-  doc.setFontSize(titleFont);
-    doc.text(pageMargin, finalY + tableToNextTitle, `Bins`);
+  buildTable(`Bins`, doc, binInfo(doughs, infoWrap), col);
+  finalY = doc.previousAutoTable.finalY + tableToNextTitle;
 
-    doc.autoTable({
-      theme: "grid",
-      body: binInfo(doughs, infoWrap),
-      margin: pageMargin,
-      columns: [
-        { header: "Ingredient", dataKey: "title" },
-        { header: "Amount", dataKey: "amount" },
-      ],
-      startY: finalY + titleToNextTable,
-      styles: { fontSize: tableFont },
-    });
+  buildTable(`Pans`, doc, panAmount(doughs, infoWrap), col);
+  finalY = doc.previousAutoTable.finalY + tableToNextTitle;
 
-    finalY = doc.previousAutoTable.finalY + tableToNextTitle;
-
-    doc.setFontSize(titleFont);
-    doc.text(pageMargin, finalY + tableToNextTitle, `Pans`);
-
-    doc.autoTable({
-      theme: "grid",
-      body: panAmount(doughs, infoWrap),
-      margin: pageMargin,
-      columns: [
-        { header: "Ingredient", dataKey: "title" },
-        { header: "Amount", dataKey: "amount" },
-      ],
-      startY: finalY + titleToNextTable,
-      styles: { fontSize: tableFont },
-    });
-
-    finalY = doc.previousAutoTable.finalY + tableToNextTitle;
-
-    doc.setFontSize(titleFont);
-    doc.text(pageMargin, finalY + tableToNextTitle, `Buckets`);
-
-    doc.autoTable({
-      theme: "grid",
-      body: bucketAmount(doughs, infoWrap),
-      margin: pageMargin,
-      columns: [
-        { header: "Ingredient", dataKey: "title" },
-        { header: "Amount", dataKey: "amount" },
-      ],
-      startY: finalY + titleToNextTable,
-      styles: { fontSize: tableFont },
-    });
-
-    finalY = doc.previousAutoTable.finalY + tableToNextTitle;
+  buildTable(`Buckets`, doc, bucketAmount(doughs, infoWrap), col);
+  finalY = doc.previousAutoTable.finalY + tableToNextTitle;
 
   doc.save(`WhatToShape${delivDate}.pdf`);
 };

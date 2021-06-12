@@ -124,7 +124,7 @@ const WeeklyBillingGrid = ({
       thisWeeksOrders = await fetchInfo(
         listHeldforWeeklyInvoicings,
         "listHeldforWeeklyInvoicings",
-        "1000"
+        "2000"
       );
       
       for (let inv of invOrders) {

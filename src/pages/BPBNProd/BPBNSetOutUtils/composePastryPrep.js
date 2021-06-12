@@ -1,89 +1,14 @@
 import { todayPlus } from "../../../helpers/dateTimeHelpers";
+
 import {
-  zerosDelivFilter,
-  buildGridOrderArray,
-} from "../../../helpers/delivGridHelpers";
+  getOrdersList,
+  addUp
+} from "./utils";
 
-import { getFullProdOrders } from "../../../helpers/CartBuildingHelpers";
-
-import { sortZtoADataByIndex } from "../../../helpers/sortDataHelpers";
-import {
-  calcDayNum,
-  routeRunsThatDay,
-  productCanBeInPlace,
-  productReadyBeforeRouteStarts,
-  customerIsOpen,
-} from "../../logistics/ByRoute/Parts/utils/utils";
-import { set } from "lodash";
-
-const clonedeep = require("lodash.clonedeep");
 let tomorrow = todayPlus()[1];
 let twoDay = todayPlus()[2];
 let threeDay = todayPlus()[3];
 
-const addRoutes = (delivDate, prodGrid, database) => {
-  const [products, customers, routes, standing, orders] = database;
-  sortZtoADataByIndex(routes, "routeStart");
-  for (let rte of routes) {
-    for (let grd of prodGrid) {
-      let dayNum = calcDayNum(delivDate);
-
-      if (!rte["RouteServe"].includes(grd["zone"])) {
-        continue;
-      } else {
-        if (
-          routeRunsThatDay(rte, dayNum) &&
-          productCanBeInPlace(grd, routes, customers, rte) &&
-          productReadyBeforeRouteStarts(
-            products,
-            customers,
-            routes,
-            grd,
-            rte
-          ) &&
-          customerIsOpen(customers, grd, routes, rte)
-        ) {
-          grd.route = rte.routeName;
-          grd.routeDepart = rte.RouteDepart;
-          grd.routeStart = rte.routeStart;
-          grd.routeServe = rte.RouteServe;
-          grd.routeArrive = rte.RouteArrive;
-        }
-      }
-    }
-  }
-  for (let grd of prodGrid) {
-    if (grd.zone === "slopick" || grd.zone === "Prado Retail") {
-      grd.route = "Pick up SLO";
-    }
-    if (grd.zone === "atownpick" || grd.zone === "Carlton Retail") {
-      grd.route = "Pick up Carlton";
-    }
-    if (grd.route === "slopick" || grd.route === "Prado Retail") {
-      grd.route = "Pick up SLO";
-    }
-    if (grd.route === "atownpick" || grd.route === "Carlton Retail") {
-      grd.route = "Pick up Carlton";
-    }
-    if (grd.route === "deliv") {
-      grd.route = "NOT ASSIGNED";
-    }
-  }
-
-  return prodGrid;
-};
-
-const getOrdersList = (delivDate, database) => {
-  let fullOrder = getFullProdOrders(delivDate, database);
-  fullOrder = zerosDelivFilter(fullOrder, delivDate, database);
-  fullOrder = buildGridOrderArray(fullOrder, database);
-  fullOrder = addRoutes(delivDate, fullOrder, database);
-  return fullOrder;
-};
-
-const addUp = (acc, val) => {
-  return acc + val;
-};
 
 export default class ComposePastryPrep {
   returnPastryPrepBreakDown = (delivDate, database, loc) => {
@@ -100,9 +25,9 @@ export default class ComposePastryPrep {
 
   returnSetOut = (delivDate, database, loc) => {
     const [products, customers, routes, standing, orders] = database;
-    let setOutList = getOrdersList(tomorrow, database);
-    let twoDayList = getOrdersList(twoDay, database);
-    let threeDayList = getOrdersList(threeDay, database);
+    let setOutList = getOrdersList(tomorrow, database,true);
+    let twoDayList = getOrdersList(twoDay, database,true);
+    let threeDayList = getOrdersList(threeDay, database,true);
     let setOutToday = setOutList.filter((set) => this.setOutFilter(set, loc));
    
     let twoDayToday = twoDayList.filter((set) =>
@@ -170,7 +95,7 @@ export default class ComposePastryPrep {
 
   returnPastryPrep = (delivDate, database, loc) => {
     const [products, customers, routes, standing, orders] = database;
-    let setOutList = getOrdersList(tomorrow, database);
+    let setOutList = getOrdersList(tomorrow, database,true);
     let setOutToday = setOutList.filter((set) =>
       this.pastryPrepFilter(set, loc)
     );
@@ -195,9 +120,9 @@ export default class ComposePastryPrep {
 
   returnAlmondPrep = (delivDate, database, loc) => {
     const [products, customers, routes, standing, orders] = database;
-    let setOutList = getOrdersList(tomorrow, database);
-    let twoDayList = getOrdersList(twoDay, database);
-    let threeDayList = getOrdersList(threeDay, database);
+    let setOutList = getOrdersList(tomorrow, database,true);
+    let twoDayList = getOrdersList(twoDay, database,true);
+    let threeDayList = getOrdersList(threeDay, database,true);
     let setOutToday = setOutList.filter((set) => this.almondPrepFilter(set, loc));
     let twoDayToday = twoDayList.filter((set) =>
       this.frozenAlmondFilter(set, loc)
@@ -284,29 +209,5 @@ export default class ComposePastryPrep {
     return makeList2;
   };
 
-  combineGrids = (obj1, obj2) => {
-    console.log(obj1);
-    console.log(obj2);
-    let firstObject = clonedeep(obj1);
-    let secondObject = clonedeep(obj2);
-    for (let first of firstObject) {
-      for (let sec of secondObject) {
-        if (first.prodNick === sec.prodNick) {
-          first.qty += sec.qty;
-        }
-      }
-    }
-
-    for (let sec of secondObject) {
-      for (let first of firstObject) {
-        if (sec.prodNick === first.prodNick) {
-          sec.qty = first.qty;
-          continue;
-        }
-      }
-      sec.prodNick = "fr" + sec.prodNick;
-    }
-
-    return secondObject;
-  };
+  
 }

@@ -62,6 +62,7 @@ const BillingGrid = ({
       );
 
       setDailyInvoices(invOrders);
+      console.log(invOrders)
     } catch {
       console.log("Whoops");
     }

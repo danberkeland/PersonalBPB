@@ -1,89 +1,24 @@
-import {
-  zerosDelivFilter,
-  buildGridOrderArray,
-} from "../../../helpers/delivGridHelpers";
-
-import { getFullProdOrders } from "../../../helpers/CartBuildingHelpers";
 import { todayPlus } from "../../../helpers/dateTimeHelpers";
 
-import { sortZtoADataByIndex } from "../../../helpers/sortDataHelpers";
 import {
-  calcDayNum,
-  routeRunsThatDay,
-  productCanBeInPlace,
-  productReadyBeforeRouteStarts,
-  customerIsOpen,
-} from "../../logistics/ByRoute/Parts/utils/utils";
+  getOrdersList,
+  makePocketQty,
+  addUp,
+  whatToMakeList,
+  qtyCalc,
+} from "./utils";
+
+import {
+  DayOneFilter,
+  DayTwoFilter,
+  pocketFilter,
+  baker1PocketFilter,
+} from "./filters";
 
 let threeDay = todayPlus()[3];
 let twoDay = todayPlus()[2];
 let oneDay = todayPlus()[1];
 let tomorrow = todayPlus()[1];
-let today = todayPlus()[0];
-
-const addRoutes = (delivDate, prodGrid, database) => {
-  const [products, customers, routes, standing, orders] = database;
-  sortZtoADataByIndex(routes, "routeStart");
-  for (let rte of routes) {
-    for (let grd of prodGrid) {
-      let dayNum = calcDayNum(delivDate);
-
-      if (!rte["RouteServe"].includes(grd["zone"])) {
-        continue;
-      } else {
-        if (
-          routeRunsThatDay(rte, dayNum) &&
-          productCanBeInPlace(grd, routes, customers, rte) &&
-          productReadyBeforeRouteStarts(
-            products,
-            customers,
-            routes,
-            grd,
-            rte
-          ) &&
-          customerIsOpen(customers, grd, routes, rte)
-        ) {
-          grd.route = rte.routeName;
-          grd.routeDepart = rte.RouteDepart;
-          grd.routeStart = rte.routeStart;
-          grd.routeServe = rte.RouteServe;
-          grd.routeArrive = rte.RouteArrive;
-        }
-      }
-    }
-  }
-  for (let grd of prodGrid) {
-    if (grd.zone === "slopick" || grd.zone === "Prado Retail") {
-      grd.route = "Pick up SLO";
-    }
-    if (grd.zone === "atownpick" || grd.zone === "Carlton Retail") {
-      grd.route = "Pick up Carlton";
-    }
-    if (grd.route === "slopick" || grd.route === "Prado Retail") {
-      grd.route = "Pick up SLO";
-    }
-    if (grd.route === "atownpick" || grd.route === "Carlton Retail") {
-      grd.route = "Pick up Carlton";
-    }
-    if (grd.route === "deliv") {
-      grd.route = "NOT ASSIGNED";
-    }
-  }
-
-  return prodGrid;
-};
-
-const getOrdersList = (delivDate, database) => {
-  let fullOrder = getFullProdOrders(delivDate, database);
-  fullOrder = zerosDelivFilter(fullOrder, delivDate, database);
-  fullOrder = buildGridOrderArray(fullOrder, database);
-  fullOrder = addRoutes(delivDate, fullOrder, database);
-  return fullOrder;
-};
-
-const addUp = (acc, val) => {
-  return acc + val;
-};
 
 export default class ComposeDough {
   returnDoughBreakDown = (delivDate, database, loc) => {
@@ -116,56 +51,33 @@ export default class ComposeDough {
   };
 
   returnbagAndEpiCount = (delivDate, database) => {
-    const [products, customers, routes, standing, orders] = database;
-    let whatToMakeList = getOrdersList(delivDate, database);
-
-    let whatToMakeToday = whatToMakeList
-      .filter((set) => this.whatToMakeFilter(set))
-      .filter((bag) => bag.forBake === "Baguette" || bag.forBake === "Epi");
-
+    let whatToMakeToday = whatToMakeList(database, delivDate).filter(
+      (bag) => bag.forBake === "Baguette" || bag.forBake === "Epi"
+    );
     let whatToMake = this.makeAddQty(whatToMakeToday);
-    let qty = 0;
-    for (let make of whatToMake) {
-      qty += Number(make.qty);
-    }
-
-    return qty;
+    return qtyCalc(whatToMake);
   };
 
   returnoliveCount = (delivDate, database) => {
-    const [products, customers, routes, standing, orders] = database;
-    let whatToMakeList = getOrdersList(delivDate, database);
-    let whatToMakeToday = whatToMakeList
-      .filter((set) => this.whatToMakeFilter(set))
-      .filter((bag) => bag.forBake === "Olive Herb");
+    let whatToMakeToday = whatToMakeList(database, delivDate).filter(
+      (bag) => bag.forBake === "Olive Herb"
+    );
     let whatToMake = this.makeAddQty(whatToMakeToday);
-    let qty = 0;
-    for (let make of whatToMake) {
-      qty += Number(make.qty);
-    }
-    return qty;
+    return qtyCalc(whatToMake);
   };
 
   returnbcCount = (delivDate, database) => {
-    const [products, customers, routes, standing, orders] = database;
-    let whatToMakeList = getOrdersList(delivDate, database);
-    let whatToMakeToday = whatToMakeList
-      .filter((set) => this.whatToMakeFilter(set))
-      .filter((bag) => bag.forBake === "Blue Cheese Walnut");
+    let whatToMakeToday = whatToMakeList(database, delivDate).filter(
+      (bag) => bag.forBake === "Blue Cheese Walnut"
+    );
     let whatToMake = this.makeAddQty(whatToMakeToday);
-    let qty = 0;
-    for (let make of whatToMake) {
-      qty += Number(make.qty);
-    }
-    return qty;
+    return qtyCalc(whatToMake);
   };
 
   returnBagDoughTwoDays = (delivDate, database) => {
-    const [products, customers, routes, standing, orders] = database;
-    let whatToMakeList = getOrdersList(delivDate, database);
-    let whatToMakeToday = whatToMakeList
-      .filter((set) => this.whatToMakeFilter(set))
-      .filter((bag) => bag.doughType === "Baguette");
+    let whatToMakeToday = whatToMakeList(database, delivDate).filter(
+      (bag) => bag.doughType === "Baguette"
+    );
     let qty = 0;
     for (let make of whatToMakeToday) {
       qty += Number(make.qty * make.weight);
@@ -184,63 +96,11 @@ export default class ComposeDough {
       doughs,
       doughComponents,
     ] = database;
-    let pocketList = getOrdersList(tomorrow, database);
-    let pocketsToday = pocketList.filter((set) => this.pocketFilter(set, loc));
-    pocketsToday = this.makePocketQty(pocketsToday);
+    let pocketList = getOrdersList(tomorrow, database, true);
+    let pocketsToday = pocketList.filter((set) => pocketFilter(set, loc));
+    pocketsToday = makePocketQty(pocketsToday);
 
     return pocketsToday;
-  };
-
-  pocketFilter = (ord, loc) => {
-    return ord.doughType === "French";
-  };
-
-  makePocketQty = (bakedTomorrow) => {
-    let makeList2 = Array.from(
-      new Set(bakedTomorrow.map((prod) => prod.weight))
-    ).map((mk) => ({
-      pocketSize: mk,
-      qty: 0,
-    }));
-    for (let make of makeList2) {
-      make.qty = 1;
-
-      let qtyAccToday = 0;
-
-      let qtyToday = bakedTomorrow
-        .filter((frz) => make.pocketSize === frz.weight)
-        .map((ord) => ord.qty * ord.packSize);
-
-      if (qtyToday.length > 0) {
-        qtyAccToday = qtyToday.reduce(addUp);
-      }
-      make.qty = qtyAccToday;
-    }
-    return makeList2;
-  };
-
-  makeFilter = (ord, loc) => {
-    return (
-      
-      ord.where.includes("Carlton") &&
-      (ord.packGroup === "rustic breads" || ord.packGroup === "retail") &&
-      ((ord.routeStart >= 8 && ord.routeDepart === "Prado") ||
-        ord.routeDepart === "Carlton" ||
-        ord.route === "Pick up Carlton" ||
-        ord.route === "Pick up SLO" 
-        )
-    );
-  };
-
-  addOnFilter = (ord, loc) => {
-    return (
-      
-      ord.where.includes("Carlton") &&
-      (ord.packGroup === "rustic breads" || ord.packGroup === "retail") &&
-      ((ord.routeStart < 8 && ord.routeDepart === "Prado") 
-        
-        )
-    );
   };
 
   returnDoughs = (delivDate, database, loc) => {
@@ -253,35 +113,22 @@ export default class ComposeDough {
       doughs,
       doughComponents,
     ] = database;
-    let oneDayOrderList = getOrdersList(oneDay, database);
-    let oneDayMake = oneDayOrderList.filter((set) =>
-      this.makeFilter(set)
-    );
+    let oneDayOrderList = getOrdersList(oneDay, database, true);
+    let oneDayMake = oneDayOrderList.filter((set) => DayOneFilter(set));
 
-    let twoDayOrderAddOn = getOrdersList(twoDay, database);
-    let twoDayAddon = twoDayOrderAddOn.filter((set) =>
-      this.addOnFilter(set)
-    );
+    let twoDayOrderAddOn = getOrdersList(twoDay, database, true);
+    let twoDayAddon = twoDayOrderAddOn.filter((set) => DayTwoFilter(set));
 
-    oneDayOrderList = oneDayMake.concat(twoDayAddon)
-   
-    // add two day, filter, and concat
-    
-    // add three day, filter, and concat
-    let twoDayOrderList = getOrdersList(twoDay, database);
-    let twoDayMake = twoDayOrderList.filter((set) =>
-      this.makeFilter(set)
-    );
+    oneDayOrderList = oneDayMake.concat(twoDayAddon);
 
-    let threeDayOrderAddOn = getOrdersList(threeDay, database);
-    let threeDayAddon = threeDayOrderAddOn.filter((set) =>
-      this.addOnFilter(set)
-    );
+    let twoDayOrderList = getOrdersList(twoDay, database, true);
+    let twoDayMake = twoDayOrderList.filter((set) => DayOneFilter(set));
 
-    twoDayOrderList = twoDayMake.concat(threeDayAddon)
-    
-   
-    
+    let threeDayOrderAddOn = getOrdersList(threeDay, database, true);
+    let threeDayAddon = threeDayOrderAddOn.filter((set) => DayTwoFilter(set));
+
+    twoDayOrderList = twoDayMake.concat(threeDayAddon);
+
     let doughList = Array.from(
       new Set(
         doughs
@@ -301,33 +148,20 @@ export default class ComposeDough {
     }));
 
     for (let dgh of doughList) {
-      console.log(dgh)
-      dgh.id =
-        doughs[doughs.findIndex((d) => d.doughName === dgh.doughName)].id;
-      dgh.hydration =
-        doughs[
-          doughs.findIndex((d) => d.doughName === dgh.doughName)
-        ].hydration;
-      dgh.oldDough =
-        doughs[doughs.findIndex((d) => d.doughName === dgh.doughName)].oldDough;
-      dgh.buffer =
-        doughs[doughs.findIndex((d) => d.doughName === dgh.doughName)].buffer;
-      dgh.batchSize =
-        doughs[
-          doughs.findIndex((d) => d.doughName === dgh.doughName)
-        ].batchSize;
+      let doughInd = doughs[doughs.findIndex((d) => d.doughName === dgh.doughName)];
+      dgh.id = doughInd.id;
+      dgh.hydration = doughInd.hydration;
+      dgh.oldDough = doughInd.oldDough;
+      dgh.buffer = doughInd.buffer;
+      dgh.batchSize = doughInd.batchSize;
       if (dgh.isBakeReady === true) {
         dgh.needed = this.getDoughAmt(dgh.doughName, oneDayOrderList).toFixed(
           2
         );
       } else {
-        console.log(dgh.doughName)
-        console.log(twoDayOrderList)
         dgh.needed = this.getDoughAmt(dgh.doughName, twoDayOrderList).toFixed(
           2
-          
         );
-        console.log(dgh.needed)
       }
     }
     return doughList;
@@ -348,7 +182,6 @@ export default class ComposeDough {
   };
 
   getDoughAmt = (doughName, orders) => {
-    console.log(orders)
     let qtyAccToday = 0;
     let qtyArray = orders
       .filter((ord) => ord.doughType === doughName)
@@ -380,24 +213,11 @@ export default class ComposeDough {
       doughs,
       doughComponents,
     ] = database;
-    let pocketList = getOrdersList(tomorrow, database);
-    let pocketsToday = pocketList.filter((set) =>
-      this.baker1PocketFilter(set, loc)
-    );
-    pocketsToday = this.makePocketQty(pocketsToday);
+    let pocketList = getOrdersList(tomorrow, database, true);
+    let pocketsToday = pocketList.filter((set) => baker1PocketFilter(set, loc));
+    pocketsToday = makePocketQty(pocketsToday);
 
     return pocketsToday;
-  };
-
-  whatToMakeFilter = (ord, loc) => {
-    return (
-      ord.where.includes("Carlton") &&
-      (ord.packGroup === "rustic breads" || ord.packGroup === "retail")
-    );
-  };
-
-  baker1PocketFilter = (ord, loc) => {
-    return ord.doughType === "Baguette";
   };
 
   returnBaker1Doughs = (delivDate, database, loc) => {
@@ -410,8 +230,8 @@ export default class ComposeDough {
       doughs,
       doughComponents,
     ] = database;
-    let twoDayOrderList = getOrdersList(twoDay, database);
-    let oneDayOrderList = getOrdersList(oneDay, database);
+    let twoDayOrderList = getOrdersList(twoDay, database, true);
+    let oneDayOrderList = getOrdersList(oneDay, database, true);
 
     let doughList = Array.from(
       new Set(
@@ -434,24 +254,14 @@ export default class ComposeDough {
     }));
 
     for (let dgh of doughList) {
-      dgh.id =
-        doughs[doughs.findIndex((d) => d.doughName === dgh.doughName)].id;
-      dgh.bucketSets =
-        doughs[
-          doughs.findIndex((d) => d.doughName === dgh.doughName)
-        ].bucketSets;
-      dgh.hydration =
-        doughs[
-          doughs.findIndex((d) => d.doughName === dgh.doughName)
-        ].hydration;
-      dgh.oldDough =
-        doughs[doughs.findIndex((d) => d.doughName === dgh.doughName)].oldDough;
-      dgh.buffer =
-        doughs[doughs.findIndex((d) => d.doughName === dgh.doughName)].buffer;
-      dgh.batchSize =
-        doughs[
-          doughs.findIndex((d) => d.doughName === dgh.doughName)
-        ].batchSize;
+      let doughInd =
+        doughs[doughs.findIndex((d) => d.doughName === dgh.doughName)];
+      dgh.id = doughInd.id;
+      dgh.bucketSets = doughInd.bucketSets;
+      dgh.hydration = doughInd.hydration;
+      dgh.oldDough = doughInd.oldDough;
+      dgh.buffer = doughInd.buffer;
+      dgh.batchSize = doughInd.batchSize;
       if (dgh.isBakeReady === true) {
         dgh.needed = this.getDoughAmt(dgh.doughName, oneDayOrderList).toFixed(
           2

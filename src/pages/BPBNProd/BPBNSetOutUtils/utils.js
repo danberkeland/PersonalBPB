@@ -1,4 +1,46 @@
+import {
+  calcDayNum,
+  routeRunsThatDay,
+  productCanBeInPlace,
+  productReadyBeforeRouteStarts,
+  customerIsOpen,
+} from "../../logistics/ByRoute/Parts/utils/utils";
+
+import { pocketFilter, whatToMakeFilter, baker1PocketFilter } from "./filters";
+
+import { sortZtoADataByIndex } from "../../../helpers/sortDataHelpers";
+
+import {
+  zerosDelivFilter,
+  buildGridOrderArray,
+} from "../../../helpers/delivGridHelpers";
+
+import {
+  getFullOrders,
+  getFullProdOrders,
+} from "../../../helpers/CartBuildingHelpers";
+
 const clonedeep = require("lodash.clonedeep");
+
+export const DayOneFilter = (ord, loc) => {
+  return (
+    ord.where.includes("Carlton") &&
+    (ord.packGroup === "rustic breads" || ord.packGroup === "retail") &&
+    ((ord.routeStart >= 8 && ord.routeDepart === "Prado") ||
+      ord.routeDepart === "Carlton" ||
+      ord.route === "Pick up Carlton" ||
+      ord.route === "Pick up SLO")
+  );
+};
+
+export const DayTwoFilter = (ord, loc) => {
+  return (
+    ord.where.includes("Carlton") &&
+    (ord.packGroup === "rustic breads" || ord.packGroup === "retail") &&
+    ord.routeStart < 8 &&
+    ord.routeDepart === "Prado"
+  );
+};
 
 export const addProdAttr = (fullOrder, database) => {
   const [products, customers, routes, standing, orders] = database;
@@ -44,7 +86,7 @@ export const addSetOut = (
   }
 };
 
-const addUp = (acc, val) => {
+export const addUp = (acc, val) => {
   return acc + val;
 };
 
@@ -58,35 +100,138 @@ const checkZone = (full, availableRoutes) => {
 };
 
 const update = (order, products, customers) => {
-    let atownPick = "atownpick";
-    let ind =
-      products[products.findIndex((prod) => prod.prodName === order.prodName)];
-    try {
-      let custInd =
-        customers[
-          customers.findIndex((cust) => cust.custName === order.custName)
-        ];
-      atownPick = custInd.zoneName;
-    } catch {
-      atownPick = "atownpick";
-    }
-  
-    let pick = false;
-    if (atownPick === "atownpick" || atownPick === "Carlton Retail") {
-      pick = true;
-    }
-  
-    let toAdd = {
-      forBake: ind.forBake,
-      packSize: ind.packSize,
-      currentStock: ind.currentStock,
-      batchSize: ind.batchSize,
-      bakeExtra: ind.bakeExtra,
-      readyTime: ind.readyTime,
-      zone: atownPick,
-      atownPick: pick,
-    };
-  
-    return toAdd;
+  let atownPick = "atownpick";
+  let ind =
+    products[products.findIndex((prod) => prod.prodName === order.prodName)];
+  try {
+    let custInd =
+      customers[
+        customers.findIndex((cust) => cust.custName === order.custName)
+      ];
+    atownPick = custInd.zoneName;
+  } catch {
+    atownPick = "atownpick";
+  }
+
+  let pick = false;
+  if (atownPick === "atownpick" || atownPick === "Carlton Retail") {
+    pick = true;
+  }
+
+  let toAdd = {
+    forBake: ind.forBake,
+    packSize: ind.packSize,
+    currentStock: ind.currentStock,
+    batchSize: ind.batchSize,
+    bakeExtra: ind.bakeExtra,
+    readyTime: ind.readyTime,
+    zone: atownPick,
+    atownPick: pick,
   };
-  
+
+  return toAdd;
+};
+
+export const addRoutes = (delivDate, prodGrid, database) => {
+  const [products, customers, routes, standing, orders] = database;
+  sortZtoADataByIndex(routes, "routeStart");
+  for (let rte of routes) {
+    for (let grd of prodGrid) {
+      let dayNum = calcDayNum(delivDate);
+
+      if (!rte["RouteServe"].includes(grd["zone"])) {
+        continue;
+      } else {
+        if (
+          routeRunsThatDay(rte, dayNum) &&
+          productCanBeInPlace(grd, routes, customers, rte) &&
+          productReadyBeforeRouteStarts(
+            products,
+            customers,
+            routes,
+            grd,
+            rte
+          ) &&
+          customerIsOpen(customers, grd, routes, rte)
+        ) {
+          grd.route = rte.routeName;
+          grd.routeDepart = rte.RouteDepart;
+          grd.routeStart = rte.routeStart;
+          grd.routeServe = rte.RouteServe;
+          grd.routeArrive = rte.RouteArrive;
+        }
+      }
+    }
+  }
+  for (let grd of prodGrid) {
+    if (grd.zone === "slopick" || grd.zone === "Prado Retail") {
+      grd.route = "Pick up SLO";
+    }
+    if (grd.zone === "atownpick" || grd.zone === "Carlton Retail") {
+      grd.route = "Pick up Carlton";
+    }
+    if (grd.route === "slopick" || grd.route === "Prado Retail") {
+      grd.route = "Pick up SLO";
+    }
+    if (grd.route === "atownpick" || grd.route === "Carlton Retail") {
+      grd.route = "Pick up Carlton";
+    }
+    if (grd.route === "deliv") {
+      grd.route = "NOT ASSIGNED";
+    }
+  }
+
+  return prodGrid;
+};
+
+export const getOrdersList = (delivDate, database, prod) => {
+  let fullOrder;
+  if (prod === true) {
+    fullOrder = getFullProdOrders(delivDate, database);
+  } else {
+    fullOrder = getFullOrders(delivDate, database);
+  }
+
+  fullOrder = zerosDelivFilter(fullOrder, delivDate, database);
+  fullOrder = buildGridOrderArray(fullOrder, database);
+  fullOrder = addRoutes(delivDate, fullOrder, database);
+  return fullOrder;
+};
+
+export const makePocketQty = (bakedTomorrow) => {
+  let makeList2 = Array.from(
+    new Set(bakedTomorrow.map((prod) => prod.weight))
+  ).map((mk) => ({
+    pocketSize: mk,
+    qty: 0,
+  }));
+  for (let make of makeList2) {
+    make.qty = 1;
+
+    let qtyAccToday = 0;
+
+    let qtyToday = bakedTomorrow
+      .filter((frz) => make.pocketSize === frz.weight)
+      .map((ord) => ord.qty * ord.packSize);
+
+    if (qtyToday.length > 0) {
+      qtyAccToday = qtyToday.reduce(addUp);
+    }
+    make.qty = qtyAccToday;
+  }
+  return makeList2;
+};
+
+export const whatToMakeList = (database, delivDate) => {
+  let [products, customers, routes, standing, orders] = database;
+  let whatToMakeList = getOrdersList(delivDate, database, true);
+  return whatToMakeList.filter((set) => whatToMakeFilter(set));
+};
+
+export const qtyCalc = (whatToMake) => {
+  let qty = 0;
+  for (let make of whatToMake) {
+    qty += Number(make.qty);
+  }
+  return qty;
+};

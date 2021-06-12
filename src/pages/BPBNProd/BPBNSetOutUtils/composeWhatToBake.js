@@ -1,88 +1,14 @@
 import { todayPlus } from "../../../helpers/dateTimeHelpers";
+
 import {
-  zerosDelivFilter,
-  buildGridOrderArray,
-} from "../../../helpers/delivGridHelpers";
+  DayOneFilter,
+  DayTwoFilter,
+  getOrdersList,
+  addUp
+} from "./utils";
 
-import { getFullOrders } from "../../../helpers/CartBuildingHelpers";
-
-import { sortZtoADataByIndex } from "../../../helpers/sortDataHelpers";
-import {
-  calcDayNum,
-  routeRunsThatDay,
-  productCanBeInPlace,
-  productReadyBeforeRouteStarts,
-  customerIsOpen,
-} from "../../logistics/ByRoute/Parts/utils/utils";
-
-const clonedeep = require("lodash.clonedeep");
 let tomorrow = todayPlus()[1];
-let twoDay = todayPlus()[2];
-let today = todayPlus()[0];
 
-const addRoutes = (delivDate, prodGrid, database) => {
-  const [products, customers, routes, standing, orders] = database;
-  sortZtoADataByIndex(routes, "routeStart");
-  for (let rte of routes) {
-    for (let grd of prodGrid) {
-      let dayNum = calcDayNum(delivDate);
-
-      if (!rte["RouteServe"].includes(grd["zone"])) {
-        continue;
-      } else {
-        if (
-          routeRunsThatDay(rte, dayNum) &&
-          productCanBeInPlace(grd, routes, customers, rte) &&
-          productReadyBeforeRouteStarts(
-            products,
-            customers,
-            routes,
-            grd,
-            rte
-          ) &&
-          customerIsOpen(customers, grd, routes, rte)
-        ) {
-          grd.route = rte.routeName;
-          grd.routeDepart = rte.RouteDepart;
-          grd.routeStart = rte.routeStart;
-          grd.routeServe = rte.RouteServe;
-          grd.routeArrive = rte.RouteArrive;
-        }
-      }
-    }
-  }
-  for (let grd of prodGrid) {
-    if (grd.zone === "slopick" || grd.zone === "Prado Retail") {
-      grd.route = "Pick up SLO";
-    }
-    if (grd.zone === "atownpick" || grd.zone === "Carlton Retail") {
-      grd.route = "Pick up Carlton";
-    }
-    if (grd.route === "slopick" || grd.route === "Prado Retail") {
-      grd.route = "Pick up SLO";
-    }
-    if (grd.route === "atownpick" || grd.route === "Carlton Retail") {
-      grd.route = "Pick up Carlton";
-    }
-    if (grd.route === "deliv") {
-      grd.route = "NOT ASSIGNED";
-    }
-  }
-
-  return prodGrid;
-};
-
-const getOrdersList = (delivDate, database) => {
-  let fullOrder = getFullOrders(delivDate, database);
-  fullOrder = zerosDelivFilter(fullOrder, delivDate, database);
-  fullOrder = buildGridOrderArray(fullOrder, database);
-  fullOrder = addRoutes(delivDate, fullOrder, database);
-  return fullOrder;
-};
-
-const addUp = (acc, val) => {
-  return acc + val;
-};
 
 export default class ComposeWhatToMake {
   returnWhatToMakeBreakDown = (delivDate, database, loc) => {
@@ -97,13 +23,13 @@ export default class ComposeWhatToMake {
     const [products, customers, routes, standing, orders] = database;
     let whatToMakeList = getOrdersList(delivDate, database);
     let whatToMakeToday = whatToMakeList.filter((set) =>
-      this.whatToMakeFilter(set)
+      DayOneFilter(set)
     );
     console.log(whatToMakeToday);
 
     let whatToMakeTomList = getOrdersList(tomorrow, database);
     let whatToMakeTomorrow = whatToMakeTomList.filter((set) =>
-      this.whatToMakeTomFilter(set)
+      DayTwoFilter(set)
     );
     console.log(whatToMakeTomorrow);
     let MakeList = whatToMakeToday.concat(whatToMakeTomorrow)
@@ -112,29 +38,7 @@ export default class ComposeWhatToMake {
     return whatToMake;
   };
 
-  whatToMakeFilter = (ord, loc) => {
-    return (
-      
-      ord.where.includes("Carlton") &&
-      (ord.packGroup === "rustic breads" || ord.packGroup === "retail") &&
-      ((ord.routeStart >= 8 && ord.routeDepart === "Prado") ||
-        ord.routeDepart === "Carlton" ||
-        ord.route === "Pick up Carlton" ||
-        ord.route === "Pick up SLO" 
-        )
-    );
-  };
-
-  whatToMakeTomFilter = (ord, loc) => {
-    return (
-      
-      ord.where.includes("Carlton") &&
-      (ord.packGroup === "rustic breads" || ord.packGroup === "retail") &&
-      ((ord.routeStart < 8 && ord.routeDepart === "Prado") 
-        
-        )
-    );
-  };
+  
 
   makeAddQty = (bakedTomorrow) => {
     let makeList2 = Array.from(
@@ -214,29 +118,5 @@ export default class ComposeWhatToMake {
     return makeList2;
   };
 
-  combineGrids = (obj1, obj2) => {
-    console.log(obj1);
-    console.log(obj2);
-    let firstObject = clonedeep(obj1);
-    let secondObject = clonedeep(obj2);
-    for (let first of firstObject) {
-      for (let sec of secondObject) {
-        if (first.prodNick === sec.prodNick) {
-          first.qty += sec.qty;
-        }
-      }
-    }
-
-    for (let sec of secondObject) {
-      for (let first of firstObject) {
-        if (sec.prodNick === first.prodNick) {
-          sec.qty = first.qty;
-          continue;
-        }
-      }
-      sec.prodNick = "fr" + sec.prodNick;
-    }
-
-    return secondObject;
-  };
+  
 }

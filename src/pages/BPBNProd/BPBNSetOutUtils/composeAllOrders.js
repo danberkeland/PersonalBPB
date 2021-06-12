@@ -31,7 +31,6 @@ export default class ComposeAllOrders {
   };
 
   returnAllOrders = (delivDate, database, loc, prod) => {
-    const [products, customers, routes, standing, orders] = database;
     let allOrdersList = getOrdersList(delivDate, database, prod);
     let allOrdersToday = allOrdersList.filter((set) =>
       allOrdersFilter(set, loc)
@@ -44,7 +43,6 @@ export default class ComposeAllOrders {
 
 
   returnWhoBake = (delivDate, database, loc, prod) => {
-    const [products, customers, routes, standing, orders] = database;
     let whoBakeTodayList = getOrdersList(today, database, prod);
     let whoBakeToday = whoBakeTodayList.filter((set) =>
       DayOneFilter(set, loc)
@@ -64,7 +62,6 @@ export default class ComposeAllOrders {
 
 
   returnWhoShape = (delivDate, database, loc, prod) => {
-    const [products, customers, routes, standing, orders] = database;
     let whoShapeTodayList = getOrdersList(tomorrow, database, prod);
     let whoShapeToday = whoShapeTodayList.filter((set) =>
       DayOneFilter(set, loc)

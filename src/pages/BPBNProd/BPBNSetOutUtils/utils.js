@@ -235,3 +235,26 @@ export const qtyCalc = (whatToMake) => {
   }
   return qty;
 };
+
+export const doughListComp = (doughs, filt,loc)=> { 
+  
+  return Array.from(
+    new Set(
+      doughs
+      .filter((set) =>
+      filt(set,loc)
+    )
+        .map((dgh) => dgh.doughName)
+    )
+  ).map((dgh) => ({
+    doughName: dgh,
+      isBakeReady:
+        doughs[doughs.findIndex((dg) => dg.doughName === dgh)].isBakeReady,
+      oldDough: 0,
+      buffer: 0,
+      needed: 0,
+      batchSize: 0,
+      short: 0,
+      bucketSets: 0,
+  }));
+}

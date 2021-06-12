@@ -6,6 +6,7 @@ import {
   addUp,
   whatToMakeList,
   qtyCalc,
+  doughListComp,
 } from "./utils";
 
 import {
@@ -13,6 +14,8 @@ import {
   DayTwoFilter,
   pocketFilter,
   baker1PocketFilter,
+  baguette,
+  noBaguette,
 } from "./filters";
 
 let threeDay = todayPlus()[3];
@@ -87,68 +90,32 @@ export default class ComposeDough {
   };
 
   returnPockets = (delivDate, database, loc) => {
-    const [
-      products,
-      customers,
-      routes,
-      standing,
-      orders,
-      doughs,
-      doughComponents,
-    ] = database;
-    let pocketList = getOrdersList(tomorrow, database, true);
-    let pocketsToday = pocketList.filter((set) => pocketFilter(set, loc));
+    let pocketsToday = getOrdersList(tomorrow, database, true).filter((set) =>
+      pocketFilter(set, loc)
+    );
     pocketsToday = makePocketQty(pocketsToday);
 
     return pocketsToday;
   };
 
   returnDoughs = (delivDate, database, loc) => {
-    const [
-      products,
-      customers,
-      routes,
-      standing,
-      orders,
-      doughs,
-      doughComponents,
-    ] = database;
-    let oneDayOrderList = getOrdersList(oneDay, database, true);
-    let oneDayMake = oneDayOrderList.filter((set) => DayOneFilter(set));
+    const doughs = database[5];
 
-    let twoDayOrderAddOn = getOrdersList(twoDay, database, true);
-    let twoDayAddon = twoDayOrderAddOn.filter((set) => DayTwoFilter(set));
+    const ordersFor = (when, filt) => {
+      return getOrdersList(when, database, true).filter((set) => filt(set));
+    };
+    let oneDayOrderList = ordersFor(oneDay, DayOneFilter).concat(
+      ordersFor(twoDay, DayTwoFilter)
+    );
+    let twoDayOrderList = ordersFor(twoDay, DayOneFilter).concat(
+      ordersFor(threeDay, DayTwoFilter)
+    );
 
-    oneDayOrderList = oneDayMake.concat(twoDayAddon);
-
-    let twoDayOrderList = getOrdersList(twoDay, database, true);
-    let twoDayMake = twoDayOrderList.filter((set) => DayOneFilter(set));
-
-    let threeDayOrderAddOn = getOrdersList(threeDay, database, true);
-    let threeDayAddon = threeDayOrderAddOn.filter((set) => DayTwoFilter(set));
-
-    twoDayOrderList = twoDayMake.concat(threeDayAddon);
-
-    let doughList = Array.from(
-      new Set(
-        doughs
-          .filter(
-            (dgh) => dgh.mixedWhere === loc && dgh.doughName !== "Baguette"
-          )
-          .map((dgh) => dgh.doughName)
-      )
-    ).map((dgh) => ({
-      doughName: dgh,
-      isBakeReady:
-        doughs[doughs.findIndex((dg) => dg.doughName === dgh)].isBakeReady,
-      oldDough: 0,
-      buffer: 0,
-      needed: 0,
-      batchSize: 0,
-    }));
+    let doughList = doughListComp(doughs, noBaguette, loc);
 
     for (let dgh of doughList) {
-      let doughInd = doughs[doughs.findIndex((d) => d.doughName === dgh.doughName)];
+      let doughInd =
+        doughs[doughs.findIndex((d) => d.doughName === dgh.doughName)];
       dgh.id = doughInd.id;
       dgh.hydration = doughInd.hydration;
       dgh.oldDough = doughInd.oldDough;
@@ -168,15 +135,7 @@ export default class ComposeDough {
   };
 
   returnDoughComponents = (delivDate, database, loc) => {
-    const [
-      products,
-      customers,
-      routes,
-      standing,
-      orders,
-      doughs,
-      doughComponents,
-    ] = database;
+    const doughComponents = database[6];
     let doughComponentInfo = doughComponents;
     return doughComponentInfo;
   };
@@ -204,15 +163,6 @@ export default class ComposeDough {
   };
 
   returnBaker1Pockets = (delivDate, database, loc) => {
-    const [
-      products,
-      customers,
-      routes,
-      standing,
-      orders,
-      doughs,
-      doughComponents,
-    ] = database;
     let pocketList = getOrdersList(tomorrow, database, true);
     let pocketsToday = pocketList.filter((set) => baker1PocketFilter(set, loc));
     pocketsToday = makePocketQty(pocketsToday);
@@ -221,37 +171,11 @@ export default class ComposeDough {
   };
 
   returnBaker1Doughs = (delivDate, database, loc) => {
-    const [
-      products,
-      customers,
-      routes,
-      standing,
-      orders,
-      doughs,
-      doughComponents,
-    ] = database;
+    const doughs = database[5];
     let twoDayOrderList = getOrdersList(twoDay, database, true);
     let oneDayOrderList = getOrdersList(oneDay, database, true);
 
-    let doughList = Array.from(
-      new Set(
-        doughs
-          .filter(
-            (dgh) => dgh.mixedWhere === loc && dgh.doughName === "Baguette"
-          )
-          .map((dgh) => dgh.doughName)
-      )
-    ).map((dgh) => ({
-      doughName: dgh,
-      isBakeReady:
-        doughs[doughs.findIndex((dg) => dg.doughName === dgh)].isBakeReady,
-      oldDough: 0,
-      buffer: 0,
-      needed: 0,
-      batchSize: 0,
-      short: 0,
-      bucketSets: 0,
-    }));
+    let doughList = doughListComp(doughs, baguette, loc);
 
     for (let dgh of doughList) {
       let doughInd =
@@ -295,15 +219,7 @@ export default class ComposeDough {
   };
 
   returnBaker1DoughComponents = (delivDate, database, loc) => {
-    const [
-      products,
-      customers,
-      routes,
-      standing,
-      orders,
-      doughs,
-      doughComponents,
-    ] = database;
+    const doughComponents = database[6];
     let doughComponentInfo = doughComponents;
     return doughComponentInfo;
   };

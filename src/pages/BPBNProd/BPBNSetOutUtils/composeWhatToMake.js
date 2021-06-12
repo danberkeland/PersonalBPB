@@ -1,11 +1,6 @@
 import { todayPlus } from "../../../helpers/dateTimeHelpers";
 
-import {
-  DayOneFilter,
-  DayTwoFilter,
-  getOrdersList,
-  addUp
-} from "./utils";
+import { DayOneFilter, DayTwoFilter, getOrdersList, addUp } from "./utils";
 
 let tomorrow = todayPlus()[1];
 let twoDay = todayPlus()[2];
@@ -15,42 +10,29 @@ export default class ComposeWhatToMake {
     let whatToMake = this.returnWhatToMake(delivDate, database, loc);
     return {
       whatToMake: whatToMake,
-      
     };
   };
 
-  // START
   returnWhatToMake = (delivDate, database) => {
-    const [products, customers, routes, standing, orders] = database;
-    let whatToMakeList = getOrdersList(tomorrow, database,true);
-    console.log(whatToMakeList)
-    let whatToMakeToday = whatToMakeList.filter((set) =>
-      DayOneFilter(set)
+    let whatToMake = this.makeAddQty(
+      getOrdersList(tomorrow, database, true)
+        .filter((set) => DayOneFilter(set))
+        .concat(
+          getOrdersList(twoDay, database, true).filter((set) =>
+            DayTwoFilter(set)
+          )
+        )
     );
-    console.log(whatToMakeToday);
-
-    let whatToMakeTomList = getOrdersList(twoDay, database,true);
-    let whatToMakeTomorrow = whatToMakeTomList.filter((set) =>
-      DayTwoFilter(set)
-    );
-    console.log(whatToMakeTomorrow);
-    let MakeList = whatToMakeToday.concat(whatToMakeTomorrow)
-    let whatToMake = this.makeAddQty(MakeList);
 
     return whatToMake;
   };
 
-  
-  
-
-
   makeAddQty = (bakedTomorrow) => {
-    console.log("bakedTomorrow",bakedTomorrow)
     let makeList2 = Array.from(
       new Set(bakedTomorrow.map((prod) => prod.forBake))
     ).map((mk) => ({
       forBake: mk,
-      dough: '',
+      dough: "",
       weight: 0,
       qty: 0,
     }));
@@ -66,14 +48,16 @@ export default class ComposeWhatToMake {
       if (qtyToday.length > 0) {
         qtyAccToday = qtyToday.reduce(addUp);
       }
-      make.qty = qtyAccToday * bakedTomorrow[bakedTomorrow.findIndex(baked => baked.forBake === make.forBake)].packSize;
-      make.dough = bakedTomorrow[bakedTomorrow.findIndex(baked => baked.forBake === make.forBake)].doughType
-      make.weight = bakedTomorrow[bakedTomorrow.findIndex(baked => baked.forBake === make.forBake)].weight
-      make.id = bakedTomorrow[bakedTomorrow.findIndex(baked => baked.forBake === make.forBake)].prodID
-      
+
+      let bakeInd =
+        bakedTomorrow[
+          bakedTomorrow.findIndex((baked) => baked.forBake === make.forBake)
+        ];
+      make.qty = qtyAccToday * bakeInd.packSize;
+      make.dough = bakeInd.doughType;
+      make.weight = bakeInd.weight;
+      make.id = bakeInd.prodID;
     }
     return makeList2;
   };
-
-  
 }

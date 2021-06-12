@@ -1,14 +1,8 @@
 import { todayPlus } from "../../../helpers/dateTimeHelpers";
 
-import {
-  DayOneFilter,
-  DayTwoFilter,
-  getOrdersList,
-  addUp
-} from "./utils";
+import { DayOneFilter, DayTwoFilter, getOrdersList, addUp } from "./utils";
 
 let tomorrow = todayPlus()[1];
-
 
 export default class ComposeWhatToMake {
   returnWhatToMakeBreakDown = (delivDate, database, loc) => {
@@ -20,11 +14,8 @@ export default class ComposeWhatToMake {
   };
 
   returnWhatToMake = (delivDate, database) => {
-    const [products, customers, routes, standing, orders] = database;
     let whatToMakeList = getOrdersList(delivDate, database);
-    let whatToMakeToday = whatToMakeList.filter((set) =>
-      DayOneFilter(set)
-    );
+    let whatToMakeToday = whatToMakeList.filter((set) => DayOneFilter(set));
     console.log(whatToMakeToday);
 
     let whatToMakeTomList = getOrdersList(tomorrow, database);
@@ -32,13 +23,11 @@ export default class ComposeWhatToMake {
       DayTwoFilter(set)
     );
     console.log(whatToMakeTomorrow);
-    let MakeList = whatToMakeToday.concat(whatToMakeTomorrow)
+    let MakeList = whatToMakeToday.concat(whatToMakeTomorrow);
     let whatToMake = this.makeAddQty(MakeList);
 
     return whatToMake;
   };
-
-  
 
   makeAddQty = (bakedTomorrow) => {
     let makeList2 = Array.from(
@@ -54,10 +43,8 @@ export default class ComposeWhatToMake {
       make.qty = 1;
 
       let qtyAccToday = 0;
-
-      let qtyToday = bakedTomorrow
-        .filter((frz) => make.forBake === frz.forBake)
-        .map((ord) => ord.qty * ord.packSize);
+      let bakeInd = bakedTomorrow.filter((frz) => make.forBake === frz.forBake);
+      let qtyToday = bakeInd.map((ord) => ord.qty * ord.packSize);
 
       if (qtyToday.length > 0) {
         qtyAccToday = qtyToday.reduce(addUp);
@@ -65,17 +52,13 @@ export default class ComposeWhatToMake {
 
       let pocketsAccToday = 0;
 
-      let pocketsToday = bakedTomorrow
-        .filter((frz) => make.forBake === frz.forBake)
-        .map((ord) => ord.preshaped);
+      let pocketsToday = bakeInd.map((ord) => ord.preshaped);
 
       if (pocketsToday.length > 0) {
         pocketsAccToday = qtyAccToday - pocketsToday[0];
       }
 
-      let shapedSum = bakedTomorrow
-        .filter((frz) => make.forBake === frz.forBake)
-        .map((ord) => ord.preshaped);
+      let shapedSum = bakeInd.map((ord) => ord.preshaped);
 
       if (shapedSum.length > 0) {
         make.shaped = shapedSum[0];
@@ -117,6 +100,4 @@ export default class ComposeWhatToMake {
     }
     return makeList2;
   };
-
-  
 }

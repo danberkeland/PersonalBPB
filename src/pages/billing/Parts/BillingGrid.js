@@ -3,10 +3,6 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 
 import { CurrentDataContext } from "../../../dataContexts/CurrentDataContext";
-import { ProductsContext } from "../../../dataContexts/ProductsContext";
-import { CustomerContext } from "../../../dataContexts/CustomerContext";
-import { OrdersContext } from "../../../dataContexts/OrdersContext";
-import { StandingContext } from "../../../dataContexts/StandingContext";
 
 import {
   buildCartList,
@@ -25,12 +21,14 @@ import { ExpandedBillingRows } from "./Parts/ExpandedBillingRows";
 import { DeleteInvoice } from "./Parts/DeleteInvoice";
 
 const BillingGrid = ({
+  database,
   altPricing,
   nextInv,
   dailyInvoices,
   setDailyInvoices,
   zones,
 }) => {
+  const [products, customers, routes, standing, orders] = database;
   const [expandedRows, setExpandedRows] = useState(null);
 
   const [pickedProduct, setPickedProduct] = useState();
@@ -38,10 +36,7 @@ const BillingGrid = ({
   const [pickedQty, setPickedQty] = useState();
 
   const { delivDate } = useContext(CurrentDataContext);
-  const { products } = useContext(ProductsContext);
-  const { customers } = useContext(CustomerContext);
-  const { orders } = useContext(OrdersContext);
-  const { standing } = useContext(StandingContext);
+  
 
   useEffect(() => {
     try {
@@ -66,7 +61,7 @@ const BillingGrid = ({
     } catch {
       console.log("Whoops");
     }
-  }, [delivDate, orders, standing, nextInv, zones]);
+  }, [delivDate, database, nextInv, zones]);
 
   useEffect(() => {
     try {

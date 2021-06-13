@@ -7,12 +7,9 @@ import WeeklyBillingGrid from "./Parts/WeeklyBillingGrid";
 
 import SelectDate from "./Parts/SelectDate";
 
-import { CustomerContext, CustomerLoad } from "../../dataContexts/CustomerContext";
-import { ProductsContext, ProductsLoad } from "../../dataContexts/ProductsContext";
-import { OrdersContext, OrdersLoad } from "../../dataContexts/OrdersContext";
-import { StandingContext, StandingLoad } from "../../dataContexts/StandingContext";
-import { HoldingContext } from "../../dataContexts/HoldingContext";
 import { ToggleContext } from "../../dataContexts/ToggleContext";
+
+import { promisedData } from "../../helpers/databaseFetchers";
 
 import { listAltPricings, listZones } from "../../graphql/queries";
 
@@ -48,34 +45,18 @@ const fetchInfo = async (operation, opString, limit) => {
 
 
 function Billing() {
-  const { customers, custLoaded, setCustLoaded } = useContext(CustomerContext);
-  const { products, prodLoaded, setProdLoaded } = useContext(ProductsContext);
-  let { setHoldLoaded } = useContext(HoldingContext);
-  let { orders, ordersLoaded, setOrdersLoaded } = useContext(OrdersContext);
-  let { standing, standLoaded, setStandLoaded } = useContext(StandingContext);
   let { setIsLoading } = useContext(ToggleContext)
 
   const [ altPricing, setAltPricing ] = useState()
   const [ nextInv, setNextInv ] = useState(0);
-  const [dailyInvoices, setDailyInvoices] = useState();
-  const [weeklyInvoices, setWeeklyInvoices] = useState();
-  const [ zones, setZones ] = useState()
+  const [dailyInvoices, setDailyInvoices] = useState([]);
+  const [weeklyInvoices, setWeeklyInvoices] = useState([]);
+  const [ zones, setZones ] = useState([])
+  const [ database, setDatabase ] = useState([])
 
   useEffect(() => {
-    if (!products) {
-      setProdLoaded(false);
-    }
-    if (!customers) {
-      setCustLoaded(false);
-    }
-    setHoldLoaded(true);
-    if (!orders) {
-      setOrdersLoaded(false);
-    }
-    if (!standing) {
-      setStandLoaded(false);
-    }
-  }, []);
+    promisedData(setIsLoading).then((database) => setDatabase(database));
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     setIsLoading(true);
@@ -105,28 +86,24 @@ function Billing() {
 
   return (
     <React.Fragment>
-      {!ordersLoaded ? <OrdersLoad /> : ""}
-      {!custLoaded ? <CustomerLoad /> : ""}
-      {!prodLoaded ? <ProductsLoad /> : ""}
-      {!standLoaded ? <StandingLoad /> : ""}
-      
+         
       <BasicContainer>
         <h1>Billing</h1>
       </BasicContainer>
       
       <BasicContainer>
-        <SelectDate nextInv={nextInv} setNextInv={setNextInv} dailyInvoices={dailyInvoices} setDailyInvoices={setDailyInvoices}/>
+        <SelectDate database={database} nextInv={nextInv} setNextInv={setNextInv} dailyInvoices={dailyInvoices} setDailyInvoices={setDailyInvoices}/>
       </BasicContainer>
      
      
 
       <BasicContainer>
         <h2>Daily Invoicing</h2>
-        <BillingGrid altPricing={altPricing} nextInv={nextInv} dailyInvoices={dailyInvoices} setDailyInvoices={setDailyInvoices} zones={zones}/>
+        <BillingGrid database={database} altPricing={altPricing} nextInv={nextInv} dailyInvoices={dailyInvoices} setDailyInvoices={setDailyInvoices} zones={zones}/>
       </BasicContainer>
       <BasicContainer>
       <h2>Weekly Invoicing (sent Sunday)</h2>
-        <WeeklyBillingGrid altPricing={altPricing} nextInv={nextInv} weeklyInvoices={weeklyInvoices} setWeeklyInvoices={setWeeklyInvoices} zones={zones}/>
+        <WeeklyBillingGrid database={database} altPricing={altPricing} nextInv={nextInv} weeklyInvoices={weeklyInvoices} setWeeklyInvoices={setWeeklyInvoices} zones={zones}/>
       </BasicContainer>
     </React.Fragment>
   );

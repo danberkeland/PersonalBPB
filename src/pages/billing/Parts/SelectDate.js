@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 
 import { CurrentDataContext } from "../../../dataContexts/CurrentDataContext";
-import { CustomerContext } from "../../../dataContexts/CustomerContext";
 
 import { Calendar } from "primereact/calendar";
 
@@ -19,8 +18,6 @@ import { fetchInfo } from "../../../helpers/billingGridHelpers";
 
 import { listHeldforWeeklyInvoicings } from "../../../graphql/queries";
 
-import { OrdersContext } from "../../../dataContexts/OrdersContext";
-
 const clonedeep = require("lodash.clonedeep");
 
 const { DateTime } = require("luxon");
@@ -35,13 +32,13 @@ const BasicContainer = styled.div`
 `;
 
 const SelectDate = ({
+  database,
   dailyInvoices,
   setDailyInvoices,
 }) => {
+  const [products, customers, routes, standing, orders] = database;
   const { delivDate, setDelivDate } = useContext(CurrentDataContext);
-  const { customers } = useContext(CustomerContext);
-  const { orders } = useContext(OrdersContext);
-
+  
   const [pickedCustomer, setPickedCustomer] = useState();
 
   useEffect(() => {

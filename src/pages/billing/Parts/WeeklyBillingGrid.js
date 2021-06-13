@@ -3,10 +3,6 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 
 import { CurrentDataContext } from "../../../dataContexts/CurrentDataContext";
-import { ProductsContext } from "../../../dataContexts/ProductsContext";
-import { CustomerContext } from "../../../dataContexts/CustomerContext";
-import { OrdersContext } from "../../../dataContexts/OrdersContext";
-import { StandingContext } from "../../../dataContexts/StandingContext";
 import { ToggleContext } from "../../../dataContexts/ToggleContext";
 
 import {
@@ -31,12 +27,14 @@ import { listHeldforWeeklyInvoicings } from "../../../graphql/queries";
 import { createHeldforWeeklyInvoicing } from "../../../graphql/mutations";
 
 const WeeklyBillingGrid = ({
+  database,
   altPricing,
   nextInv,
   weeklyInvoices,
   setWeeklyInvoices,
   zones,
 }) => {
+  const [products, customers, routes, standing, orders] = database;
   const [expandedRows, setExpandedRows] = useState(null);
   const [ weeklyLoaded, setWeeklyLoaded ] = useState(false)
 
@@ -45,10 +43,6 @@ const WeeklyBillingGrid = ({
   const [pickedQty, setPickedQty] = useState();
 
   const { delivDate } = useContext(CurrentDataContext);
-  const { products } = useContext(ProductsContext);
-  const { customers } = useContext(CustomerContext);
-  const { orders } = useContext(OrdersContext);
-  const { standing } = useContext(StandingContext);
   const { readyForWeekly, setReadyForWeekly, setIsLoading } = useContext(
     ToggleContext
   );
@@ -62,10 +56,7 @@ const WeeklyBillingGrid = ({
   useEffect(() => {
     try{
       if (
-        orders.length>0 &&
-        standing.length>0 &&
-        customers.length>0 &&
-        products.length>0){
+        database.length>0 ){
           setReadyForWeekly(true)
         }
 

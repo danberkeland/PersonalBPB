@@ -4,15 +4,12 @@ import styled from "styled-components";
 
 import BillingGrid from "./Parts/BillingGrid";
 import WeeklyBillingGrid from "./Parts/WeeklyBillingGrid";
-
 import SelectDate from "./Parts/SelectDate";
 
 import { ToggleContext } from "../../dataContexts/ToggleContext";
 
 import { promisedData } from "../../helpers/databaseFetchers";
-
 import { listAltPricings, listZones } from "../../graphql/queries";
-
 import { API, graphqlOperation } from "aws-amplify";
 
 

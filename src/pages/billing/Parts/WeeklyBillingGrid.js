@@ -67,7 +67,8 @@ const WeeklyBillingGrid = ({
   })
 
   useEffect(() => {
-    try {
+    try{
+    
       let buildOrders = buildCartList("*", delivDate, orders);
       let buildStand = buildStandList("*", delivDate, standing);
       let fullOrder = compileFullOrderList(buildOrders, buildStand);
@@ -86,9 +87,9 @@ const WeeklyBillingGrid = ({
       setWeeklyInvoices(invOrders);
       
       setIsLoading(true);
-    } catch {
-      console.log("Trouble building invOrders");
-    }
+      } catch {
+        console.log("Couldn't build invList")
+      } 
   }, [readyForWeekly]);
 
   

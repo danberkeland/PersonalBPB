@@ -68,8 +68,6 @@ function Ordering() {
         dgh.updatePreBucket = today
       }
       if (dgh.updatePreBucket === today){
-        console.log("buck",dgh.bucketSets)
-        console.log("pre",dgh.preBucketSets)
         dgh.bucketSets = dgh.preBucketSets
         dgh.updatePreBucket = tomorrow
        

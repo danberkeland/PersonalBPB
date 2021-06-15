@@ -15,18 +15,24 @@ export const buildCustList = (fullOrder) => {
 };
 
 export const buildInvList = (custListArray, customers, delivDate) => {
+  console.log(custListArray)
+  console.log(customers)
   let dateSplit = delivDate.split("-");
   let newDate = dateSplit[1] + dateSplit[2] + dateSplit[0];
+  console.log("made it here")
   custListArray = custListArray.map((cust) => ({
     custName: cust,
     nickName:
       customers[customers.findIndex((ind) => ind.custName === cust)].nickName,
   }));
+  console.log("made it here now")
+  console.log(custListArray)
   let invList = custListArray.map((cust) => ({
     custName: cust.custName,
     invNum: newDate + cust.nickName,
     orders: [],
   }));
+  
   
   return invList;
 };

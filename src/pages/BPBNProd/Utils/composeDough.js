@@ -77,7 +77,7 @@ export default class ComposeDough {
     for (let make of whatToMakeToday) {
       qty += Number(make.qty * make.weight);
     }
-
+    console.log("bagDoughTwo",Math.floor(qty / 83))
     return Math.floor(qty / 83);
   };
 

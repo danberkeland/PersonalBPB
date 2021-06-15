@@ -8,6 +8,9 @@ import { getMixInfo } from "./GetMixInfo";
 import { binInfo } from "./BinInfo";
 import { panAmount } from "./PanAmount";
 import { bucketAmount } from "./BucketAmount";
+import { updateDough } from "../../../graphql/mutations";
+
+import { API, graphqlOperation } from "aws-amplify";
 
 let finalY;
 let pageMargin = 20;
@@ -30,6 +33,21 @@ const buildTable = (title, doc, body, col) => {
 };
 
 export const ExportPastryPrepPdf = async (delivDate, doughs, infoWrap) => {
+  
+  for (let dgh of doughs) {
+    let addDetails = {
+      id: dgh.id,
+      preBucketSets: bucketAmount(doughs, infoWrap)[0].amount,
+    };
+    try {
+      await API.graphql(
+        graphqlOperation(updateDough, { input: { ...addDetails } })
+      );
+    } catch (error) {
+      console.log("error on updating product", error);
+    }
+  }
+
   let mixes = getMixInfo(doughs, infoWrap)[4];
 
   const doc = new jsPDF("p", "mm", "a4");
@@ -70,7 +88,7 @@ export const ExportPastryPrepPdf = async (delivDate, doughs, infoWrap) => {
       `Baguette Mix #${i + 1}`,
       doc,
       mixFormula(doughs, infoWrap, i),
-      col  
+      col
     );
 
     finalY = doc.previousAutoTable.finalY + tableToNextTitle;

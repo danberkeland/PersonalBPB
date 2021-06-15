@@ -3,7 +3,6 @@ import React, { useContext, useEffect, useState } from "react";
 import { CurrentDataContext } from "../../../dataContexts/CurrentDataContext";
 
 import { Calendar } from "primereact/calendar";
-
 import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
 
@@ -128,7 +127,7 @@ const SelectDate = ({
 
     let todayDay = DateTime.now().setZone("America/Los_Angeles").weekdayLong;
 
-    if (todayDay === "Thursday") {
+    if (todayDay === "Sunday") {
       let weeklyInfo = await fetchInfo(
         listHeldforWeeklyInvoicings,
         "listHeldforWeeklyInvoicings",

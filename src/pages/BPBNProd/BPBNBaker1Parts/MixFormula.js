@@ -3,31 +3,40 @@ import { getMixInfo } from './GetMixInfo'
 export const mixFormula = (doughs, infoWrap, multi) => {
     //  Set up Mix 1
   
-    let [dough, multiple, stickerAmount, bucketSets, mixes,info] = getMixInfo(
+    let [dough, multiple, stickerAmount, bucketSets, mixes, info] = getMixInfo(
       doughs,
       infoWrap
     );
+     stickerAmount = (
+      Number(dough.needed) +
+      Number(dough.buffer) +
+      Number(dough.short)
+    ).toFixed(2);
+    
     console.log(info.bucketSets)
+    console.log(bucketSets)
+    console.log("stickerAmount",stickerAmount)
+    console.log(multiple[multi])
+    console.log(dough.oldDough)
     let Mix1BucketSets = Math.round(dough.bucketSets * multiple[multi]);
     
-    let Mix1OldDough = dough.oldDough * multiple[multi];
+    let Mix1OldDough = (dough.oldDough * multiple[multi]).toFixed(2);
     let Mix150lbFlour = Math.floor(
-      ((0.575 * stickerAmount - bucketSets * 19.22) * multiple[multi]) / 50
+      (0.5731 * ((stickerAmount-dough.oldDough) * multiple[multi]) - (Mix1BucketSets * 19.22)) / 50
     );
     let Mix125lbWater = Math.floor(
-      ((0.372 * stickerAmount - bucketSets * 19.22) * multiple[multi]) / 25
+      (0.3721 * ((stickerAmount-dough.oldDough) * multiple[multi]) - (Mix1BucketSets * 19.22)) / 25
     );
     let Mix1BreadFlour = (
-      ((0.575 * stickerAmount - bucketSets * 19.22) * multiple[multi]) %
-      50
+      (0.5731 * ((stickerAmount-dough.oldDough) * multiple[multi]) - (Mix1BucketSets * 19.22)) % 50
     ).toFixed(2);
-    let Mix1WholeWheat = (0.038 * stickerAmount * multiple[multi]).toFixed(2);
+    let Mix1WholeWheat = (0.038 * (stickerAmount-dough.oldDough) * multiple[multi]).toFixed(2);
     let Mix1Water = (
-      ((0.372 * stickerAmount - bucketSets * 19.22) * multiple[multi]) %
+      ((0.3721 * (stickerAmount-dough.oldDough) - bucketSets * 19.22) * multiple[multi]) %
       25
     ).toFixed(2);
-    let Mix1Salt = (0.013 * stickerAmount * multiple[multi]).toFixed(2);
-    let Mix1Yeast = (0.002 * stickerAmount * multiple[multi]).toFixed(2);
+    let Mix1Salt = (0.013 * (stickerAmount-dough.oldDough) * multiple[multi]).toFixed(2);
+    let Mix1Yeast = (0.002 * (stickerAmount-dough.oldDough) * multiple[multi]).toFixed(2);
   
     return [
       { title: "Bucket Sets", amount: Mix1BucketSets },

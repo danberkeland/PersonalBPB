@@ -101,10 +101,12 @@ export default class ComposeWhatToMake {
     let makeShelfProds = makeProds(products, this.shelfProdsFilter);
     let fullOrdersToday = getFullMakeOrders(today, database);
     let fullOrdersTomorrow = getFullProdMakeOrders(tomorrow, database);
+    console.log(fullOrdersTomorrow)
     for (let make of makeShelfProds) {
       addShelf(make, fullOrdersToday, fullOrdersTomorrow, products, routes);
       addNeedEarly(make, products);
     }
+    
     return makeShelfProds;
   }
 

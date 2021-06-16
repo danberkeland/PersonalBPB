@@ -117,19 +117,18 @@ export const addShelf = (
     .map((ord) => ord.qty * ord.packSize);
   if (qtyToday.length > 0) {
     qtyAccToday = qtyToday.reduce(addUp);
-
-    let qtyTomorrow = fullOrdersTomorrow
-      .filter((full) => make.forBake === full.forBake)
-      .map((ord) => ord.qty * ord.packSize);
-
-    if (qtyTomorrow.length > 0) {
-      qtyAccTomorrow = qtyTomorrow.reduce(addUp);
-    }
-
-    make.qty = qtyAccToday;
-    make.needEarly = qtyAccToday;
-    make.makeTotal = qtyAccTomorrow + qtyAccToday;
   }
+  let qtyTomorrow = fullOrdersTomorrow
+    .filter((full) => make.forBake === full.forBake)
+    .map((ord) => ord.qty * ord.packSize);
+
+  if (qtyTomorrow.length > 0) {
+    qtyAccTomorrow = qtyTomorrow.reduce(addUp);
+  }
+
+  make.qty = qtyAccToday;
+  make.needEarly = qtyAccToday;
+  make.makeTotal = qtyAccTomorrow + qtyAccToday;
 };
 
 const update = (order, products, customers) => {

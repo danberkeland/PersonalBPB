@@ -96,8 +96,19 @@ function BPBNBuckets() {
     }
   };
 
-  const handleClick = (e, amt) => {
-    console.log(amt);
+  const handleClick = (e, amt, old) => {
+    let factor = 1
+    amt = Number(amt)
+    old = Number(old)
+    console.log((amt+old)/3,old)
+    if ((amt+old)/3<old){
+      let oldAmt = amt+old
+      amt = amt + old -(oldAmt)/3;
+      factor = factor/(oldAmt)
+      old = (oldAmt)/3;
+      console.log(factor)
+    }
+    
     let doughName = e.target.id.split("_")[0];
     let components = doughComponents.filter((dgh) => dgh.dough === doughName);
     let wetWeight = Number(
@@ -148,7 +159,7 @@ function BPBNBuckets() {
       doc.setFontSize(14);
       doc.text(`${doughName} - Dry`, 0.2, 0.36);
       doc.setFontSize(10);
-      doc.text(`${amt} lb. Batch`, 2.9, 0.36);
+      doc.text(`${(amt+old).toFixed(2)} lb. Batch`, 2.9, 0.36);
 
       doc.setFontSize(12);
       for (let item of dryFilt) {
@@ -187,7 +198,7 @@ function BPBNBuckets() {
       doc.setFontSize(14);
       doc.text(`${doughName} - Wet`, 0.2, 0.36);
       doc.setFontSize(10);
-      doc.text(`${amt} lb. Batch`, 2.9, 0.36);
+      doc.text(`${(amt+old).toFixed(2)} lb. Batch`, 2.9, 0.36);
 
       doc.setFontSize(12);
       let ct = 0.7;
@@ -226,7 +237,7 @@ function BPBNBuckets() {
       let levPercent =
         components[components.findIndex((comp) => comp.componentName === lev)]
           .amount * 0.01;
-      console.log(levPercent);
+    
       if (levFilt.length > 0) {
         doc.addPage({
           format: [2, 4],
@@ -235,7 +246,7 @@ function BPBNBuckets() {
         doc.setFontSize(14);
         doc.text(`${doughName} - ${lev}`, 0.2, 0.36);
         doc.setFontSize(10);
-        doc.text(`${amt} lb. Batch`, 2.9, 0.36);
+        doc.text(`${(amt+old).toFixed(2)} lb. Batch`, 2.9, 0.36);
 
         doc.setFontSize(12);
         let ct = 0.7;
@@ -262,7 +273,7 @@ function BPBNBuckets() {
       doc.setFontSize(14);
       doc.text(`${doughName} - Add ins`, 0.2, 0.36);
       doc.setFontSize(10);
-      doc.text(`${amt} lb. Batch`, 2.9, 0.36);
+      doc.text(`${(amt+old).toFixed(2)} lb. Batch`, 2.9, 0.36);
 
       doc.setFontSize(12);
       let ct = 0.7;
@@ -287,7 +298,7 @@ function BPBNBuckets() {
       doc.setFontSize(14);
       doc.text(`${doughName} - Salt & Yeast`, 0.2, 0.36);
       doc.setFontSize(10);
-      doc.text(`${amt} lb. Batch`, 2.9, 0.36);
+      doc.text(`${(amt+old).toFixed(2)} lb. Batch`, 2.9, 0.36);
 
       doc.setFontSize(12);
       let ct = 0.7;
@@ -297,6 +308,9 @@ function BPBNBuckets() {
         doc.text(`lb.`, 0.8, ct);
         ct += 0.24;
       }
+      doc.text(`Old Dough`, 1.2, ct);
+        doc.text(`${old.toFixed(2)}`, 0.3, ct);
+        doc.text(`lb.`, 0.8, ct);
     }
 
     doc.save(`${doughName}Stickers.pdf`);
@@ -347,9 +361,9 @@ function BPBNBuckets() {
                 onClick={(e) =>
                   handleClick(
                     e,
-                    Number(dough.buffer) +
+                    (Number(dough.buffer) +
                       Number(dough.needed) -
-                      Number(dough.oldDough)
+                      Number(dough.oldDough)).toFixed(2), Number(dough.oldDough).toFixed(2)
                   )
                 }
                 label="Print Sticker Set"
@@ -361,7 +375,7 @@ function BPBNBuckets() {
               <button
                 key={dough.id + "_print"}
                 id={dough.doughName + "_print"}
-                onClick={(e) => handleClick(e, Number(dough.batchSize))}
+                onClick={(e) => handleClick(e, Number(dough.batchSize),0)}
                 label="Print Sticker Set"
                 className="p-button-rounded p-button-lg"
                 icon="pi pi-print"

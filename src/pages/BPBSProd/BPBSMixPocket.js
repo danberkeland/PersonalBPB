@@ -65,7 +65,7 @@ function BPBSMixPocket() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const gatherDoughInfo = (database) => {
-    let doughData = compose.returnDoughBreakDown(twoDay, database, "Prado");
+    let doughData = compose.returnDoughBreakDown(database, "Prado");
     setDoughs(doughData.doughs);
     setDoughComponents(doughData.doughComponents);
     setPockets(doughData.pockets)

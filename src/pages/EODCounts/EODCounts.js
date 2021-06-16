@@ -71,10 +71,12 @@ function EODCounts({ loc }) {
 
   const [signedIn, setSignedIn] = useState("null");
   const [eodProds, setEODProds] = useState();
+  const [pocketsToMap, setPocketsToMap ] = useState();
   const [shelfBag, setShelfBag] = useState(false);
   const [shelfEa, setShelfEa] = useState(false);
   const [freezerBag, setFreezerBag] = useState(false);
   const [freezerEa, setFreezerEa] = useState(false);
+  const [pocketCount, setPocketCount] = useState(true);
 
 
   useEffect(() => {
@@ -93,6 +95,16 @@ function EODCounts({ loc }) {
     );
     setEODProds(prodsToMap);
   }, [products]);
+
+  useEffect(() => {
+    let pocketsToMap = products.filter(
+      (prod) => prod.bakedWhere[0] === loc && prod.doughType === "French"
+    );
+    setPocketsToMap(pocketsToMap);
+  }, [products]);
+
+
+  console.log(pocketsToMap)
 
 
   useEffect(() => {
@@ -195,6 +207,24 @@ function EODCounts({ loc }) {
       />
     );
   };
+
+  const handlePocketInput = (e) => {
+    return (
+      <InputText
+        id={e.id}
+        style={{
+          width: "50px",
+          backgroundColor: "#E3F2FD",
+          fontWeight: "bold",
+        }}
+        placeholder={e.currentStock}
+        //onKeyUp={(e) => e.code === "Enter" && setProducts(handleChange(e))}
+        //onBlur={(e) => setProducts(handleBlur(e))}
+      />
+    );
+  };
+
+  
 
   const handleSignIn = () => {
     let signIn;
@@ -348,11 +378,35 @@ function EODCounts({ loc }) {
             ></Column>
           </DataTable>
         )}
+
+<h2>Pocket Count</h2>
+
+{pocketCount && (
+          <DataTable
+            value={Array.from(new Set(pocketsToMap.map(pock => pock.weight))).map(arr => ({"weight":arr+" lb.",
+          "currentStock": products[products.findIndex(prod => prod.weight === arr && prod.doughType==="French" )].prepreshaped}))}
+            className="p-datatable-sm"
+          >
+            <Column field="weight" header="Pocket Weight"></Column>
+            <Column></Column>
+            <Column
+              className="p-text-center"
+              header="ea"
+              body={(e) => handlePocketInput(e)}
+            ></Column>
+            <Column
+              className="p-text-center"
+              header="Who Counted Last"
+              body={lastCount}
+            ></Column>
+          </DataTable>
+        )}
      
       </React.Fragment>
       ) : (
         <div></div>
       )}
+      
        </WholeBox>
     </React.Fragment>
   );

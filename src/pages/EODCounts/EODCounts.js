@@ -104,8 +104,6 @@ function EODCounts({ loc }) {
   }, [products]);
 
 
-  console.log(pocketsToMap)
-
 
   useEffect(() => {
     if (eodProds){
@@ -172,6 +170,8 @@ function EODCounts({ loc }) {
     }
   };
 
+  
+
   const handleChange = (value) => {
     if (value.code === "Enter") {
       let itemToUpdate = clonedeep(products);
@@ -208,18 +208,53 @@ function EODCounts({ loc }) {
     );
   };
 
+  const handlePockChange = async (e) => {
+    console.log(e)
+    console.log(signedIn)
+    let prodsToMod = clonedeep(products)
+    for (let prod of prodsToMod){
+      let weight = e.target.id.split(" ")[0]
+     
+      if (Number(prod.weight) === Number(weight)){
+        prod.prepreshaped = e.target.value
+        prod.whoCountedLast = signedIn
+        prod.updatedAt = DateTime.now().setZone("America/Los_Angeles");
+       let itemUpdate = {
+         id: prod.id,
+         prepreshaped: Number(e.target.value),
+         whoCountedLast: signedIn
+         
+       }
+       try {
+        await API.graphql(
+          graphqlOperation(updateProduct, { input: { ...itemUpdate } })
+        );
+       
+      } catch (error) {
+        console.log("error on updating product", error);
+       
+      }  
+      }
+    }
+    setProducts(prodsToMod)
+    
+  }
+
+
+
   const handlePocketInput = (e) => {
+    
     return (
       <InputText
-        id={e.id}
+        id={e.weight}
         style={{
           width: "50px",
           backgroundColor: "#E3F2FD",
           fontWeight: "bold",
         }}
         placeholder={e.currentStock}
-        //onKeyUp={(e) => e.code === "Enter" && setProducts(handleChange(e))}
-        //onBlur={(e) => setProducts(handleBlur(e))}
+        onKeyUp={(e) => e.code === "Enter" ? handlePockChange(e) : ''}
+        onBlur={(e) => handlePockChange(e)}
       />
     );
   };
@@ -383,8 +418,10 @@ function EODCounts({ loc }) {
 
 {pocketCount && (
           <DataTable
-            value={Array.from(new Set(pocketsToMap.map(pock => pock.weight))).map(arr => ({"weight":arr+" lb.",
-          "currentStock": products[products.findIndex(prod => prod.weight === arr && prod.doughType==="French" )].prepreshaped}))}
+            value={Array.from(new Set(pocketsToMap.map(pock => pock.weight))).map(arr => ({weight:arr+" lb.",
+          currentStock: products[products.findIndex(prod => prod.weight === arr && prod.doughType==="French" )].prepreshaped,
+          updatedAt: products[products.findIndex(prod => prod.weight === arr && prod.doughType==="French" )].updatedAt,
+          whoCountedLast: products[products.findIndex(prod => prod.weight === arr && prod.doughType==="French" )].whoCountedLast}))}
             className="p-datatable-sm"
           >
             <Column field="weight" header="Pocket Weight"></Column>

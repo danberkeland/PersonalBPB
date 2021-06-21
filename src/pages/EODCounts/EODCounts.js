@@ -214,8 +214,9 @@ function EODCounts({ loc }) {
     let prodsToMod = clonedeep(products)
     for (let prod of prodsToMod){
       let weight = e.target.id.split(" ")[0]
-     
-      if (Number(prod.weight) === Number(weight)){
+      // Account for doughtype
+      
+      if (Number(prod.weight) === Number(weight) && prod.doughType==="French"){
         prod.prepreshaped = e.target.value
         prod.whoCountedLast = signedIn
         prod.updatedAt = DateTime.now().setZone("America/Los_Angeles");

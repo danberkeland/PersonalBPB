@@ -15,9 +15,18 @@ let today = todayPlus()[0];
 
 const makeProds = (products, filt) => {
   let make = Array.from(
-    new Set(products.filter((prod) => filt(prod)).map((prod) => prod.forBake))
+    new Set(
+      products
+        .filter((prod) => filt(prod))
+        .map(
+          (prod) =>
+            prod.forBake + "_" + prod.weight.toString() + "_" + prod.doughType
+        )
+    )
   ).map((make) => ({
-    forBake: make,
+    forBake: make.split("_")[0],
+    weight: Number(make.split("_")[1]),
+    doughType: make.split("_")[2],
     qty: 0,
     makeTotal: 0,
     bagEOD: 0,
@@ -37,14 +46,13 @@ const getFullProdMakeOrders = (delivDate, database) => {
   return fullOrder;
 };
 
-
-
 export default class ComposeWhatToMake {
   returnMakeBreakDown = (database) => {
     let pocketsNorth = this.getPocketsNorth(database);
     let freshProds = this.getFreshProds(database);
     let shelfProds = this.getShelfProds(database);
     let freezerProds = this.getFreezerProds(database);
+    let youllBeShort = this.getYoullBeShort(database);
 
     [freshProds, shelfProds] = handleFrenchConundrum(freshProds, shelfProds);
 
@@ -53,6 +61,7 @@ export default class ComposeWhatToMake {
       freshProds: freshProds,
       shelfProds: shelfProds,
       freezerProds: freezerProds,
+      youllBeShort: youllBeShort,
     };
   };
 
@@ -79,6 +88,7 @@ export default class ComposeWhatToMake {
   getFreshProds = (database) => {
     const [products, customers, routes, standing, orders] = database;
     let makeFreshProds = makeProds(products, this.freshProdFilter);
+    console.log(makeFreshProds);
     let fullOrdersToday = getFullMakeOrders(today, database);
     let fullOrdersTomorrow = getFullMakeOrders(tomorrow, database);
     for (let make of makeFreshProds) {
@@ -101,12 +111,12 @@ export default class ComposeWhatToMake {
     let makeShelfProds = makeProds(products, this.shelfProdsFilter);
     let fullOrdersToday = getFullMakeOrders(today, database);
     let fullOrdersTomorrow = getFullProdMakeOrders(tomorrow, database);
-    console.log(fullOrdersTomorrow)
+    console.log(fullOrdersTomorrow);
     for (let make of makeShelfProds) {
       addShelf(make, fullOrdersToday, fullOrdersTomorrow, products, routes);
       addNeedEarly(make, products);
     }
-    
+
     return makeShelfProds;
   }
 
@@ -141,4 +151,61 @@ export default class ComposeWhatToMake {
       prod.freezerThaw === true;
     return fil;
   };
+
+  getYoullBeShort(database) {
+    const [products, customers, routes, standing, orders] = database;
+    let pocketsNorth = this.getPocketsNorth(database)
+      .filter((item) => item.doughType === "French")
+      .map((item) => ({
+        pocketWeight: item.weight,
+        makeTotal: item.makeTotal,
+      }));
+    let shelfProds = this.getShelfProds(database)
+      .filter((item) => item.doughType === "French")
+      .map((item) => ({
+        pocketWeight: item.weight,
+        makeTotal: item.makeTotal,
+      }));
+    let freshProds = this.getFreshProds(database)
+      .filter((item) => item.doughType === "French")
+      .map((item) => ({
+        pocketWeight: item.weight,
+        makeTotal: item.makeTotal,
+      }));
+    let freezerProds = this.getFreezerProds(database)
+      .filter((item) => item.doughType === "French")
+      .map((item) => ({
+        pocketWeight: item.weight,
+        makeTotal: item.makeTotal,
+      }));
+
+    let weightStr = pocketsNorth.concat(shelfProds, freshProds, freezerProds);
+    console.log(weightStr);
+    let weightList = Array.from(
+      new Set(weightStr.map((weight) => weight.pocketWeight))
+    ).map((pock) => ({ pocketWeight: pock, makeTotal: 0 }));
+    console.log(weightList);
+    for (let weight of weightList) {
+      for (let pocket of weightStr) {
+        if (pocket.pocketWeight === weight.pocketWeight) {
+          weight.makeTotal = weight.makeTotal + pocket.makeTotal;
+        }
+      }
+    }
+
+    console.log(weightList);
+    for (let weight of weightList) {
+      let availablePockets = products[products.findIndex(
+        (prod) =>
+          prod.weight === weight.pocketWeight && prod.doughType === "French"
+      )].preshaped;
+      weight.makeTotal = Number(weight.makeTotal)-Number(availablePockets)
+      if (weight.makeTotal <= 0){
+        weight.makeTotal = ''
+      }
+    }
+
+    weightList = weightList.filter(weight => weight.makeTotal !== '')
+    return weightList;
+  }
 }

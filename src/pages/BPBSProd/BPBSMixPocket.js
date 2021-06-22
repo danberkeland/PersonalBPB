@@ -9,6 +9,7 @@ import { Column } from "primereact/column";
 
 import { promisedData } from "../../helpers/databaseFetchers";
 import ComposeDough from "../BPBNProd/Utils/composeDough";
+import ComposeWhatToMake from "./BPBSWhatToMakeUtils/composeWhatToMake"
 import { todayPlus } from "../../helpers/dateTimeHelpers";
 
 import { updateDough } from "../../graphql/mutations";
@@ -44,19 +45,39 @@ const ThreeColumnGrid = styled.div`
   padding: 5px;
 `;
 
+const ButtonStyle = styled.button`
+  border: 0;
+  background-color: #4CAF50;
+  color: white;
+  font-size: 20px;
+  border-radius: 15px;
+  box-shadow: 0 9px #999;
+  &:hover {
+    background-color: #3E8E41;
+  }
+  &:active {
+    background-color: #3E8E41;
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+  }
+  `
+
+
 const addUp = (acc, val) => {
   return acc + val;
 };
 
 const clonedeep = require("lodash.clonedeep");
 const compose = new ComposeDough();
+const shortage = new ComposeWhatToMake()
 
 function BPBSMixPocket() {
   const { setIsLoading } = useContext(ToggleContext);
 
   const [ pockets, setPockets ] = useState([])
-  const [doughs, setDoughs] = useState([]);
-  const [doughComponents, setDoughComponents] = useState([]);
+  const [ doughs, setDoughs ] = useState([]);
+  const [ doughComponents, setDoughComponents ] = useState([]);
+  const [ shortWeight, setShortWeight ] = useState(0);
 
   let twoDay = todayPlus()[2];
 
@@ -64,11 +85,18 @@ function BPBSMixPocket() {
     promisedData(setIsLoading).then((database) => gatherDoughInfo(database));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  
   const gatherDoughInfo = (database) => {
     let doughData = compose.returnDoughBreakDown(database, "Prado");
+    let shortageData = shortage.getYoullBeShort(database)
     setDoughs(doughData.doughs);
     setDoughComponents(doughData.doughComponents);
     setPockets(doughData.pockets)
+    let short = 0
+    for (let data of shortageData){
+      short = (short + (Number(data.pocketWeight)*Number(data.makeTotal))).toFixed(2);
+    }
+    setShortWeight(short)
   };
 
   const handleChange = (e) => {
@@ -360,11 +388,11 @@ function BPBSMixPocket() {
     <React.Fragment>
       <WholeBox>
         <h1>BPBS French Mix/Pocket</h1>
-        {doughs.map((dough) => (
+        {doughs.filter(dgh => dgh.doughName==="French").map((dough) => (
           <React.Fragment key={dough.id + "_firstFrag"}>
             <h3>
-              {dough.doughName}: (need {dough.needed} lb.) TOTAL:
-              {Number(Number(dough.needed) + Number(dough.buffer))}
+              {dough.doughName}: (for tomorrow {dough.needed} lb.) + (short Today {shortWeight} lb.) + (buffer {dough.buffer} lb.) = TOTAL: 
+              {Number(Number(shortWeight) + Number(dough.needed) + Number(dough.buffer))}
             </h3>
             <ThreeColumnGrid key={dough.id + "_first2Col"}>
               <div>
@@ -395,14 +423,14 @@ function BPBSMixPocket() {
                   </div>
                 </TwoColumnGrid>
               </div>
-              <button
+              <ButtonStyle
                 key={dough.id + "_print"}
                 id={dough.doughName + "_print"}
                 onClick={(e) =>
                   handleClick(
                     e,
                     Number(dough.buffer) +
-                      Number(dough.needed) -
+                      Number(dough.needed) + Number(shortWeight) -
                       Number(dough.oldDough)
                   )
                 }
@@ -411,22 +439,8 @@ function BPBSMixPocket() {
                 icon="pi pi-print"
               >
                 Print Sticker Set
-              </button>
-              <button
-                key={dough.id + "_print"}
-                id={dough.doughName + "_print"}
-                onClick={(e) =>
-                  handleClick(
-                    e,
-                    Number(dough.batchSize)
-                  )
-                }
-                label="Print Sticker Set"
-                className="p-button-rounded p-button-lg"
-                icon="pi pi-print"
-              >
-                Print Default Sticker Set
-              </button>
+              </ButtonStyle>
+              
             </ThreeColumnGrid>
           </React.Fragment>
         ))}

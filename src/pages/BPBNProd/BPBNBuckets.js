@@ -40,6 +40,24 @@ const ThreeColumnGrid = styled.div`
   padding: 5px;
 `;
 
+const ButtonStyle = styled.button`
+  border: 0;
+  background-color: #4CAF50;
+  color: white;
+  font-size: 20px;
+  border-radius: 15px;
+  box-shadow: 0 9px #999;
+  &:hover {
+    background-color: #3E8E41;
+  }
+  &:active {
+    background-color: #3E8E41;
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+  }
+  `
+
+
 const addUp = (acc, val) => {
   return acc + val;
 };
@@ -355,7 +373,7 @@ function BPBNBuckets() {
                   </div>
                 </TwoColumnGrid>
               </div>
-              <button
+              <ButtonStyle
                 key={dough.id + "_print"}
                 id={dough.doughName + "_print"}
                 onClick={(e) =>
@@ -371,17 +389,8 @@ function BPBNBuckets() {
                 icon="pi pi-print"
               >
                 Print Sticker Set
-              </button>
-              <button
-                key={dough.id + "_print"}
-                id={dough.doughName + "_print"}
-                onClick={(e) => handleClick(e, Number(dough.batchSize),0)}
-                label="Print Sticker Set"
-                className="p-button-rounded p-button-lg"
-                icon="pi pi-print"
-              >
-                Print Default Sticker Set
-              </button>
+              </ButtonStyle>
+              
             </ThreeColumnGrid>
           </React.Fragment>
         ))}

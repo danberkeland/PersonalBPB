@@ -152,7 +152,7 @@ export default class ComposeWhatToMake {
     return fil;
   };
 
-  getYoullBeShort(database) {
+  getYoullBeShort = (database) => {
     const [products, customers, routes, standing, orders] = database;
     let pocketsNorth = this.getPocketsNorth(database)
       .filter((item) => item.doughType === "French")
@@ -193,7 +193,6 @@ export default class ComposeWhatToMake {
       }
     }
 
-    console.log(weightList);
     for (let weight of weightList) {
       let availablePockets = products[products.findIndex(
         (prod) =>

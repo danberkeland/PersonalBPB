@@ -192,7 +192,7 @@ function NorthList() {
 
       doc.autoTable({
         body: shelfProdsNorth,
-        theme: 'plain',
+        theme: 'grid',
         columns: columnsShelfProdsNorth,
         startY: finalY + titleToNextTable,
         styles: { fontSize: tableFont },
@@ -207,7 +207,7 @@ function NorthList() {
 
       doc.autoTable({
         body: CarltonToPrado,
-        theme: 'plain',
+        theme: 'grid',
         columns: columnsCarltonToPrado,
         startY: finalY + titleToNextTable,
         styles: { fontSize: tableFont },
@@ -232,7 +232,7 @@ function NorthList() {
     if (columnsBaguettes.length > 0) {
       doc.autoTable({
         body: Baguettes,
-        theme: 'plain',
+        theme: 'grid',
         columns: columnsBaguettes,
         startY: finalY + titleToNextTable,
         styles: { fontSize: tableFont },
@@ -243,7 +243,7 @@ function NorthList() {
 
       doc.autoTable({
         pageBreak: "avoid",
-        theme: 'plain',
+        theme: 'grid',
         body: otherRustics,
         columns: columnsOtherRustics,
         startY: finalY + titleToNextTable,
@@ -255,7 +255,7 @@ function NorthList() {
 
       doc.autoTable({
         body: retailStuff,
-        theme: 'plain',
+        theme: 'grid',
         columns: columnsRetailStuff,
         startY: finalY + titleToNextTable,
         styles: { fontSize: tableFont },
@@ -266,7 +266,7 @@ function NorthList() {
 
       doc.autoTable({
         body: earlyDeliveries,
-        theme: 'plain',
+        theme: 'grid',
         columns: columnsEarlyDeliveries,
         startY: finalY + titleToNextTable,
         styles: { fontSize: tableFont },
@@ -316,7 +316,8 @@ function NorthList() {
         <h3>Frozen and Baked Croix</h3>
         <DataTable value={croixNorth} className="p-datatable-sm">
           <Column field="prodNick" header="Product"></Column>
-          <Column field="qty" header="Qty"></Column>
+          <Column field="qty" header="Frozen"></Column>
+          <Column field="bakedNorth" header="Baked"></Column>
          
         </DataTable>
 

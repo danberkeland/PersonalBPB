@@ -206,7 +206,7 @@ export const createColumns = (listOfProducts) => {
       field: "customer",
       header: "customer",
       dataKey: "customer",
-      width: { width: "10%" },
+      width: { width: "70px" },
     },
   ];
   for (let prod of listOfProducts) {

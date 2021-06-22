@@ -102,6 +102,12 @@ export const getProduct = /* GraphQL */ `
       preshaped
       prepreshaped
       updatePreDate
+      backporchbakerypre
+      backporchbakery
+      bpbextrapre
+      bpbextra
+      bpbssetoutpre
+      bpbssetout
       createdAt
       updatedAt
     }
@@ -142,6 +148,12 @@ export const listProducts = /* GraphQL */ `
         preshaped
         prepreshaped
         updatePreDate
+        backporchbakerypre
+        backporchbakery
+        bpbextrapre
+        bpbextra
+        bpbssetoutpre
+        bpbssetout
         createdAt
         updatedAt
       }

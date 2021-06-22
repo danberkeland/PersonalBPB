@@ -227,6 +227,25 @@ export default class ComposeNorthList {
     let combogrid = this.combineGrids(frozenToday, bakedTomorrow);
     combogrid = this.subtractCurrentStock(products, combogrid)
     combogrid = this.adjustForPackSize(combogrid);
+
+    for (let combo of combogrid){
+      combo.prodNick = combo.prodNick.substring(2)
+      combo.bakedNorth = 5
+
+      let ind = products.findIndex(prod => prod.nickName === combo.prodNick)
+      let backporchbakery = products[ind].backporchbakery
+      let bpbssetout = products[ind].bpbssetout
+      let bpbextra = products[ind].bpbextra
+      let diff = bpbssetout
+      // diff = BPBS deliv of prod for today
+      combo.bakedNorth = (Number(backporchbakery)/2) - (Number(diff) - Number(bpbssetout)) - Number(bpbextra)
+      if (combo.bakedNorth < 0){
+        combo.bakedNorth = 0
+      }
+    }
+
+    
+
     
     return combogrid;
   };

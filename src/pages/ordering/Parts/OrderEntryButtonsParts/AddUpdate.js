@@ -65,16 +65,19 @@ function AddUpdate({ database, setDatabase }) {
             await API.graphql(
               graphqlOperation(updateOrder, { input: { ...updateDetails } })
             );
+            console.log(updateDetails.prodName,"Successful update")
           } catch (error) {
-            console.log("error on updating Orders", error);
+            console.log(updateDetails.prodName,"Failed Update")
+
           }
         } else {
           try {
             await API.graphql(
               graphqlOperation(createOrder, { input: { ...updateDetails } })
             );
+            console.log(updateDetails.prodName,"Successful create")
           } catch (error) {
-            console.log("error on creating Orders", error);
+            console.log(updateDetails.prodName,"Failed create")
           }
         }
       }

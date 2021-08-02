@@ -53,52 +53,9 @@ function Ordering() {
     setOrdersHasBeenChanged,
   } = useContext(ToggleContext);
 
-  const updatePreInDB = async (database,prodsToUpdate) => {
-    let DBToMod = clonedeep(database);
-      DBToMod[0] = prodsToUpdate;
-      setDatabase(DBToMod);
-      console.log("Yes they have!  Updating preshaped in DB");
-      for (let prod of prodsToUpdate) {
-        let prodToUpdate = {
-          id: prod.id,
-          preshaped: prod.preshaped,
-          prepreshaped: prod.prepreshaped,
-          updatePreDate: prod.updatePreDate,
-        };
-        try {
-          await API.graphql(
-            graphqlOperation(updateProduct, { input: { ...prodToUpdate } })
-          );
-        } catch (error) {
-          console.log("error on creating Orders", error);
-          setIsLoading(false);
-        }
-      }
-  }
+  
 
-  const updatePreBucketsInDB = async (database, doughsToUpdate) => {
-    console.log("Yes they have!  Updating pre buckets in DB");
-      let DBToMod = clonedeep(database);
-      DBToMod[5] = doughsToUpdate;
-      setDatabase(DBToMod);
-      for (let dgh of doughsToUpdate) {
-        let doughToUpdate = {
-          id: dgh.id,
-          bucketSets: dgh.bucketSets,
-          preBucketSets: dgh.preBucketSets,
-          updatePreBucket: dgh.updatePreBucket,
-        };
-        try {
-          await API.graphql(
-            graphqlOperation(updateDough, { input: { ...doughToUpdate } })
-          );
-        } catch (error) {
-          console.log("error on creating Orders", error);
-          setIsLoading(false);
-        }
-      }
-  }
-
+  
   const loadDatabase = async (database) => {
     setIsLoading(true);
     const [products, customers, routes, standing, orders, doughs] = database;
@@ -114,7 +71,20 @@ function Ordering() {
         if (prod.updatePreDate === today) {
           prod.preshaped = prod.prepreshaped;
           prod.updatePreDate = tomorrow;
-          updatePreInDB(database,prodsToUpdate)
+          let prodToUpdate = {
+            id: prod.id,
+            preshaped: prod.preshaped,
+            prepreshaped: prod.prepreshaped,
+            updatePreDate: prod.updatePreDate,
+          };
+          try {
+            await API.graphql(
+              graphqlOperation(updateProduct, { input: { ...prodToUpdate } })
+            );
+          } catch (error) {
+            console.log("error on creating Orders", error);
+            setIsLoading(false);
+          }
         }
       }
       console.log("Yes they have!  Updating prepped bucket numbers");
@@ -126,7 +96,20 @@ function Ordering() {
         if (dgh.updatePreBucket === today) {
           dgh.bucketSets = dgh.preBucketSets;
           dgh.updatePreBucket = tomorrow;
-          updatePreBucketsInDB(database,doughsToUpdate)
+          let doughToUpdate = {
+            id: dgh.id,
+            bucketSets: dgh.bucketSets,
+            preBucketSets: dgh.preBucketSets,
+            updatePreBucket: dgh.updatePreBucket,
+          };
+          try {
+            await API.graphql(
+              graphqlOperation(updateDough, { input: { ...doughToUpdate } })
+            );
+          } catch (error) {
+            console.log("error on creating Orders", error);
+            setIsLoading(false);
+          }
         }
       }
 

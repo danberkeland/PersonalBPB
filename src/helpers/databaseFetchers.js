@@ -29,6 +29,7 @@ const fetchFromDataBase = async (baseFunc, base, limit) => {
     const data = await API.graphql(
       graphqlOperation(baseFunc, { limit: limit })
     );
+    
     const list = data.data[base].items;
     return list;
   } catch (error) {
@@ -44,7 +45,9 @@ const fetchFromDataBaseWithFilter = async (baseFunc, base, limit, filt) => {
         filter: filt,
       })
     );
+   
     const list = data.data[base].items;
+    
     return list;
   } catch (error) {
     console.log(`error on fetching ${base} data`, error);
@@ -123,24 +126,35 @@ export const fetchOrders = async () => {
   let noDelete = ordList.filter((cust) => cust["_deleted"] !== true);
   let sortedData = sortAtoZDataByIndex(noDelete, "timeStamp");
   sortedData = sortAtoZDataByIndex(sortedData, "prodName");
+  
   return sortedData;
 };
 
 export const promisedData = (setIsLoading) => {
+  
   const all = new Promise((resolve, reject) => {
     resolve(fetchData(setIsLoading));
   });
+ 
   return all;
 };
 
 const fetchData = async (setIsLoading) => {
   setIsLoading(true);
+ 
+  console.log("Fetching Product Info")
   let products = await fetchProducts();
+  console.log("Fetching Customer Info")
   let customers = await fetchCustomers();
+  console.log("Fetching Route Info")
   let routes = await fetchRoutes();
+  console.log("Fetching Standing Info")
   let standing = await fetchStanding();
+  console.log("Fetching Order Info")
   let orders = await fetchOrders();
+  console.log("Fetching Dough Info")
   let doughs = await fetchDoughs();
+  console.log("Fetching Dough Components Info")
   let doughComponents = await fetchDoughComponents();
   let data = [
     products,
@@ -152,6 +166,7 @@ const fetchData = async (setIsLoading) => {
     doughComponents,
   ];
   setIsLoading(false);
+  
   return data;
 };
 

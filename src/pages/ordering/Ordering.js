@@ -5,7 +5,11 @@ import CurrentOrderInfo from "./Parts/CurrentOrderInfo";
 import CurrentOrderList from "./Parts/CurrentOrderList";
 import OrderCommandLine from "./Parts/OrderCommandLine";
 import OrderEntryButtons from "./Parts/OrderEntryButtons";
-import { createOrder, updateDough, updateProduct } from "../../graphql/mutations";
+import {
+  createOrder,
+  updateDough,
+  updateProduct,
+} from "../../graphql/mutations";
 
 import { API, graphqlOperation } from "aws-amplify";
 import { todayPlus } from "../../helpers/dateTimeHelpers";
@@ -41,151 +45,162 @@ const BasicContainer = styled.div`
 
 function Ordering() {
   const [database, setDatabase] = useState([]);
-  const { reload, setIsLoading, setModifications, ordersHasBeenChanged, setOrdersHasBeenChanged } = useContext(ToggleContext);
+  const {
+    reload,
+    setIsLoading,
+    setModifications,
+    ordersHasBeenChanged,
+    setOrdersHasBeenChanged,
+  } = useContext(ToggleContext);
 
-  const loadDatabase = async (database) => {
-    setIsLoading(true)
-    const [products, customers, routes, standing, orders, doughs] = database;
-
-    if(ordersHasBeenChanged){
-    let prodsToUpdate = clonedeep(products)
-    let doughsToUpdate = clonedeep(doughs)
-
-    for (let prod of prodsToUpdate){
-      if (prod.updatePreDate !== tomorrow){
-        prod.updatePreDate = today
-      }
-      if (prod.updatePreDate === today){
-        prod.preshaped = prod.prepreshaped
-        prod.updatePreDate = tomorrow
-
-      }
-    }
-
-    for (let dgh of doughsToUpdate){
-      
-      if (dgh.updatePreBucket !== tomorrow){
-        dgh.updatePreBucket = today
-      }
-      if (dgh.updatePreBucket === today){
-        dgh.bucketSets = dgh.preBucketSets
-        dgh.updatePreBucket = tomorrow
-       
-
-      }
-    }
-
+  const updatePreInDB = async (database,prodsToUpdate) => {
     let DBToMod = clonedeep(database);
-    DBToMod[0] = prodsToUpdate;
-    DBToMod[5] = doughsToUpdate;
-    console.log(doughsToUpdate)
-    setDatabase(DBToMod);
-
-    for (let prod of prodsToUpdate){
-      
-      let prodToUpdate = {
-        id: prod.id,
-        preshaped: prod.preshaped,
-        prepreshaped: prod.prepreshaped,
-        updatePreDate: prod.updatePreDate      
-      };
-      try {
-        await API.graphql(
-          graphqlOperation(updateProduct, { input: { ...prodToUpdate } })
-        );
-
-      } catch (error) {
-        console.log("error on creating Orders", error);
-        setIsLoading(false)
-      }
-    }
-
-    for (let dgh of doughsToUpdate){
-      
-      let doughToUpdate = {
-        id: dgh.id,
-        bucketSets: dgh.bucketSets,
-        preBucketSets: dgh.preBucketSets,
-        updatePreBucket: dgh.updatePreBucket      
-      };
-      try {
-        await API.graphql(
-          graphqlOperation(updateDough, { input: { ...doughToUpdate } })
-        );
-
-      } catch (error) {
-        console.log("error on creating Orders", error);
-        setIsLoading(false)
-      }
-    }
-    
-
-    
-    let ordsToUpdate = clonedeep(orders);
-    setDatabase(database);
-    let ord = await fetchSq(database);
-    if (ord){
-    console.log("ord", ord);
-    for (let newOrd of ord) {
-      let qty = Number(newOrd["qty"]);
-      let dt = new Date().toISOString();
-      let delivDate = newOrd["delivDate"].split("T")[0];
-      delivDate = delivDate.split("-");
-      delivDate = delivDate[1] + "/" + delivDate[2] + "/" + delivDate[0];
-
-      let locIDBPBN = "16VS30T9E7CM9";
-      console.log(newOrd.location);
-      console.log(locIDBPBN);
-      let rt = "slopick";
-      let custName = newOrd["custName"];
-
-      let prodName =
-        products[
-          products.findIndex((prod) => newOrd["item"].includes(prod.squareID))
-        ]["prodName"];
-
-      if (newOrd.location === locIDBPBN) {
-        rt = "atownpick";
-      }
-
-      let itemToAdd = {
-        SO: qty,
-        qty: qty,
-        timeStamp: dt,
-        isWhole: false,
-        PONote: "paid",
-        delivDate: delivDate,
-        custName: custName,
-        prodName: prodName,
-        route: rt,
-      };
-
-      // Search orders for object, if doesn't exist, add:
-      let ind = orders.findIndex(
-        (ord) => ord["custName"] === custName && ord["prodName"] === prodName
-      );
-
-      if (ind === -1) {
+      DBToMod[0] = prodsToUpdate;
+      setDatabase(DBToMod);
+      console.log("Yes they have!  Updating preshaped in DB");
+      for (let prod of prodsToUpdate) {
+        let prodToUpdate = {
+          id: prod.id,
+          preshaped: prod.preshaped,
+          prepreshaped: prod.prepreshaped,
+          updatePreDate: prod.updatePreDate,
+        };
         try {
           await API.graphql(
-            graphqlOperation(createOrder, { input: { ...itemToAdd } })
+            graphqlOperation(updateProduct, { input: { ...prodToUpdate } })
           );
-          ordsToUpdate.push(itemToAdd);
         } catch (error) {
           console.log("error on creating Orders", error);
-          setIsLoading(false)
+          setIsLoading(false);
         }
       }
+  }
+
+  const updatePreBucketsInDB = async (database, doughsToUpdate) => {
+    console.log("Yes they have!  Updating pre buckets in DB");
+      let DBToMod = clonedeep(database);
+      DBToMod[5] = doughsToUpdate;
+      setDatabase(DBToMod);
+      for (let dgh of doughsToUpdate) {
+        let doughToUpdate = {
+          id: dgh.id,
+          bucketSets: dgh.bucketSets,
+          preBucketSets: dgh.preBucketSets,
+          updatePreBucket: dgh.updatePreBucket,
+        };
+        try {
+          await API.graphql(
+            graphqlOperation(updateDough, { input: { ...doughToUpdate } })
+          );
+        } catch (error) {
+          console.log("error on creating Orders", error);
+          setIsLoading(false);
+        }
+      }
+  }
+
+  const loadDatabase = async (database) => {
+    setIsLoading(true);
+    const [products, customers, routes, standing, orders, doughs] = database;
+    console.log("Checking if Orders Have been changed");
+    if (ordersHasBeenChanged) {
+      let prodsToUpdate = clonedeep(products);
+      let doughsToUpdate = clonedeep(doughs);
+      console.log("Yes they have!  Updating preshaped numbers");
+      for (let prod of prodsToUpdate) {
+        if (prod.updatePreDate !== tomorrow) {
+          prod.updatePreDate = today;
+        }
+        if (prod.updatePreDate === today) {
+          prod.preshaped = prod.prepreshaped;
+          prod.updatePreDate = tomorrow;
+          updatePreInDB(database,prodsToUpdate)
+        }
+      }
+      console.log("Yes they have!  Updating prepped bucket numbers");
+      
+      for (let dgh of doughsToUpdate) {
+        if (dgh.updatePreBucket !== tomorrow) {
+          dgh.updatePreBucket = today;
+        }
+        if (dgh.updatePreBucket === today) {
+          dgh.bucketSets = dgh.preBucketSets;
+          dgh.updatePreBucket = tomorrow;
+          updatePreBucketsInDB(database,doughsToUpdate)
+        }
+      }
+
+      
+      
+      console.log("Yes they have!  Loading new Square Orders in DB");
+      let ordsToUpdate = clonedeep(orders);
+      setDatabase(database);
+      let ord = await fetchSq(database);
+      if (ord) {
+        
+        for (let newOrd of ord) {
+          let qty = Number(newOrd["qty"]);
+          let dt = new Date().toISOString();
+          let delivDate = newOrd["delivDate"].split("T")[0];
+          delivDate = delivDate.split("-");
+          delivDate = delivDate[1] + "/" + delivDate[2] + "/" + delivDate[0];
+
+          let locIDBPBN = "16VS30T9E7CM9";
+          
+          let rt = "slopick";
+          let custName = newOrd["custName"];
+
+          let prodName =
+            products[
+              products.findIndex((prod) =>
+                newOrd["item"].includes(prod.squareID)
+              )
+            ]["prodName"];
+
+          if (newOrd.location === locIDBPBN) {
+            rt = "atownpick";
+          }
+
+          let itemToAdd = {
+            SO: qty,
+            qty: qty,
+            timeStamp: dt,
+            isWhole: false,
+            PONote: "paid",
+            delivDate: delivDate,
+            custName: custName,
+            prodName: prodName,
+            route: rt,
+          };
+
+          // Search orders for object, if doesn't exist, add:
+          let ind = orders.findIndex(
+            (ord) =>
+              ord["custName"] === custName && ord["prodName"] === prodName
+          );
+
+          if (ind === -1) {
+            try {
+              await API.graphql(
+                graphqlOperation(createOrder, { input: { ...itemToAdd } })
+              );
+              ordsToUpdate.push(itemToAdd);
+            } catch (error) {
+              console.log("error on creating Orders", error);
+              setIsLoading(false);
+            }
+          }
+        }
+        let DBToMod = clonedeep(database);
+        DBToMod[4] = ordsToUpdate;
+        setDatabase(DBToMod);
+      } else {
+        console.log("Square orders did not load");
+      }
     }
-    let DBToMod = clonedeep(database);
-    DBToMod[4] = ordsToUpdate;
-    setDatabase(DBToMod);
-  } else {
-    console.log("Square orders did not load")
-  }} 
-  setDatabase(database);
-  setIsLoading(false)
-  setOrdersHasBeenChanged(false)
+    setDatabase(database);
+    setIsLoading(false);
+    setOrdersHasBeenChanged(false);
   };
 
   const fetchSq = async () => {

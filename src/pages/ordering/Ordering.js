@@ -9,10 +9,11 @@ import {
   createOrder,
   updateDough,
   updateProduct,
+  deleteOrder
 } from "../../graphql/mutations";
 
 import { API, graphqlOperation } from "aws-amplify";
-import { todayPlus } from "../../helpers/dateTimeHelpers";
+import { convertDatetoBPBDate, todayPlus } from "../../helpers/dateTimeHelpers";
 
 import { promisedData } from "../../helpers/databaseFetchers";
 
@@ -23,6 +24,7 @@ const clonedeep = require("lodash.clonedeep");
 
 let tomorrow = todayPlus()[1];
 let today = todayPlus()[0];
+let yesterday = todayPlus()[4];
 
 const MainWindow = styled.div`
   font-family: "Montserrat", sans-serif;
@@ -63,6 +65,29 @@ function Ordering() {
     if (ordersHasBeenChanged) {
       let prodsToUpdate = clonedeep(products);
       let doughsToUpdate = clonedeep(doughs);
+      let ordersToUpdate = clonedeep(orders)
+
+      console.log("Yes they have! deleting old orders")
+      let newYest = convertDatetoBPBDate(yesterday)
+      console.log("Yesterday", newYest)
+      for (let ord of ordersToUpdate) {
+        console.log(ord.delivDate)
+        if (ord.delivDate === newYest) {
+          let ordToUpdate = {
+            id: ord.id,
+          };
+          try {
+            await API.graphql(
+              graphqlOperation(deleteOrder, { input: { ...ordToUpdate } })
+            );
+          } catch (error) {
+            console.log("error on deleting Order", error);
+            setIsLoading(false);
+          }
+        }
+      }
+
+
       console.log("Yes they have!  Updating preshaped numbers");
       for (let prod of prodsToUpdate) {
         if (prod.updatePreDate !== tomorrow) {

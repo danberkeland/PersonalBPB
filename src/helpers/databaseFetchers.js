@@ -113,15 +113,13 @@ export const fetchNotes = async () => {
 };
 
 export const fetchOrders = async () => {
-  let filt = {
-    delivDate: { gt: yesterday },
-  };
+  
 
   let ordList = await fetchFromDataBaseWithFilter(
     listOrders,
     "listOrders",
-    "5000",
-    filt
+    "5000"
+    
   );
   let noDelete = ordList.filter((cust) => cust["_deleted"] !== true);
   let sortedData = sortAtoZDataByIndex(noDelete, "timeStamp");

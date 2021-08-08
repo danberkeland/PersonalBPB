@@ -185,8 +185,10 @@ const OrderCommandLine = ({ database, setDatabase }) => {
 
   const interpretEntry = async (entry) => {
     checkForCustomer(entry, customers);
-    checkForDelivDate(entry);
+    if (cartList){
+      checkForDelivDate(entry);
     checkForProducts(entry);
+    }
   };
 
   const handleInput = (entry) => {
@@ -215,7 +217,7 @@ const OrderCommandLine = ({ database, setDatabase }) => {
     <React.Fragment>
       <CommandLine>
         <span className="p-float-label">
-          <InputText id="orderCommand" size="50" onKeyUp={handleInput} disabled={cartList === true ? false : true}/>
+          <InputText id="orderCommand" size="50" onKeyUp={handleInput}/>
           <label htmlFor="orderCommand">
             Enter Customers, Orders, Dates ...
           </label>

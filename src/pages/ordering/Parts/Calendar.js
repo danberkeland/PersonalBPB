@@ -30,7 +30,7 @@ const Calendar = ({ database }) => {
     let backToStandingArray = CreateStandingArray(standing, chosen);
     let cartDateArray = CreateCartDateArray(orders, chosen);
     let cartBlankDateArray = CreateBlankCartDateArray(orders, chosen);
-
+    console.log(backToStandingArray)
     let standingEvents = {
       title: "",
       daysOfWeek: backToStandingArray,

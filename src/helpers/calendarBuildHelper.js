@@ -5,6 +5,7 @@ export const ChangeBPBDatetoJSDate = (date) => {
 };
 
 export const CreateStandingArray = (standing, chosen) => {
+  
   if (!standing) {
     alert("No Standing Order Loaded ...");
     return "No Standing Order Loaded ...";
@@ -13,8 +14,32 @@ export const CreateStandingArray = (standing, chosen) => {
   let standingArray = standing
     ? standing.filter((order) => order["custName"] === chosen)
     : [];
-  standingArray = standingArray.map((order) => Number(order["dayNum"]) - 1);
-  let uniqueStanding = new Set(standingArray);
+  console.log("Standing Array",standingArray)
+  let standSetUp =[]
+  for (let stand of standingArray){
+    if (stand.isStand && Number(stand.Sun) > 0){
+      standSetUp.push(0)
+    }
+    if (stand.isStand && Number(stand.Mon) > 0){
+      standSetUp.push(1)
+    }
+    if (stand.isStand && Number(stand.Tue) > 0){
+      standSetUp.push(2)
+    }
+    if (stand.isStand && Number(stand.Wed) > 0){
+      standSetUp.push(3)
+    }
+    if (stand.isStand && Number(stand.Thu) > 0){
+      standSetUp.push(4)
+    }
+    if (stand.isStand && Number(stand.Fri) > 0){
+      standSetUp.push(5)
+    }
+    if (stand.isStand && Number(stand.Sat) > 0){
+      standSetUp.push(6)
+    }
+  }
+  let uniqueStanding = new Set(standSetUp);
   return [...uniqueStanding];
 };
 

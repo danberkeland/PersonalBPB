@@ -32,27 +32,34 @@ const Calendar = ({ database }) => {
     let cartBlankDateArray = CreateBlankCartDateArray(orders, chosen);
     console.log(backToStandingArray)
     let standingEvents = {
-      title: "",
+      groupID: "standing",
       daysOfWeek: backToStandingArray,
-      display: "background",
+      
+      display: "background"
+      
+     
     };
 
+   
+
     let calendarEvents = [
-      { title: "", date: delivDate, display: "background" },
+      { groupID: "delivdate", date: delivDate, display: "background" },
     ];
 
     calendarEvents.push(standingEvents);
+    
 
     for (let order of cartDateArray) {
-      let newEvent = { title: "", date: order, display: "background" };
+      let newEvent = { groupID: "cart", date: order, display: "background" };
       calendarEvents.push(newEvent);
     }
-
+    
     for (let order of cartBlankDateArray) {
-      let newEvent2 = { title: "", date: order, display: "inverse-background" };
+      let newEvent2 = { groupID: "blanks", date: order, display: "background" };
       calendarEvents.push(newEvent2);
     }
-
+    
+    console.log("calendarEvents",calendarEvents)
     setCalendarEvents(calendarEvents);
   }
   }, [chosen, delivDate, database]);

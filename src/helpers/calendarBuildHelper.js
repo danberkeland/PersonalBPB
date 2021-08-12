@@ -56,6 +56,7 @@ export const CreateCartDateArray = (orders, chosen) => {
     ChangeBPBDatetoJSDate(order["delivDate"])
   );
   let uniqueCart = new Set(cartDateArray);
+ 
   return [...uniqueCart];
 };
 
@@ -67,20 +68,21 @@ export const CreateBlankCartDateArray = (orders, chosen) => {
     ddate: order["delivDate"],
     qqty: Number(order["qty"]),
   }));
+  console.log("cartBlankArray",cartDateBlankArray)
   let holder = {};
   cartDateBlankArray.forEach((d) =>
     holder.hasOwnProperty(d.ddate)
       ? (holder[d.ddate] = holder[d.ddate] + d.qqty)
       : (holder[d.ddate] = d.qqty)
   );
-
+  console.log("holder",holder)
   let BlankDateArray = [];
   for (var prop in holder) {
     let i = prop.split("/");
     let prop2 = i["custName"] + "-" + i["qty"] + "-" + i["prodName"];
     BlankDateArray.push([prop2, holder[prop]]);
   }
-
+  console.log("blankDateArray",BlankDateArray)
   BlankDateArray = BlankDateArray.filter((ob3) => ob3[1] === 0);
   BlankDateArray = BlankDateArray.map((ob4) => ob4[0]);
 

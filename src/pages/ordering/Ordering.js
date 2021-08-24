@@ -181,6 +181,15 @@ function Ordering() {
             route: rt,
           };
 
+          // If this update is happening after 12:01 AM -
+          //      If order is for tomorrow -
+          //        If Pastry -
+          //           Deduct qty from back porch bakery item of same prodNick for tomorrow
+          //        If Bread - 
+          //            ?
+
+
+          
           // Search orders for object, if doesn't exist, add:
           let ind = orders.findIndex(
             (ord) =>

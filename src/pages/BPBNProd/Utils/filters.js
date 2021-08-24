@@ -54,7 +54,7 @@ export const baker1PocketFilter = (ord, loc) => {
 
 export const setOutFilter = (ord, loc) => {
   return (
-    (ord.routeDepart === loc || ord.custName==="Back Porch Bakery") &&
+    (ord.routeDepart === loc || ord.custName === "Back Porch Bakery") &&
     ord.custName !== "BPB Extras" &&
     ord.packGroup === "baked pastries" &&
     ord.prodNick !== "al" &&
@@ -63,12 +63,20 @@ export const setOutFilter = (ord, loc) => {
 };
 
 export const twoDayFrozenFilter = (ord, loc) => {
-  return (ord.prodNick === "fral" || (ord.prodNick==="al" && (ord.routeDepart===loc || ord.custName==="Back Porch Bakery"))) &&
-  ord.custName !== "BPB Extras";
+  return (
+    (ord.prodNick === "fral" ||
+      (ord.prodNick === "al" &&
+        (ord.routeDepart === loc || ord.custName === "Back Porch Bakery"))) &&
+    ord.custName !== "BPB Extras"
+  );
 };
 
 export const threeDayAlFilter = (ord, loc) => {
-  return ord.routeDepart === "Carlton" && ord.prodNick === "al" &&  ord.custName !== "BPB Extras";
+  return (
+    ord.routeDepart === "Carlton" &&
+    ord.prodNick === "al" &&
+    ord.custName !== "BPB Extras"
+  );
 };
 
 export const pastryPrepFilter = (ord, loc) => {
@@ -84,21 +92,21 @@ export const pastryPrepFilter = (ord, loc) => {
 };
 
 export const almondPrepFilter = (ord, loc) => {
-  return (ord.prodNick === "al" && (ord.routeDepart === loc || ord.custName === "Back Porch Bakery")) &&
-  ord.custName !== "BPB Extras";
+  return (
+    ord.prodNick === "al" &&
+    (ord.routeDepart === loc ||
+      ord.custName === "Back Porch Bakery" ||
+      ord.route === "Pick up SLO") &&
+    ord.custName !== "BPB Extras"
+  );
 };
 
 export const almondFridgePrepFilter = (ord, loc) => {
-  return (
-    ord.prodNick === "al" &&
-    ord.routeDepart === "Prado"
-  )
+  return ord.prodNick === "al" && ord.routeDepart === "Prado";
 };
 
 export const frozenAlmondFilter = (ord, loc) => {
-  return (
-    ord.prodNick === "fral" 
-  )
+  return ord.prodNick === "fral";
 };
 
 export const whatToPrepFilter = (ord, loc) => {
@@ -108,7 +116,7 @@ export const whatToPrepFilter = (ord, loc) => {
     ord.doughType !== "Croissant" &&
     ord.packGroup !== "retail" &&
     ord.packGroup !== "cafe menu" &&
-    (ord.routeDepart === "Carlton"  || ord.route==="Pick up Carlton") &&
+    (ord.routeDepart === "Carlton" || ord.route === "Pick up Carlton") &&
     ord.when < 14
   );
 };

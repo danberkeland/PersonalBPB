@@ -82,14 +82,28 @@ export default class ComposePastryPrep {
   };
 
   returnAlmondPrep = (database, loc) => {
+
+    // Still need to account for splitting of BPB locations and special order deductions
+    
     const products = database[0];
     let setOutList = getOrdersList(tomorrow, database, true);
-    let twoDayList = getOrdersList(twoDay, database, true);
-    let threeDayList = getOrdersList(threeDay, database, true);
+    console.log("setOutList",setOutList)
+    let bakedNorthTwoDayList = getOrdersList(twoDay, database, true);
+
+    let deliveredFrozenTomorrow = setOutList.filter((set) =>
+      frozenAlmondFilter(set, loc)
+    );
+
     let setOutToday = setOutList.filter((set) => almondPrepFilter(set, loc));
-    let twoDayToday = twoDayList.filter((set) => frozenAlmondFilter(set, loc));
-    let threeDayToday = threeDayList.filter((set) =>
-      threeDayAlFilter(set, loc)
+    console.log("setOutToday",setOutToday)
+    bakedNorthTwoDayList = bakedNorthTwoDayList.filter((set) =>
+      almondPrepFilter(set, "Carlton")
+    );
+
+    console.log("bakedNorth2Day",bakedNorthTwoDayList)
+
+    bakedNorthTwoDayList = bakedNorthTwoDayList.filter(
+      (ord) => ord.routeDepart === "Carlton"
     );
 
     for (let setout of setOutToday) {
@@ -98,21 +112,36 @@ export default class ComposePastryPrep {
       }
     }
     setOutToday = this.makeAddQty(setOutToday, products);
-    let twoDayPlains = this.makeAddQty(twoDayToday, products);
-    let threeDayPlains = this.makeAddQty(threeDayToday, products);
-    let twoDayFreeze = 0;
-    let threeDayFreeze = 0;
-    try {
-      twoDayFreeze = twoDayPlains[0].qty;
-    } catch {
-      twoDayFreeze = 0;
+    deliveredFrozenTomorrow = this.makeAddQty(
+      deliveredFrozenTomorrow,
+      products
+    );
+
+    for (let baked of bakedNorthTwoDayList) {
+      if (baked.custName === "Back Porch Bakery") {
+        baked.qty /= 2;
+      }
     }
+
+    bakedNorthTwoDayList = this.makeAddQty(bakedNorthTwoDayList, products);
+
+    let bakedNorth2Day;
+    let delFrozenTom;
+
     try {
-      threeDayFreeze = threeDayPlains[0].qty;
+      bakedNorth2Day = bakedNorthTwoDayList[0].qty;
     } catch {
-      threeDayFreeze = 0;
+      bakedNorth2Day = 0;
     }
-    let freezerAmt = twoDayFreeze + threeDayFreeze;
+
+    try {
+      delFrozenTom = deliveredFrozenTomorrow[0].qty;
+    } catch {
+      delFrozenTom = 0;
+    }
+
+    let freezerAmt = delFrozenTom + bakedNorth2Day;
+
     let newAlmondList = [
       {
         prodNick: "fridge",

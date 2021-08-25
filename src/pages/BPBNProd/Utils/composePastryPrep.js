@@ -9,6 +9,7 @@ import {
   pastryPrepFilter,
   almondPrepFilter,
   frozenAlmondFilter,
+  setOutPlainsForAlmondsFilter
 } from "./filters";
 
 let tomorrow = todayPlus()[1];
@@ -31,14 +32,19 @@ export default class ComposePastryPrep {
   returnSetOut = (database, loc) => {
     const products = database[0];
     let setOutList = getOrdersList(tomorrow, database, true);
+    let setOutForAlmonds = getOrdersList(twoDay,database,true);
     let twoDayList = getOrdersList(twoDay, database, true);
     let threeDayList = getOrdersList(threeDay, database, true);
     let setOutToday = setOutList.filter((set) => setOutFilter(set, loc));
-
+    console.log("setOutToday",setOutToday)
+    let almondSetOut = setOutForAlmonds.filter((set) => setOutPlainsForAlmondsFilter(set,loc));
+    console.log("almondSetOut",almondSetOut)
     let twoDayToday = twoDayList.filter((set) => twoDayFrozenFilter(set, loc));
+    console.log("twoDayToday",twoDayToday)
     let threeDayToday = threeDayList.filter((set) =>
       threeDayAlFilter(set, loc)
     );
+    console.log("threeDayToday",threeDayToday)
 
     for (let setout of setOutToday) {
       if (setout.custName === "Back Porch Bakery") {
@@ -50,11 +56,23 @@ export default class ComposePastryPrep {
         setout.qty /= 2;
       }
     }
+    for (let setout of almondSetOut) {
+      if (setout.custName === "Back Porch Bakery") {
+        setout.qty /= 2;
+      }
+    }
+    for (let setout of threeDayToday) {
+      if (setout.custName === "Back Porch Bakery") {
+        setout.qty /= 2;
+      }
+    }
     setOutToday = this.makeAddQty(setOutToday, products);
+    almondSetOut = this.makeAddQty(almondSetOut, products);
     let twoDayPlains = this.makeAddQty(twoDayToday, products);
     let threeDayPlains = this.makeAddQty(threeDayToday, products);
     let twoDayFreeze = 0;
     let threeDayFreeze = 0;
+    let almondSet = 0;
     try {
       twoDayFreeze = twoDayPlains[0].qty;
     } catch {
@@ -66,9 +84,15 @@ export default class ComposePastryPrep {
       threeDayFreeze = 0;
     }
 
+    try {
+      almondSet = almondSetOut[0].qty;
+    } catch {
+      almondSet = 0;
+    }
+
     if (loc === "Prado") {
       setOutToday[setOutToday.findIndex((set) => set.prodNick === "pl")].qty +=
-        twoDayFreeze + threeDayFreeze;
+        twoDayFreeze + threeDayFreeze+almondSet;
     }
     return setOutToday;
   };

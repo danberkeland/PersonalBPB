@@ -62,11 +62,17 @@ export const setOutFilter = (ord, loc) => {
   );
 };
 
+export const setOutPlainsForAlmondsFilter = (ord,loc) => {
+  return (
+    (ord.routeDepart === loc || ord.custName === "Back Porch Bakery") &&
+    ord.custName !== "BPB Extras" &&
+    ord.prodNick === "al"
+  );
+}
+
 export const twoDayFrozenFilter = (ord, loc) => {
   return (
-    (ord.prodNick === "fral" ||
-      (ord.prodNick === "al" &&
-        (ord.routeDepart === loc || ord.custName === "Back Porch Bakery"))) &&
+    (ord.prodNick === "fral") &&
     ord.custName !== "BPB Extras"
   );
 };

@@ -106,11 +106,19 @@ export const addShelf = (
   products,
   routes
 ) => {
+  console.log("make",make);
   make.qty = 0;
   make.needEarly = 0;
 
   let qtyAccToday = 0;
   let qtyAccTomorrow = 0;
+  
+  let filt = products.filter(prod => prod.forBake === make.forBake)
+  let qtyMakeExtra = 0
+  for (let fi of filt) {
+    qtyMakeExtra = qtyMakeExtra + fi.bakeExtra
+  }
+  
 
   let qtyToday = fullOrders
     .filter((full) => make.forBake === full.forBake)
@@ -128,7 +136,7 @@ export const addShelf = (
 
   make.qty = qtyAccToday;
   make.needEarly = qtyAccToday;
-  make.makeTotal = qtyAccTomorrow + qtyAccToday;
+  make.makeTotal = qtyAccTomorrow + qtyAccToday + qtyMakeExtra;
 };
 
 const update = (order, products, customers) => {
@@ -220,8 +228,8 @@ const checkZone = (full, availableRoutes) => {
 };
 
 export const addPocketsQty = (make, fullOrders) => {
-  console.log(make)
-  
+  console.log(make);
+
   make.qty = 0;
   make.needEarly = 0;
   let qty = fullOrders

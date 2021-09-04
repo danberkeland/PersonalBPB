@@ -100,18 +100,20 @@ function AMPastry() {
 
       doc.setFontSize(12);
       past.pl && doc.text(`Pl: ${past.pl}`, 0.2, 0.72);
-      past.ch && doc.text(`Ch: ${past.ch}`, 0.2, 1.08);
-      past.pg && doc.text(`Pg: ${past.pg}`, 0.2, 1.44);
-      past.sf && doc.text(`Sf: ${past.sf}`, 0.2, 1.8);
+      past.ch && doc.text(`Ch: ${past.ch}`, 0.2, 0.98);
+      past.pg && doc.text(`Pg: ${past.pg}`, 0.2, 1.24);
+      past.sf && doc.text(`Sf: ${past.sf}`, 0.2, 1.5);
 
       past.al && doc.text(`Al: ${past.al}`, 1.46, 0.72);
-      past.mb && doc.text(`Mb: ${past.mb}`, 1.46, 1.08);
-      past.mini && doc.text(`mini: ${past.mini}`, 1.46, 1.44);
-      past.sand && doc.text(`sand: ${past.sand}`, 1.46, 1.8);
+      past.mb && doc.text(`Mb: ${past.mb}`, 1.46, 0.98);
+      past.unmb && doc.text(`UnMb: ${past.unmb}`, 1.46, 1.24);
+      past.mini && doc.text(`mini: ${past.mini}`, 1.46, 1.5);
+      past.sand && doc.text(`sand: ${past.sand}`, 1.46, 1.76);
 
       past.bb && doc.text(`BB: ${past.bb}`, 2.72, 0.72);
-      past.sco && doc.text(`Sco: ${past.sco}`, 2.72, 1.08);
-      past.bd && doc.text(`Bd: ${past.bd}`, 2.72, 1.44);
+      past.sco && doc.text(`Sco: ${past.sco}`, 2.72, 0.98);
+      past.bd && doc.text(`Bd: ${past.bd}`, 2.72, 1.24);
+      past.brn && doc.text(`Brn: ${past.brn}`, 2.72, 1.5);
       if (ind<AMPastry.length){
       doc.addPage({
         format: [2, 4],

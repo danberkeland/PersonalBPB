@@ -23,7 +23,7 @@ export default class ComposeWhatToMake {
           )
         )
     );
-
+    
     return whatToMake;
   };
 

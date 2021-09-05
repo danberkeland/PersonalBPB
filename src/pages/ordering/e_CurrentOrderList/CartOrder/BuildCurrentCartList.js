@@ -2,7 +2,9 @@ import React, { useContext, useEffect } from "react";
 
 import TrashCan from "./BuildCurrentCartListParts/TrashCan";
 import Product from "./BuildCurrentCartListParts/Product";
-import Previous from "./BuildCurrentCartListParts/Previous"
+import Previous from "./BuildCurrentCartListParts/Previous";
+import Rate from "./BuildCurrentCartListParts/Rate"
+import Total from "./BuildCurrentCartListParts/Total"
 
 import { CurrentDataContext } from "../../../../dataContexts/CurrentDataContext";
 
@@ -20,7 +22,7 @@ const OrderGrid = styled.div`
   border: none;
   display: grid;
   align-items: center;
-  grid-template-columns: 0.5fr 3fr 0.5fr 0.5fr;
+  grid-template-columns: 0.5fr 2fr 0.5fr 0.5fr .75fr 0.5fr;
   row-gap: 4px;
   flex-shrink: 1;
 `;
@@ -76,6 +78,8 @@ const BuildCurrentCartList = ({ database, setDatabase }) => {
         <label>PRODUCT</label>
         <label>QTY</label>
         <label>PREV</label>
+        <label>RATE</label>
+        <label>TOTAL</label>
         {currentCartList.filter(curr => curr.qty !==0).map((order) => (
           <React.Fragment key={uuidv4() + "b"}>
             <TrashCanContainer>
@@ -84,9 +88,16 @@ const BuildCurrentCartList = ({ database, setDatabase }) => {
 
             <Product order={order} database={database} setDatabase={setDatabase}/>
             <Previous order={order}/>
+            <Rate order={order}/>
+            <Total order={order}/>
               
           </React.Fragment>
         ))}
+        <label></label>
+        <label></label>
+        <label></label>
+        <label></label>
+        <label>GRAND TOTAL</label>
       </OrderGrid>
     </React.Fragment>
   );

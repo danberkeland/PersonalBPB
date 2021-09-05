@@ -11,6 +11,7 @@ import {
   frozenAlmondFilter,
   setOutPlainsForAlmondsFilter
 } from "./filters";
+import { ceil } from "lodash";
 
 let tomorrow = todayPlus()[1];
 let twoDay = todayPlus()[2];
@@ -48,22 +49,22 @@ export default class ComposePastryPrep {
 
     for (let setout of setOutToday) {
       if (setout.custName === "Back Porch Bakery") {
-        setout.qty /= 2;
+        setout.qty = ceil(setout.qty/2)
       }
     }
     for (let setout of twoDayToday) {
       if (setout.custName === "Back Porch Bakery") {
-        setout.qty /= 2;
+        setout.qty = ceil(setout.qty/2)
       }
     }
     for (let setout of almondSetOut) {
       if (setout.custName === "Back Porch Bakery") {
-        setout.qty /= 2;
+        setout.qty = ceil(setout.qty/2)
       }
     }
     for (let setout of threeDayToday) {
       if (setout.custName === "Back Porch Bakery") {
-        setout.qty /= 2;
+        setout.qty = ceil(setout.qty/2)
       }
     }
     setOutToday = this.makeAddQty(setOutToday, products);
@@ -94,6 +95,22 @@ export default class ComposePastryPrep {
       setOutToday[setOutToday.findIndex((set) => set.prodNick === "pl")].qty +=
         twoDayFreeze + threeDayFreeze+almondSet;
     }
+    console.log("setOutToday",setOutToday)
+
+    // Find index of 'mb'
+    let mbInd = setOutToday.findIndex(ind => ind.prodNick==="mb")
+
+    // Find index of 'unmb'
+    let unmbInd = setOutToday.findIndex(ind => ind.prodNick==="unmb")
+
+    // Add unmb.qty to mb.qty
+    setOutToday[mbInd].qty += setOutToday[unmbInd].qty
+
+    // Remove 'unmb'
+    setOutToday = setOutToday.filter(ind => ind.prodNick !=="unmb")
+
+    console.log("setOutToday",setOutToday)
+    
     return setOutToday;
   };
 
@@ -183,6 +200,7 @@ export default class ComposePastryPrep {
       prodNick: mk,
       qty: 0,
     }));
+    console.log("addMake",makeList2)
     for (let make of makeList2) {
       make.qty = 1;
 
@@ -203,4 +221,6 @@ export default class ComposePastryPrep {
     }
     return makeList2;
   };
+
+  
 }

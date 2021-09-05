@@ -12,7 +12,6 @@ import { promisedData } from "../../helpers/databaseFetchers";
 import { listAltPricings, listZones } from "../../graphql/queries";
 import { API, graphqlOperation } from "aws-amplify";
 
-
 const BasicContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -39,17 +38,15 @@ const fetchInfo = async (operation, opString, limit) => {
   }
 };
 
-
-
 function Billing() {
-  let { setIsLoading } = useContext(ToggleContext)
+  let { setIsLoading } = useContext(ToggleContext);
 
-  const [ altPricing, setAltPricing ] = useState()
-  const [ nextInv, setNextInv ] = useState(0);
+  const [altPricing, setAltPricing] = useState();
+  const [nextInv, setNextInv] = useState(0);
   const [dailyInvoices, setDailyInvoices] = useState([]);
   const [weeklyInvoices, setWeeklyInvoices] = useState([]);
-  const [ zones, setZones ] = useState([])
-  const [ database, setDatabase ] = useState([])
+  const [zones, setZones] = useState([]);
+  const [database, setDatabase] = useState([]);
 
   useEffect(() => {
     promisedData(setIsLoading).then((database) => setDatabase(database));
@@ -58,15 +55,18 @@ function Billing() {
   useEffect(() => {
     setIsLoading(true);
     fetchAltPricing();
-    fetchZones()
+    fetchZones();
     setIsLoading(false);
   }, []);
 
-
   const fetchAltPricing = async () => {
     try {
-      let altPricing = await fetchInfo(listAltPricings,"listAltPricings", "1000");
-      setAltPricing(altPricing);   
+      let altPricing = await fetchInfo(
+        listAltPricings,
+        "listAltPricings",
+        "1000"
+      );
+      setAltPricing(altPricing);
     } catch (error) {
       console.log("error on fetching Alt Pricing List", error);
     }
@@ -74,7 +74,7 @@ function Billing() {
 
   const fetchZones = async () => {
     try {
-      let zones = await fetchInfo(listZones,"listZones", "50");
+      let zones = await fetchInfo(listZones, "listZones", "50");
       setZones(zones);
     } catch (error) {
       console.log("error on fetching Zone List", error);
@@ -83,24 +83,41 @@ function Billing() {
 
   return (
     <React.Fragment>
-         
       <BasicContainer>
         <h1>Billing</h1>
       </BasicContainer>
-      
+
       <BasicContainer>
-        <SelectDate database={database} nextInv={nextInv} setNextInv={setNextInv} dailyInvoices={dailyInvoices} setDailyInvoices={setDailyInvoices}/>
+        <SelectDate
+          database={database}
+          nextInv={nextInv}
+          setNextInv={setNextInv}
+          dailyInvoices={dailyInvoices}
+          setDailyInvoices={setDailyInvoices}
+        />
       </BasicContainer>
-     
-     
 
       <BasicContainer>
         <h2>Daily Invoicing</h2>
-        <BillingGrid database={database} altPricing={altPricing} nextInv={nextInv} dailyInvoices={dailyInvoices} setDailyInvoices={setDailyInvoices} zones={zones}/>
+        <BillingGrid
+          database={database}
+          altPricing={altPricing}
+          nextInv={nextInv}
+          dailyInvoices={dailyInvoices}
+          setDailyInvoices={setDailyInvoices}
+          zones={zones}
+        />
       </BasicContainer>
       <BasicContainer>
-      <h2>Weekly Invoicing (sent Sunday)</h2>
-        <WeeklyBillingGrid database={database} altPricing={altPricing} nextInv={nextInv} weeklyInvoices={weeklyInvoices} setWeeklyInvoices={setWeeklyInvoices} zones={zones}/>
+        <h2>Weekly Invoicing (sent Sunday)</h2>
+        <WeeklyBillingGrid
+          database={database}
+          altPricing={altPricing}
+          nextInv={nextInv}
+          weeklyInvoices={weeklyInvoices}
+          setWeeklyInvoices={setWeeklyInvoices}
+          zones={zones}
+        />
       </BasicContainer>
     </React.Fragment>
   );

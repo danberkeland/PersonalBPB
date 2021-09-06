@@ -88,8 +88,8 @@ const BuildCurrentCartList = ({ database, setDatabase }) => {
 
             <Product order={order} database={database} setDatabase={setDatabase}/>
             <Previous order={order}/>
-            <Rate order={order}/>
-            <Total order={order}/>
+            <Rate order={order} database={database} />
+            <Total order={order} database={database} />
               
           </React.Fragment>
         ))}

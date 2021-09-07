@@ -109,7 +109,7 @@ export default class ComposePastryPrep {
     // Remove 'unmb'
     setOutToday = setOutToday.filter(ind => ind.prodNick !=="unmb")
 
-    console.log("setOutToday",setOutToday)
+   
     
     return setOutToday;
   };
@@ -128,7 +128,7 @@ export default class ComposePastryPrep {
     
     const products = database[0];
     let setOutList = getOrdersList(tomorrow, database, true);
-    console.log("setOutList",setOutList)
+   
     let bakedNorthTwoDayList = getOrdersList(twoDay, database, true);
 
     let deliveredFrozenTomorrow = setOutList.filter((set) =>
@@ -136,12 +136,12 @@ export default class ComposePastryPrep {
     );
 
     let setOutToday = setOutList.filter((set) => almondPrepFilter(set, loc));
-    console.log("setOutToday",setOutToday)
+  
     bakedNorthTwoDayList = bakedNorthTwoDayList.filter((set) =>
       almondPrepFilter(set, "Carlton")
     );
 
-    console.log("bakedNorth2Day",bakedNorthTwoDayList)
+   
 
     bakedNorthTwoDayList = bakedNorthTwoDayList.filter(
       (ord) => ord.routeDepart === "Carlton"
@@ -200,7 +200,7 @@ export default class ComposePastryPrep {
       prodNick: mk,
       qty: 0,
     }));
-    console.log("addMake",makeList2)
+  
     for (let make of makeList2) {
       make.qty = 1;
 

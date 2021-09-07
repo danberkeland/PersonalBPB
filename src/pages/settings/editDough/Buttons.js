@@ -185,10 +185,9 @@ const Buttons = ({
     let addBackList = doughComponents.filter(
       (dgh) => dgh.dough === selectedDough.doughName
     );
-    console.log(addBackList);
 
     for (let comp of addBackList) {
-      console.log(comp)
+     
       if (comp.id && Number(comp.amount) === 0){
         const newDetails = {
           id: comp.id,

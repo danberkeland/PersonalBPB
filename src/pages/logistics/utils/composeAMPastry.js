@@ -196,7 +196,7 @@ import {
       let custos = makeOrders(today, database, this.AMPastryFilter);
       custos = Array.from(new Set(custos.map(cust => cust.customer)))
       let shelfProds = makeOrders(today, database, this.AMOthersFilter);
-      console.log(shelfProds)
+     
       shelfProds = shelfProds.filter(shelf => custos.includes(shelf.customer))
       return shelfProds;
     };
@@ -215,7 +215,7 @@ import {
         database,
         this.AMOthersFilter
       );
-      console.log(filteredOrders)
+      
       if (filteredOrders.length > 0) {
         return createColumns(filteredOrders);
       } else {

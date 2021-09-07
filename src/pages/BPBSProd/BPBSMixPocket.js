@@ -133,7 +133,7 @@ function BPBSMixPocket() {
   };
 
   const handleClick = (e, amt) => {
-    console.log(amt);
+   
     let mixNumber = Math.ceil(amt/230)
     amt = amt/mixNumber
     let doughName = e.target.id.split("_")[0];
@@ -294,7 +294,7 @@ function BPBSMixPocket() {
       let levPercent =
         components[components.findIndex((comp) => comp.componentName === lev)]
           .amount * 0.01;
-      console.log(levPercent);
+    
       if (levFilt.length > 0) {
         doc.addPage({
           format: [2, 4],

@@ -92,7 +92,7 @@ function SpecialOrders() {
     setColumnsSouth(colSouth.columns);
   };
 
-  console.log("BPBN Specials", BPBNSpecialOrders)
+ 
   const exportListPdfNorth = () => {
     let finalY;
     let pageMargin = 10;

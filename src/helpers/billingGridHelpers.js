@@ -37,6 +37,25 @@ export const buildInvList = (custListArray, customers, delivDate) => {
   return invList;
 };
 
+
+export const getRate = (products,order,altPricing) => {
+ 
+  let checkInd = altPricing.findIndex(alt => alt.custName === order.custName && alt.prodName === order.prodName)
+  if (checkInd >-1){
+    return altPricing[checkInd].wholePrice
+  }
+  let ind = products.findIndex(prod => prod.prodName === order.prodName)
+  let price
+  if (order.rate){
+    price = order.rate
+  } else {
+    price = products[ind].wholePrice
+  }
+
+
+  return price
+}
+
 export const attachInvoiceOrders = (
   invList,
   fullOrder,

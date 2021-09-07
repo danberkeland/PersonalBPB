@@ -21,7 +21,7 @@ const addRoutes = (delivDate, prodGrid, database) => {
     sortZtoADataByIndex(routes, "routeStart");
         for (let rte of routes) {
           for (let grd of prodGrid) {
-            console.log(rte)
+          
             let dayNum = calcDayNum(delivDate);
             
             if (!rte["RouteServe"].includes(grd["zone"])) {
@@ -92,7 +92,7 @@ export default class ComposeProductGrid {
     prodGrid = addRoutes(delivDate, prodGrid, database);
    
     //prodGrid = addAttr(database, prodGrid);
-    console.log(prodGrid)
+   
     return prodGrid;
   }
 

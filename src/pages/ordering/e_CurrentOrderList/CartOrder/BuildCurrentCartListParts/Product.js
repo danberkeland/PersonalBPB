@@ -30,17 +30,17 @@ const Product = ({ order, database, setDatabase }) => {
     let qty = Number(e.target.value)
     let ordToMod = clonedeep(orders)
     let ind = ordToMod.findIndex(ord => ord.prodName === prodName && ord.custName === chosen && ord.delivDate === convertDatetoBPBDate(delivDate))
-    console.log(ind)
+   
     if (ind>-1){
       ordToMod[ind].qty = qty;
       } else{
         // find item in currentCartOrder
         let cartInd = currentCartList.findIndex(curr => curr.prodName === prodName)
-        console.log("cartInd",cartInd)
+        
         currentCartList[cartInd].route = route;
         currentCartList[cartInd].PONote = ponote;
         currentCartList[cartInd].qty = qty;
-        console.log(currentCartList[cartInd])
+      
         ordToMod.push(currentCartList[cartInd])
       }
     let DBToUpdate = clonedeep(database)

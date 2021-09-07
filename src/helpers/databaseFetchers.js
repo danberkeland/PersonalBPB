@@ -154,6 +154,8 @@ const fetchData = async (setIsLoading) => {
   let doughs = await fetchDoughs();
   console.log("Fetching Dough Components Info")
   let doughComponents = await fetchDoughComponents();
+  console.log("Fetching AltPricing Info")
+  let altPricing = await fetchAltPricing();
   let data = [
     products,
     customers,
@@ -162,6 +164,7 @@ const fetchData = async (setIsLoading) => {
     orders,
     doughs,
     doughComponents,
+    altPricing
   ];
   setIsLoading(false);
   

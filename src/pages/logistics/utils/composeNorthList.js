@@ -322,8 +322,7 @@ export default class ComposeNorthList {
   };
 
   combineGrids = (obj1, obj2) => {
-    console.log(obj1);
-    console.log(obj2);
+   
     let firstObject = clonedeep(obj1);
     let secondObject = clonedeep(obj2);
     for (let first of firstObject) {

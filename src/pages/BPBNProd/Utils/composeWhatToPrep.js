@@ -17,7 +17,7 @@ export default class ComposeWhatToMake {
 
   returnWhatToPrep = (delivDate, database) => {
     let whatToPrepList = getOrdersList(delivDate, database);
-    console.log(whatToPrepList);
+  
     let whatToPrepListTom = getOrdersList(tomorrow, database);
     let whatToMakeToday = whatToPrepList.filter((set) => whatToPrepFilter(set));
     let whatToMakeTomorrow = whatToPrepListTom.filter((set) =>

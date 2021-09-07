@@ -36,7 +36,7 @@ export const buildCartList = (chosen, delivDate, orders) => {
         order["custName"].match(wildcardRegExp(`${chosen}`))
     );
   }
-
+  console.log("builtCartList",builtCartList)
   return builtCartList;
 };
 
@@ -151,7 +151,7 @@ export const buildCurrentOrder = (
   let cartList = buildCartList(chosen, delivDate, orders);
   let standList = buildStandList(chosen, delivDate, standing, route, ponote);
   let currentOrderList = compileOrderList(cartList, standList);
-
+  console.log("currentOrderList",currentOrderList)
   return currentOrderList;
 };
 

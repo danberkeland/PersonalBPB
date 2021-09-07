@@ -254,6 +254,7 @@ export const createOrder = /* GraphQL */ `
       isWhole
       delivDate
       timeStamp
+      rate
       createdAt
       updatedAt
     }
@@ -275,6 +276,7 @@ export const updateOrder = /* GraphQL */ `
       isWhole
       delivDate
       timeStamp
+      rate
       createdAt
       updatedAt
     }
@@ -296,6 +298,7 @@ export const deleteOrder = /* GraphQL */ `
       isWhole
       delivDate
       timeStamp
+      rate
       createdAt
       updatedAt
     }

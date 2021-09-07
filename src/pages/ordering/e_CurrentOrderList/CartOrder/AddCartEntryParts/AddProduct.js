@@ -24,13 +24,16 @@ const AddProduct = ({ database, setDatabase, pickedProduct, setPickedProduct }) 
 
   const handleAdd = () => {
     let qty = Number(document.getElementById("addedProdQty").value);
-
+    let ind = products.findIndex(prod => prod.prodName === pickedProduct.prodName)
+    let rate = products[ind].wholePrice
+  
     let newOrder = {
       qty: qty,
       prodName: pickedProduct.prodName,
       custName: chosen,
       PONote: ponote,
       route: route,
+      rate: rate,
       SO: 0,
       isWhole: orderTypeWhole,
       delivDate: convertDatetoBPBDate(delivDate),

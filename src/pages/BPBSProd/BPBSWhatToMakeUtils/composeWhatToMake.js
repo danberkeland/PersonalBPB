@@ -88,7 +88,7 @@ export default class ComposeWhatToMake {
   getFreshProds = (database) => {
     const [products, customers, routes, standing, orders] = database;
     let makeFreshProds = makeProds(products, this.freshProdFilter);
-    console.log(makeFreshProds);
+
     let fullOrdersToday = getFullMakeOrders(today, database);
     let fullOrdersTomorrow = getFullMakeOrders(tomorrow, database);
     for (let make of makeFreshProds) {
@@ -111,7 +111,7 @@ export default class ComposeWhatToMake {
     let makeShelfProds = makeProds(products, this.shelfProdsFilter);
     let fullOrdersToday = getFullMakeOrders(today, database);
     let fullOrdersTomorrow = getFullProdMakeOrders(tomorrow, database);
-    console.log(fullOrdersTomorrow);
+  
     for (let make of makeShelfProds) {
       addShelf(make, fullOrdersToday, fullOrdersTomorrow, products, routes);
       addNeedEarly(make, products);
@@ -180,11 +180,11 @@ export default class ComposeWhatToMake {
       }));
 
     let weightStr = pocketsNorth.concat(shelfProds, freshProds, freezerProds);
-    console.log(weightStr);
+   
     let weightList = Array.from(
       new Set(weightStr.map((weight) => weight.pocketWeight))
     ).map((pock) => ({ pocketWeight: pock, makeTotal: 0 }));
-    console.log(weightList);
+   
     for (let weight of weightList) {
       for (let pocket of weightStr) {
         if (pocket.pocketWeight === weight.pocketWeight) {

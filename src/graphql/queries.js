@@ -174,6 +174,7 @@ export const getOrder = /* GraphQL */ `
       isWhole
       delivDate
       timeStamp
+      rate
       createdAt
       updatedAt
     }
@@ -197,6 +198,7 @@ export const listOrders = /* GraphQL */ `
         isWhole
         delivDate
         timeStamp
+        rate
         createdAt
         updatedAt
       }

@@ -209,8 +209,8 @@ function EODCounts({ loc }) {
   };
 
   const handlePockChange = async (e) => {
-    console.log(e)
-    console.log(signedIn)
+ 
+
     let prodsToMod = clonedeep(products)
     for (let prod of prodsToMod){
       let weight = e.target.id.split(" ")[0]
@@ -278,7 +278,7 @@ function EODCounts({ loc }) {
   };
 
   const lastCount = (e) => {
-    console.log(e)
+   
     let updated = e.updatedAt
     return (<IngDetails>
     <div>

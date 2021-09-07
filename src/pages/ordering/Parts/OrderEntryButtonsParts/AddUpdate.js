@@ -4,6 +4,8 @@ import { CurrentDataContext } from "../../../../dataContexts/CurrentDataContext"
 import { ToggleContext } from "../../../../dataContexts/ToggleContext";
 
 import { convertDatetoBPBDate } from "../../../../helpers/dateTimeHelpers";
+import { getRate }from "../../../../helpers/billingGridHelpers"
+
 
 
 import {
@@ -20,7 +22,7 @@ import { Button } from "primereact/button";
 const clonedeep = require("lodash.clonedeep");
 
 function AddUpdate({ database, setDatabase }) {
-  const [products, customers, routes, standing, orders] = database;
+  const [products, customers, routes, standing, orders,d,dd, altPricing] = database;
   const { route, ponote } = useContext(CurrentDataContext);
   const {
     delivDate,
@@ -43,46 +45,49 @@ function AddUpdate({ database, setDatabase }) {
   } = useContext(ToggleContext);
 
   const handleUpdateCart = async () => {
+  
     for (let ord of currentCartList) {
-        let rte = route;
+      let rte = route;
+      let price = getRate(products,ord, altPricing)
 
-        const updateDetails = {
-          qty: ord["qty"],
-          prodName: ord["prodName"],
-          custName: chosen,
-          PONote: ponote,
-          route: rte,
-          SO: ord["qty"],
-          isWhole: orderTypeWhole,
-          delivDate: convertDatetoBPBDate(delivDate),
-          timeStamp: new Date(),
-        };
+      const updateDetails = {
+        qty: ord["qty"],
+        prodName: ord["prodName"],
+        custName: chosen,
+        PONote: ponote,
+        rate: price,
+        route: rte,
+        SO: ord["qty"],
+        isWhole: orderTypeWhole,
+        delivDate: convertDatetoBPBDate(delivDate),
+        timeStamp: new Date(),
+      };
 
-        if (ord["id"]) {
-          updateDetails.id = ord["id"];
-          updateDetails._version = ord["_version"];
-          try {
-            await API.graphql(
-              graphqlOperation(updateOrder, { input: { ...updateDetails } })
-            );
-            console.log(updateDetails.prodName,"Successful update")
-          } catch (error) {
-            console.log(updateDetails.prodName,"Failed Update")
-
-          }
-        } else {
-          try {
-            await API.graphql(
-              graphqlOperation(createOrder, { input: { ...updateDetails } })
-            );
-            console.log(updateDetails.prodName,"Successful create")
-          } catch (error) {
-            console.log(updateDetails.prodName,"Failed create")
-          }
+    
+      if (ord["id"]) {
+        updateDetails.id = ord["id"];
+        updateDetails._version = ord["_version"];
+        try {
+          await API.graphql(
+            graphqlOperation(updateOrder, { input: { ...updateDetails } })
+          );
+          console.log(updateDetails.prodName, "Successful update");
+        } catch (error) {
+          console.log(updateDetails.prodName, "Failed Update");
+        }
+      } else {
+        try {
+          await API.graphql(
+            graphqlOperation(createOrder, { input: { ...updateDetails } })
+          );
+          console.log(updateDetails.prodName, "Successful create");
+        } catch (error) {
+          console.log(updateDetails.prodName, "Failed create");
         }
       }
-      setReload(!reload) 
-  }
+    }
+    setReload(!reload);
+  };
 
 
   const handleUpdateStanding = async () => {

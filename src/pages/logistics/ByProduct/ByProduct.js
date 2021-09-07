@@ -43,7 +43,7 @@ function ByProduct() {
   const gatherProdGridInfo = (data) => {
     let prodGridData = compose.returnProdGrid(data, delivDate);
     setDatabase(data);
-    console.log(prodGridData.prodGrid)
+   
     setOrderList(prodGridData.prodGrid);
   };
 

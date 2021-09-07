@@ -3,18 +3,20 @@ import React from "react";
 import { v4 as uuidv4 } from "uuid";
 
 import styled from "styled-components";
+import { getRate } from "../../../../../helpers/billingGridHelpers"
 
 const TotalContainer = styled.div`
   
   color: black;
 `;
 
+
 const Total = ({ order, database }) => {
-  console.log("order",order)
-  const [products, customers, routes, standing, orders] = database;
-  let ind = products.findIndex(prod => prod.prodName === order.prodName)
-  let price = products[ind].wholePrice*order.qty
-  console.log("ind",ind)
+ 
+  const [products, customers, routes, standing, orders,d,dd, altPricing] = database;
+  let price = getRate(products,order, altPricing)
+  price = price*order.qty
+  
   return (
     <TotalContainer>
       <label key={uuidv4() + "d"}>

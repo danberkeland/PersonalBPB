@@ -30,7 +30,7 @@ const Calendar = ({ database }) => {
     let backToStandingArray = CreateStandingArray(standing, chosen);
     let cartDateArray = CreateCartDateArray(orders, chosen);
     let cartBlankDateArray = CreateBlankCartDateArray(orders, chosen);
-    console.log(backToStandingArray)
+    
     let standingEvents = {
       groupID: "standing",
       daysOfWeek: backToStandingArray,
@@ -59,7 +59,7 @@ const Calendar = ({ database }) => {
       calendarEvents.push(newEvent2);
     }
     
-    console.log("calendarEvents",calendarEvents)
+   
     setCalendarEvents(calendarEvents);
   }
   }, [chosen, delivDate, database]);

@@ -9,7 +9,7 @@ let today = todayPlus()[0];
 
 const getProdNickNames = (database, loc) => {
   const [products, customers, routes, standing, orders] = database;
-  console.log("orders",orders)
+  
   let fullNames = Array.from(
     new Set(
       orders

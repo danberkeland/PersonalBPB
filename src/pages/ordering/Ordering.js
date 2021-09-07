@@ -60,7 +60,7 @@ function Ordering() {
   
   const loadDatabase = async (database) => {
     setIsLoading(true);
-    const [products, customers, routes, standing, orders, doughs] = database;
+    const [products, customers, routes, standing, orders, doughs, altPricing] = database;
     console.log("Checking if Orders Have been changed");
     if (ordersHasBeenChanged) {
       let prodsToUpdate = clonedeep(products);
@@ -69,9 +69,9 @@ function Ordering() {
 
       console.log("Yes they have! deleting old orders")
       let newYest = convertDatetoBPBDate(yesterday)
-      console.log("Yesterday", newYest)
+      
       for (let ord of ordersToUpdate) {
-        console.log(ord.delivDate)
+       
         if (ord.delivDate === newYest) {
           let ordToUpdate = {
             id: ord.id,

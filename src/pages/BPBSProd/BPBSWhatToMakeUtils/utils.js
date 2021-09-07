@@ -106,7 +106,7 @@ export const addShelf = (
   products,
   routes
 ) => {
-  console.log("make",make);
+ 
   make.qty = 0;
   make.needEarly = 0;
 
@@ -228,7 +228,7 @@ const checkZone = (full, availableRoutes) => {
 };
 
 export const addPocketsQty = (make, fullOrders) => {
-  console.log(make);
+ 
 
   make.qty = 0;
   make.needEarly = 0;

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import TrashCan from "./BuildCurrentCartListParts/TrashCan";
 import Product from "./BuildCurrentCartListParts/Product";
@@ -14,6 +14,7 @@ import styled from "styled-components";
 
 import { buildCurrentOrder } from "../../../../helpers/CartBuildingHelpers";
 import { ToggleContext } from "../../../../dataContexts/ToggleContext";
+import { getRate } from "../../../../helpers/billingGridHelpers";
 
 const OrderGrid = styled.div`
   width: 100%;
@@ -32,7 +33,8 @@ const TrashCanContainer = styled.div`
 `;
 
 const BuildCurrentCartList = ({ database, setDatabase }) => {
-  const [products, customers, routes, standing, orders] = database;
+  const [grandTotal, setGrandTotal] = useState()
+  const [products, customers, routes, standing, orders, d, dd, altPricing] = database;
   const {
     chosen,
     delivDate,
@@ -68,8 +70,24 @@ const BuildCurrentCartList = ({ database, setDatabase }) => {
        
       }
     }
+    
   }, [chosen, delivDate, orders, standing, reload]);
 
+  useEffect (() => {
+    if (currentCartList.length>0){
+      let grandTotal = 0;
+  
+    for (let ord in currentCartList){
+      console.log("grand",grandTotal)
+      grandTotal = grandTotal + getRate(products,currentCartList[ord],altPricing)*currentCartList[ord].qty
+    }
+
+    setGrandTotal(grandTotal.toFixed(2))
+
+    }
+    
+  },[currentCartList])
+  
   
   return (
     <React.Fragment>
@@ -98,6 +116,7 @@ const BuildCurrentCartList = ({ database, setDatabase }) => {
         <label></label>
         <label></label>
         <label>GRAND TOTAL</label>
+        <label>$ {grandTotal}</label>
       </OrderGrid>
     </React.Fragment>
   );

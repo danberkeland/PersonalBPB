@@ -4,7 +4,6 @@ import { CurrentDataContext } from "../../../dataContexts/CurrentDataContext";
 
 import { Calendar } from "primereact/calendar";
 import { Button } from "primereact/button";
-import { Dropdown } from "primereact/dropdown";
 
 import styled from "styled-components";
 
@@ -17,8 +16,6 @@ import { fetchInfo } from "../../../helpers/billingGridHelpers";
 
 import { listHeldforWeeklyInvoicings } from "../../../graphql/queries";
 
-const clonedeep = require("lodash.clonedeep");
-
 const { DateTime } = require("luxon");
 
 const BasicContainer = styled.div`
@@ -30,14 +27,10 @@ const BasicContainer = styled.div`
   box-sizing: border-box;
 `;
 
-const SelectDate = ({
-  database,
-  dailyInvoices,
-  setDailyInvoices,
-}) => {
+const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
   const [products, customers, routes, standing, orders] = database;
   const { delivDate, setDelivDate } = useContext(CurrentDataContext);
-  
+
   const [pickedCustomer, setPickedCustomer] = useState();
 
   useEffect(() => {
@@ -47,29 +40,13 @@ const SelectDate = ({
 
   const setDate = (date) => {
     const dt2 = DateTime.fromJSDate(date);
-    setDelivDate(dt2.toFormat("yyyy-MM-dd"));
-  };
-
-  const handleAddCustomer = (e) => {
-    let invToModify = clonedeep(dailyInvoices);
-    let dateSplit = delivDate.split("-");
-    let newDate = dateSplit[1] + dateSplit[2] + dateSplit[0];
-    invToModify.push({
-      custName: e.target.value,
-      invNum: newDate+customers[customers.findIndex(cst => cst.custName===e.target.value)].nickName,
-      orders: [],
-    });
-    setDailyInvoices(invToModify);
-    setPickedCustomer("");
+    setDelivDate(dt2.toFormat("yyyy-dd-MM"));
   };
 
   const exportCSV = async () => {
-    
-  
     let data = [];
     for (let inv of dailyInvoices) {
       for (let ord of inv.orders) {
-       
         let ddate = convertDatetoBPBDate(delivDate);
         let dueDate = convertDatetoBPBDate(
           DateTime.now()
@@ -141,7 +118,10 @@ const SelectDate = ({
       let newDate = dateSplit[1] + dateSplit[2] + dateSplit[0];
       custArray = custArray.map((cust) => ({
         custName: cust,
-        invNum: newDate+customers[customers.findIndex(cst => cst.custName===cust)].nickName,
+        invNum:
+          newDate +
+          customers[customers.findIndex((cst) => cst.custName === cust)]
+            .nickName,
       }));
       let weeklyOrders = [];
       for (let cust of custArray) {
@@ -167,9 +147,8 @@ const SelectDate = ({
       }
       for (let inv of weeklyOrders) {
         for (let ord of inv.orders) {
-        
           let ddate = convertDatetoBPBDate(delivDate);
-          let fullDate=convertDatetoBPBDate(ord.fullDate)
+          let fullDate = convertDatetoBPBDate(ord.fullDate);
           let dueDate = convertDatetoBPBDate(
             DateTime.now()
               .setZone("America/Los_Angeles")
@@ -197,7 +176,7 @@ const SelectDate = ({
           } catch {
             ponote = "na";
           }
-  
+
           let newEntry = [
             inv.invNum,
             inv.custName,
@@ -220,14 +199,11 @@ const SelectDate = ({
             ord.rate,
             "Y",
           ];
-        
+
           data.push(newEntry);
-         
         }
       }
     }
-
-    
 
     var csv =
       "RefNumber,Customer,TxnDate,DueDate,ShpDate,SalesTerm,Class,BillAddrLine1,BillAddrLine2,BillAddrLine3,BillAddrCity,BillAddrState,BillAddrPostalCode,Msg,AllowOnlineACHPayment,LineItem,LineDescrip,LineQty,LineUnitPrice,LineTaxable\n";
@@ -235,14 +211,12 @@ const SelectDate = ({
       csv += row.join(",");
       csv += "\n";
     });
-    
-    
+
     var hiddenElement = document.createElement("a");
     hiddenElement.href = "data:text/csv;charset=utf-8," + encodeURI(csv);
     hiddenElement.target = "_blank";
     hiddenElement.download = `${delivDate}invoiceExport.csv`;
     hiddenElement.click();
-    
   };
 
   return (
@@ -253,26 +227,11 @@ const SelectDate = ({
           <Calendar
             id="delivDate"
             placeholder={convertDatetoBPBDate(delivDate)}
-            disabled
             dateFormat="mm/dd/yy"
             onChange={(e) => setDate(e.value)}
           />
         </div>
-        <div>
-          <Button value={pickedCustomer} onClick={(e) => handleAddCustomer(e)}>
-            ADD CUSTOMER +
-          </Button>
 
-          <Dropdown
-            optionLabel="custName"
-            options={customers}
-            placeholder={pickedCustomer}
-            name="customers"
-            value={pickedCustomer}
-            onChange={(e) => setPickedCustomer(e.target.value.custName)}
-          />
-        </div>
-       
         <Button className="p-button-success" onClick={exportCSV}>
           EXPORT CSV
         </Button>

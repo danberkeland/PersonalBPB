@@ -102,6 +102,9 @@ export const ExpandedBillingRows = ({
   };
 
   const changeRate = (data, invNum) => {
+    // getOrder from invNum
+     // getRate
+    //    need products, altPricing, order (prodName,custName,rate)
     return (
       <InputNumber
         placeholder={data.rate}

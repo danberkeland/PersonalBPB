@@ -9,7 +9,7 @@ import {
   createOrder,
   updateDough,
   updateProduct,
-  deleteOrder
+  deleteOrder,
 } from "../../graphql/mutations";
 
 import { API, graphqlOperation } from "aws-amplify";
@@ -25,6 +25,7 @@ const clonedeep = require("lodash.clonedeep");
 let tomorrow = todayPlus()[1];
 let today = todayPlus()[0];
 let yesterday = todayPlus()[4];
+let weekAgo = todayPlus()[5];
 
 const MainWindow = styled.div`
   font-family: "Montserrat", sans-serif;
@@ -55,24 +56,31 @@ function Ordering() {
     setOrdersHasBeenChanged,
   } = useContext(ToggleContext);
 
-  
-
-  
   const loadDatabase = async (database) => {
     setIsLoading(true);
-    const [products, customers, routes, standing, orders, doughs, altPricing] = database;
+    const [products, customers, routes, standing, orders, doughs, altPricing] =
+      database;
     console.log("Checking if Orders Have been changed");
     if (ordersHasBeenChanged) {
       let prodsToUpdate = clonedeep(products);
       let doughsToUpdate = clonedeep(doughs);
-      let ordersToUpdate = clonedeep(orders)
+      let ordersToUpdate = clonedeep(orders);
+      console.log("yesterday", yesterday);
+      console.log("Yes they have! deleting old orders");
+      let newYest = convertDatetoBPBDate(yesterday);
+      let newWeekAgo = convertDatetoBPBDate(weekAgo);
 
-      console.log("Yes they have! deleting old orders")
-      let newYest = convertDatetoBPBDate(yesterday)
-      
       for (let ord of ordersToUpdate) {
-       
-        if (ord.delivDate === newYest) {
+        let ind = customers.findIndex((cust) => cust.custName === ord.custName);
+        let weeklyCheck = "daily";
+        if (ind > -1) {
+          weeklyCheck = customers[ind].invoicing;
+        }
+
+        if (
+          (ord.delivDate === newYest && weeklyCheck === "daily") ||
+          (ord.delivDate === newWeekAgo && weeklyCheck === "weekly")
+        ) {
           let ordToUpdate = {
             id: ord.id,
           };
@@ -86,7 +94,6 @@ function Ordering() {
           }
         }
       }
-
 
       console.log("Yes they have!  Updating preshaped numbers");
       for (let prod of prodsToUpdate) {
@@ -113,7 +120,7 @@ function Ordering() {
         }
       }
       console.log("Yes they have!  Updating prepped bucket numbers");
-      
+
       for (let dgh of doughsToUpdate) {
         if (dgh.updatePreBucket !== tomorrow) {
           dgh.updatePreBucket = today;
@@ -138,14 +145,11 @@ function Ordering() {
         }
       }
 
-      
-      
       console.log("Yes they have!  Loading new Square Orders in DB");
       let ordsToUpdate = clonedeep(orders);
       setDatabase(database);
       let ord = await fetchSq(database);
       if (ord) {
-        
         for (let newOrd of ord) {
           let qty = Number(newOrd["qty"]);
           let dt = new Date().toISOString();
@@ -154,7 +158,7 @@ function Ordering() {
           delivDate = delivDate[1] + "/" + delivDate[2] + "/" + delivDate[0];
 
           let locIDBPBN = "16VS30T9E7CM9";
-          
+
           let rt = "slopick";
           let custName = newOrd["custName"];
 
@@ -185,11 +189,9 @@ function Ordering() {
           //      If order is for tomorrow -
           //        If Pastry -
           //           Deduct qty from back porch bakery item of same prodNick for tomorrow
-          //        If Bread - 
+          //        If Bread -
           //            ?
 
-
-          
           // Search orders for object, if doesn't exist, add:
           let ind = orders.findIndex(
             (ord) =>

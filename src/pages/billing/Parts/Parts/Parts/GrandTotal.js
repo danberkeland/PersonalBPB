@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Button } from "primereact/button";
 import { InputNumber } from "primereact/inputnumber";
 import { Dropdown } from "primereact/dropdown";
@@ -6,6 +6,7 @@ import { Dropdown } from "primereact/dropdown";
 import { formatter, getRate } from "../../../../../helpers/billingGridHelpers";
 
 import styled from "styled-components";
+import { ToggleContext } from "../../../../../dataContexts/ToggleContext";
 
 const clonedeep = require("lodash.clonedeep");
 
@@ -32,31 +33,32 @@ export const GrandTotal = ({
   pickedRate,
   setPickedRate,
 }) => {
+  const [custo, setCusto] = useState("Big Sky Cafe");
+  const { modifications, setModifications } = useContext(ToggleContext);
 
-  const [custo, setCusto ] = useState("Big Sky Cafe")
-
-  useEffect (() => {
-    let order ={}
-    order["rate"] = -1
+  useEffect(() => {
+    let order = {};
+    order["rate"] = -1;
     // getOrder info from invNum
-    order["custName"] = custo
-    order["prodName"] = pickedProduct
-    let rate
+    order["custName"] = custo;
+    order["prodName"] = pickedProduct;
+    let rate;
     try {
-      rate = getRate(products,order,altPricing)
-      console.log("rate",rate)
+      rate = getRate(products, order, altPricing);
+      console.log("rate", rate);
     } catch {
-      rate=0
+      rate = 0;
     }
-    
-    console.log("rate",rate)
-    setPickedRate(rate)
-  },[pickedProduct])
+
+    console.log("rate", rate);
+    setPickedRate(rate);
+  }, [pickedProduct]);
 
   const handleAddProduct = (e, invNum) => {
+    setModifications(true);
     let invToModify = clonedeep(dailyInvoices);
     let ind = invToModify.findIndex((inv) => inv["invNum"] === invNum);
-   
+
     let prodToAdd = {
       prodName: pickedProduct,
       qty: pickedQty,
@@ -83,10 +85,16 @@ export const GrandTotal = ({
   }
 
   const handlePickedProd = (e, invNum) => {
-    let cust = dailyInvoices[dailyInvoices.findIndex(daily => daily.invNum === invNum)].custName
-    setCusto(cust)
-    setPickedProduct(e.target.value.prodName)
-  }
+    let cust =
+      dailyInvoices[dailyInvoices.findIndex((daily) => daily.invNum === invNum)]
+        .custName;
+    setCusto(cust);
+    setPickedProduct(e.target.value.prodName);
+  };
+
+  const handleSaveChanges = (e, invNum) => {
+    setModifications(false);
+  };
 
   return (
     <React.Fragment>
@@ -124,7 +132,24 @@ export const GrandTotal = ({
         />
       </FooterGrid>
       <FooterGrid>
-        <div></div>
+        {modifications ? (
+          <React.Fragment>
+            <Button
+              className={
+                modifications
+                  ? "p-button-raised p-button-rounded p-button-danger"
+                  : "p-button-raised p-button-rounded p-button-success"
+              }
+              onClick={(e) => handleSaveChanges(e, invNum)}
+            >
+              SAVE CHANGES
+            </Button>
+          </React.Fragment>
+        ) : (
+          <React.Fragment>
+            <div></div>
+          </React.Fragment>
+        )}
         <div></div>
         <div>Grand Total</div>
         <div>{sum}</div>

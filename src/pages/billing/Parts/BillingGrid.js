@@ -64,18 +64,7 @@ const BillingGrid = ({
     }
   }, [delivDate, database, nextInv, zones]);
 
-  useEffect(() => {
-    try {
-      let ratePull =
-        products[
-          products.findIndex((prod) => prod["prodName"] === pickedProduct)
-        ].wholePrice;
-
-      setPickedRate(ratePull);
-    } catch {
-      console.log("no product chosen");
-    }
-  }, [pickedProduct]);
+  
 
   const calcSumTotal = (data) => {
     let sum = 0;

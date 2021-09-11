@@ -4,7 +4,7 @@ import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { InputNumber } from "primereact/inputnumber";
 
-import { formatter } from "../../../../helpers/billingGridHelpers";
+import { formatter, getRate } from "../../../../helpers/billingGridHelpers";
 
 import { GrandTotal } from "../Parts/Parts/GrandTotal"
 
@@ -15,6 +15,7 @@ export const ExpandedBillingRows = ({
   dailyInvoices,
   setDailyInvoices,
   products,
+  altPricing,
   pickedProduct,
   setPickedProduct,
   pickedRate,
@@ -102,9 +103,7 @@ export const ExpandedBillingRows = ({
   };
 
   const changeRate = (data, invNum) => {
-    // getOrder from invNum
-     // getRate
-    //    need products, altPricing, order (prodName,custName,rate)
+    
     return (
       <InputNumber
         placeholder={data.rate}
@@ -152,6 +151,7 @@ export const ExpandedBillingRows = ({
         dailyInvoices={dailyInvoices}
         setDailyInvoices={setDailyInvoices}
         products={products}
+        altPricing={altPricing}
         pickedProduct={pickedProduct}
         setPickedProduct={setPickedProduct}
         pickedQty={pickedQty}

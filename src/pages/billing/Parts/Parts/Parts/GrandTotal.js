@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "primereact/button";
 import { InputNumber } from "primereact/inputnumber";
 import { Dropdown } from "primereact/dropdown";
 
-import { formatter } from "../../../../../helpers/billingGridHelpers";
+import { formatter, getRate } from "../../../../../helpers/billingGridHelpers";
 
 import styled from "styled-components";
 
@@ -24,6 +24,7 @@ export const GrandTotal = ({
   dailyInvoices,
   setDailyInvoices,
   products,
+  altPricing,
   pickedProduct,
   setPickedProduct,
   pickedQty,
@@ -31,9 +32,31 @@ export const GrandTotal = ({
   pickedRate,
   setPickedRate,
 }) => {
+
+  const [custo, setCusto ] = useState("Big Sky Cafe")
+
+  useEffect (() => {
+    let order ={}
+    order["rate"] = -1
+    // getOrder info from invNum
+    order["custName"] = custo
+    order["prodName"] = pickedProduct
+    let rate
+    try {
+      rate = getRate(products,order,altPricing)
+      console.log("rate",rate)
+    } catch {
+      rate=0
+    }
+    
+    console.log("rate",rate)
+    setPickedRate(rate)
+  },[pickedProduct])
+
   const handleAddProduct = (e, invNum) => {
     let invToModify = clonedeep(dailyInvoices);
     let ind = invToModify.findIndex((inv) => inv["invNum"] === invNum);
+   
     let prodToAdd = {
       prodName: pickedProduct,
       qty: pickedQty,
@@ -59,6 +82,12 @@ export const GrandTotal = ({
     console.log("nothing to calc");
   }
 
+  const handlePickedProd = (e, invNum) => {
+    let cust = dailyInvoices[dailyInvoices.findIndex(daily => daily.invNum === invNum)].custName
+    setCusto(cust)
+    setPickedProduct(e.target.value.prodName)
+  }
+
   return (
     <React.Fragment>
       <FooterGrid>
@@ -70,7 +99,7 @@ export const GrandTotal = ({
           placeholder={pickedProduct}
           name="products"
           value={pickedProduct}
-          onChange={(e) => setPickedProduct(e.target.value.prodName)}
+          onChange={(e) => handlePickedProd(e, invNum)}
         />
         <label>Quantity</label>
         <InputNumber

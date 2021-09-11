@@ -73,8 +73,7 @@ export const attachInvoiceOrders = (
     for (let ord of orderClip) {
       let ratePull = getRate(products,ord,altPricing)
       rateTotal = rateTotal+ratePull*Number(ord["qty"])
-      console.log("ord",ord)
-      console.log("rateTotal",rateTotal)
+      
       let pushBit = {
         prodName: ord["prodName"],
         qty: Number(ord["qty"]),

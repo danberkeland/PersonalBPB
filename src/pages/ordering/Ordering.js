@@ -65,10 +65,14 @@ function Ordering() {
       let prodsToUpdate = clonedeep(products);
       let doughsToUpdate = clonedeep(doughs);
       let ordersToUpdate = clonedeep(orders);
-      console.log("yesterday", yesterday);
+     
+      
       console.log("Yes they have! deleting old orders");
       let newYest = convertDatetoBPBDate(yesterday);
       let newWeekAgo = convertDatetoBPBDate(weekAgo);
+      console.log("newYest", newYest);
+      console.log("newWeekAgo",newWeekAgo)
+      
 
       for (let ord of ordersToUpdate) {
         let ind = customers.findIndex((cust) => cust.custName === ord.custName);
@@ -76,7 +80,8 @@ function Ordering() {
         if (ind > -1) {
           weeklyCheck = customers[ind].invoicing;
         }
-
+        console.log("ord.delivDate",ord.delivDate)
+        console.log("weeklyCheck",weeklyCheck)
         if (
           (ord.delivDate === newYest && weeklyCheck === "daily") ||
           (ord.delivDate === newWeekAgo && weeklyCheck === "weekly")

@@ -94,6 +94,8 @@ const BillingGrid = ({
         setPickedQty={setPickedQty}
         pickedRate={pickedRate}
         setPickedRate={setPickedRate}
+        delivDate={delivDate}
+        orders={orders}
       />
     );
   };

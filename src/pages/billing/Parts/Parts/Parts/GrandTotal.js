@@ -4,9 +4,13 @@ import { InputNumber } from "primereact/inputnumber";
 import { Dropdown } from "primereact/dropdown";
 
 import { formatter, getRate } from "../../../../../helpers/billingGridHelpers";
+import { API, graphqlOperation } from "aws-amplify";
+
+import { updateOrder, createOrder } from "../../../../../graphql/mutations";
 
 import styled from "styled-components";
 import { ToggleContext } from "../../../../../dataContexts/ToggleContext";
+import { convertDatetoBPBDate } from "../../../../../helpers/dateTimeHelpers";
 
 const clonedeep = require("lodash.clonedeep");
 
@@ -32,9 +36,12 @@ export const GrandTotal = ({
   setPickedQty,
   pickedRate,
   setPickedRate,
+  delivDate,
+  orders
 }) => {
   const [custo, setCusto] = useState("Big Sky Cafe");
-  const { modifications, setModifications } = useContext(ToggleContext);
+  const { setReload, reload, setIsLoading, modifications, setModifications } =
+    useContext(ToggleContext);
 
   useEffect(() => {
     let order = {};
@@ -61,8 +68,8 @@ export const GrandTotal = ({
 
     let prodToAdd = {
       prodName: pickedProduct,
-      qty: pickedQty,
-      rate: pickedRate,
+      qty: parseInt(pickedQty),
+      rate: parseFloat(pickedRate),
     };
     invToModify[ind].orders.push(prodToAdd);
     setDailyInvoices(invToModify);
@@ -92,7 +99,60 @@ export const GrandTotal = ({
     setPickedProduct(e.target.value.prodName);
   };
 
-  const handleSaveChanges = (e, invNum) => {
+  const handleSaveChanges = async (e, invNum) => {
+   
+    // loop through orders
+    let custInd = dailyInvoices.findIndex(daily => daily.invNum === invNum)
+    let parsedOrders = dailyInvoices[custInd].orders.filter(daily => daily.prodName !== "DELIVERY");
+   
+    let custName=dailyInvoices[custInd].custName;
+    let filteredOrders = orders.filter(ord => ord.custName===custName && ord.delivDate===convertDatetoBPBDate(delivDate))
+    console.log("filteredOrders",filteredOrders)
+
+    for (let ord of parsedOrders) {
+      let id
+      let ind = filteredOrders.findIndex(filt => filt.prodName === ord.prodName)
+      ind<0 ? id = null : id = filteredOrders[ind].id
+     
+      let updateDetails = {
+       
+        qty: ord.qty,
+        prodName: ord.prodName,
+        custName: custName,
+        rate: ord.rate,
+        SO: ord.qty,
+        delivDate: convertDatetoBPBDate(delivDate)
+        
+      };
+      console.log(updateDetails)
+     
+      if (id !== null) {
+        updateDetails["id"] = id
+        try {
+          await API.graphql(
+            graphqlOperation(updateOrder, { input: { ...updateDetails } })
+          );
+          console.log(updateDetails.prodName, "Successful update");
+        } catch (error) {
+          console.log(error, "Failed Update");
+        }
+      } else {
+        
+        try {
+          await API.graphql(
+            graphqlOperation(createOrder, { input: { ...updateDetails } })
+          );
+          console.log(updateDetails.prodName, "Successful create");
+        } catch (error) {
+          console.log(error, "Failed create");
+        }
+      }
+    
+    }
+
+    setReload(!reload);
+    setIsLoading(false);
+    
     setModifications(false);
   };
 

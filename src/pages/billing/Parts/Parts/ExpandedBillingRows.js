@@ -23,6 +23,8 @@ export const ExpandedBillingRows = ({
   setPickedRate,
   pickedQty,
   setPickedQty,
+  delivDate,
+  orders
 }) => {
   const { setModifications } = useContext(ToggleContext);
 
@@ -173,6 +175,9 @@ export const ExpandedBillingRows = ({
         setPickedQty={setPickedQty}
         pickedRate={pickedRate}
         setPickedRate={setPickedRate}
+        delivDate={delivDate}
+        orders={orders}
+        
       />
     </div>
   );

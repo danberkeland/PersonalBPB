@@ -106,11 +106,16 @@ const convertStandListtoStandArray = (
 
 export const compileOrderList = (cartList, standList) => {
   let orderList = cartList.concat(standList);
+  console.log("orderListConcat",orderList)
 
   // Remove old cart order from orders if it exists
   for (let i = 0; i < orderList.length; ++i) {
     for (let j = i + 1; j < orderList.length; ++j) {
-      if (orderList[i]["prodName"] === orderList[j]["prodName"]) {
+      if (
+        orderList[i]["prodName"] === orderList[j]["prodName"] && 
+        orderList[i]["custName"] === orderList[j]["custName"] &&
+        orderList[i]["delivDate"] === orderList[j]["delivDate"] 
+        ) {
         orderList.splice(j, 1);
       }
     }

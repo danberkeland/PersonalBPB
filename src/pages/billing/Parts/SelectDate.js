@@ -11,6 +11,7 @@ import {
   convertDatetoBPBDate,
   todayPlus,
 } from "../../../helpers/dateTimeHelpers";
+import { compileOrderList } from "../../../helpers/CartBuildingHelpers";
 
 const { DateTime } = require("luxon");
 
@@ -45,71 +46,33 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
 
   const exportCSV = async () => {
     let data = [];
+  
+    let dailyInvoices = orders.filter(ord => ord.delivDate === convertDatetoBPBDate(delivDate))
+    console.log("firstDaily", dailyInvoices)
+    for (let daily of dailyInvoices){
+      
+      try {
+        if (customers[
+          customers.findIndex((custo) => custo.custName === daily.custName)
+        ].invoicing !=="daily"){
+          daily["invoicing"]="none"
+        } else {
+          daily["invoicing"]="daily"
+        }
+      } catch {
+        daily["invoicing"]="daily"
+      }
+
+    }
 
     dailyInvoices = dailyInvoices.filter(
       (daily) =>
-        customers[
-          customers.findIndex((custo) => custo.custName === daily.custName)
-        ].invoicing === "daily"
+        daily.invoicing === "daily"
     );
 
-    for (let inv of dailyInvoices) {
-      for (let ord of inv.orders) {
-        let ddate = convertDatetoBPBDate(delivDate);
-        let dueDate = convertDatetoBPBDate(
-          DateTime.now()
-            .setZone("America/Los_Angeles")
-            .plus({ days: 15 })
-            .toString()
-            .split("T")[0]
-        );
-        let custIndex = customers.findIndex(
-          (cust) => cust["custName"] === inv["custName"]
-        );
-        let BillAddrLine1 = customers[custIndex].addr1;
-        let BillAddrLine2 = customers[custIndex].addr2;
-        let BillAddrCity = customers[custIndex].city;
-        let PostalCode = customers[custIndex].zip;
-        let ponote;
-        try {
-          ponote =
-            orders[
-              orders.findIndex(
-                (order) =>
-                  order.delivDate === delivDate &&
-                  order.custName === ord.custName
-              )
-            ].PONote;
-        } catch {
-          ponote = "na";
-        }
+   
 
-        let newEntry = [
-          inv.invNum,
-          inv.custName,
-          ddate,
-          dueDate,
-          ddate,
-          "net15",
-          "Wholesale",
-          BillAddrLine1,
-          BillAddrLine2,
-          "",
-          BillAddrCity,
-          "CA",
-          PostalCode,
-          ponote,
-          true,
-          ord.prodName,
-          ord.prodName,
-          ord.qty,
-          ord.rate,
-          "Y",
-        ];
-        console.log("newEntry", newEntry);
-        data.push(newEntry);
-      }
-    }
+    console.log("dailyInvoices",dailyInvoices)
 
     let todayDay = DateTime.now().setZone("America/Los_Angeles").weekdayLong;
 
@@ -141,8 +104,11 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
             ord.delivDate === convertDatetoBPBDate(todayPlus()[9]) ||
             ord.delivDate === convertDatetoBPBDate(todayPlus()[10]))
       );
-      console.log("orders", orders);
+     
       console.log("weeklyOrders", weeklyOrders);
+
+      let dailyPlusWeeklyDays = compileOrderList(dailyInvoices,weeklyOrders)
+      console.log("dailyPlusWeekly",dailyPlusWeeklyDays)
 
       for (let stand of standing) {
         try {
@@ -159,6 +125,39 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
           stand["invoicing"] = "none";
         }
       }
+
+      let convertedDailyStandList = [];
+      
+      let builtDailyStandList = standing.filter(
+        (stand) => stand.isStand === true && stand.invoicing === "daily"
+      );
+     
+      
+        let dateSplit = todayPlus()[0].split("-");
+        let dayOfWeek = DateTime.local(
+          Number(dateSplit[0]),
+          Number(dateSplit[1]),
+          Number(dateSplit[2])
+        ).weekdayShort;
+        let toAddToConvertedStandList = builtDailyStandList.map((order) => ({
+          id: null,
+          version: order["_version"],
+          qty: order[dayOfWeek],
+          prodName: order["prodName"],
+          custName: order["custName"],
+
+          isWhole: true,
+          delivDate: convertDatetoBPBDate(todayPlus()[0]),
+          timeStamp: order["timeStamp"],
+          SO: order[dayOfWeek],
+        }));
+        for (let item of toAddToConvertedStandList) {
+          convertedDailyStandList.push(item);
+        
+      }
+
+      let fullOrdersFirstPart = compileOrderList(weeklyOrders,convertedDailyStandList)
+      console.log("fullOrdersFirstPart",fullOrdersFirstPart)
 
       let convertedStandList = [];
       let dateArray = [
@@ -199,10 +198,10 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
         }
       }
 
-      console.log("convertedStandList", convertedStandList);
+      let fullOrders = compileOrderList(fullOrdersFirstPart,convertedStandList).filter(ord => ord.qty>0)
+      console.log("fullOrders",fullOrders)
       /*
       
-      //  Combine orders and standing orders, orders take precedence
       //  Create weeklyInvoices
       //  Append orders to data similar to weekly but with attention to delivDate and fulfill date
 

@@ -194,6 +194,9 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
         fullOrders = compileOrderList(fullOrders, convertedStandList);
       }
 
+      let newDate = dateSplit[1] + dateSplit[2] + dateSplit[0];
+      console.log("fullOrders",fullOrders)
+
       fullOrders = fullOrders.filter((ord) => ord.qty > 0);
 
       sortZtoADataByIndex(fullOrders, "delivDate");
@@ -201,6 +204,8 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
       console.log("fullOrders", fullOrders);
 
       for (let ord of fullOrders) {
+        
+        
         let ddate = convertDatetoBPBDate(delivDate);
         let dueDate = convertDatetoBPBDate(
           DateTime.now()
@@ -220,6 +225,9 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
         if (!ord.rate) {
           ord.rate = products[prodIndex].wholePrice;
         }
+        let nick
+        nick = custIndex > -1 ? customers[custIndex].nickName : "";
+        ord.invNum = newDate+nick
         let qty = custIndex > -1 ? ord.qty : 0;
         let BillAddrLine1 = custIndex > -1 ? customers[custIndex].addr1 : "";
         let BillAddrLine2 = custIndex > -1 ? customers[custIndex].addr2 : "";

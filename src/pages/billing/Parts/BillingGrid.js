@@ -3,6 +3,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 
 import { CurrentDataContext } from "../../../dataContexts/CurrentDataContext";
+import { ToggleContext } from "../../../dataContexts/ToggleContext";
 
 import {
   buildCartList,
@@ -22,13 +23,12 @@ import { DeleteInvoice } from "./Parts/DeleteInvoice";
 
 const BillingGrid = ({
   database,
-  altPricing,
   nextInv,
   dailyInvoices,
   setDailyInvoices,
   zones,
 }) => {
-  const [products, customers, routes, standing, orders] = database;
+  const [products, customers, routes, standing, orders,d,dd,altPricing] = database;
   const [expandedRows, setExpandedRows] = useState(null);
 
   const [pickedProduct, setPickedProduct] = useState();
@@ -36,8 +36,8 @@ const BillingGrid = ({
   const [pickedQty, setPickedQty] = useState();
 
   const { delivDate } = useContext(CurrentDataContext);
-  
-
+  const { setIsLoading, reload, setReload } = useContext(ToggleContext);
+ 
   useEffect(() => {
     try {
       let buildOrders = buildCartList("*", delivDate, orders);
@@ -46,6 +46,7 @@ const BillingGrid = ({
 
       let custListArray = buildCustList(fullOrder);
       let invList = buildInvList(custListArray, customers, delivDate);
+      
       let invOrders = attachInvoiceOrders(
         invList,
         fullOrder,
@@ -56,25 +57,16 @@ const BillingGrid = ({
         "daily"
       );
 
+      // construct setWeeklyInvoices
+
       setDailyInvoices(invOrders);
-      console.log(invOrders)
+      console.log("invOrders",invOrders)
     } catch {
       console.log("Whoops");
     }
   }, [delivDate, database, nextInv, zones]);
 
-  useEffect(() => {
-    try {
-      let ratePull =
-        products[
-          products.findIndex((prod) => prod["prodName"] === pickedProduct)
-        ].wholePrice;
-
-      setPickedRate(ratePull);
-    } catch {
-      console.log("no product chosen");
-    }
-  }, [pickedProduct]);
+  
 
   const calcSumTotal = (data) => {
     let sum = 0;
@@ -97,12 +89,15 @@ const BillingGrid = ({
         dailyInvoices={dailyInvoices}
         setDailyInvoices={setDailyInvoices}
         products={products}
+        altPricing={altPricing}
         pickedProduct={pickedProduct}
         setPickedProduct={setPickedProduct}
         pickedQty={pickedQty}
         setPickedQty={setPickedQty}
         pickedRate={pickedRate}
         setPickedRate={setPickedRate}
+        delivDate={delivDate}
+        orders={orders}
       />
     );
   };
@@ -126,7 +121,7 @@ const BillingGrid = ({
           <Column
             headerStyle={{ width: "4rem" }}
             body={(e) =>
-              DeleteInvoice(e.invNum, dailyInvoices, setDailyInvoices)
+              DeleteInvoice(e.invNum, dailyInvoices, setDailyInvoices,orders, delivDate, setIsLoading, reload, setReload)
             }
           ></Column>
         </DataTable>

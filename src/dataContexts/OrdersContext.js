@@ -64,15 +64,12 @@ export const OrdersLoad = () => {
 
   const fetchOrders = async () => {
 
-    let filt = {
-      delivDate: { gt: yesterday },
-    };
-    
+   
     try {
       const ordData = await API.graphql(
         graphqlOperation(listOrders, {
-          limit: "5000",
-          filter: filt
+          limit: "5000"
+         
         })
       );
       const ordList = ordData.data.listOrders.items;

@@ -4,7 +4,6 @@ import { CurrentDataContext } from "../../../dataContexts/CurrentDataContext";
 
 import { Calendar } from "primereact/calendar";
 import { Button } from "primereact/button";
-import { Dropdown } from "primereact/dropdown";
 
 import styled from "styled-components";
 
@@ -12,12 +11,6 @@ import {
   convertDatetoBPBDate,
   todayPlus,
 } from "../../../helpers/dateTimeHelpers";
-
-import { fetchInfo } from "../../../helpers/billingGridHelpers";
-
-import { listHeldforWeeklyInvoicings } from "../../../graphql/queries";
-
-const clonedeep = require("lodash.clonedeep");
 
 const { DateTime } = require("luxon");
 
@@ -30,46 +23,39 @@ const BasicContainer = styled.div`
   box-sizing: border-box;
 `;
 
-const SelectDate = ({
-  database,
-  dailyInvoices,
-  setDailyInvoices,
-}) => {
+let tomorrow = todayPlus()[1];
+let today = todayPlus()[0];
+let yesterday = todayPlus()[4];
+let weekAgo = todayPlus()[5];
+
+const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
   const [products, customers, routes, standing, orders] = database;
   const { delivDate, setDelivDate } = useContext(CurrentDataContext);
-  
+
   const [pickedCustomer, setPickedCustomer] = useState();
 
   useEffect(() => {
-    let [today] = todayPlus();
     setDelivDate(today);
   }, []);
 
   const setDate = (date) => {
     const dt2 = DateTime.fromJSDate(date);
-    setDelivDate(dt2.toFormat("yyyy-MM-dd"));
-  };
-
-  const handleAddCustomer = (e) => {
-    let invToModify = clonedeep(dailyInvoices);
-    let dateSplit = delivDate.split("-");
-    let newDate = dateSplit[1] + dateSplit[2] + dateSplit[0];
-    invToModify.push({
-      custName: e.target.value,
-      invNum: newDate+customers[customers.findIndex(cst => cst.custName===e.target.value)].nickName,
-      orders: [],
-    });
-    setDailyInvoices(invToModify);
-    setPickedCustomer("");
+    setDelivDate(dt2.toFormat("yyyy-dd-MM"));
   };
 
   const exportCSV = async () => {
-    
-  
     let data = [];
+   
+    dailyInvoices = dailyInvoices.filter(
+      (daily) =>
+        customers[
+          customers.findIndex((custo) => custo.custName === daily.custName)
+        ].invoicing === "daily"
+    );
+
     for (let inv of dailyInvoices) {
       for (let ord of inv.orders) {
-       
+        
         let ddate = convertDatetoBPBDate(delivDate);
         let dueDate = convertDatetoBPBDate(
           DateTime.now()
@@ -121,113 +107,51 @@ const SelectDate = ({
           ord.rate,
           "Y",
         ];
+        console.log("newEntry", newEntry);
         data.push(newEntry);
       }
     }
 
     let todayDay = DateTime.now().setZone("America/Los_Angeles").weekdayLong;
 
-    if (todayDay === "Sunday") {
-      let weeklyInfo = await fetchInfo(
-        listHeldforWeeklyInvoicings,
-        "listHeldforWeeklyInvoicings",
-        "1000"
-      );
-
-      let custSet = weeklyInfo.map((week) => week.custName);
-      custSet = new Set(custSet);
-      let custArray = Array.from(custSet);
-      let dateSplit = delivDate.split("-");
-      let newDate = dateSplit[1] + dateSplit[2] + dateSplit[0];
-      custArray = custArray.map((cust) => ({
-        custName: cust,
-        invNum: newDate+customers[customers.findIndex(cst => cst.custName===cust)].nickName,
-      }));
-      let weeklyOrders = [];
-      for (let cust of custArray) {
-        let newOrders = [];
-        for (let inv of weeklyInfo) {
-          if (inv.custName === cust.custName) {
-            let newOrder = {
-              prodName: inv.prodName,
-              qty: inv.qty,
-              rate: inv.rate,
-              fullDate: inv.delivDate,
-            };
-            newOrders.push(newOrder);
+   
+    if (todayDay) {
+      
+      for (let ord of orders){
+        try {
+          if (customers[customers.findIndex(custo => custo.custName === ord.custName)].invoicing === "weekly"){
+            ord["invoicing"] = "weekly"
+          } else {
+            ord["invoicing"] = "none"
           }
-        }
-
-        let newCust = {
-          custName: cust.custName,
-          invNum: cust.invNum,
-          orders: newOrders,
-        };
-        weeklyOrders.push(newCust);
-      }
-      for (let inv of weeklyOrders) {
-        for (let ord of inv.orders) {
-        
-          let ddate = convertDatetoBPBDate(delivDate);
-          let fullDate=convertDatetoBPBDate(ord.fullDate)
-          let dueDate = convertDatetoBPBDate(
-            DateTime.now()
-              .setZone("America/Los_Angeles")
-              .plus({ days: 15 })
-              .toString()
-              .split("T")[0]
-          );
-          let custIndex = customers.findIndex(
-            (cust) => cust["custName"] === inv["custName"]
-          );
-          let BillAddrLine1 = customers[custIndex].addr1;
-          let BillAddrLine2 = customers[custIndex].addr2;
-          let BillAddrCity = customers[custIndex].city;
-          let PostalCode = customers[custIndex].zip;
-          let ponote;
-          try {
-            ponote =
-              orders[
-                orders.findIndex(
-                  (order) =>
-                    order.delivDate === delivDate &&
-                    order.custName === ord.custName
-                )
-              ].PONote;
-          } catch {
-            ponote = "na";
-          }
-  
-          let newEntry = [
-            inv.invNum,
-            inv.custName,
-            ddate,
-            dueDate,
-            fullDate,
-            "net15",
-            "Wholesale",
-            BillAddrLine1,
-            BillAddrLine2,
-            "",
-            BillAddrCity,
-            "CA",
-            PostalCode,
-            ponote,
-            true,
-            ord.prodName,
-            ord.prodName,
-            ord.qty,
-            ord.rate,
-            "Y",
-          ];
-        
-          data.push(newEntry);
-         
+        } catch {
+          ord["invoicing"] = "none"
         }
       }
+
+      let weeklyOrders = orders.filter(ord => ord.invoicing === "weekly"  && (ord.delivDate === convertDatetoBPBDate(todayPlus()[0]) ||
+      ord.delivDate === convertDatetoBPBDate(todayPlus()[4]) ||
+      ord.delivDate === convertDatetoBPBDate(todayPlus()[6]) ||
+      ord.delivDate === convertDatetoBPBDate(todayPlus()[7]) ||
+      ord.delivDate === convertDatetoBPBDate(todayPlus()[8]) ||
+      ord.delivDate === convertDatetoBPBDate(todayPlus()[9]) ||
+      ord.delivDate === convertDatetoBPBDate(todayPlus()[10])))
+      console.log("orders",orders)
+      console.log("weeklyOrders",weeklyOrders)
+      
+      /*
+      
+      //  Grab all standing orders from last week where customer is "weekly" (today through today-6)
+            Create orders for delivDate <=today && > weekAgo
+      //  Combine orders and standing orders, orders take precedence
+      //  Create weeklyInvoices
+      //  Append orders to data similar to weekly but with attention to delivDate and fulfill date
+
+
+      */
     }
 
-    
+    //  Sort data by deliveryDate and then customer
 
     var csv =
       "RefNumber,Customer,TxnDate,DueDate,ShpDate,SalesTerm,Class,BillAddrLine1,BillAddrLine2,BillAddrLine3,BillAddrCity,BillAddrState,BillAddrPostalCode,Msg,AllowOnlineACHPayment,LineItem,LineDescrip,LineQty,LineUnitPrice,LineTaxable\n";
@@ -235,14 +159,12 @@ const SelectDate = ({
       csv += row.join(",");
       csv += "\n";
     });
-    
-    
+
     var hiddenElement = document.createElement("a");
     hiddenElement.href = "data:text/csv;charset=utf-8," + encodeURI(csv);
     hiddenElement.target = "_blank";
     hiddenElement.download = `${delivDate}invoiceExport.csv`;
     hiddenElement.click();
-    
   };
 
   return (
@@ -253,26 +175,11 @@ const SelectDate = ({
           <Calendar
             id="delivDate"
             placeholder={convertDatetoBPBDate(delivDate)}
-            disabled
             dateFormat="mm/dd/yy"
             onChange={(e) => setDate(e.value)}
           />
         </div>
-        <div>
-          <Button value={pickedCustomer} onClick={(e) => handleAddCustomer(e)}>
-            ADD CUSTOMER +
-          </Button>
 
-          <Dropdown
-            optionLabel="custName"
-            options={customers}
-            placeholder={pickedCustomer}
-            name="customers"
-            value={pickedCustomer}
-            onChange={(e) => setPickedCustomer(e.target.value.custName)}
-          />
-        </div>
-       
         <Button className="p-button-success" onClick={exportCSV}>
           EXPORT CSV
         </Button>

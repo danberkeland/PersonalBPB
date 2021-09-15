@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { InputNumber } from "primereact/inputnumber";
 
-import { formatter } from "../../../../helpers/billingGridHelpers";
+import { formatter, getRate } from "../../../../helpers/billingGridHelpers";
 
-import { GrandTotal } from "../Parts/Parts/GrandTotal"
+import { GrandTotal } from "../Parts/Parts/GrandTotal";
+import { ToggleContext } from "../../../../dataContexts/ToggleContext";
 
 const clonedeep = require("lodash.clonedeep");
 
@@ -15,13 +16,23 @@ export const ExpandedBillingRows = ({
   dailyInvoices,
   setDailyInvoices,
   products,
+  altPricing,
   pickedProduct,
   setPickedProduct,
   pickedRate,
   setPickedRate,
   pickedQty,
   setPickedQty,
+  delivDate,
+  orders
 }) => {
+  const { setModifications } = useContext(ToggleContext);
+
+  useEffect(() => {
+    setModifications(false)
+  },[])
+
+
   const deleteItem = (data, invNum) => {
     let invToModify = clonedeep(dailyInvoices);
     let ind = invToModify.findIndex((inv) => inv["invNum"] === invNum);
@@ -43,6 +54,7 @@ export const ExpandedBillingRows = ({
 
   const handleChange = (e, data, invNum) => {
     if (e.code === "Enter") {
+      setModifications(true)
       let invToModify = clonedeep(dailyInvoices);
       let ind = invToModify.findIndex((inv) => inv["invNum"] === invNum);
       let prodInd = invToModify[ind].orders.findIndex(
@@ -54,6 +66,7 @@ export const ExpandedBillingRows = ({
   };
 
   const handleBlurChange = (e, data, invNum) => {
+    setModifications(true)
     let invToModify = clonedeep(dailyInvoices);
     let ind = invToModify.findIndex((inv) => inv["invNum"] === invNum);
     let prodInd = invToModify[ind].orders.findIndex(
@@ -66,6 +79,7 @@ export const ExpandedBillingRows = ({
   };
 
   const changeQty = (data, invNum) => {
+    
     return (
       <InputNumber
         placeholder={data.qty}
@@ -78,7 +92,9 @@ export const ExpandedBillingRows = ({
   };
 
   const handleRateChange = (e, data, invNum) => {
+
     if (e.code === "Enter") {
+      setModifications(true);
       let invToModify = clonedeep(dailyInvoices);
       let ind = invToModify.findIndex((inv) => inv["invNum"] === invNum);
       let prodInd = invToModify[ind].orders.findIndex(
@@ -90,6 +106,7 @@ export const ExpandedBillingRows = ({
   };
 
   const handleRateBlurChange = (e, data, invNum) => {
+    setModifications(true);
     let invToModify = clonedeep(dailyInvoices);
     let ind = invToModify.findIndex((inv) => inv["invNum"] === invNum);
     let prodInd = invToModify[ind].orders.findIndex(
@@ -102,6 +119,8 @@ export const ExpandedBillingRows = ({
   };
 
   const changeRate = (data, invNum) => {
+    
+
     return (
       <InputNumber
         placeholder={data.rate}
@@ -149,12 +168,16 @@ export const ExpandedBillingRows = ({
         dailyInvoices={dailyInvoices}
         setDailyInvoices={setDailyInvoices}
         products={products}
+        altPricing={altPricing}
         pickedProduct={pickedProduct}
         setPickedProduct={setPickedProduct}
         pickedQty={pickedQty}
         setPickedQty={setPickedQty}
         pickedRate={pickedRate}
         setPickedRate={setPickedRate}
+        delivDate={delivDate}
+        orders={orders}
+        
       />
     </div>
   );

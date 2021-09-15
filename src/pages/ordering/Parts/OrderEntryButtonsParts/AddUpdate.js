@@ -45,7 +45,7 @@ function AddUpdate({ database, setDatabase }) {
   } = useContext(ToggleContext);
 
   const handleUpdateCart = async () => {
-  
+    
     for (let ord of currentCartList) {
       let rte = route;
       let price = getRate(products,ord, altPricing)
@@ -145,14 +145,14 @@ function AddUpdate({ database, setDatabase }) {
   }
   
   const handleAddUpdate = async () => {
-    setIsLoading(true);
+    setIsLoading(true)
     if (cartList) {
       handleUpdateCart()
     } else {
       handleUpdateStanding()
     }
     //setReload(!reload)
-    setIsLoading(false);
+    
    
     document.getElementById("orderCommand").focus();
   };

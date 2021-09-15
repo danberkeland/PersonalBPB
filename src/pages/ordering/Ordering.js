@@ -77,10 +77,12 @@ function Ordering() {
       for (let ord of ordersToUpdate) {
         let ind = customers.findIndex((cust) => cust.custName === ord.custName);
         let weeklyCheck = "daily";
+        console.log("custo",ord.custName)
+        console.log("ind",ind)
+        
         if (ind > -1) {
           weeklyCheck = customers[ind].invoicing;
         }
-        console.log("ord.delivDate",ord.delivDate)
         console.log("weeklyCheck",weeklyCheck)
         if (
           (ord.delivDate === newYest && weeklyCheck === "daily") ||

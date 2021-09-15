@@ -57,6 +57,8 @@ const BillingGrid = ({
         "daily"
       );
 
+      // construct setWeeklyInvoices
+
       setDailyInvoices(invOrders);
       console.log("invOrders",invOrders)
     } catch {

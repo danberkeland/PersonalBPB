@@ -70,20 +70,16 @@ function Ordering() {
       console.log("Yes they have! deleting old orders");
       let newYest = convertDatetoBPBDate(yesterday);
       let newWeekAgo = convertDatetoBPBDate(weekAgo);
-      console.log("newYest", newYest);
-      console.log("newWeekAgo",newWeekAgo)
+     
       
 
       for (let ord of ordersToUpdate) {
         let ind = customers.findIndex((cust) => cust.custName === ord.custName);
         let weeklyCheck = "daily";
-        console.log("custo",ord.custName)
-        console.log("ind",ind)
         
         if (ind > -1) {
           weeklyCheck = customers[ind].invoicing;
         }
-        console.log("weeklyCheck",weeklyCheck)
         if (
           (ord.delivDate === newYest && weeklyCheck === "daily") ||
           (ord.delivDate === newWeekAgo && weeklyCheck === "weekly")

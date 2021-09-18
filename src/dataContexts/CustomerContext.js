@@ -47,6 +47,7 @@ export const CustomerLoad = () => {
           const custList = custData.data.listCustomers.items;
           sortAtoZDataByIndex(custList,"custName")
           let noDelete = custList.filter(cust => cust["_deleted"]!==true)
+         
           setCustomer(noDelete)
           setCustLoaded(true)
         } catch (error){

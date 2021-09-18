@@ -18,6 +18,7 @@ import {
 } from "../../../../helpers/delivGridHelpers";
 
 import styled from "styled-components";
+import { sortAtoZDataByIndex } from "../../../../helpers/sortDataHelpers";
 
 const { DateTime } = require("luxon");
 
@@ -67,6 +68,8 @@ const RouteGrid = ({ route,
   const constructData = () => {
     let qtyGrid;
     if (orderList) {
+     
+      
       let buildGridSetUp = orderList.filter((ord) => ord["route"] === route);
 
       let gridToEdit = buildGridSetUp.filter(
@@ -74,13 +77,18 @@ const RouteGrid = ({ route,
       );
       let listOfCustomers = createListOfCustomers(gridToEdit, route);
       qtyGrid = createQtyGrid(listOfCustomers, gridToEdit);
+     
     }
+    
     return qtyGrid;
   };
 
   useEffect(() => {
     let col = constructColumns();
     let dat = constructData();
+   
+    
+    
     setColumns(col ? col : []);
     setData(dat ? dat : []);
   }, [route, orderList ]);

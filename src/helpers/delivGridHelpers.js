@@ -253,14 +253,17 @@ export const createQtyGrid = (listOfCustomers, orderList) => {
   console.log(orderList);
   let data = [];
   for (let cust of listOfCustomers) {
-    let newData = { customer: cust };
+    let newData = { 
+      customer: cust };
     for (let order of orderList) {
       if (order["custName"] === cust) {
+        newData.delivOrder = order.delivOrder
         newData[order["prodName"]] = order["qty"];
       }
     }
     data.push(newData);
   }
-  console.log(data);
+  console.log("qtyGrid",data);
+  sortAtoZDataByIndex(data,"delivOrder")
   return data;
 };

@@ -5,7 +5,7 @@ import {
   zerosDelivFilter,
   buildGridOrderArray,
 } from "../../../../../helpers/delivGridHelpers";
-import { sortZtoADataByIndex } from "../../../../../helpers/sortDataHelpers";
+import { sortAtoZDataByIndex, sortZtoADataByIndex } from "../../../../../helpers/sortDataHelpers";
 import {
   calcDayNum,
   routeRunsThatDay,
@@ -92,7 +92,15 @@ export default class ComposeProductGrid {
     prodGrid = addRoutes(delivDate, prodGrid, database);
    
     //prodGrid = addAttr(database, prodGrid);
-   
+    for (let grd of prodGrid) {
+      console.log("grd",grd)
+      try{grd["delivOrder"] = customers[customers.findIndex(cust => cust.custName === grd.custName)].delivOrder
+    } catch {
+      console.log("must be retail")
+    }
+    sortAtoZDataByIndex(prodGrid,"delivOrder")
+      
+    }
     return prodGrid;
   }
 

@@ -34,9 +34,18 @@ const DelivOrder = () => {
   }, []);
 
   useEffect(() => {
-      setCustomerList(customers)
+      let custFilt
+      custFilt = customers.filter(cust => cust.zoneName !== "slopick" &&
+      cust.zoneName !== "atownpick" &&
+      cust.zoneName !== "Prado Retail" &&
+      cust.zoneName !== "Carlton Retail") 
+      setCustomerList(custFilt)
 
   },[customers])
+
+  useEffect(() => {
+    console.log(customerList)
+  },[customerList])
 
   const columns = [
     { field: "custName", header: "Customer" },
@@ -70,9 +79,8 @@ const DelivOrder = () => {
         <div className="card">
           <DataTable
             value={customerList}
-            sortMode="single"
-      sortField="zoneName"
-      sortOrder={1}
+            
+            
             
            
             onRowReorder={onRowReorder}
@@ -86,8 +94,7 @@ const DelivOrder = () => {
       <Column
         field="zoneName"
         header="Zone"
-        filter
-        filterPlaceholder="Filter by Zone"
+        
       ></Column>
       <Column
         field="addr1"
@@ -96,8 +103,6 @@ const DelivOrder = () => {
       <Column
         field="city"
         header="City"
-        filter
-        filterPlaceholder="Filter by City"
       ></Column>
       
           </DataTable>

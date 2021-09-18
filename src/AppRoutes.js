@@ -33,6 +33,7 @@ import NorthLists from './pages/logistics/NorthLists';
 import RetailBags from './pages/logistics/RetailBags';
 import SpecialOrders from './pages/logistics/SpecialOrders';
 import EditDough from './pages/settings/editDough/editDough';
+import DelivOrder from './pages/settings/delivOrder/delivOrder';
 import TestComponent from './pages/testComponent/testComponent'
 
 
@@ -57,6 +58,7 @@ function AppRoutes() {
           <Route path="/settings/editZones" component={EditZones} />
           <Route path="/settings/editDough" component={EditDough} />
           <Route path="/settings/notes" component={Notes} />
+          <Route path="/settings/delivOrder" component={DelivOrder} />
         
 
           <Route path="/BPBNProd/BPBNBaker1" component={BPBNBaker1} />

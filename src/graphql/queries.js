@@ -28,6 +28,7 @@ export const getCustomer = /* GraphQL */ `
       picURL
       gMap
       specialInstructions
+      delivOrder
       createdAt
       updatedAt
     }
@@ -65,6 +66,7 @@ export const listCustomers = /* GraphQL */ `
         picURL
         gMap
         specialInstructions
+        delivOrder
         createdAt
         updatedAt
       }

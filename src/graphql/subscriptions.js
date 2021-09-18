@@ -28,6 +28,7 @@ export const onCreateCustomer = /* GraphQL */ `
       picURL
       gMap
       specialInstructions
+      delivOrder
       createdAt
       updatedAt
     }
@@ -60,6 +61,7 @@ export const onUpdateCustomer = /* GraphQL */ `
       picURL
       gMap
       specialInstructions
+      delivOrder
       createdAt
       updatedAt
     }
@@ -92,6 +94,7 @@ export const onDeleteCustomer = /* GraphQL */ `
       picURL
       gMap
       specialInstructions
+      delivOrder
       createdAt
       updatedAt
     }

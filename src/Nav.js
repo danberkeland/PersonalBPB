@@ -254,6 +254,12 @@ function Nav() {
              window.location = "/settings/Notes";
            },
          },
+         {
+          label: "Delivery Order",
+          command: () => {
+            window.location = "/settings/DelivOrder";
+          },
+        },
        ]
     },
   ];

@@ -23,6 +23,7 @@ type Customer @model @auth(rules: [{allow: public}]) {
   picURL: String
   gMap: String
   specialInstructions: String
+  delivOrder: Int
 }
 
 type Product @model @auth(rules: [{allow: public}]) {

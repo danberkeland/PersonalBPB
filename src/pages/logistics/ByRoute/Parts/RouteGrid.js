@@ -69,13 +69,13 @@ const RouteGrid = ({ route,
     let qtyGrid;
     if (orderList) {
      
-      
       let buildGridSetUp = orderList.filter((ord) => ord["route"] === route);
 
       let gridToEdit = buildGridSetUp.filter(
         (order) => order["route"] === route
       );
       let listOfCustomers = createListOfCustomers(gridToEdit, route);
+      
       qtyGrid = createQtyGrid(listOfCustomers, gridToEdit);
      
     }
@@ -86,8 +86,8 @@ const RouteGrid = ({ route,
   useEffect(() => {
     let col = constructColumns();
     let dat = constructData();
-   
-    
+    console.log("dat",dat)
+    //sortAtoZDataByIndex(dat,"delivOrder")
     
     setColumns(col ? col : []);
     setData(dat ? dat : []);

@@ -87,20 +87,27 @@ export default class ComposeProductGrid {
   getProdGrid(database, delivDate) {
     const [products, customers, routes, standing, orders] = database;
     let prodGrid = getFullOrders(delivDate, database);
+    
     prodGrid = zerosDelivFilter(prodGrid, delivDate, database);
+    
     prodGrid = buildGridOrderArray(prodGrid, database);
+    console.log("prodGrid",prodGrid)
     prodGrid = addRoutes(delivDate, prodGrid, database);
-   
+    
     //prodGrid = addAttr(database, prodGrid);
     for (let grd of prodGrid) {
-      console.log("grd",grd)
+      
       try{grd["delivOrder"] = customers[customers.findIndex(cust => cust.custName === grd.custName)].delivOrder
+      console.log("grd",grd)
+      
     } catch {
       console.log("must be retail")
     }
     sortAtoZDataByIndex(prodGrid,"delivOrder")
+    
       
     }
+   
     return prodGrid;
   }
 

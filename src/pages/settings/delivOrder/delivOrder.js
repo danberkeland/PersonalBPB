@@ -73,6 +73,7 @@ const DelivOrder = () => {
   };
 
   const updateDeliveryOrder = async () => {
+    setIsLoading(true)
     let ind = 0;
     for (let cust of customerList) {
       ind=ind+1
@@ -92,6 +93,7 @@ const DelivOrder = () => {
       }
     
     }
+    setIsLoading(false)
     setModifications(false);
   };
 

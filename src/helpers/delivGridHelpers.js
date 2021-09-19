@@ -62,26 +62,31 @@ export const filterForZoneService = (
 
 const buildCustName = (ord, customers) => {
   try {
-  return customers[
-    customers.findIndex((cust) => cust["custName"] === ord["custName"])
-  ].nickName
-} catch {
-  return
-}
-
-}
+    return customers[
+      customers.findIndex((cust) => cust["custName"] === ord["custName"])
+    ].nickName;
+  } catch {
+    return;
+  }
+};
 
 export const buildGridOrderArray = (filterServe, database) => {
   const [products, customers, routes, standing, orders] = database;
   let gridOrderArray;
-
   gridOrderArray = filterServe.map((ord) => ({
     prodName: ord["prodName"],
-    prodNick: products[
-      products.findIndex((prod) => prod["prodName"] === ord["prodName"])
-    ].nickName,
+    delivOrder:
+      customers.findIndex((cust) => cust.custName === ord.custName) > -1
+        ? customers[
+            customers.findIndex((cust) => cust.custName === ord.custName)
+          ].delivOrder
+        : 0,
+    prodNick:
+      products[
+        products.findIndex((prod) => prod["prodName"] === ord["prodName"])
+      ].nickName,
     custName: ord["custName"],
-    custNick: buildCustName(ord,customers),
+    custNick: buildCustName(ord, customers),
     zone: ord["zoneName"],
     route: ord["route"],
     qty: ord["qty"],
@@ -104,11 +109,11 @@ export const buildGridOrderArray = (filterServe, database) => {
       products[
         products.findIndex((prod) => prod["prodName"] === ord["prodName"])
       ].preshaped,
-      prepreshaped:
+    prepreshaped:
       products[
         products.findIndex((prod) => prod["prodName"] === ord["prodName"])
       ].prepreshaped,
-      updatePreDate:
+    updatePreDate:
       products[
         products.findIndex((prod) => prod["prodName"] === ord["prodName"])
       ].updatePreDate,
@@ -250,20 +255,21 @@ export const createListOfCustomers = (orderList) => {
 };
 
 export const createQtyGrid = (listOfCustomers, orderList) => {
-  console.log(orderList);
+  console.log("orderList in create", orderList);
   let data = [];
   for (let cust of listOfCustomers) {
-    let newData = { 
-      customer: cust };
+    let newData = {
+      customer: cust,
+    };
     for (let order of orderList) {
       if (order["custName"] === cust) {
-        newData.delivOrder = order.delivOrder
+        newData["delivOrder"] = order.delivOrder;
         newData[order["prodName"]] = order["qty"];
       }
     }
     data.push(newData);
   }
-  console.log("qtyGrid",data);
-  sortAtoZDataByIndex(data,"delivOrder")
+  console.log("qtyGrid", data);
+  sortAtoZDataByIndex(data, "delivOrder");
   return data;
 };

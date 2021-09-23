@@ -29,6 +29,7 @@ export const getCustomer = /* GraphQL */ `
       gMap
       specialInstructions
       delivOrder
+      customProd
       createdAt
       updatedAt
     }
@@ -67,6 +68,7 @@ export const listCustomers = /* GraphQL */ `
         gMap
         specialInstructions
         delivOrder
+        customProd
         createdAt
         updatedAt
       }
@@ -110,6 +112,7 @@ export const getProduct = /* GraphQL */ `
       bpbextra
       bpbssetoutpre
       bpbssetout
+      defaultInclude
       createdAt
       updatedAt
     }
@@ -156,6 +159,7 @@ export const listProducts = /* GraphQL */ `
         bpbextra
         bpbssetoutpre
         bpbssetout
+        defaultInclude
         createdAt
         updatedAt
       }

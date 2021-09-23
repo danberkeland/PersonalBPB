@@ -24,6 +24,7 @@ type Customer @model @auth(rules: [{allow: public}]) {
   gMap: String
   specialInstructions: String
   delivOrder: Int
+  customProd: [String]
 }
 
 type Product @model @auth(rules: [{allow: public}]) {
@@ -60,6 +61,7 @@ type Product @model @auth(rules: [{allow: public}]) {
   bpbextra: Int
   bpbssetoutpre: Int
   bpbssetout: Int
+  defaultInclude: Boolean
 }
 
 type Order @model @auth(rules: [{allow: public}]) {

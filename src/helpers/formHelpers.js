@@ -37,6 +37,7 @@ export const setDropDownValue = (value, selected) => {
 };
 
 export const setYesNoValue = (value, selected) => {
+  console.log("value",value)
   let itemToUpdate = clonedeep(selected);
   let attr = value.target.id;
   itemToUpdate[attr] = value.value;

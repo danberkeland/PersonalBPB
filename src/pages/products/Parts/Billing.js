@@ -76,6 +76,17 @@ const Billing = ({ selectedProduct, setSelectedProduct }) => {
           }
         />
       </YesNoBox>
+      <YesNoBox>
+        <label htmlFor="defaultInclude">Is Product Available by default?</label>
+        <SelectButton
+          value={selectedProduct.defaultInclude}
+          id="defaultInclude"
+          options={options}
+          onChange={(e) =>
+            setSelectedProduct(setYesNoValue(e, selectedProduct))
+          }
+        />
+      </YesNoBox>
     </React.Fragment>
   );
 };

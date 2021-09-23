@@ -97,6 +97,7 @@ export const findAvailableProducts = (products, orders, chosen, delivDate) => {
         }
     }
     */
+  availableProducts = availableProducts.filter(prod => prod.defaultInclude === true)
   return availableProducts;
 };
 

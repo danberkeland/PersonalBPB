@@ -63,7 +63,8 @@ const Buttons = ({ selectedProduct, setSelectedProduct }) => {
           eodCount: false,
           forBake: prodName,
           bakeExtra: 0,
-          batchSize: 1
+          batchSize: 1,
+          defaultInclude: false
         };
         createProd(addDetails, nickName, prodName);
       });
@@ -108,6 +109,7 @@ const Buttons = ({ selectedProduct, setSelectedProduct }) => {
         forBake: selectedProduct["forBake"],
         bakeExtra: selectedProduct["bakeExtra"],
         batchSize: selectedProduct["batchSize"],
+        defaultInclude: selectedProduct["defaultInclude"]
     };
 
     try {

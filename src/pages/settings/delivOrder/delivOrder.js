@@ -53,9 +53,7 @@ const DelivOrder = () => {
     setCustomerList(custFilt);
   }, [customers]);
 
-  useEffect(() => {
-    console.log(customerList);
-  }, [customerList]);
+  
 
   const columns = [
     { field: "custName", header: "Customer" },

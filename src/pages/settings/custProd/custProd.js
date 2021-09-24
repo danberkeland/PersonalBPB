@@ -4,12 +4,14 @@ import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { Checkbox } from "primereact/checkbox";
 import { InputNumber } from "primereact/inputnumber";
+import { Dropdown } from "primereact/dropdown";
 
 import { updateCustomer } from "../../../graphql/mutations";
 
 import { API, graphqlOperation } from "aws-amplify";
 
 import { ToggleContext } from "../../../dataContexts/ToggleContext";
+import { CurrentDataContext } from "../../../dataContexts/CurrentDataContext";
 import {
   CustomerContext,
   CustomerLoad,
@@ -26,21 +28,36 @@ const DelivOrder = () => {
   let { setIsLoading, modifications, setModifications } =
     useContext(ToggleContext);
 
-    const { customers, custLoaded, setCustLoaded } = useContext(CustomerContext);
-    const { products, prodLoaded, setProdLoaded } = useContext(ProductsContext);
+  const { customers, custLoaded, setCustLoaded } = useContext(CustomerContext);
+  const { products, prodLoaded, setProdLoaded } = useContext(ProductsContext);
 
   const [productList, setProductList] = useState(products);
+  const [customerGroup, setCustomerGroup] = useState(customers);
 
- 
   let { setHoldLoaded } = useContext(HoldingContext);
   let { setOrdersLoaded } = useContext(OrdersContext);
   let { setStandLoaded } = useContext(StandingContext);
+
+  const {
+    chosen,
+
+    setChosen,
+  } = useContext(CurrentDataContext);
+
+  useEffect(() => {
+    if (customers.length > 0) {
+      setCustomerGroup(customers);
+    }
+  }, [customers]);
 
   useEffect(() => {
     if (!products) {
       setProdLoaded(false);
     }
-    setCustLoaded(true);
+    if (!customers) {
+      setCustLoaded(false);
+    }
+
     setHoldLoaded(true);
     setOrdersLoaded(true);
     setStandLoaded(true);
@@ -51,8 +68,8 @@ const DelivOrder = () => {
   }, [products]);
 
   useEffect(() => {
-      console.log(productList)
-  },[productList])
+    console.log(productList);
+  }, [productList]);
 
   const isIncluded = (e) => {
     console.log(e.defaultInclude);
@@ -78,9 +95,22 @@ const DelivOrder = () => {
     );
   };
 
+  const handleChosen = (chosen) => {
+    setChosen(chosen);
+  };
+
   return (
     <React.Fragment>
       {!prodLoaded ? <ProductsLoad /> : ""}
+      {!custLoaded ? <CustomerLoad /> : ""}
+      <Dropdown
+        id="customers"
+        value={chosen}
+        options={customerGroup}
+        optionLabel="custName"
+        placeholder={chosen === "  " ? "Select a Customer ..." : chosen}
+        onChange={(e) => handleChosen(e.value.custName)}
+      />
       <Button
         label="Update Customer Products"
         icon="pi pi-plus"
@@ -92,7 +122,7 @@ const DelivOrder = () => {
         }
       />
       <div className="orders-subtable">
-        <h2>Product Availability for Kberg</h2>
+        <h2>Product Availability for {chosen}</h2>
         <DataTable value={productList} className="p-datatable-sm">
           <Column
             field="included"
@@ -104,9 +134,15 @@ const DelivOrder = () => {
             header="Product"
             value={productList.prodName}
           ></Column>
+          <Column></Column>
           <Column field="rate" header="Rate" body={(e) => changeRate(e)}>
             {" "}
           </Column>
+          <Column
+            field="wholePrice"
+            header="Default Rate"
+            
+          ></Column>
         </DataTable>
       </div>
     </React.Fragment>

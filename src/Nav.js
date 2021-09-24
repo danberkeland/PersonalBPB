@@ -258,8 +258,14 @@ function Nav() {
           label: "Delivery Order",
           command: () => {
             window.location = "/settings/DelivOrder";
+            }, 
           },
-        },
+          {
+            label: "Customer Product Setup",
+            command: () => {
+              window.location = "/settings/CustProd";
+              }, 
+            },
        ]
     },
   ];

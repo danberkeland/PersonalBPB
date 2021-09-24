@@ -6,6 +6,8 @@ import { Checkbox } from "primereact/checkbox";
 import { InputNumber } from "primereact/inputnumber";
 import { Dropdown } from "primereact/dropdown";
 
+import './style.css';
+
 import { updateCustomer } from "../../../graphql/mutations";
 
 import { API, graphqlOperation } from "aws-amplify";
@@ -72,7 +74,7 @@ const DelivOrder = () => {
   }, [productList]);
 
   const isIncluded = (e) => {
-    console.log(e.defaultInclude);
+   
     return (
       <React.Fragment>
         <Checkbox inputId="binary" checked={e.defaultInclude} />
@@ -99,6 +101,13 @@ const DelivOrder = () => {
     setChosen(chosen);
   };
 
+  const rowClass = (data) => {
+    console.log(data)
+    return {
+        'not-included': data.defaultInclude === false
+    }
+}
+
   return (
     <React.Fragment>
       {!prodLoaded ? <ProductsLoad /> : ""}
@@ -123,7 +132,7 @@ const DelivOrder = () => {
       />
       <div className="orders-subtable">
         <h2>Product Availability for {chosen}</h2>
-        <DataTable value={productList} className="p-datatable-sm">
+        <DataTable value={productList} className="p-datatable-sm" rowClassName={rowClass}>
           <Column
             field="included"
             header="Included"
@@ -135,7 +144,7 @@ const DelivOrder = () => {
             value={productList.prodName}
           ></Column>
           <Column></Column>
-          <Column field="rate" header="Rate" body={(e) => changeRate(e)}>
+          <Column field="rate" header="Customer Rate" body={(e) => changeRate(e)}>
             {" "}
           </Column>
           <Column

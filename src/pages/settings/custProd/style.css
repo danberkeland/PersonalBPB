@@ -1,0 +1,12 @@
+/* DataTableDemo.css */
+
+
+.instock {
+    font-weight: 700;
+    color: #66BB6A;
+}
+
+.not-included {
+    background-color: rgba(0, 0, 0, 0.15) !important;
+}
+                 

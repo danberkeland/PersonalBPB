@@ -6,7 +6,7 @@ import { Checkbox } from "primereact/checkbox";
 import { InputNumber } from "primereact/inputnumber";
 import { Dropdown } from "primereact/dropdown";
 
-import './style.css';
+import "./style.css";
 
 import { updateCustomer } from "../../../graphql/mutations";
 
@@ -67,48 +67,69 @@ const DelivOrder = () => {
   }, []);
 
   useEffect(() => {
-    try{
-    let newProdList = products
-    for (let prod of newProdList){
-      prod.updatedRate = 2
-      prod.prev = 2
+    try {
+      let newProdList = products;
+      for (let prod of newProdList) {
+        prod.updatedRate = 2;
+        prod.prev = 2;
+      }
+      setProductList(newProdList);
+    } catch {
+      console.log("not ready yet");
     }
-    setProductList(newProdList);
-  } catch {
-    console.log("not ready yet")
-  }
   }, [products]);
 
   useEffect(() => {
     console.log(productList);
   }, [productList]);
 
-  const isIncluded = (e) => {
-   
+  const isIncluded = (data) => {
     return (
       <React.Fragment>
-        <Checkbox inputId="binary" checked={e.defaultInclude} />
+        <Checkbox
+          inputId="binary"
+          checked={data.defaultInclude}
+          onChange={(e) => handleCheck(e, data.prodName)}
+        />
       </React.Fragment>
     );
   };
 
+  const handleCheck = (e, prodName) => {
+    let prodListToUpdate = [...productList];
+    prodListToUpdate[
+      productList.findIndex((prod) => prod.prodName === prodName)
+    ].defaultInclude = e.target.checked;
+    setProductList(prodListToUpdate);
+    setModifications(true);
+  };
+
   const handleRateChange = (e, prodName) => {
     if (e.code === "Enter") {
-      setModifications(true)
-      console.log(e.target.value, prodName)
-      
+      setModifications(true);
+      console.log(e.target.value, prodName);
+      let prodListToUpdate = { ...productList };
+      prodListToUpdate[
+        productList.findIndex((prod) => prod.prodName === prodName)
+      ].updatedRate = e.target.value;
+      setProductList(prodListToUpdate);
+      console.log(prodListToUpdate);
+      // set prodName updatedRate to e
     }
   };
 
   const handleRateBlurChange = (e, prodName) => {
-    setModifications(true)
-    console.log(e.target.value, prodName)
-    
+    setModifications(true);
+    console.log(e.target.value, prodName);
+    let prodListToUpdate = [...productList];
+    prodListToUpdate[
+      productList.findIndex((prod) => prod.prodName === prodName)
+    ].updatedRate = Number(e.target.value).toFixed(2);
+    setProductList(prodListToUpdate);
+    console.log(prodListToUpdate);
   };
 
-
   const changeRate = (data) => {
-
     return (
       <InputNumber
         placeholder={data.updatedRate}
@@ -136,11 +157,10 @@ const DelivOrder = () => {
   };
 
   const rowClass = (data) => {
-    
     return {
-        'not-included': data.defaultInclude === false
-    }
-}
+      "not-included": data.defaultInclude === false,
+    };
+  };
 
   return (
     <React.Fragment>
@@ -166,30 +186,32 @@ const DelivOrder = () => {
       />
       <div className="orders-subtable">
         <h2>Product Availability for {chosen}</h2>
-        <DataTable value={productList} className="p-datatable-sm" rowClassName={rowClass}>
+        <DataTable
+          value={productList}
+          className="p-datatable-sm"
+          rowClassName={rowClass}
+        >
           <Column
             field="included"
             header="Included"
             body={(e) => isIncluded(e, productList)}
           ></Column>
-          <Column
-            field="prodName"
-            header="Product"
-          ></Column>
+          <Column field="prodName" header="Product"></Column>
           <Column></Column>
-          <Column field="updatedRate" header="Customer Rate" body={(e) => changeRate(e)}>
+          <Column
+            field="updatedRate"
+            header="Customer Rate"
+            body={(e) => changeRate(e)}
+          >
             {" "}
           </Column>
           <Column
             field="prev"
             header="Prev"
+            className="instock"
             body={(e) => setPrev(e)}
           ></Column>
-          <Column
-            field="wholePrice"
-            header="Default Rate"
-            
-          ></Column>
+          <Column field="wholePrice" header="Default Rate"></Column>
         </DataTable>
       </div>
     </React.Fragment>

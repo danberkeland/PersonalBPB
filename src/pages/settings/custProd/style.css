@@ -2,8 +2,9 @@
 
 
 .instock {
-    font-weight: 700;
-    color: #66BB6A;
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #d60505;
 }
 
 .not-included {

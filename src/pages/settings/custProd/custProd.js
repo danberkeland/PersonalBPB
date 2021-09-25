@@ -25,7 +25,13 @@ import {
 } from "../../../dataContexts/ProductsContext";
 import { StandingContext } from "../../../dataContexts/StandingContext";
 import { HoldingContext } from "../../../dataContexts/HoldingContext";
-import { prettyDOM } from "@testing-library/dom";
+
+import {
+  fetchAltPricing,
+} from "../../../helpers/databaseFetchers";
+
+
+
 
 const DelivOrder = () => {
   let { setIsLoading, modifications, setModifications } =
@@ -36,6 +42,7 @@ const DelivOrder = () => {
 
   const [productList, setProductList] = useState(products);
   const [customerGroup, setCustomerGroup] = useState(customers);
+  const [altPricing, setAltPricing] = useState();
 
   let { setHoldLoaded } = useContext(HoldingContext);
   let { setOrdersLoaded } = useContext(OrdersContext);
@@ -68,20 +75,31 @@ const DelivOrder = () => {
 
   useEffect(() => {
     try {
+      
       let newProdList = products;
       for (let prod of newProdList) {
-        prod.updatedRate = 2;
-        prod.prev = 2;
+        prod.updatedRate = products[products.findIndex(up => up.prodName === prod.prodName)].wholePrice;
+        for (let alt of altPricing){
+          if (alt.custName === chosen && alt.prodName === prod.prodName){
+            prod.updatedRate = alt.wholePrice
+          }
+        }
+      
+        prod.prev = prod.updatedRate;
       }
       setProductList(newProdList);
     } catch {
       console.log("not ready yet");
     }
-  }, [products]);
+  }, [products, altPricing, chosen]);
+
+  
 
   useEffect(() => {
-    console.log(productList);
-  }, [productList]);
+    setIsLoading(true);
+    fetchAltPricing().then(data => setAltPricing(data))
+    setIsLoading(false)
+  }, []);
 
   const isIncluded = (data) => {
     return (
@@ -152,8 +170,20 @@ const DelivOrder = () => {
     }
   };
 
-  const handleChosen = (chosen) => {
-    setChosen(chosen);
+  const handleChosen = (chose) => {
+    let newProdList = products;
+      for (let prod of newProdList) {
+        prod.updatedRate = products[products.findIndex(up => up.prodName === prod.prodName)].wholePrice;
+        for (let alt of altPricing){
+          if (alt.custName === chose && alt.prodName === prod.prodName){
+            prod.updatedRate = alt.wholePrice
+          }
+        }
+      
+        prod.prev = prod.updatedRate;
+      }
+      setProductList(newProdList);
+    setChosen(chose);
   };
 
   const rowClass = (data) => {

@@ -25,6 +25,7 @@ import {
 } from "../../../dataContexts/ProductsContext";
 import { StandingContext } from "../../../dataContexts/StandingContext";
 import { HoldingContext } from "../../../dataContexts/HoldingContext";
+import { prettyDOM } from "@testing-library/dom";
 
 const DelivOrder = () => {
   let { setIsLoading, modifications, setModifications } =
@@ -66,7 +67,16 @@ const DelivOrder = () => {
   }, []);
 
   useEffect(() => {
-    setProductList(products);
+    try{
+    let newProdList = products
+    for (let prod of newProdList){
+      prod.updatedRate = 2
+      prod.prev = 2
+    }
+    setProductList(newProdList);
+  } catch {
+    console.log("not ready yet")
+  }
   }, [products]);
 
   useEffect(() => {
@@ -82,19 +92,43 @@ const DelivOrder = () => {
     );
   };
 
+  const handleRateChange = (e, prodName) => {
+    if (e.code === "Enter") {
+      setModifications(true)
+      console.log(e.target.value, prodName)
+      
+    }
+  };
+
+  const handleRateBlurChange = (e, prodName) => {
+    setModifications(true)
+    console.log(e.target.value, prodName)
+    
+  };
+
+
   const changeRate = (data) => {
+
     return (
       <InputNumber
-        placeholder={data.wholePrice}
-        value={data.wholePrice}
+        placeholder={data.updatedRate}
+        value={data.updatedRate}
         size="4"
         mode="decimal"
         locale="en-US"
         minFractionDigits={2}
-        //onKeyDown={(e) => handleRateChange(e, data, invNum)}
-        //onBlur={(e) => handleRateBlurChange(e, data, invNum)}
+        onKeyDown={(e) => handleRateChange(e, data.prodName)}
+        onBlur={(e) => handleRateBlurChange(e, data.prodName)}
       />
     );
+  };
+
+  const setPrev = (data) => {
+    if (data.prev === data.updatedRate) {
+      return "";
+    } else {
+      return <div>{Number(data.prev).toFixed(2)}</div>;
+    }
   };
 
   const handleChosen = (chosen) => {
@@ -102,7 +136,7 @@ const DelivOrder = () => {
   };
 
   const rowClass = (data) => {
-    console.log(data)
+    
     return {
         'not-included': data.defaultInclude === false
     }
@@ -141,12 +175,16 @@ const DelivOrder = () => {
           <Column
             field="prodName"
             header="Product"
-            value={productList.prodName}
           ></Column>
           <Column></Column>
-          <Column field="rate" header="Customer Rate" body={(e) => changeRate(e)}>
+          <Column field="updatedRate" header="Customer Rate" body={(e) => changeRate(e)}>
             {" "}
           </Column>
+          <Column
+            field="prev"
+            header="Prev"
+            body={(e) => setPrev(e)}
+          ></Column>
           <Column
             field="wholePrice"
             header="Default Rate"

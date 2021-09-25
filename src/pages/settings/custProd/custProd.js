@@ -26,12 +26,9 @@ import {
 import { StandingContext } from "../../../dataContexts/StandingContext";
 import { HoldingContext } from "../../../dataContexts/HoldingContext";
 
-import {
-  fetchAltPricing,
-} from "../../../helpers/databaseFetchers";
+import { fetchAltPricing } from "../../../helpers/databaseFetchers";
 
-
-
+const clonedeep = require("lodash.clonedeep");
 
 const DelivOrder = () => {
   let { setIsLoading, modifications, setModifications } =
@@ -75,16 +72,18 @@ const DelivOrder = () => {
 
   useEffect(() => {
     try {
-      
-      let newProdList = products;
+      let newProdList = clonedeep(products);
       for (let prod of newProdList) {
-        prod.updatedRate = products[products.findIndex(up => up.prodName === prod.prodName)].wholePrice;
-        for (let alt of altPricing){
-          if (alt.custName === chosen && alt.prodName === prod.prodName){
-            prod.updatedRate = alt.wholePrice
+        prod.updatedRate =
+          products[
+            products.findIndex((up) => up.prodName === prod.prodName)
+          ].wholePrice;
+        for (let alt of altPricing) {
+          if (alt.custName === chosen && alt.prodName === prod.prodName) {
+            prod.updatedRate = alt.wholePrice;
           }
         }
-      
+
         prod.prev = prod.updatedRate;
       }
       setProductList(newProdList);
@@ -93,12 +92,10 @@ const DelivOrder = () => {
     }
   }, [products, altPricing, chosen]);
 
-  
-
   useEffect(() => {
     setIsLoading(true);
-    fetchAltPricing().then(data => setAltPricing(data))
-    setIsLoading(false)
+    fetchAltPricing().then((data) => setAltPricing(data));
+    setIsLoading(false);
   }, []);
 
   const isIncluded = (data) => {
@@ -114,7 +111,7 @@ const DelivOrder = () => {
   };
 
   const handleCheck = (e, prodName) => {
-    let prodListToUpdate = [...productList];
+    let prodListToUpdate = clonedeep(productList);
     prodListToUpdate[
       productList.findIndex((prod) => prod.prodName === prodName)
     ].defaultInclude = e.target.checked;
@@ -126,20 +123,19 @@ const DelivOrder = () => {
     if (e.code === "Enter") {
       setModifications(true);
       console.log(e.target.value, prodName);
-      let prodListToUpdate = { ...productList };
+      let prodListToUpdate = clonedeep(productList);
       prodListToUpdate[
         productList.findIndex((prod) => prod.prodName === prodName)
       ].updatedRate = e.target.value;
       setProductList(prodListToUpdate);
-      console.log(prodListToUpdate);
-      // set prodName updatedRate to e
+      
     }
   };
 
   const handleRateBlurChange = (e, prodName) => {
     setModifications(true);
     console.log(e.target.value, prodName);
-    let prodListToUpdate = [...productList];
+    let prodListToUpdate = clonedeep(productList);
     prodListToUpdate[
       productList.findIndex((prod) => prod.prodName === prodName)
     ].updatedRate = Number(e.target.value).toFixed(2);
@@ -171,18 +167,24 @@ const DelivOrder = () => {
   };
 
   const handleChosen = (chose) => {
-    let newProdList = products;
-      for (let prod of newProdList) {
-        prod.updatedRate = products[products.findIndex(up => up.prodName === prod.prodName)].wholePrice;
-        for (let alt of altPricing){
-          if (alt.custName === chose && alt.prodName === prod.prodName){
-            prod.updatedRate = alt.wholePrice
-          }
+    let newProdList = clonedeep(products);
+    for (let prod of newProdList) {
+      prod.updatedRate =
+        products[
+          products.findIndex((up) => up.prodName === prod.prodName)
+        ].wholePrice;
+      for (let alt of altPricing) {
+        if (alt.custName === chose && alt.prodName === prod.prodName) {
+          prod.updatedRate = alt.wholePrice;
         }
-      
-        prod.prev = prod.updatedRate;
       }
-      setProductList(newProdList);
+
+      // find chosen customer
+      // for cust of customProd, invert check
+
+      prod.prev = prod.updatedRate;
+    }
+    setProductList(newProdList);
     setChosen(chose);
   };
 
@@ -190,6 +192,41 @@ const DelivOrder = () => {
     return {
       "not-included": data.defaultInclude === false,
     };
+  };
+
+  const updateCustProd = () => {
+    for (let prod of productList) {
+      let prodDefaultInclude =
+        products[products.findIndex((p) => p.prodName === prod.prodName)]
+          .defaultInclude;
+
+      if (prod.prev !== prod.updatedRate) {
+        // let updateDetails
+        let exists = false;
+        for (let alt of altPricing) {
+          if (
+            alt.custName === chosen &&
+            alt.prodName === prod.prodName &&
+            alt.wholePrice !== prod.updatedRate
+          ) {
+            console.log("update altpricing");
+            exists = true;
+            // grab ID
+            // update altPricing
+          }
+        }
+        if (exists === false) {
+          console.log("create altpricing");
+        }
+      }
+
+      if (prod.defaultInclude !== prodDefaultInclude) {
+        // update customer customProd
+        // update info for cust
+        console.log("update customProd");
+      }
+    }
+    setModifications(false);
   };
 
   return (
@@ -207,7 +244,7 @@ const DelivOrder = () => {
       <Button
         label="Update Customer Products"
         icon="pi pi-plus"
-        // onClick={updateDeliveryOrder}
+        onClick={updateCustProd}
         className={
           modifications
             ? "p-button-raised p-button-rounded p-button-danger"

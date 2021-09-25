@@ -8,7 +8,7 @@ import { Dropdown } from "primereact/dropdown";
 
 import "./style.css";
 
-import { updateCustomer } from "../../../graphql/mutations";
+import { updateCustomer, updateAltPricing, createAltPricing } from "../../../graphql/mutations";
 
 import { API, graphqlOperation } from "aws-amplify";
 
@@ -128,7 +128,6 @@ const DelivOrder = () => {
         productList.findIndex((prod) => prod.prodName === prodName)
       ].updatedRate = e.target.value;
       setProductList(prodListToUpdate);
-      
     }
   };
 
@@ -194,14 +193,20 @@ const DelivOrder = () => {
     };
   };
 
-  const updateCustProd = () => {
+  const updateCustProd = async () => {
     for (let prod of productList) {
       let prodDefaultInclude =
         products[products.findIndex((p) => p.prodName === prod.prodName)]
           .defaultInclude;
 
       if (prod.prev !== prod.updatedRate) {
-        // let updateDetails
+        prod.prev = prod.updatedRate
+        const updateDetails = {
+          custName: chosen,
+          prodName: prod.prodName,
+          wholePrice: prod.updatedRate,
+        };
+
         let exists = false;
         for (let alt of altPricing) {
           if (
@@ -211,12 +216,26 @@ const DelivOrder = () => {
           ) {
             console.log("update altpricing");
             exists = true;
-            // grab ID
-            // update altPricing
+            updateDetails["id"] = alt.id
+           
+            try {
+              const prodData = await API.graphql(
+                graphqlOperation(updateAltPricing, { input: { ...updateDetails } })
+              );
+            } catch (error) {
+              console.log("error on fetching Prod List", error);
+            }
           }
         }
         if (exists === false) {
           console.log("create altpricing");
+          try {
+            const prodData = await API.graphql(
+              graphqlOperation(createAltPricing, { input: { ...updateDetails } })
+            );
+          } catch (error) {
+            console.log("error on fetching Prod List", error);
+          }
         }
       }
 

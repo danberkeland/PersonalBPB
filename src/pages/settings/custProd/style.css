@@ -8,6 +8,10 @@
 }
 
 .not-included {
-    background-color: rgba(0, 0, 0, 0.15) !important;
+    background-color: rgba(0, 0, 0, 0.10) !important;
+}
+
+.price-differ {
+    background-color: rgba(168, 26, 26, 0.3) !important;
 }
                  

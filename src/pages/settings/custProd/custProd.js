@@ -151,10 +151,21 @@ const DelivOrder = () => {
         mode="decimal"
         locale="en-US"
         minFractionDigits={2}
+       
         onKeyDown={(e) => handleRateChange(e, data.prodName)}
         onBlur={(e) => handleRateBlurChange(e, data.prodName)}
       />
     );
+  };
+
+  const wholeData = (data) => {
+
+    let stockClassName = data.wholePrice !== data.updatedRate ? "instock" : ''
+    return (
+      <div className={stockClassName}>
+        {data.wholePrice}
+      </div>
+    )
   };
 
   const setPrev = (data) => {
@@ -173,7 +184,7 @@ const DelivOrder = () => {
           products.findIndex((up) => up.prodName === prod.prodName)
         ].wholePrice;
       for (let alt of altPricing) {
-        if (alt.custName === chose && alt.prodName === prod.prodName) {
+        if (alt.custName === chosen && alt.prodName === prod.prodName) {
           prod.updatedRate = alt.wholePrice;
         }
       }
@@ -190,8 +201,13 @@ const DelivOrder = () => {
   const rowClass = (data) => {
     return {
       "not-included": data.defaultInclude === false,
+      "price-differ": data.wholePrice !== data.updatedRate
     };
   };
+
+  
+
+  
 
   const updateCustProd = async () => {
     for (let prod of productList) {
@@ -287,6 +303,7 @@ const DelivOrder = () => {
           <Column
             field="updatedRate"
             header="Customer Rate"
+            
             body={(e) => changeRate(e)}
           >
             {" "}
@@ -297,7 +314,7 @@ const DelivOrder = () => {
             className="instock"
             body={(e) => setPrev(e)}
           ></Column>
-          <Column field="wholePrice" header="Default Rate"></Column>
+          <Column field="wholePrice" header="Default Rate" body={wholeData}></Column>
         </DataTable>
       </div>
     </React.Fragment>

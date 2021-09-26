@@ -18,7 +18,8 @@ const ProductList = ({ database, pickedProduct, setPickedProduct }) => {
       products,
       currentCartList,
       chosen,
-      delivDate
+      delivDate,
+      customers
     );
     setProductList(availableProducts);
   }

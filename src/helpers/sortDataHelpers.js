@@ -1,4 +1,3 @@
-
 import { convertDatetoBPBDate } from "./dateTimeHelpers";
 import {
   buildCartList,
@@ -37,7 +36,7 @@ export const createRetailOrderCustomers = (orders) => {
   special = special.map((order) => ({ custName: order["custName"] }));
   let unique = [...new Set(special.map((spec) => spec.custName))];
   unique = unique.map((uni) => ({ custName: uni }));
-  sortAtoZDataByIndex(unique, "custName")
+  sortAtoZDataByIndex(unique, "custName");
   return unique;
 };
 
@@ -86,8 +85,14 @@ export const findCurrentPonote = (chosen, delivDate, orders) => {
   return po;
 };
 
-export const findAvailableProducts = (products, orders, chosen, delivDate) => {
-  let availableProducts = [...products];
+export const findAvailableProducts = (
+  products,
+  orders,
+  chosen,
+  delivDate,
+  customers
+) => {
+  let availableProducts = cloneDeep(products);
   /*
     if (orders){
         for (let order of orders) {
@@ -97,7 +102,29 @@ export const findAvailableProducts = (products, orders, chosen, delivDate) => {
         }
     }
     */
-  availableProducts = availableProducts.filter(prod => prod.defaultInclude === true)
+  try {
+    let customProds =
+      customers[customers.findIndex((custo) => chosen === custo.custName)]
+        .customProd;
+    for (let custo of customProds) {
+      console.log(custo);
+      let ind = availableProducts.findIndex(
+        (avail) => avail.prodName === custo
+      );
+      let prodToUpdate = cloneDeep(availableProducts[ind].defaultInclude);
+      console.log("default", prodToUpdate);
+      if (prodToUpdate === true) {
+        availableProducts[ind].defaultInclude = false;
+      } else {
+        availableProducts[ind].defaultInclude = true;
+      }
+    }
+  } catch {
+    console.log("No chosen");
+  }
+  availableProducts = availableProducts.filter(
+    (prod) => prod.defaultInclude === true
+  );
   return availableProducts;
 };
 

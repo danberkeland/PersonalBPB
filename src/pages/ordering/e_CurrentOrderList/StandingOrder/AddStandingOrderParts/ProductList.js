@@ -19,7 +19,8 @@ const ProductList = ({ database, pickedProduct, setPickedProduct, productList, s
       products,
       orders,
       chosen,
-      delivDate
+      delivDate,
+      customers
     );
     setProductList(availableProducts);
   }

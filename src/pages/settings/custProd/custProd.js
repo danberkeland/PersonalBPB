@@ -8,7 +8,11 @@ import { Dropdown } from "primereact/dropdown";
 
 import "./style.css";
 
-import { updateCustomer, updateAltPricing, createAltPricing } from "../../../graphql/mutations";
+import {
+  updateCustomer,
+  updateAltPricing,
+  createAltPricing,
+} from "../../../graphql/mutations";
 
 import { API, graphqlOperation } from "aws-amplify";
 
@@ -68,6 +72,7 @@ const DelivOrder = () => {
     setHoldLoaded(true);
     setOrdersLoaded(true);
     setStandLoaded(true);
+    setChosen("");
   }, []);
 
   useEffect(() => {
@@ -83,6 +88,15 @@ const DelivOrder = () => {
             prod.updatedRate = alt.wholePrice;
           }
         }
+        let customChecks =
+          customers[customers.findIndex((custo) => chosen === custo.custName)]
+            .customProd;
+
+        for (let check of customChecks) {
+          if (prod.prodName === check) {
+            prod.defaultInclude = !prod.defaultInclude;
+          }
+        }
 
         prod.prev = prod.updatedRate;
       }
@@ -90,7 +104,7 @@ const DelivOrder = () => {
     } catch {
       console.log("not ready yet");
     }
-  }, [products, altPricing, chosen]);
+  }, [products, altPricing, customers, chosen]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -151,7 +165,6 @@ const DelivOrder = () => {
         mode="decimal"
         locale="en-US"
         minFractionDigits={2}
-       
         onKeyDown={(e) => handleRateChange(e, data.prodName)}
         onBlur={(e) => handleRateBlurChange(e, data.prodName)}
       />
@@ -159,13 +172,8 @@ const DelivOrder = () => {
   };
 
   const wholeData = (data) => {
-
-    let stockClassName = data.wholePrice !== data.updatedRate ? "instock" : ''
-    return (
-      <div className={stockClassName}>
-        {data.wholePrice}
-      </div>
-    )
+    let stockClassName = data.wholePrice !== data.updatedRate ? "instock" : "";
+    return <div className={stockClassName}>{data.wholePrice}</div>;
   };
 
   const setPrev = (data) => {
@@ -201,22 +209,20 @@ const DelivOrder = () => {
   const rowClass = (data) => {
     return {
       "not-included": data.defaultInclude === false,
-      "price-differ": data.wholePrice !== data.updatedRate
+      "price-differ": data.wholePrice !== data.updatedRate,
     };
   };
 
-  
-
-  
-
   const updateCustProd = async () => {
+    let customProd = [];
+    let customProdTrue = false;
     for (let prod of productList) {
       let prodDefaultInclude =
         products[products.findIndex((p) => p.prodName === prod.prodName)]
           .defaultInclude;
 
       if (prod.prev !== prod.updatedRate) {
-        prod.prev = prod.updatedRate
+        prod.prev = prod.updatedRate;
         const updateDetails = {
           custName: chosen,
           prodName: prod.prodName,
@@ -232,11 +238,13 @@ const DelivOrder = () => {
           ) {
             console.log("update altpricing");
             exists = true;
-            updateDetails["id"] = alt.id
-           
+            updateDetails["id"] = alt.id;
+
             try {
               const prodData = await API.graphql(
-                graphqlOperation(updateAltPricing, { input: { ...updateDetails } })
+                graphqlOperation(updateAltPricing, {
+                  input: { ...updateDetails },
+                })
               );
             } catch (error) {
               console.log("error on fetching Prod List", error);
@@ -247,7 +255,9 @@ const DelivOrder = () => {
           console.log("create altpricing");
           try {
             const prodData = await API.graphql(
-              graphqlOperation(createAltPricing, { input: { ...updateDetails } })
+              graphqlOperation(createAltPricing, {
+                input: { ...updateDetails },
+              })
             );
           } catch (error) {
             console.log("error on fetching Prod List", error);
@@ -256,9 +266,27 @@ const DelivOrder = () => {
       }
 
       if (prod.defaultInclude !== prodDefaultInclude) {
-        // update customer customProd
-        // update info for cust
+        customProd.push(prod.prodName);
+        customProdTrue = true;
         console.log("update customProd");
+      }
+    }
+    if (customProdTrue || customProd.length !== customers[customers.findIndex((custo) => custo.custName === chosen)].customProd.length) {
+      console.log(customProd);
+      let id =
+        customers[customers.findIndex((custo) => custo.custName === chosen)].id;
+      const updateDetails = {
+        id: id,
+        customProd: customProd,
+      };
+      try {
+        const prodData = await API.graphql(
+          graphqlOperation(updateCustomer, {
+            input: { ...updateDetails },
+          })
+        );
+      } catch (error) {
+        console.log("error on updating Customer", error);
       }
     }
     setModifications(false);
@@ -286,37 +314,44 @@ const DelivOrder = () => {
             : "p-button-raised p-button-rounded p-button-success"
         }
       />
-      <div className="orders-subtable">
-        <h2>Product Availability for {chosen}</h2>
-        <DataTable
-          value={productList}
-          className="p-datatable-sm"
-          rowClassName={rowClass}
-        >
-          <Column
-            field="included"
-            header="Included"
-            body={(e) => isIncluded(e, productList)}
-          ></Column>
-          <Column field="prodName" header="Product"></Column>
-          <Column></Column>
-          <Column
-            field="updatedRate"
-            header="Customer Rate"
-            
-            body={(e) => changeRate(e)}
+      {chosen !== "" ? (
+        <div className="orders-subtable">
+          <h2>Product Availability for {chosen}</h2>
+          <DataTable
+            value={productList}
+            className="p-datatable-sm"
+            rowClassName={rowClass}
           >
-            {" "}
-          </Column>
-          <Column
-            field="prev"
-            header="Prev"
-            className="instock"
-            body={(e) => setPrev(e)}
-          ></Column>
-          <Column field="wholePrice" header="Default Rate" body={wholeData}></Column>
-        </DataTable>
-      </div>
+            <Column
+              field="included"
+              header="Included"
+              body={(e) => isIncluded(e, productList)}
+            ></Column>
+            <Column field="prodName" header="Product"></Column>
+            <Column></Column>
+            <Column
+              field="updatedRate"
+              header="Customer Rate"
+              body={(e) => changeRate(e)}
+            >
+              {" "}
+            </Column>
+            <Column
+              field="prev"
+              header="Prev"
+              className="instock"
+              body={(e) => setPrev(e)}
+            ></Column>
+            <Column
+              field="wholePrice"
+              header="Default Rate"
+              body={wholeData}
+            ></Column>
+          </DataTable>
+        </div>
+      ) : (
+        ""
+      )}
     </React.Fragment>
   );
 };

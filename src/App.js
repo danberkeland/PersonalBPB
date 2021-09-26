@@ -1,5 +1,5 @@
-import React from "react";
-import Amplify from "aws-amplify";
+import React, { useContext, useState } from "react";
+import Amplify, { Auth } from "aws-amplify";
 import awsconfig from "./aws-exports";
 import { withAuthenticator } from "@aws-amplify/ui-react";
 
@@ -13,6 +13,7 @@ import { ToggleProvider } from "./dataContexts/ToggleContext";
 import { RoutesProvider } from "./dataContexts/RoutesContext";
 
 import AppRoutes from "./AppRoutes";
+import CustomApp from "./CustomApp";
 import Nav from "./Nav";
 
 import styled from "styled-components";
@@ -34,6 +35,30 @@ const BodyLock = styled.div`
 Amplify.configure(awsconfig);
 
 function App() {
+  const [user, setUser] = useState("");
+
+  Auth.currentAuthenticatedUser({
+    bypassCache: false,
+  }).then((use) => setUser(use.attributes.sub));
+
+  useContext(() => {
+    console.log(user);
+  }, [user]);
+
+  let addr = (
+    <div>
+      <AppRoutes />
+    </div>
+  );
+
+  if (user !== "d2db1322-0657-4d59-aecc-113c3f5790fa") {
+    addr = (
+      <div>
+        <CustomApp chosen={user} />
+      </div>
+    );
+  }
+
   return (
     <React.Fragment>
       <NavLock>
@@ -48,9 +73,7 @@ function App() {
                 <StandingProvider>
                   <HoldingProvider>
                     <CurrentDataProvider>
-                      <BodyLock>
-                        <AppRoutes />
-                      </BodyLock>
+                      <BodyLock>{addr}</BodyLock>
                     </CurrentDataProvider>
                   </HoldingProvider>
                 </StandingProvider>

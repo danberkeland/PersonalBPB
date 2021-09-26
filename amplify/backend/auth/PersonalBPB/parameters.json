@@ -22,9 +22,11 @@
         "Requires Symbols",
         "Requires Uppercase"
     ],
+    
     "requiredAttributes": [
         "preferred_username"
     ],
+    
     "userpoolClientGenerateSecret": false,
     "userpoolClientRefreshTokenValidity": 30,
     "userpoolClientWriteAttributes": [],

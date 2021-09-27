@@ -50,7 +50,7 @@ function App() {
       <AppRoutes />
     </div>
   );
-
+  /*
   if (user !== "d2db1322-0657-4d59-aecc-113c3f5790fa") {
     addr = (
       <div>
@@ -58,7 +58,7 @@ function App() {
       </div>
     );
   }
-
+  */
   return (
     <React.Fragment>
       <NavLock>

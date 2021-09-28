@@ -47,6 +47,7 @@ function AddUpdate({ database, setDatabase }) {
   const handleUpdateCart = async () => {
     
     for (let ord of currentCartList) {
+      console.log("ord",ord)
       let rte = route;
       let price = getRate(products,ord, altPricing)
 
@@ -65,6 +66,7 @@ function AddUpdate({ database, setDatabase }) {
 
     
       if (ord["id"]) {
+        console.log("trying update")
         updateDetails.id = ord["id"];
         updateDetails._version = ord["_version"];
         try {
@@ -76,13 +78,14 @@ function AddUpdate({ database, setDatabase }) {
           console.log(updateDetails.prodName, "Failed Update");
         }
       } else {
+        console.log("trying create")
         try {
           await API.graphql(
             graphqlOperation(createOrder, { input: { ...updateDetails } })
           );
           console.log(updateDetails.prodName, "Successful create");
         } catch (error) {
-          console.log(updateDetails.prodName, "Failed create");
+          console.log(updateDetails.prodName, "Failed create", error);
         }
       }
     }

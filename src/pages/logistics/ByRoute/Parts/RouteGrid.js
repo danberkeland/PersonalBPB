@@ -86,7 +86,7 @@ const RouteGrid = ({ route,
   useEffect(() => {
     let col = constructColumns();
     let dat = constructData();
-    console.log("dat",dat)
+   
     //sortAtoZDataByIndex(dat,"delivOrder")
     
     setColumns(col ? col : []);

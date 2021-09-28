@@ -91,14 +91,14 @@ export default class ComposeProductGrid {
     prodGrid = zerosDelivFilter(prodGrid, delivDate, database);
     
     prodGrid = buildGridOrderArray(prodGrid, database);
-    console.log("prodGrid",prodGrid)
+   
     prodGrid = addRoutes(delivDate, prodGrid, database);
     
     //prodGrid = addAttr(database, prodGrid);
     for (let grd of prodGrid) {
       
       try{grd["delivOrder"] = customers[customers.findIndex(cust => cust.custName === grd.custName)].delivOrder
-      console.log("grd",grd)
+      
       
     } catch {
       console.log("must be retail")

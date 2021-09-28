@@ -92,11 +92,25 @@ const DelivOrder = () => {
           customers[customers.findIndex((custo) => chosen === custo.custName)]
             .customProd;
 
+            let templateChecks =
+            customers[customers.findIndex((custo) => chosen === custo.custName)]
+              .templateProd;
+
+        prod.prePop = false
+
         for (let check of customChecks) {
           if (prod.prodName === check) {
             prod.defaultInclude = !prod.defaultInclude;
           }
         }
+
+        for (let check of templateChecks) {
+          if (prod.prodName === check) {
+            prod.prePop = true;
+          }
+        }
+
+        
 
         prod.prev = prod.updatedRate;
       }
@@ -124,6 +138,18 @@ const DelivOrder = () => {
     );
   };
 
+  const prePop = (data) => {
+    return (
+      <React.Fragment>
+        <Checkbox
+          inputId="binary"
+          checked={data.prePop}
+          onChange={(e) => handlePrePopCheck(e, data.prodName)}
+        />
+      </React.Fragment>
+    );
+  };
+
   const handleCheck = (e, prodName) => {
     let prodListToUpdate = clonedeep(productList);
     prodListToUpdate[
@@ -133,10 +159,19 @@ const DelivOrder = () => {
     setModifications(true);
   };
 
+  const handlePrePopCheck = (e, prodName) => {
+    let prodListToUpdate = clonedeep(productList);
+    prodListToUpdate[
+      productList.findIndex((prod) => prod.prodName === prodName)
+    ].prePop = e.target.checked;
+    setProductList(prodListToUpdate);
+    setModifications(true);
+  };
+
   const handleRateChange = (e, prodName) => {
     if (e.code === "Enter") {
       setModifications(true);
-      console.log(e.target.value, prodName);
+     
       let prodListToUpdate = clonedeep(productList);
       prodListToUpdate[
         productList.findIndex((prod) => prod.prodName === prodName)
@@ -147,13 +182,13 @@ const DelivOrder = () => {
 
   const handleRateBlurChange = (e, prodName) => {
     setModifications(true);
-    console.log(e.target.value, prodName);
+    
     let prodListToUpdate = clonedeep(productList);
     prodListToUpdate[
       productList.findIndex((prod) => prod.prodName === prodName)
     ].updatedRate = Number(e.target.value).toFixed(2);
     setProductList(prodListToUpdate);
-    console.log(prodListToUpdate);
+   
   };
 
   const changeRate = (data) => {
@@ -215,11 +250,12 @@ const DelivOrder = () => {
 
   const updateCustProd = async () => {
     let customProd = [];
-    let customProdTrue = false;
+    let templateProd = []
+    
     for (let prod of productList) {
-      let prodDefaultInclude =
+      let prodDefaultInclude = clonedeep(
         products[products.findIndex((p) => p.prodName === prod.prodName)]
-          .defaultInclude;
+          .defaultInclude)
 
       if (prod.prev !== prod.updatedRate) {
         prod.prev = prod.updatedRate;
@@ -267,17 +303,21 @@ const DelivOrder = () => {
 
       if (prod.defaultInclude !== prodDefaultInclude) {
         customProd.push(prod.prodName);
-        customProdTrue = true;
-        console.log("update customProd");
+        
+      }
+      if (prod.prePop){
+        templateProd.push(prod.prodName)
+        
+        
       }
     }
-    if (customProdTrue || customProd.length !== customers[customers.findIndex((custo) => custo.custName === chosen)].customProd.length) {
-      console.log(customProd);
+   
       let id =
         customers[customers.findIndex((custo) => custo.custName === chosen)].id;
       const updateDetails = {
         id: id,
         customProd: customProd,
+        templateProd: templateProd
       };
       try {
         const prodData = await API.graphql(
@@ -288,7 +328,7 @@ const DelivOrder = () => {
       } catch (error) {
         console.log("error on updating Customer", error);
       }
-    }
+    
     setModifications(false);
   };
 
@@ -326,6 +366,11 @@ const DelivOrder = () => {
               field="included"
               header="Included"
               body={(e) => isIncluded(e, productList)}
+            ></Column>
+            <Column
+              field="prePop"
+              header="Default Items"
+              body={(e) => prePop(e, productList)}
             ></Column>
             <Column field="prodName" header="Product"></Column>
             <Column></Column>

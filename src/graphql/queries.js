@@ -30,6 +30,8 @@ export const getCustomer = /* GraphQL */ `
       specialInstructions
       delivOrder
       customProd
+      templateProd
+      userSubs
       createdAt
       updatedAt
     }
@@ -69,6 +71,8 @@ export const listCustomers = /* GraphQL */ `
         specialInstructions
         delivOrder
         customProd
+        templateProd
+        userSubs
         createdAt
         updatedAt
       }

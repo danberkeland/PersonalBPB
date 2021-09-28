@@ -3,8 +3,8 @@ import React, { useContext, useEffect, useState } from "react";
 import TrashCan from "./BuildCurrentCartListParts/TrashCan";
 import Product from "./BuildCurrentCartListParts/Product";
 import Previous from "./BuildCurrentCartListParts/Previous";
-import Rate from "./BuildCurrentCartListParts/Rate"
-import Total from "./BuildCurrentCartListParts/Total"
+import Rate from "./BuildCurrentCartListParts/Rate";
+import Total from "./BuildCurrentCartListParts/Total";
 
 import { CurrentDataContext } from "../../../../dataContexts/CurrentDataContext";
 
@@ -15,6 +15,8 @@ import styled from "styled-components";
 import { buildCurrentOrder } from "../../../../helpers/CartBuildingHelpers";
 import { ToggleContext } from "../../../../dataContexts/ToggleContext";
 import { getRate } from "../../../../helpers/billingGridHelpers";
+import { convertDatetoBPBDate } from "../../../../helpers/dateTimeHelpers";
+import { sortAtoZDataByIndex } from "../../../../helpers/sortDataHelpers";
 
 const OrderGrid = styled.div`
   width: 100%;
@@ -23,7 +25,7 @@ const OrderGrid = styled.div`
   border: none;
   display: grid;
   align-items: center;
-  grid-template-columns: 0.5fr 2fr 0.5fr 0.5fr .75fr 0.5fr;
+  grid-template-columns: 0.5fr 2fr 0.5fr 0.5fr 0.75fr 0.5fr;
   row-gap: 4px;
   flex-shrink: 1;
 `;
@@ -33,8 +35,9 @@ const TrashCanContainer = styled.div`
 `;
 
 const BuildCurrentCartList = ({ database, setDatabase }) => {
-  const [grandTotal, setGrandTotal] = useState()
-  const [products, customers, routes, standing, orders, d, dd, altPricing] = database;
+  const [grandTotal, setGrandTotal] = useState();
+  const [products, customers, routes, standing, orders, d, dd, altPricing] =
+    database;
   const {
     chosen,
     delivDate,
@@ -44,10 +47,7 @@ const BuildCurrentCartList = ({ database, setDatabase }) => {
     route,
   } = useContext(CurrentDataContext);
 
-  const {
-    reload,
-    setModifications
-  } = useContext(ToggleContext)
+  const { reload, setModifications } = useContext(ToggleContext);
 
   useEffect(() => {
     if (database.length > 0) {
@@ -60,35 +60,68 @@ const BuildCurrentCartList = ({ database, setDatabase }) => {
           route,
           ponote
         );
-       
-        for (let curr in currentOrderList){
-          if (curr.SO !== curr.qty){
-            setModifications(true)
+
+        for (let curr of currentOrderList) {
+          curr["temp"] = false;
+          if (curr.SO !== curr.qty) {
+            setModifications(true);
           }
         }
-        setCurrentCartList(currentOrderList);
+        let template
+        try{
+          template =
+          customers[customers.findIndex((cust) => cust.custName === chosen)]
+            .templateProd;
+        } catch {
+          template =[]
+        }
+        
+        let currentProds =[]
+        try{
+          currentProds = currentOrderList.map((curr) => curr.prodName);
+        } catch {
+          currentProds =[]
+        }
+        try{
+          template = template.filter((temp) => !currentProds.includes(temp));
+        } catch {
+          template = []
+        }
        
+        for (let temp of template) {
+          let tempOrder = {
+            custName: chosen,
+            delivDate: convertDatetoBPBDate(delivDate),
+            isWhole: true,
+            prodName: temp,
+            SO: 0,
+            qty: 0,
+            temp: true,
+          };
+          currentOrderList.push(tempOrder);
+          console.log("currentOrderList",currentOrderList)
+        }
+        sortAtoZDataByIndex(currentOrderList, "prodName");
+        setCurrentCartList(currentOrderList);
       }
     }
-    
   }, [chosen, delivDate, orders, standing, reload]);
 
-  useEffect (() => {
-    if (currentCartList.length>0){
+  useEffect(() => {
+    if (currentCartList.length > 0) {
       let grandTotal = 0;
-  
-    for (let ord in currentCartList){
-      console.log("grand",grandTotal)
-      grandTotal = grandTotal + getRate(products,currentCartList[ord],altPricing)*currentCartList[ord].qty
-    }
 
-    setGrandTotal(grandTotal.toFixed(2))
+      for (let ord in currentCartList) {
+        grandTotal =
+          grandTotal +
+          getRate(products, currentCartList[ord], altPricing) *
+            currentCartList[ord].qty;
+      }
 
+      setGrandTotal(grandTotal.toFixed(2));
     }
-    
-  },[currentCartList])
-  
-  
+  }, [currentCartList]);
+
   return (
     <React.Fragment>
       <OrderGrid>
@@ -98,19 +131,28 @@ const BuildCurrentCartList = ({ database, setDatabase }) => {
         <label>PREV</label>
         <label>RATE</label>
         <label>TOTAL</label>
-        {currentCartList.filter(curr => curr.qty !==0).map((order) => (
-          <React.Fragment key={uuidv4() + "b"}>
-            <TrashCanContainer>
-              <TrashCan order={order} database={database} setDatabase={setDatabase} />
-            </TrashCanContainer>
+        {currentCartList
+          .filter((curr) => curr.qty !== 0 || curr.temp === true)
+          .map((order) => (
+            <React.Fragment key={uuidv4() + "b"}>
+              <TrashCanContainer>
+                <TrashCan
+                  order={order}
+                  database={database}
+                  setDatabase={setDatabase}
+                />
+              </TrashCanContainer>
 
-            <Product order={order} database={database} setDatabase={setDatabase}/>
-            <Previous order={order}/>
-            <Rate order={order} database={database} />
-            <Total order={order} database={database} />
-              
-          </React.Fragment>
-        ))}
+              <Product
+                order={order}
+                database={database}
+                setDatabase={setDatabase}
+              />
+              <Previous order={order} />
+              <Rate order={order} database={database} />
+              <Total order={order} database={database} />
+            </React.Fragment>
+          ))}
         <label></label>
         <label></label>
         <label></label>

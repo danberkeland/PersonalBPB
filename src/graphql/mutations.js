@@ -33,6 +33,8 @@ export const createCustomer = /* GraphQL */ `
       specialInstructions
       delivOrder
       customProd
+      templateProd
+      userSubs
       createdAt
       updatedAt
     }
@@ -70,6 +72,8 @@ export const updateCustomer = /* GraphQL */ `
       specialInstructions
       delivOrder
       customProd
+      templateProd
+      userSubs
       createdAt
       updatedAt
     }
@@ -107,6 +111,8 @@ export const deleteCustomer = /* GraphQL */ `
       specialInstructions
       delivOrder
       customProd
+      templateProd
+      userSubs
       createdAt
       updatedAt
     }

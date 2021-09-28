@@ -25,6 +25,8 @@ type Customer @model @auth(rules: [{allow: public}]) {
   specialInstructions: String
   delivOrder: Int
   customProd: [String]
+  templateProd: [String]
+  userSubs: [String]
 }
 
 type Product @model @auth(rules: [{allow: public}]) {

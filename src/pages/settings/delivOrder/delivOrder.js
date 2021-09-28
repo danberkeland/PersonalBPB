@@ -62,8 +62,7 @@ const DelivOrder = () => {
     { field: "city", header: "City" },
   ];
 
-  console.log("customers", customers);
-  console.log("customerList", customerList);
+  
 
   const onRowReorder = (e) => {
     setCustomerList(e.value);

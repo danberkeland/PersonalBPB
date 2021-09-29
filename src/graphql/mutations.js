@@ -868,3 +868,63 @@ export const deleteNotes = /* GraphQL */ `
     }
   }
 `;
+export const createAuthSettings = /* GraphQL */ `
+  mutation CreateAuthSettings(
+    $input: CreateAuthSettingsInput!
+    $condition: ModelAuthSettingsConditionInput
+  ) {
+    createAuthSettings(input: $input, condition: $condition) {
+      id
+      sub
+      authType
+      subSubs
+      firstName
+      lastName
+      businessName
+      phone
+      email
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateAuthSettings = /* GraphQL */ `
+  mutation UpdateAuthSettings(
+    $input: UpdateAuthSettingsInput!
+    $condition: ModelAuthSettingsConditionInput
+  ) {
+    updateAuthSettings(input: $input, condition: $condition) {
+      id
+      sub
+      authType
+      subSubs
+      firstName
+      lastName
+      businessName
+      phone
+      email
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteAuthSettings = /* GraphQL */ `
+  mutation DeleteAuthSettings(
+    $input: DeleteAuthSettingsInput!
+    $condition: ModelAuthSettingsConditionInput
+  ) {
+    deleteAuthSettings(input: $input, condition: $condition) {
+      id
+      sub
+      authType
+      subSubs
+      firstName
+      lastName
+      businessName
+      phone
+      email
+      createdAt
+      updatedAt
+    }
+  }
+`;

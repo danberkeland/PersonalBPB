@@ -751,3 +751,54 @@ export const onDeleteNotes = /* GraphQL */ `
     }
   }
 `;
+export const onCreateAuthSettings = /* GraphQL */ `
+  subscription OnCreateAuthSettings {
+    onCreateAuthSettings {
+      id
+      sub
+      authType
+      subSubs
+      firstName
+      lastName
+      businessName
+      phone
+      email
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateAuthSettings = /* GraphQL */ `
+  subscription OnUpdateAuthSettings {
+    onUpdateAuthSettings {
+      id
+      sub
+      authType
+      subSubs
+      firstName
+      lastName
+      businessName
+      phone
+      email
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteAuthSettings = /* GraphQL */ `
+  subscription OnDeleteAuthSettings {
+    onDeleteAuthSettings {
+      id
+      sub
+      authType
+      subSubs
+      firstName
+      lastName
+      businessName
+      phone
+      email
+      createdAt
+      updatedAt
+    }
+  }
+`;

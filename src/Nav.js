@@ -110,7 +110,7 @@ function Nav() {
                 window.location = "/doughCalc/doughCalc";
               },
             },
-          ]
+          ],
         },
         {
           label: "Croix",
@@ -127,7 +127,7 @@ function Nav() {
                 window.location = "/EODCounts/BPBSCounts";
               },
             },
-          ]
+          ],
         },
       ],
     },
@@ -135,61 +135,61 @@ function Nav() {
       label: "Logistics",
       icon: "pi pi-fw pi-map",
       items: [
-         {
-           label: "By Route",
-           command: () => {
-             window.location = "/logistics/byRoute";
-           },
-         },
-         {
-           label: "By Filter",
-           command: () => {
-             window.location = "/logistics/byProduct";
-           },
-         },
-         {
-           label: "North Driver Lists",
-           command: () => {
-             window.location = "/logistics/NorthLists";
-           },
-         },
-         {
-           label: "AM Pastry Pack",
-           command: () => {
-             window.location = "/logistics/AMPastry";
-           },
-         },
-         {
-           label: "Retail Bags",
-           command: () => {
-             window.location = "/logistics/RetailBags";
-           },
-         },
-         {
-           label: "Special Orders",
-           command: () => {
-             window.location = "/logistics/SpecialOrders";
-           },
-         },
-       ]
+        {
+          label: "By Route",
+          command: () => {
+            window.location = "/logistics/byRoute";
+          },
+        },
+        {
+          label: "By Filter",
+          command: () => {
+            window.location = "/logistics/byProduct";
+          },
+        },
+        {
+          label: "North Driver Lists",
+          command: () => {
+            window.location = "/logistics/NorthLists";
+          },
+        },
+        {
+          label: "AM Pastry Pack",
+          command: () => {
+            window.location = "/logistics/AMPastry";
+          },
+        },
+        {
+          label: "Retail Bags",
+          command: () => {
+            window.location = "/logistics/RetailBags";
+          },
+        },
+        {
+          label: "Special Orders",
+          command: () => {
+            window.location = "/logistics/SpecialOrders";
+          },
+        },
+      ],
     },
     {
       label: "EOD Counts",
       icon: "pi pi-fw pi-map",
       items: [
-         {
-           label: "BPBN",
-           command: () => {
-             window.location = "/EODCounts/BPBNCounts";
-           },
-         },
-         {
-           label: "BPBS",
-           command: () => {
-             window.location = "/EODCounts/BPBSCounts";
-           },
-         },
-       ]
+        {
+          label: "BPBN",
+          command: () => {
+            window.location = "/EODCounts/BPBNCounts";
+          },
+        },
+        {
+          label: "BPBS",
+          command: () => {
+            window.location = "/EODCounts/BPBSCounts";
+          },
+        },
+      ],
     },
     {
       label: "Dough Calc",
@@ -230,51 +230,52 @@ function Nav() {
       label: "Settings",
       icon: "pi pi-fw pi-cog",
       items: [
-         {
-           label: "Edit Zones",
-           command: () => {
-             window.location = "/settings/editZones";
-           },
-         },
-         {
-           label: "Edit Routes",
-           command: () => {
-             window.location = "/settings/editRoutes";
-           },
-         },
-         {
-           label: "Edit Doughs",
-           command: () => {
-             window.location = "/settings/editDough";
-           },
-         },
-         {
-           label: "Notes",
-           command: () => {
-             window.location = "/settings/Notes";
-           },
-         },
-         {
+        {
+          label: "Edit Zones",
+          command: () => {
+            window.location = "/settings/editZones";
+          },
+        },
+        {
+          label: "Edit Routes",
+          command: () => {
+            window.location = "/settings/editRoutes";
+          },
+        },
+        {
+          label: "Edit Doughs",
+          command: () => {
+            window.location = "/settings/editDough";
+          },
+        },
+        {
+          label: "Notes",
+          command: () => {
+            window.location = "/settings/Notes";
+          },
+        },
+        {
           label: "Delivery Order",
           command: () => {
             window.location = "/settings/DelivOrder";
-            }, 
           },
-          {
-            label: "Customer Product Setup",
-            command: () => {
-              window.location = "/settings/CustProd";
-              }, 
-            },
-       ]
+        },
+        {
+          label: "Customer Product Setup",
+          command: () => {
+            window.location = "/settings/CustProd";
+          },
+        },
+        {
+          label: "Manage Users",
+          command: () => {
+            window.location = "/settings/manageUsers";
+          },
+        },
+      ],
     },
   ];
 
-
-  
-  
-
-  
   return (
     <div className="card">
       <TopBar>

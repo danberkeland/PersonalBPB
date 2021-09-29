@@ -35,6 +35,7 @@ import SpecialOrders from './pages/logistics/SpecialOrders';
 import EditDough from './pages/settings/editDough/editDough';
 import DelivOrder from './pages/settings/delivOrder/delivOrder';
 import CustProd from './pages/settings/custProd/custProd';
+import ManageUsers from './pages/settings/manageUsers/manageUsers';
 import TestComponent from './pages/testComponent/testComponent'
 
 
@@ -61,6 +62,7 @@ function AppRoutes() {
           <Route path="/settings/notes" component={Notes} />
           <Route path="/settings/delivOrder" component={DelivOrder} />
           <Route path="/settings/custProd" component={CustProd} />
+          <Route path="/settings/manageUsers" component={ManageUsers} />
         
 
           <Route path="/BPBNProd/BPBNBaker1" component={BPBNBaker1} />

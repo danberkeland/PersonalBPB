@@ -596,3 +596,44 @@ export const listNotess = /* GraphQL */ `
     }
   }
 `;
+export const getAuthSettings = /* GraphQL */ `
+  query GetAuthSettings($id: ID!) {
+    getAuthSettings(id: $id) {
+      id
+      sub
+      authType
+      subSubs
+      firstName
+      lastName
+      businessName
+      phone
+      email
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listAuthSettingss = /* GraphQL */ `
+  query ListAuthSettingss(
+    $filter: ModelAuthSettingsFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listAuthSettingss(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        sub
+        authType
+        subSubs
+        firstName
+        lastName
+        businessName
+        phone
+        email
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;

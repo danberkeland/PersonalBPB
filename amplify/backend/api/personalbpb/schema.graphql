@@ -184,4 +184,16 @@ type Notes @model @auth(rules: [{allow: public}]) {
   when: String
 }
 
+type AuthSettings @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  sub: String
+  authType: String
+  subSubs: [String]
+  firstName: String
+  lastName: String
+  businessName: String
+  phone: String
+  email: String
+}
+
 

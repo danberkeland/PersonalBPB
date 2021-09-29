@@ -34,7 +34,7 @@ import { fetchAltPricing } from "../../../helpers/databaseFetchers";
 
 const clonedeep = require("lodash.clonedeep");
 
-const DelivOrder = () => {
+const CustProds = () => {
   let { setIsLoading, modifications, setModifications } =
     useContext(ToggleContext);
 
@@ -401,4 +401,4 @@ const DelivOrder = () => {
   );
 };
 
-export default DelivOrder;
+export default CustProds;

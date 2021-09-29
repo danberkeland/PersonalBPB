@@ -71,6 +71,15 @@ const UserList = ({ selectedUser, setSelectedUser, users, setUsers }) => {
               filter
               filterPlaceholder="Search by name"
             ></Column>
+            <Column
+              field="firstName"
+              header="First"
+            ></Column>
+            <Column
+              field="lastName"
+              header="Last"
+              
+            ></Column>
           </DataTable>
         )}
       </ScrollPanel>

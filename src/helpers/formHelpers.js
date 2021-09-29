@@ -8,6 +8,12 @@ export const setPickValue = (value, selected) => {
   return itemToUpdate;
 };
 
+export const setPickUserValue = (value, selected) => {
+  let itemToUpdate = clonedeep(selected);
+  itemToUpdate["subSubs"] = value.target;
+  return itemToUpdate;
+};
+
 export const setValue = (value, selected) => {
   if (value.code === "Enter") {
     let itemToUpdate = clonedeep(selected);

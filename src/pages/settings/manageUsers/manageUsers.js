@@ -14,7 +14,7 @@ import Buttons from "./Buttons";
 
 const MainWrapper = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 0.5fr;
+  grid-template-columns: 2fr 3fr 1fr 0.25fr;
   height: 100vh;
 `;
 
@@ -39,7 +39,7 @@ const GroupBox = styled.div`
 `;
 
 function EditZones() {
-  const [selectedUser, setSelectedUser] = useState(1);
+  const [selectedUser, setSelectedUser] = useState();
   const [users, setUsers] = useState(null);
 
   const { setCustLoaded } = useContext(CustomerContext);

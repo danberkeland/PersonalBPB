@@ -610,6 +610,7 @@ export const getAuthSettings = /* GraphQL */ `
       businessName
       phone
       email
+      verified
       createdAt
       updatedAt
     }
@@ -634,6 +635,7 @@ export const listAuthSettingss = /* GraphQL */ `
         businessName
         phone
         email
+        verified
         createdAt
         updatedAt
       }

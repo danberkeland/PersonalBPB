@@ -8,7 +8,7 @@ import { ToggleContext } from "../../../dataContexts/ToggleContext";
 
 import { listCustomers } from "../../../graphql/queries";
 
-import { API, graphqlOperation } from "aws-amplify";
+import { API, graphqlOperation, Auth } from "aws-amplify";
 
 import {
   setValue,
@@ -22,6 +22,7 @@ const Info = ({ selectedUser, setSelectedUser, source, setSource, target, setTar
 
   let { setIsLoading } = useContext(ToggleContext);
   const fullCustomers = useRef();
+
 
   useEffect(() => {
     let select = [];

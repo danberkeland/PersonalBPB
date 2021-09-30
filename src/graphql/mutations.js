@@ -885,6 +885,7 @@ export const createAuthSettings = /* GraphQL */ `
       businessName
       phone
       email
+      verified
       createdAt
       updatedAt
     }
@@ -907,6 +908,7 @@ export const updateAuthSettings = /* GraphQL */ `
       businessName
       phone
       email
+      verified
       createdAt
       updatedAt
     }
@@ -929,6 +931,7 @@ export const deleteAuthSettings = /* GraphQL */ `
       businessName
       phone
       email
+      verified
       createdAt
       updatedAt
     }

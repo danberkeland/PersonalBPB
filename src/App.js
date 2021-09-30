@@ -1,5 +1,5 @@
-import React, { useContext, useState } from "react";
-import Amplify, { Auth } from "aws-amplify";
+import React, { useEffect, useState, useContext } from "react";
+import Amplify, { Auth, API, graphqlOperation } from "aws-amplify";
 import awsconfig from "./aws-exports";
 import { withAuthenticator } from "@aws-amplify/ui-react";
 
@@ -9,8 +9,10 @@ import { ProductsProvider } from "./dataContexts/ProductsContext";
 import { StandingProvider } from "./dataContexts/StandingContext";
 import { HoldingProvider } from "./dataContexts/HoldingContext";
 import { CurrentDataProvider } from "./dataContexts/CurrentDataContext";
-import { ToggleProvider } from "./dataContexts/ToggleContext";
+import { ToggleContext, ToggleProvider } from "./dataContexts/ToggleContext";
 import { RoutesProvider } from "./dataContexts/RoutesContext";
+
+
 
 import AppRoutes from "./AppRoutes";
 import CustomApp from "./CustomApp";
@@ -35,30 +37,10 @@ const BodyLock = styled.div`
 Amplify.configure(awsconfig);
 
 function App() {
-  const [user, setUser] = useState("");
+  
 
-  Auth.currentAuthenticatedUser({
-    bypassCache: false,
-  }).then((use) => setUser(use.attributes.sub));
-
-  useContext(() => {
-    console.log(user);
-  }, [user]);
-
-  let addr = (
-    <div>
-      <AppRoutes />
-    </div>
-  );
-  /*
-  if (user !== "d2db1322-0657-4d59-aecc-113c3f5790fa") {
-    addr = (
-      <div>
-        <CustomApp chosen={user} />
-      </div>
-    );
-  }
-  */
+  
+  
   return (
     <React.Fragment>
       <NavLock>
@@ -73,7 +55,7 @@ function App() {
                 <StandingProvider>
                   <HoldingProvider>
                     <CurrentDataProvider>
-                      <BodyLock>{addr}</BodyLock>
+                      <BodyLock><AppRoutes /></BodyLock>
                     </CurrentDataProvider>
                   </HoldingProvider>
                 </StandingProvider>

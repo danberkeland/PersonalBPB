@@ -196,6 +196,7 @@ type AuthSettings @model @auth(rules: [{allow: public}]) {
   businessName: String
   phone: String
   email: String
+  verified: Boolean
 }
 
 

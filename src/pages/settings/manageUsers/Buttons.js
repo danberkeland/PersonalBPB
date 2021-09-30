@@ -27,12 +27,13 @@ const ButtonBox = styled.div`
 `;
 
 const Buttons = ({ selectedUser, setSelectedUser, target }) => {
-
   const { customers, setCustLoaded } = useContext(CustomerContext);
 
   const handleAddUser = () => {
     let userName;
     let tempPassword;
+    let phone;
+    let email;
 
     swal("Enter User Name:", {
       content: "input",
@@ -42,20 +43,34 @@ const Buttons = ({ selectedUser, setSelectedUser, target }) => {
         content: "input",
       }).then((value) => {
         tempPassword = value;
-        const addDetails = {
-          businessName: userName,
-          tempPassword: tempPassword,
-          tempUsername: userName,
-        };
-        const signUp = {
-          username: userName,
-          password: tempPassword,
-          attributes: {
-            preferred_username: userName,
-          },
-        };
+        swal("Enter Phone Number:", {
+          content: "input",
+        }).then((value) => {
+          phone = value;
+          swal("Enter Phone Number:", {
+            content: "input",
+          }).then((value) => {
+            email = value;
+            const addDetails = {
+              businessName: userName,
+              tempPassword: tempPassword,
+              tempUsername: userName,
+              phone: phone,
+              email: email,
+            };
+            const signUp = {
+              username: userName,
+              password: tempPassword,
+              attributes: {
+                preferred_username: userName,
+                phone_number: phone,
+                email: email,
+              },
+            };
 
-        createUsr(addDetails, signUp);
+            createUsr(addDetails, signUp);
+          });
+        });
       });
     });
   };
@@ -75,7 +90,6 @@ const Buttons = ({ selectedUser, setSelectedUser, target }) => {
   };
 
   const updateUsr = async () => {
-
     // for targ in target
     //     find customer
     //     if selectedUser.sub is not in userSubs, push
@@ -83,54 +97,46 @@ const Buttons = ({ selectedUser, setSelectedUser, target }) => {
     //     create updateDetails
     //     update customer
 
-    for (let targ of target){
-      let include = false
-      let ind = customers.findIndex(cust => cust.custName === targ)
+    for (let targ of target) {
+      let include = false;
+      let ind = customers.findIndex((cust) => cust.custName === targ);
       try {
-        if (!customers[ind].userSubs.includes(selectedUser.sub)){
-          include = true
+        if (!customers[ind].userSubs.includes(selectedUser.sub)) {
+          include = true;
         }
       } catch {
-        include = true
+        include = true;
       }
-      console.log(include)
-      let newSubs
+      console.log(include);
+      let newSubs;
       try {
-        newSubs = customers[ind].userSubs
+        newSubs = customers[ind].userSubs;
       } catch {
-        console.log("don't exist")
+        console.log("don't exist");
       }
-      if (!newSubs){
-        newSubs = []
+      if (!newSubs) {
+        newSubs = [];
       }
-      if (include === true){
-        newSubs.push(selectedUser.sub)
-       
+      if (include === true) {
+        newSubs.push(selectedUser.sub);
       }
       let updateDetails = {
         id: customers[ind].id,
-        userSubs: newSubs
-
+        userSubs: newSubs,
+        attributes: {
+          email: selectedUser.email,
+          phone_number: selectedUser.phone,
+        },
       };
 
-      
       try {
         const userData = await API.graphql(
           graphqlOperation(updateCustomer, { input: { ...updateDetails } })
         );
-  
       } catch (error) {
         console.log("error on fetching User List", error);
       }
-       
-        
-      
     }
-
-    
-    
-
-
 
     let updateDetails = {
       id: selectedUser.id,
@@ -140,7 +146,7 @@ const Buttons = ({ selectedUser, setSelectedUser, target }) => {
       phone: selectedUser.phone,
       email: selectedUser.email,
     };
-    
+
     try {
       const userData = await API.graphql(
         graphqlOperation(updateAuthSettings, { input: { ...updateDetails } })
@@ -155,7 +161,6 @@ const Buttons = ({ selectedUser, setSelectedUser, target }) => {
     } catch (error) {
       console.log("error on fetching User List", error);
     }
-    
   };
 
   const deleteUserWarn = async () => {
@@ -171,7 +176,6 @@ const Buttons = ({ selectedUser, setSelectedUser, target }) => {
         return;
       }
     });
-    
   };
 
   const deleteUsr = async () => {
@@ -188,7 +192,6 @@ const Buttons = ({ selectedUser, setSelectedUser, target }) => {
     } catch (error) {
       console.log("error on fetching User List", error);
     }
-    
   };
 
   return (

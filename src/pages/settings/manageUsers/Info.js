@@ -169,6 +169,7 @@ const Info = ({ selectedUser, setSelectedUser, source, setSource, target, setTar
         <InputText
           id="phone"
           placeholder={selectedUser.phone}
+          disabled
           onKeyUp={(e) =>
             e.code === "Enter" && setSelectedUser(setValue(e, selectedUser))
           }
@@ -185,6 +186,7 @@ const Info = ({ selectedUser, setSelectedUser, source, setSource, target, setTar
         <InputText
           id="email"
           placeholder={selectedUser.email}
+          disabled
           onKeyUp={(e) =>
             e.code === "Enter" && setSelectedUser(setValue(e, selectedUser))
           }

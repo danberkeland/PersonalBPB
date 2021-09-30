@@ -3,6 +3,9 @@ import Amplify, { Auth, API, graphqlOperation } from "aws-amplify";
 import awsconfig from "./aws-exports";
 import { withAuthenticator } from "@aws-amplify/ui-react";
 
+import { listAuthSettingss } from "./graphql/queries";
+import { updateAuthSettings } from "./graphql/mutations";
+
 import { CustomerProvider } from "./dataContexts/CustomerContext";
 import { OrdersProvider } from "./dataContexts/OrdersContext";
 import { ProductsProvider } from "./dataContexts/ProductsContext";
@@ -12,13 +15,14 @@ import { CurrentDataProvider } from "./dataContexts/CurrentDataContext";
 import { ToggleContext, ToggleProvider } from "./dataContexts/ToggleContext";
 import { RoutesProvider } from "./dataContexts/RoutesContext";
 
-
-
 import AppRoutes from "./AppRoutes";
 import CustomApp from "./CustomApp";
 import Nav from "./Nav";
 
 import styled from "styled-components";
+import { sortAtoZDataByIndex } from "./helpers/sortDataHelpers";
+
+const clonedeep = require("lodash.clonedeep");
 
 const NavLock = styled.div`
   position: fixed;
@@ -37,10 +41,66 @@ const BodyLock = styled.div`
 Amplify.configure(awsconfig);
 
 function App() {
-  
+  const [users, setUsers] = useState([]);
+  const [user, setUser] = useState();
 
-  
-  
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  useEffect(() => {
+    let currentUser = Auth.currentAuthenticatedUser().then((use) =>
+      setUser(use.attributes.sub)
+    );
+  }, []);
+
+  useEffect(() => {
+    let copyOfUsers = clonedeep(users);
+    let id;
+    console.log(copyOfUsers);
+    if (user) {
+      for (let cop of copyOfUsers) {
+        if (cop.sub === user) {
+          id = cop.id;
+        }
+      }
+    }
+
+    let updateDetails = {
+      id: id,
+      tempPassword: null,
+      tempUsername: null,
+    };
+
+    updateTemps(updateDetails);
+  }, [users, user]);
+
+  const updateTemps = async (details) => {
+    try {
+      const userData = await API.graphql(
+        graphqlOperation(updateAuthSettings, { input: { ...details } })
+      );
+    } catch (error) {
+      console.log("error on fetching User List", error);
+    }
+  };
+
+  const fetchUsers = async () => {
+    try {
+      const userData = await API.graphql(
+        graphqlOperation(listAuthSettingss, {
+          limit: "1000",
+        })
+      );
+      const userList = userData.data.listAuthSettingss.items;
+      sortAtoZDataByIndex(userList, "businessName");
+      let noDelete = userList.filter((user) => user["_deleted"] !== true);
+
+      setUsers(noDelete);
+    } catch (error) {
+      console.log("error on fetching Cust List", error);
+    }
+  };
   return (
     <React.Fragment>
       <NavLock>
@@ -55,7 +115,9 @@ function App() {
                 <StandingProvider>
                   <HoldingProvider>
                     <CurrentDataProvider>
-                      <BodyLock><AppRoutes /></BodyLock>
+                      <BodyLock>
+                        <AppRoutes />
+                      </BodyLock>
                     </CurrentDataProvider>
                   </HoldingProvider>
                 </StandingProvider>

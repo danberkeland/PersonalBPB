@@ -29,7 +29,7 @@ const Info = ({ selectedUser, setSelectedUser, source, setSource, target, setTar
 
     try {
       let selectSub = selectedUser["sub"];
-
+      console.log("sub",selectSub)
       for (let full of customers) {
         try {
           if (full.userSubs.includes(selectSub)) {
@@ -39,6 +39,7 @@ const Info = ({ selectedUser, setSelectedUser, source, setSource, target, setTar
           console.log("no userSubs");
         }
       }
+      console.log("Target",select)
 
       setTarget(select);
     } catch (error) {

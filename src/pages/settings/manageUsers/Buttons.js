@@ -122,11 +122,9 @@ const Buttons = ({ selectedUser, setSelectedUser, target }) => {
       }
       let updateDetails = {
         id: customers[ind].id,
-        userSubs: newSubs,
-        attributes: {
-          email: selectedUser.email,
-          phone_number: selectedUser.phone,
-        },
+        userSubs: newSubs
+        
+        
       };
 
       try {

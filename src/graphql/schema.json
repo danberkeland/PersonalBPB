@@ -6185,6 +6185,28 @@
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
+          "name" : "tempPassword",
+          "description" : null,
+          "args" : [ ],
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "String",
+            "ofType" : null
+          },
+          "isDeprecated" : false,
+          "deprecationReason" : null
+        }, {
+          "name" : "tempUsername",
+          "description" : null,
+          "args" : [ ],
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "String",
+            "ofType" : null
+          },
+          "isDeprecated" : false,
+          "deprecationReason" : null
+        }, {
           "name" : "subSubs",
           "description" : null,
           "args" : [ ],
@@ -6349,6 +6371,24 @@
           "defaultValue" : null
         }, {
           "name" : "authType",
+          "description" : null,
+          "type" : {
+            "kind" : "INPUT_OBJECT",
+            "name" : "ModelStringInput",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "tempPassword",
+          "description" : null,
+          "type" : {
+            "kind" : "INPUT_OBJECT",
+            "name" : "ModelStringInput",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "tempUsername",
           "description" : null,
           "type" : {
             "kind" : "INPUT_OBJECT",
@@ -12950,6 +12990,24 @@
           },
           "defaultValue" : null
         }, {
+          "name" : "tempPassword",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "String",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "tempUsername",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "String",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
           "name" : "subSubs",
           "description" : null,
           "type" : {
@@ -13027,6 +13085,24 @@
           "defaultValue" : null
         }, {
           "name" : "authType",
+          "description" : null,
+          "type" : {
+            "kind" : "INPUT_OBJECT",
+            "name" : "ModelStringInput",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "tempPassword",
+          "description" : null,
+          "type" : {
+            "kind" : "INPUT_OBJECT",
+            "name" : "ModelStringInput",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "tempUsername",
           "description" : null,
           "type" : {
             "kind" : "INPUT_OBJECT",
@@ -13156,6 +13232,24 @@
           "defaultValue" : null
         }, {
           "name" : "authType",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "String",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "tempPassword",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "String",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "tempUsername",
           "description" : null,
           "type" : {
             "kind" : "SCALAR",

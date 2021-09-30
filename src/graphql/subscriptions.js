@@ -757,6 +757,8 @@ export const onCreateAuthSettings = /* GraphQL */ `
       id
       sub
       authType
+      tempPassword
+      tempUsername
       subSubs
       firstName
       lastName
@@ -774,6 +776,8 @@ export const onUpdateAuthSettings = /* GraphQL */ `
       id
       sub
       authType
+      tempPassword
+      tempUsername
       subSubs
       firstName
       lastName
@@ -791,6 +795,8 @@ export const onDeleteAuthSettings = /* GraphQL */ `
       id
       sub
       authType
+      tempPassword
+      tempUsername
       subSubs
       firstName
       lastName

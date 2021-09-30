@@ -602,6 +602,8 @@ export const getAuthSettings = /* GraphQL */ `
       id
       sub
       authType
+      tempPassword
+      tempUsername
       subSubs
       firstName
       lastName
@@ -624,6 +626,8 @@ export const listAuthSettingss = /* GraphQL */ `
         id
         sub
         authType
+        tempPassword
+        tempUsername
         subSubs
         firstName
         lastName

@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 
 import styled from "styled-components";
 
-import { CustomerContext } from "../../../dataContexts/CustomerContext";
+import { CustomerLoad, CustomerContext } from "../../../dataContexts/CustomerContext";
 import { OrdersContext } from "../../../dataContexts/OrdersContext";
 import { ProductsContext } from "../../../dataContexts/ProductsContext";
 import { StandingContext } from "../../../dataContexts/StandingContext";
@@ -41,15 +41,19 @@ const GroupBox = styled.div`
 function EditZones() {
   const [selectedUser, setSelectedUser] = useState();
   const [users, setUsers] = useState(null);
+  const [source, setSource] = useState([]);
+  const [target, setTarget] = useState([]);
 
-  const { setCustLoaded } = useContext(CustomerContext);
+  const { custLoaded, customers, setCustLoaded } = useContext(CustomerContext);
   const { setProdLoaded } = useContext(ProductsContext);
   let { setHoldLoaded } = useContext(HoldingContext);
   let { setOrdersLoaded } = useContext(OrdersContext);
   let { setStandLoaded } = useContext(StandingContext);
 
   useEffect(() => {
-    setCustLoaded(true);
+    if (!customers) {
+      setCustLoaded(false);
+    }
     setProdLoaded(true);
     setHoldLoaded(true);
     setOrdersLoaded(true);
@@ -58,6 +62,7 @@ function EditZones() {
 
   return (
     <React.Fragment>
+      {!custLoaded ? <CustomerLoad /> : ""}
       <MainWrapper>
         <UserList
           selectedUser={selectedUser}
@@ -74,6 +79,10 @@ function EditZones() {
                   setSelectedUser={setSelectedUser}
                   users={users}
                   setUsers={setUsers}
+                  source={source}
+                  setSource={setSource}
+                  target={target}
+                  setTarget={setTarget}
                 />
               </GroupBox>
             </DescripWrapper>
@@ -85,6 +94,7 @@ function EditZones() {
             setSelectedUser={setSelectedUser}
             users={users}
             setUsers={setUsers}
+            target={target}
           />
         </DescripWrapper>
       </MainWrapper>

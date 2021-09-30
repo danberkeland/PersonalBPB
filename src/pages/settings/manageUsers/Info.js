@@ -3,73 +3,67 @@ import React, { useState, useContext, useEffect, useRef } from "react";
 import { InputText } from "primereact/inputtext";
 import { PickList } from "primereact/picklist";
 
+import { CustomerContext } from "../../../dataContexts/CustomerContext";
 import { ToggleContext } from "../../../dataContexts/ToggleContext";
 
 import { listCustomers } from "../../../graphql/queries";
 
 import { API, graphqlOperation } from "aws-amplify";
 
-
-import { setValue, fixValue, setPickUserValue } from "../../../helpers/formHelpers";
+import {
+  setValue,
+  fixValue,
+  setPickUserValue,
+} from "../../../helpers/formHelpers";
 import { sortAtoZDataByIndex } from "../../../helpers/sortDataHelpers";
 
-
-
-const Info = ({ selectedUser, setSelectedUser }) => {
+const Info = ({ selectedUser, setSelectedUser, source, setSource, target, setTarget }) => {
+  const { customers, setCustLoaded } = useContext(CustomerContext);
 
   let { setIsLoading } = useContext(ToggleContext);
-  const [source, setSource] = useState([]);
-  const [target, setTarget] = useState([])
   const fullCustomers = useRef();
 
   useEffect(() => {
-    setIsLoading(true);
-    fetchLocations();
-    setIsLoading(false);
-  }, []);
+    let select = [];
 
-  useEffect(() => {
-    setTarget(selectedUser["subSubs"]);
-  }, [selectedUser]);
+    try {
+      let selectSub = selectedUser["sub"];
 
+      for (let full of customers) {
+        try {
+          if (full.userSubs.includes(selectSub)) {
+            select.push(full.custName);
+          }
+        } catch {
+          console.log("no userSubs");
+        }
+      }
+
+      setTarget(select);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [selectedUser, customers]);
 
   useEffect(() => {
     let parsedCustomers = [];
-    if (fullCustomers.current) {
-      parsedCustomers = fullCustomers.current.filter(
-        (full) => !selectedUser["subSubs"].includes(full)
+    if (customers) {
+      parsedCustomers = customers.map(
+        cust => cust.custName
       );
     }
     setSource(parsedCustomers);
   }, [selectedUser]);
 
-  const fetchLocations = async () => {
-    try {
-      const custData = await API.graphql(
-        graphqlOperation(listCustomers, {
-          limit: "500",
-        })
-      );
-      const custList = custData.data.listCustomers.items;
-      sortAtoZDataByIndex(custList, "custName");
-      let noDelete = custList.filter((zone) => zone["_deleted"] !== true);
-      let mappedNoDelete = noDelete.map((item) => item["custName"]);
-      fullCustomers.current = mappedNoDelete;
-      setSource(mappedNoDelete);
-    } catch (error) {
-      console.log("error on fetching Cust List", error);
-    }
-  };
-
   const itemTemplate = (item) => {
     return <div>{item}</div>;
   };
-  
+
   const onChange = (event) => {
     setSource(event.source);
-    setSelectedUser(setPickUserValue(event, selectedUser));
+    setTarget(event.target);
+    
   };
-
 
   return (
     <React.Fragment>
@@ -86,24 +80,62 @@ const Info = ({ selectedUser, setSelectedUser }) => {
         <InputText
           id="businessName"
           placeholder={selectedUser.businessName}
-          
           onKeyUp={(e) =>
             e.code === "Enter" && setSelectedUser(setValue(e, selectedUser))
           }
           onBlur={(e) => setSelectedUser(fixValue(e, selectedUser))}
         />
       </div>
-          < br/>
+      <br />
+      {selectedUser.tempUsername ?
+      <div className="p-inputgroup">
+        <span className="p-inputgroup-addon">
+          <label htmlFor="firstName"> Temporary Username</label>
+          <br />
+        </span>
+
+        <InputText
+          id="tempUsername"
+          placeholder={selectedUser.tempUsername}
+          disabled
+          onKeyUp={(e) =>
+            e.code === "Enter" && setSelectedUser(setValue(e, selectedUser))
+          }
+          onBlur={(e) => setSelectedUser(fixValue(e, selectedUser))}
+        />
+     
+      </div> : ""}
+      <br />
+      {selectedUser.tempPassword ? 
+      <div className="p-inputgroup">
+        <span className="p-inputgroup-addon">
+          <label htmlFor="firstName"> Temporary Password</label>
+          <br />
+        </span>
+
+        <InputText
+          id="tempPassword"
+          placeholder={selectedUser.tempPassword}
+          disabled
+          onKeyUp={(e) =>
+            e.code === "Enter" && setSelectedUser(setValue(e, selectedUser))
+          }
+          onBlur={(e) => setSelectedUser(fixValue(e, selectedUser))}
+        />
+        
+      </div>
+     
+       : ""}
+       <br />
       <div className="p-inputgroup">
         <span className="p-inputgroup-addon">
           <label htmlFor="firstName"> User First Name</label>
           <br />
         </span>
-          
+
         <InputText
           id="firstName"
           placeholder={selectedUser.firstName}
-          
           onKeyUp={(e) =>
             e.code === "Enter" && setSelectedUser(setValue(e, selectedUser))
           }
@@ -116,11 +148,10 @@ const Info = ({ selectedUser, setSelectedUser }) => {
           <label htmlFor="lastName"> User Last Name</label>
           <br />
         </span>
-          
+
         <InputText
           id="lastName"
           placeholder={selectedUser.lastName}
-          
           onKeyUp={(e) =>
             e.code === "Enter" && setSelectedUser(setValue(e, selectedUser))
           }
@@ -133,11 +164,10 @@ const Info = ({ selectedUser, setSelectedUser }) => {
           <label htmlFor="phone"> Phone</label>
           <br />
         </span>
-          
+
         <InputText
           id="phone"
           placeholder={selectedUser.phone}
-          
           onKeyUp={(e) =>
             e.code === "Enter" && setSelectedUser(setValue(e, selectedUser))
           }
@@ -150,11 +180,10 @@ const Info = ({ selectedUser, setSelectedUser }) => {
           <label htmlFor="phone"> Email</label>
           <br />
         </span>
-          
+
         <InputText
           id="email"
           placeholder={selectedUser.email}
-          
           onKeyUp={(e) =>
             e.code === "Enter" && setSelectedUser(setValue(e, selectedUser))
           }
@@ -162,19 +191,20 @@ const Info = ({ selectedUser, setSelectedUser }) => {
         />
       </div>
       <br />
-      <PickList
-        sourceHeader="Locations"
-        targetHeader="User has Access"
-        source={source}
-        target={selectedUser.subSubs}
-        itemTemplate={itemTemplate}
-        onChange={onChange}
-        sourceStyle={{ height: "250px" }}
-        targetStyle={{ height: "250px" }}
-      ></PickList>
-
-
-    
+      {selectedUser.authType !== "bpbadmin" ? (
+        <PickList
+          sourceHeader="Locations"
+          targetHeader="User has Access"
+          source={source}
+          target={target}
+          itemTemplate={itemTemplate}
+          onChange={onChange}
+          sourceStyle={{ height: "250px" }}
+          targetStyle={{ height: "250px" }}
+        ></PickList>
+      ) : (
+        ""
+      )}
     </React.Fragment>
   );
 };

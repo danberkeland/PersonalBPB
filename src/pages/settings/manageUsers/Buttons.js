@@ -1,14 +1,21 @@
-import React from "react";
+import React, { useContext } from "react";
 
 import styled from "styled-components";
 import swal from "@sweetalert/with-react";
 import "primereact/resources/themes/saga-blue/theme.css";
 
-import { updateAuthSettings, deleteAuthSettings, createAuthSettings } from "../../../graphql/mutations";
+import { CustomerContext } from "../../../dataContexts/CustomerContext";
+
+import {
+  updateAuthSettings,
+  deleteAuthSettings,
+  createAuthSettings,
+  updateCustomer,
+} from "../../../graphql/mutations";
 
 import { Button } from "primereact/button";
 
-import { API, graphqlOperation } from "aws-amplify";
+import { API, graphqlOperation, Auth } from "aws-amplify";
 
 const ButtonBox = styled.div`
   display: flex;
@@ -19,22 +26,45 @@ const ButtonBox = styled.div`
   padding: 5px 20px;
 `;
 
-const Buttons = ({ selectedUser, setSelectedUser }) => {
+const Buttons = ({ selectedUser, setSelectedUser, target }) => {
+
+  const { customers, setCustLoaded } = useContext(CustomerContext);
+
   const handleAddUser = () => {
     let userName;
+    let tempPassword;
 
     swal("Enter User Name:", {
       content: "input",
     }).then((value) => {
       userName = value;
-      const addDetails = {
-       
-      };
-      createUsr(addDetails, userName);
+      swal(`Enter Temporary Password for ${value}:`, {
+        content: "input",
+      }).then((value) => {
+        tempPassword = value;
+        const addDetails = {
+          businessName: userName,
+          tempPassword: tempPassword,
+          tempUsername: userName,
+        };
+        const signUp = {
+          username: userName,
+          password: tempPassword,
+          attributes: {
+            preferred_username: userName,
+          },
+        };
+
+        createUsr(addDetails, signUp);
+      });
     });
   };
 
-  const createUsr = async (addDetails) => {
+  const createUsr = async (addDetails, signUp) => {
+    let newbie = await Auth.signUp(signUp);
+    console.log("newbie", newbie);
+    addDetails.sub = newbie.userSub;
+
     try {
       await API.graphql(
         graphqlOperation(createAuthSettings, { input: { ...addDetails } })
@@ -45,10 +75,72 @@ const Buttons = ({ selectedUser, setSelectedUser }) => {
   };
 
   const updateUsr = async () => {
-    const updateDetails = {
-      
-    };
 
+    // for targ in target
+    //     find customer
+    //     if selectedUser.sub is not in userSubs, push
+    //     get customer.id
+    //     create updateDetails
+    //     update customer
+
+    for (let targ of target){
+      let include = false
+      let ind = customers.findIndex(cust => cust.custName === targ)
+      try {
+        if (!customers[ind].userSubs.includes(selectedUser.sub)){
+          include = true
+        }
+      } catch {
+        include = true
+      }
+      console.log(include)
+      let newSubs
+      try {
+        newSubs = customers[ind].userSubs
+      } catch {
+        console.log("don't exist")
+      }
+      if (!newSubs){
+        newSubs = []
+      }
+      if (include === true){
+        newSubs.push(selectedUser.sub)
+       
+      }
+      let updateDetails = {
+        id: customers[ind].id,
+        userSubs: newSubs
+
+      };
+
+      
+      try {
+        const userData = await API.graphql(
+          graphqlOperation(updateCustomer, { input: { ...updateDetails } })
+        );
+  
+      } catch (error) {
+        console.log("error on fetching User List", error);
+      }
+       
+        
+      
+    }
+
+    
+    
+
+
+
+    let updateDetails = {
+      id: selectedUser.id,
+      businessName: selectedUser.businessName,
+      firstName: selectedUser.firstName,
+      lastName: selectedUser.lastName,
+      phone: selectedUser.phone,
+      email: selectedUser.email,
+    };
+    
     try {
       const userData = await API.graphql(
         graphqlOperation(updateAuthSettings, { input: { ...updateDetails } })
@@ -63,12 +155,12 @@ const Buttons = ({ selectedUser, setSelectedUser }) => {
     } catch (error) {
       console.log("error on fetching User List", error);
     }
+    
   };
 
   const deleteUserWarn = async () => {
     swal({
-      text:
-        " Are you sure that you would like to permanently delete this user?",
+      text: " Are you sure that you would like to permanently delete this user?",
       icon: "warning",
       buttons: ["Yes", "Don't do it!"],
       dangerMode: true,
@@ -79,6 +171,7 @@ const Buttons = ({ selectedUser, setSelectedUser }) => {
         return;
       }
     });
+    
   };
 
   const deleteUsr = async () => {
@@ -95,6 +188,7 @@ const Buttons = ({ selectedUser, setSelectedUser }) => {
     } catch (error) {
       console.log("error on fetching User List", error);
     }
+    
   };
 
   return (

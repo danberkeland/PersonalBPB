@@ -188,6 +188,8 @@ type AuthSettings @model @auth(rules: [{allow: public}]) {
   id: ID!
   sub: String
   authType: String
+  tempPassword: String
+  tempUsername: String
   subSubs: [String]
   firstName: String
   lastName: String

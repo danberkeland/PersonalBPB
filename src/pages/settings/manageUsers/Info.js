@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect, useRef } from "react";
 
 import { InputText } from "primereact/inputtext";
 import { PickList } from "primereact/picklist";
+import { Dropdown } from "primereact/dropdown";
 
 import { CustomerContext } from "../../../dataContexts/CustomerContext";
 import { ToggleContext } from "../../../dataContexts/ToggleContext";
@@ -22,6 +23,8 @@ const Info = ({ selectedUser, setSelectedUser, source, setSource, target, setTar
 
   let { setIsLoading } = useContext(ToggleContext);
   const fullCustomers = useRef();
+
+  const authType = [{ authType: "bpbadmin" }, { authType: "owner" }, { authType: "employee" }];
 
 
   useEffect(() => {
@@ -193,7 +196,24 @@ const Info = ({ selectedUser, setSelectedUser, source, setSource, target, setTar
           }
           onBlur={(e) => setSelectedUser(fixValue(e, selectedUser))}
         />
-      </div>
+      </div><br />
+      <div className="p-inputgroup">
+          <span className="p-inputgroup-addon">
+            <label htmlFor="RouteDepart">Authorization Type</label>
+          </span>
+          <Dropdown
+            id="authType"
+            optionLabel="authType"
+            options={authType}
+            /*
+            onChange={(e) =>
+              setSelectedRoute(setDropDownValue(e, selectedRoute))
+            }
+            placeholder={
+              selectedRoute ? selectedRoute.RouteDepart : "Departure Hub"
+            }*/
+          />
+        </div>
       <br />
       {selectedUser.authType !== "bpbadmin" ? (
         <PickList

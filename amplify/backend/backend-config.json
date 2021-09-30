@@ -22,7 +22,7 @@
     }
   },
   "auth": {
-    "PersonalBPB": {
+    "personalbpb8b4838aa": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],

@@ -6,6 +6,8 @@ import { findAvailableProducts } from "../../../../../helpers/sortDataHelpers";
 
 import { Dropdown } from "primereact/dropdown";
 
+import swal from "@sweetalert/with-react";
+
 const ProductList = ({ database, pickedProduct, setPickedProduct }) => {
   const [products, customers, routes, standing, orders] = database;
   const { chosen, delivDate, currentCartList } = useContext(CurrentDataContext);
@@ -26,7 +28,19 @@ const ProductList = ({ database, pickedProduct, setPickedProduct }) => {
   }, [database, chosen, delivDate, currentCartList]);
 
   const handleChange = (e) => {
-    setPickedProduct(e.target.value);
+    let targ = e.target.value;
+
+    if (targ.prodName.includes("IN PRODUCTION")) {
+      targ.prodName = targ.prodName.slice(0, -15);
+      swal({
+        text: `This product is already in Production.  We will do our best but we cannot guarantee delivery.  Rush fee may apply.`,
+        icon: "warning",
+        buttons: false,
+        timer: 6000,
+      });
+    }
+    setPickedProduct(targ);
+    
   };
 
   return (

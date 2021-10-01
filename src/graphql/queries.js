@@ -117,6 +117,7 @@ export const getProduct = /* GraphQL */ `
       bpbssetoutpre
       bpbssetout
       defaultInclude
+      leadTime
       createdAt
       updatedAt
     }
@@ -164,6 +165,7 @@ export const listProducts = /* GraphQL */ `
         bpbssetoutpre
         bpbssetout
         defaultInclude
+        leadTime
         createdAt
         updatedAt
       }

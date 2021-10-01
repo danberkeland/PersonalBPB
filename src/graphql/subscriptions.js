@@ -146,6 +146,7 @@ export const onCreateProduct = /* GraphQL */ `
       bpbssetoutpre
       bpbssetout
       defaultInclude
+      leadTime
       createdAt
       updatedAt
     }
@@ -188,6 +189,7 @@ export const onUpdateProduct = /* GraphQL */ `
       bpbssetoutpre
       bpbssetout
       defaultInclude
+      leadTime
       createdAt
       updatedAt
     }
@@ -230,6 +232,7 @@ export const onDeleteProduct = /* GraphQL */ `
       bpbssetoutpre
       bpbssetout
       defaultInclude
+      leadTime
       createdAt
       updatedAt
     }

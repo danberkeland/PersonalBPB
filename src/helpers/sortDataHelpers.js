@@ -7,6 +7,8 @@ import {
 
 import { cloneDeep } from "lodash";
 
+const { DateTime, Interval } = require("luxon");
+
 export const sortAtoZDataByIndex = (data, index) => {
   data.sort(function (a, b) {
     return a[index] > b[index] ? 1 : -1;
@@ -93,26 +95,17 @@ export const findAvailableProducts = (
   customers
 ) => {
   let availableProducts = cloneDeep(products);
-  /*
-    if (orders){
-        for (let order of orders) {
-            let prodPull = order["qty"]==="0" && order["custName"] === chosen && 
-            order["delivDate"] === convertDatetoBPBDate(delivDate) ? order["prodName"] : ''
-            availableProducts = availableProducts.filter(availProd => availProd["name"] !== prodPull)
-        }
-    }
-    */
+
   try {
     let customProds =
       customers[customers.findIndex((custo) => chosen === custo.custName)]
         .customProd;
     for (let custo of customProds) {
-      console.log(custo);
       let ind = availableProducts.findIndex(
         (avail) => avail.prodName === custo
       );
       let prodToUpdate = cloneDeep(availableProducts[ind].defaultInclude);
-      console.log("default", prodToUpdate);
+
       if (prodToUpdate === true) {
         availableProducts[ind].defaultInclude = false;
       } else {
@@ -125,6 +118,19 @@ export const findAvailableProducts = (
   availableProducts = availableProducts.filter(
     (prod) => prod.defaultInclude === true
   );
+
+  let today = DateTime.now().setZone("America/Los_Angeles");
+
+  let ddate = DateTime.fromISO(delivDate).setZone("America/Los_Angeles");
+
+  const diff = Math.ceil(Interval.fromDateTimes(today, ddate).length("days"));
+
+  for (let avail of availableProducts) {
+    if (Number(avail.leadTime) > Number(diff)) {
+      avail.prodName = avail.prodName + " (IN PRODUCTION)";
+    }
+  }
+
   return availableProducts;
 };
 

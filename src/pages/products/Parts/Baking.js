@@ -121,6 +121,24 @@ const Baking = ({ selectedProduct, setSelectedProduct }) => {
 
       <div className="p-inputgroup">
         <span className="p-inputgroup-addon">
+          <label htmlFor="leadTime">Lead Days</label>
+          <br />
+        </span>
+
+        <InputText
+          id="leadTime"
+          placeholder={selectedProduct.leadTime}
+          onKeyUp={(e) =>
+            e.code === "Enter" &&
+            setSelectedProduct(setValue(e, selectedProduct))
+          }
+          onBlur={(e) => setSelectedProduct(fixValue(e, selectedProduct))}
+        />
+      </div>
+      <br />
+
+      <div className="p-inputgroup">
+        <span className="p-inputgroup-addon">
           <label htmlFor="readyTime">Guaranteed Ready (0-24)</label>
           <br />
         </span>

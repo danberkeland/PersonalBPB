@@ -64,6 +64,7 @@ type Product @model @auth(rules: [{allow: public}]) {
   bpbssetoutpre: Int
   bpbssetout: Int
   defaultInclude: Boolean
+  leadTime: Int
 }
 
 type Order @model @auth(rules: [{allow: public}]) {

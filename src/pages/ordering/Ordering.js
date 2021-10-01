@@ -46,7 +46,7 @@ const BasicContainer = styled.div`
   box-sizing: border-box;
 `;
 
-function Ordering({ authType, userNum }) {
+function Ordering({ authType }) {
   const [database, setDatabase] = useState([]);
   const {
     reload,
@@ -252,7 +252,7 @@ function Ordering({ authType, userNum }) {
         <Calendar database={database} />
       </BasicContainer>
       <BasicContainer>
-       
+
         {authType === "bpbadmin" ? <OrderCommandLine database={database} setDatabase={setDatabase}/> : ''}
         <CurrentOrderInfo database={database} setDatabase={setDatabase} authType={authType}/>
         <CurrentOrderList database={database} setDatabase={setDatabase} authType={authType}/>

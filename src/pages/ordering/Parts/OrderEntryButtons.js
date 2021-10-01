@@ -39,13 +39,21 @@ function OrderEntryButtons({ database, setDatabase, authType }) {
   let cartStand = cartList ? "Standing" : "Cart";
 
   const handleChangeorderTypeWhole = () => {
-    document.getElementById("orderCommand").focus();
+    try{
+      document.getElementById("orderCommand").focus();
+    } catch {
+      console.log()
+    }
     setOrderTypeWhole(!orderTypeWhole);
     setChosen("");
   };
 
   const handleCartStandToggle = () => {
-    document.getElementById("orderCommand").focus();
+    try{
+      document.getElementById("orderCommand").focus();
+    } catch {
+      console.log()
+    }
     let realCartList = clonedeep(cartList);
     realCartList ? setRouteIsOn(false) : setRouteIsOn(true);
     setCartList(!cartList);

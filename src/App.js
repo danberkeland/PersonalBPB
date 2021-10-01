@@ -121,7 +121,7 @@ function App() {
                     <CurrentDataProvider>
                       <BodyLock>
                        
-                       <AppRoutes authType={authType}/>
+                       <AppRoutes authType={authType} userNum={user}/>
                       </BodyLock>
                     </CurrentDataProvider>
                   </HoldingProvider>

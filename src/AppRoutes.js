@@ -39,16 +39,16 @@ import ManageUsers from './pages/settings/manageUsers/manageUsers';
 import TestComponent from './pages/testComponent/testComponent'
 
 
-function AppRoutes({ authType }) {
+function AppRoutes({ authType, userNum }) {
 
 
   return (
     <Router>
       <Loader />
-    
+      
       <div className="bigPicture">
         <Switch>
-          <Route path="/ordering" render={(props)=><Ordering {...props} authType={authType} />}/> 
+          <Route path="/ordering" render={(props)=><Ordering {...props} userNum={userNum} authType={authType} />}/> 
           <Route path="/logistics/byRoute" component={ByRoute} />  
           <Route path="/logistics/byProduct" component={ByProduct} />
           <Route path="/logistics/AMPastry" component={AMPastry} />

@@ -15,7 +15,7 @@ const AddProductButtons = styled.div`
   padding: 10px 0;
 `;
 
-const AddStandingOrderEntryItem = ({ database }) => {
+const AddStandingOrderEntryItem = ({ database, authType }) => {
   const [standHold, setStandHold] = useState();
   const [pickedProduct, setPickedProduct] = useState();
   const [productList, setProductList] = useState();
@@ -34,11 +34,11 @@ const AddStandingOrderEntryItem = ({ database }) => {
         pickedProduct={pickedProduct}
         setPickedProduct={setPickedProduct}
       />
-      <StandOrHold
+      {authType === "bpbadmin" ? <StandOrHold
         database={database}
         standHold={standHold}
         setStandHold={setStandHold}
-      />
+      /> : ''}
     </AddProductButtons>
   );
 };

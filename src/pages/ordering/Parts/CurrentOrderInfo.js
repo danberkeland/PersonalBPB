@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 
 import TitleBox from "./CurrentOrderInfoParts/TitleBox";
 import CustomerGroup from "./CurrentOrderInfoParts/CustomerGroup";
 import RouteSelect from "./CurrentOrderInfoParts/RouteSelect";
 import PONote from './CurrentOrderInfoParts/PONote'
+
+import { ToggleContext } from "../../../dataContexts/ToggleContext";
+
 
 import styled from "styled-components";
 
@@ -31,9 +34,18 @@ const FulfillOptions = styled.div`
   justify-items: left;
 `;
 
-const CurrentOrderInfo = ({ database, setDatabase }) => {
+const CurrentOrderInfo = ({ database, setDatabase, authType }) => {
 
   const [products, customers, routes, standing, orders] = database;
+
+  const {
+    orderTypeWhole,
+    setOrderTypeWhole,
+    setModifications,
+    cartList,
+    setCartList,
+    setRouteIsOn,
+  } = useContext(ToggleContext);
 
   const [ customerGroup, setCustomerGroup ] = useState(customers)
 
@@ -44,11 +56,11 @@ const CurrentOrderInfo = ({ database, setDatabase }) => {
       <CurrentInfo>
         <FulfillOptions>
           <CustomerGroup database={database} customerGroup={customerGroup} setCustomerGroup={setCustomerGroup}/>
-          <RouteSelect database={database} setDatabase={setDatabase} customerGroup={customerGroup} />
+          { cartList ? <RouteSelect database={database} setDatabase={setDatabase} customerGroup={customerGroup} /> : ''}
         </FulfillOptions>
 
         <SpecialInfo>
-          <PONote database={database} setDatabase={setDatabase}/>
+          {cartList ? <PONote database={database} setDatabase={setDatabase}/> : ''}
         </SpecialInfo>
       </CurrentInfo>
     </React.Fragment>

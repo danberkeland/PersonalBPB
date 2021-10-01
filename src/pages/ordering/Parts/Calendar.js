@@ -65,7 +65,12 @@ const Calendar = ({ database }) => {
   }, [chosen, delivDate, database]);
 
   const handleDateSelect = (selectInfo) => {
-    document.getElementById("orderCommand").focus();
+    try{
+      document.getElementById("orderCommand").focus();
+    } catch {
+      console.log()
+    }
+   
     setDelivDate(selectInfo.dateStr);
     
   

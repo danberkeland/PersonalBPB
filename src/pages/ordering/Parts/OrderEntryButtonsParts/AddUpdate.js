@@ -157,7 +157,11 @@ function AddUpdate({ database, setDatabase }) {
     //setReload(!reload)
     
    
-    document.getElementById("orderCommand").focus();
+    try{
+      document.getElementById("orderCommand").focus();
+    } catch {
+      console.log()
+    }
   };
 
   return (

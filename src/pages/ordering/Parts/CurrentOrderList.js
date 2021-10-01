@@ -7,7 +7,7 @@ import AddStandingOrderEntry from "../e_CurrentOrderList/StandingOrder/AddStandi
 
 import { ToggleContext } from "../../../dataContexts/ToggleContext";
 
-const CurrentOrderList = ({ database, setDatabase }) => {
+const CurrentOrderList = ({ database, setDatabase, authType }) => {
   const { cartList } = useContext(ToggleContext);
 
   return (
@@ -24,7 +24,7 @@ const CurrentOrderList = ({ database, setDatabase }) => {
           <div className="currentStandingList">
             <StandingOrderEntry database={database} setDatabase={setDatabase}/>
           </div>
-          <AddStandingOrderEntry database={database} setDatabase={setDatabase}/>
+          <AddStandingOrderEntry database={database} setDatabase={setDatabase} authType={authType}/>
         </React.Fragment>
       )}
     </React.Fragment>

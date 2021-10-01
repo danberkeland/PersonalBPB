@@ -18,7 +18,7 @@ const OrderButtons = styled.div`
 
 const clonedeep = require("lodash.clonedeep");
 
-function OrderEntryButtons({ database, setDatabase }) {
+function OrderEntryButtons({ database, setDatabase, authType }) {
 
   const {
     setChosen,
@@ -79,12 +79,13 @@ function OrderEntryButtons({ database, setDatabase }) {
         onClick={handleCartStandToggle}
         className="p-button-raised p-button-rounded p-button-secondary"
       />
+      {authType === "bpbadmin" ?
       <Button
         label={type}
         icon="pi pi-dollar"
         onClick={handleChangeorderTypeWhole}
         className="p-button-raised p-button-rounded p-button-secondary"
-      />
+      /> : ''}
     </OrderButtons>
   );
 }

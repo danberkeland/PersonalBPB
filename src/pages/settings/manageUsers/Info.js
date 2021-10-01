@@ -15,24 +15,39 @@ import {
   setValue,
   fixValue,
   setPickUserValue,
+  setDropDownValue,
 } from "../../../helpers/formHelpers";
 import { sortAtoZDataByIndex } from "../../../helpers/sortDataHelpers";
 
-const Info = ({ selectedUser, setSelectedUser, source, setSource, target, setTarget }) => {
+const Info = ({
+  selectedUser,
+  setSelectedUser,
+  source,
+  setSource,
+  target,
+  setTarget,
+}) => {
   const { customers, setCustLoaded } = useContext(CustomerContext);
 
   let { setIsLoading } = useContext(ToggleContext);
   const fullCustomers = useRef();
 
-  const authType = [{ authType: "bpbadmin" }, { authType: "owner" }, { authType: "employee" }];
+  const authTypeList = [
+    { authType: "bpbadmin" },
+    { authType: "owner" },
+    { authType: "employee" },
+  ];
 
+  useEffect(() => {
+    console.log("selectedUser",selectedUser)
+  },[selectedUser])
 
   useEffect(() => {
     let select = [];
 
     try {
       let selectSub = selectedUser["sub"];
-      console.log("sub",selectSub)
+      
       for (let full of customers) {
         try {
           if (full.userSubs.includes(selectSub)) {
@@ -42,7 +57,8 @@ const Info = ({ selectedUser, setSelectedUser, source, setSource, target, setTar
           console.log("no userSubs");
         }
       }
-      console.log("Target",select)
+     
+      console.log("Target", select);
 
       setTarget(select);
     } catch (error) {
@@ -53,9 +69,7 @@ const Info = ({ selectedUser, setSelectedUser, source, setSource, target, setTar
   useEffect(() => {
     let parsedCustomers = [];
     if (customers) {
-      parsedCustomers = customers.map(
-        cust => cust.custName
-      );
+      parsedCustomers = customers.map((cust) => cust.custName);
     }
     setSource(parsedCustomers);
   }, [selectedUser]);
@@ -67,7 +81,6 @@ const Info = ({ selectedUser, setSelectedUser, source, setSource, target, setTar
   const onChange = (event) => {
     setSource(event.source);
     setTarget(event.target);
-    
   };
 
   return (
@@ -92,46 +105,48 @@ const Info = ({ selectedUser, setSelectedUser, source, setSource, target, setTar
         />
       </div>
       <br />
-      {selectedUser.tempUsername ?
-      <div className="p-inputgroup">
-        <span className="p-inputgroup-addon">
-          <label htmlFor="firstName"> Temporary Username</label>
-          <br />
-        </span>
+      {selectedUser.tempUsername ? (
+        <div className="p-inputgroup">
+          <span className="p-inputgroup-addon">
+            <label htmlFor="firstName"> Temporary Username</label>
+            <br />
+          </span>
 
-        <InputText
-          id="tempUsername"
-          placeholder={selectedUser.tempUsername}
-          disabled
-          onKeyUp={(e) =>
-            e.code === "Enter" && setSelectedUser(setValue(e, selectedUser))
-          }
-          onBlur={(e) => setSelectedUser(fixValue(e, selectedUser))}
-        />
-     
-      </div> : ""}
+          <InputText
+            id="tempUsername"
+            placeholder={selectedUser.tempUsername}
+            disabled
+            onKeyUp={(e) =>
+              e.code === "Enter" && setSelectedUser(setValue(e, selectedUser))
+            }
+            onBlur={(e) => setSelectedUser(fixValue(e, selectedUser))}
+          />
+        </div>
+      ) : (
+        ""
+      )}
       <br />
-      {selectedUser.tempPassword ? 
-      <div className="p-inputgroup">
-        <span className="p-inputgroup-addon">
-          <label htmlFor="firstName"> Temporary Password</label>
-          <br />
-        </span>
+      {selectedUser.tempPassword ? (
+        <div className="p-inputgroup">
+          <span className="p-inputgroup-addon">
+            <label htmlFor="firstName"> Temporary Password</label>
+            <br />
+          </span>
 
-        <InputText
-          id="tempPassword"
-          placeholder={selectedUser.tempPassword}
-          disabled
-          onKeyUp={(e) =>
-            e.code === "Enter" && setSelectedUser(setValue(e, selectedUser))
-          }
-          onBlur={(e) => setSelectedUser(fixValue(e, selectedUser))}
-        />
-        
-      </div>
-     
-       : ""}
-       <br />
+          <InputText
+            id="tempPassword"
+            placeholder={selectedUser.tempPassword}
+            disabled
+            onKeyUp={(e) =>
+              e.code === "Enter" && setSelectedUser(setValue(e, selectedUser))
+            }
+            onBlur={(e) => setSelectedUser(fixValue(e, selectedUser))}
+          />
+        </div>
+      ) : (
+        ""
+      )}
+      <br />
       <div className="p-inputgroup">
         <span className="p-inputgroup-addon">
           <label htmlFor="firstName"> User First Name</label>
@@ -196,24 +211,20 @@ const Info = ({ selectedUser, setSelectedUser, source, setSource, target, setTar
           }
           onBlur={(e) => setSelectedUser(fixValue(e, selectedUser))}
         />
-      </div><br />
+      </div>
+      <br />
       <div className="p-inputgroup">
-          <span className="p-inputgroup-addon">
-            <label htmlFor="RouteDepart">Authorization Type</label>
-          </span>
-          <Dropdown
-            id="authType"
-            optionLabel="authType"
-            options={authType}
-            /*
-            onChange={(e) =>
-              setSelectedRoute(setDropDownValue(e, selectedRoute))
-            }
-            placeholder={
-              selectedRoute ? selectedRoute.RouteDepart : "Departure Hub"
-            }*/
-          />
-        </div>
+        <span className="p-inputgroup-addon">
+          <label htmlFor="authType">Authorization Type</label>
+        </span>
+        <Dropdown
+          id="authType"
+          optionLabel="authType"
+          options={authTypeList}
+          onChange={(e) => setSelectedUser(setDropDownValue(e, selectedUser))}
+          placeholder={selectedUser.authType}
+        />
+      </div>
       <br />
       {selectedUser.authType !== "bpbadmin" ? (
         <PickList

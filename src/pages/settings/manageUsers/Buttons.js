@@ -47,7 +47,7 @@ const Buttons = ({ selectedUser, setSelectedUser, target }) => {
           content: "input",
         }).then((value) => {
           phone = value;
-          swal("Enter Phone Number:", {
+          swal("Enter Email:", {
             content: "input",
           }).then((value) => {
             email = value;
@@ -143,6 +143,7 @@ const Buttons = ({ selectedUser, setSelectedUser, target }) => {
       lastName: selectedUser.lastName,
       phone: selectedUser.phone,
       email: selectedUser.email,
+      authType: selectedUser.authType
     };
 
     try {

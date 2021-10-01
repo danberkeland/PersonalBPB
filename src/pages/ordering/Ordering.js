@@ -46,7 +46,7 @@ const BasicContainer = styled.div`
   box-sizing: border-box;
 `;
 
-function Ordering() {
+function Ordering({ authType }) {
   const [database, setDatabase] = useState([]);
   const {
     reload,
@@ -55,6 +55,7 @@ function Ordering() {
     ordersHasBeenChanged,
     setOrdersHasBeenChanged,
   } = useContext(ToggleContext);
+
 
   const loadDatabase = async (database) => {
     setIsLoading(true);
@@ -245,6 +246,7 @@ function Ordering() {
 
   return (
     <MainWindow>
+     
       <BasicContainer>
         <Calendar database={database} />
       </BasicContainer>
@@ -252,7 +254,7 @@ function Ordering() {
         <OrderCommandLine database={database} setDatabase={setDatabase} />
         <CurrentOrderInfo database={database} setDatabase={setDatabase} />
         <CurrentOrderList database={database} setDatabase={setDatabase} />
-        <OrderEntryButtons database={database} setDatabase={setDatabase} />
+        <OrderEntryButtons database={database} setDatabase={setDatabase} authType={authType}/>
       </BasicContainer>
     </MainWindow>
   );

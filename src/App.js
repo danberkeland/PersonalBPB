@@ -16,7 +16,7 @@ import { ToggleContext, ToggleProvider } from "./dataContexts/ToggleContext";
 import { RoutesProvider } from "./dataContexts/RoutesContext";
 
 import AppRoutes from "./AppRoutes";
-import CustomApp from "./CustomApp";
+import NavCustomers from "./NavCustomers";
 import Nav from "./Nav";
 
 import styled from "styled-components";
@@ -43,6 +43,7 @@ Amplify.configure(awsconfig);
 function App() {
   const [users, setUsers] = useState([]);
   const [user, setUser] = useState();
+  const [authType, setAuthType] = useState();
 
   useEffect(() => {
     fetchUsers();
@@ -57,11 +58,13 @@ function App() {
   useEffect(() => {
     let copyOfUsers = clonedeep(users);
     let id;
+    let authT
     console.log(copyOfUsers);
     if (user) {
       for (let cop of copyOfUsers) {
         if (cop.sub === user) {
           id = cop.id;
+          authT = cop.authType
         }
       }
     }
@@ -71,7 +74,8 @@ function App() {
       tempPassword: null,
       tempUsername: null,
     };
-
+    setAuthType(authT)
+    console.log(authT)
     updateTemps(updateDetails);
   }, [users, user]);
 
@@ -104,7 +108,7 @@ function App() {
   return (
     <React.Fragment>
       <NavLock>
-        <Nav />
+      {authType === "bpbadmin" ? <Nav /> : <NavCustomers />}
       </NavLock>
 
       <RoutesProvider>
@@ -116,7 +120,8 @@ function App() {
                   <HoldingProvider>
                     <CurrentDataProvider>
                       <BodyLock>
-                        <AppRoutes />
+                       
+                       <AppRoutes authType={authType}/>
                       </BodyLock>
                     </CurrentDataProvider>
                   </HoldingProvider>

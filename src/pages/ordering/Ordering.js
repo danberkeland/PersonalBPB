@@ -36,6 +36,15 @@ const MainWindow = styled.div`
   grid-template-columns: 1fr 2fr;
 `;
 
+const MainWindowPhone = styled.div`
+  font-family: "Montserrat", sans-serif;
+  width: 100%;
+  height: 100%;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1fr;
+`;
+
 const BasicContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -247,15 +256,11 @@ function Ordering({ authType }) {
     promisedData(setIsLoading).then((database) => loadDatabase(database));
   }, [reload]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return (
-    <MainWindow>
-      {width > breakpoint ? (
-        <BasicContainer>
-          <Calendar database={database} />
-        </BasicContainer>
-      ) : (
-        ""
-      )}
+  const innards = (
+    <React.Fragment>
+      <BasicContainer>
+        <Calendar database={database} />
+      </BasicContainer>
 
       <BasicContainer>
         {authType === "bpbadmin" ? (
@@ -279,7 +284,17 @@ function Ordering({ authType }) {
           authType={authType}
         />
       </BasicContainer>
-    </MainWindow>
+    </React.Fragment>
+  );
+
+  return (
+    <React.Fragment>
+      {width > breakpoint ? (
+        <MainWindow>{innards}</MainWindow>
+      ) : (
+        <MainWindowPhone>{innards}</MainWindowPhone>
+      )}
+    </React.Fragment>
   );
 }
 

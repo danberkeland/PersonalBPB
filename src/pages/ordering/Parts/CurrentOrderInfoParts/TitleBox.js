@@ -11,6 +11,14 @@ const TitleFrame = styled.div`
   justify-content: space-between;
   align-items: center;
 `;
+
+const TitleFramePhone = styled.div`
+  display: block;
+  width: 90%;
+  justify-content: space-between;
+  align-items: center;
+`;
+
 const Title = styled.h2`
   padding: 0;
   margin: 10px 0;
@@ -64,12 +72,12 @@ const TitleBox = () => {
     <React.Fragment>
       {orderTypeWhole ? (
         <React.Fragment>
-          <TitleFrame>
+          <TitleFramePhone>
             <Title style={cartList ? so : standList ? so : ho}>
               Wholesale {orderType} Order
             </Title>
             <DateStyle>{delivDate ? changeDate(delivDate) : ""}</DateStyle>
-          </TitleFrame>
+          </TitleFramePhone>
         </React.Fragment>
       ) : (
         <h2 style={standList ? so : ho}>Retail {orderType} Order</h2>

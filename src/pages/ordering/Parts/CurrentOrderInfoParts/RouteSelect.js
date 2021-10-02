@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect,useState } from "react";
 
 import { CurrentDataContext } from "../../../../dataContexts/CurrentDataContext";
 import { ToggleContext } from "../../../../dataContexts/ToggleContext";
@@ -22,6 +22,13 @@ const RouteSelect = ({ database, setDatabase, customerGroup }) => {
     currentCartList,
     setCurrentCartList,
   } = useContext(CurrentDataContext);
+
+  const [width, setWidth] = useState(window.innerWidth);
+  const breakpoint = 620;
+
+  useEffect(() => {
+    window.addEventListener("resize", () => setWidth(window.innerWidth));
+  });
 
   useEffect(() => {
     if (customerGroup) {
@@ -96,7 +103,7 @@ const RouteSelect = ({ database, setDatabase, customerGroup }) => {
   };
 
   return (
-    <React.Fragment>
+    <div>
       <RadioButton
         value="deliv"
         name="delivery"
@@ -128,7 +135,7 @@ const RouteSelect = ({ database, setDatabase, customerGroup }) => {
         }
       />
       <label htmlFor="pickupAtown">Pick up Carlton</label>
-    </React.Fragment>
+    </div>
   );
 };
 

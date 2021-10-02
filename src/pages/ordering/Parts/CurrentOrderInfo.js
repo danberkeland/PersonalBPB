@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 
 import TitleBox from "./CurrentOrderInfoParts/TitleBox";
 import CustomerGroup from "./CurrentOrderInfoParts/CustomerGroup";
@@ -28,15 +28,31 @@ const SpecialInfo = styled.div`
 
 const FulfillOptions = styled.div`
   display: grid;
-  grid-template-columns: 4fr 1fr 3fr 1fr 3fr 1fr 3fr;
+  grid-template-columns: 1fr 2fr;
   margin: 10px;
   align-items: center;
   justify-items: left;
 `;
 
+const FulfillOptionsPhone = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  margin: 10px;
+  align-items: center;
+  justify-items: left;
+`;
+
+
 const CurrentOrderInfo = ({ database, setDatabase, authType }) => {
 
   const [products, customers, routes, standing, orders] = database;
+
+  const [width, setWidth] = useState(window.innerWidth);
+  const breakpoint = 620;
+
+  useEffect(() => {
+    window.addEventListener("resize", () => setWidth(window.innerWidth));
+  });
 
   const {
     orderTypeWhole,
@@ -54,10 +70,15 @@ const CurrentOrderInfo = ({ database, setDatabase, authType }) => {
       <TitleBox />
 
       <CurrentInfo>
-        <FulfillOptions>
+      {width > breakpoint ? <FulfillOptions>
           <CustomerGroup database={database} customerGroup={customerGroup} setCustomerGroup={setCustomerGroup}/>
           { cartList ? <RouteSelect database={database} setDatabase={setDatabase} customerGroup={customerGroup} /> : ''}
-        </FulfillOptions>
+        </FulfillOptions> :
+        <FulfillOptionsPhone>
+        <CustomerGroup database={database} customerGroup={customerGroup} setCustomerGroup={setCustomerGroup}/>
+        { cartList ? <RouteSelect database={database} setDatabase={setDatabase} customerGroup={customerGroup} /> : ''}
+      </FulfillOptionsPhone> }
+
 
         <SpecialInfo>
           {cartList ? <PONote database={database} setDatabase={setDatabase}/> : ''}

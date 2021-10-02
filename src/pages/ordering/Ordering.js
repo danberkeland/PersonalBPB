@@ -256,7 +256,7 @@ function Ordering({ authType }) {
     promisedData(setIsLoading).then((database) => loadDatabase(database));
   }, [reload]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const innards = (
+  const innards1 = (
     <React.Fragment>
       <BasicContainer>
         <Calendar database={database} />
@@ -287,12 +287,57 @@ function Ordering({ authType }) {
     </React.Fragment>
   );
 
+  const innards2 = (
+    <React.Fragment>
+      <h2>Back Porch Bakery</h2>
+      <BasicContainer>
+        <Calendar database={database} />
+      </BasicContainer>
+
+      <BasicContainer>
+        <CurrentOrderInfo
+          database={database}
+          setDatabase={setDatabase}
+          authType={authType}
+        />
+      </BasicContainer>
+      <BasicContainer>
+        <OrderEntryButtons
+          database={database}
+          setDatabase={setDatabase}
+          authType={authType}
+        />
+      </BasicContainer>
+      <BasicContainer>
+        <CurrentOrderList
+          database={database}
+          setDatabase={setDatabase}
+          authType={authType}
+        />
+      </BasicContainer>
+      <BasicContainer>
+        {authType === "bpbadmin" ? (
+          <OrderCommandLine database={database} setDatabase={setDatabase} />
+        ) : (
+          ""
+        )}
+      </BasicContainer>
+      <BasicContainer>
+        <OrderEntryButtons
+          database={database}
+          setDatabase={setDatabase}
+          authType={authType}
+        />
+      </BasicContainer>
+    </React.Fragment>
+  );
+
   return (
     <React.Fragment>
       {width > breakpoint ? (
-        <MainWindow>{innards}</MainWindow>
+        <MainWindow>{innards1}</MainWindow>
       ) : (
-        <MainWindowPhone>{innards}</MainWindowPhone>
+        <MainWindowPhone>{innards2}</MainWindowPhone>
       )}
     </React.Fragment>
   );

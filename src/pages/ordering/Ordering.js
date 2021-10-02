@@ -56,6 +56,12 @@ function Ordering({ authType }) {
     setOrdersHasBeenChanged,
   } = useContext(ToggleContext);
 
+  const [width, setWidth] = useState(window.innerWidth);
+  const breakpoint = 620;
+
+  useEffect(() => {
+    window.addEventListener("resize", () => setWidth(window.innerWidth));
+  });
 
   const loadDatabase = async (database) => {
     setIsLoading(true);
@@ -66,18 +72,15 @@ function Ordering({ authType }) {
       let prodsToUpdate = clonedeep(products);
       let doughsToUpdate = clonedeep(doughs);
       let ordersToUpdate = clonedeep(orders);
-     
-      
+
       console.log("Yes they have! deleting old orders");
       let newYest = convertDatetoBPBDate(yesterday);
       let newWeekAgo = convertDatetoBPBDate(weekAgo);
-     
-      
 
       for (let ord of ordersToUpdate) {
         let ind = customers.findIndex((cust) => cust.custName === ord.custName);
         let weeklyCheck = "daily";
-        
+
         if (ind > -1) {
           weeklyCheck = customers[ind].invoicing;
         }
@@ -246,17 +249,35 @@ function Ordering({ authType }) {
 
   return (
     <MainWindow>
-     
-      <BasicContainer>
-        
-        <Calendar database={database} />
-      </BasicContainer>
-      <BasicContainer>
+      {width > breakpoint ? (
+        <BasicContainer>
+          <Calendar database={database} />
+        </BasicContainer>
+      ) : (
+        ""
+      )}
 
-        {authType === "bpbadmin" ? <OrderCommandLine database={database} setDatabase={setDatabase}/> : ''}
-        <CurrentOrderInfo database={database} setDatabase={setDatabase} authType={authType}/>
-        <CurrentOrderList database={database} setDatabase={setDatabase} authType={authType}/>
-        <OrderEntryButtons database={database} setDatabase={setDatabase} authType={authType}/>
+      <BasicContainer>
+        {authType === "bpbadmin" ? (
+          <OrderCommandLine database={database} setDatabase={setDatabase} />
+        ) : (
+          ""
+        )}
+        <CurrentOrderInfo
+          database={database}
+          setDatabase={setDatabase}
+          authType={authType}
+        />
+        <CurrentOrderList
+          database={database}
+          setDatabase={setDatabase}
+          authType={authType}
+        />
+        <OrderEntryButtons
+          database={database}
+          setDatabase={setDatabase}
+          authType={authType}
+        />
       </BasicContainer>
     </MainWindow>
   );

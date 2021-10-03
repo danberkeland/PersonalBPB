@@ -16,6 +16,12 @@ const InputBox = styled.div`
   width: 50%;
 `;
 
+const Title = styled.h3`
+  padding: 0;
+  margin: 5px 10px;
+  color: rgb(66, 97, 201);
+`;
+
 const Product = ({ order, database, setDatabase }) => {
   const [products, customers, routes, standing, orders] = database;
   const {
@@ -36,7 +42,7 @@ const Product = ({ order, database, setDatabase }) => {
   });
 
   const updateProduct = (prodName, e) => {
-    let qty = Number(e.target.value);
+    let qty = Number(e);
     let ordToMod = clonedeep(orders);
     let ind = ordToMod.findIndex(
       (ord) =>
@@ -67,13 +73,13 @@ const Product = ({ order, database, setDatabase }) => {
 
   const handleQtyModify = (prodName, e) => {
     if (e.code === "Enter") {
-      updateProduct(prodName, e);
+      updateProduct(prodName, e.target.value);
     }
   };
 
   const handleBlur = (prodName, e) => {
-    if (e.target.value) {
-      updateProduct(prodName, e);
+    if (e.value) {
+      updateProduct(prodName, e.value);
     }
   };
 
@@ -92,7 +98,7 @@ const Product = ({ order, database, setDatabase }) => {
           handleQtyModify(order["prodName"], e);
         }}
         onBlur={(e) => {
-          handleBlur(order["prodName"], e);
+          handleBlur(order["prodName"], e.target);
         }}
       ></input>
     </InputBox>
@@ -103,13 +109,17 @@ const Product = ({ order, database, setDatabase }) => {
     value={order["qty"]}
     size = "2"
     style={{height: '5em'}}
+    onValueChange={(e) => {
+      handleBlur(order["prodName"], e);
+    }}
+    
     />
   
   );
 
   return (
     <React.Fragment>
-      <label key={uuidv4()}>{order["prodName"]}</label>
+      <Title key={uuidv4()}>{order["prodName"]}</Title>
       {width > breakpoint ? innards1 : innards2}
     </React.Fragment>
   );

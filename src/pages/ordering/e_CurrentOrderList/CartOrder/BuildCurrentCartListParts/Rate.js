@@ -17,7 +17,7 @@ const Rate = ({ order,database }) => {
   return (
     <RateContainer>
       <label key={uuidv4() + "d"}>
-        $ {price.toFixed(2)}
+        $ {price.toFixed(2)}/ea.
       </label>
     </RateContainer>
   );

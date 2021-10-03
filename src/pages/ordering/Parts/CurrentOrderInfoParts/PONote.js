@@ -98,7 +98,7 @@ const PONote = ({ database, setDatabase }) => {
       <span className="p-float-label">
         <InputText
           id="inPo"
-          size="35"
+          size="25"
           placeholder={ponote}
           onChange={(e) => handleChange(e)}
           onBlur={(e) => handleBlur(e)}

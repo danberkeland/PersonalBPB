@@ -93,7 +93,7 @@ const CurrentOrderInfo = ({ database, setDatabase, authType, customerGroup, setC
 >
   <ToggleButton value="web">Delivery</ToggleButton>
   <ToggleButton value="android">SLO Pickup</ToggleButton>
-  <ToggleButton value="ios">Atascadero Pickup</ToggleButton>
+  <ToggleButton value="ios">Atown Pickup</ToggleButton>
 </ToggleButtonGroup> : ''}
       </FulfillOptionsPhone> }
 

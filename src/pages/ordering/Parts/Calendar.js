@@ -1,6 +1,7 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
+import { Calendar } from 'primereact/calendar';
 import interactionPlugin from "@fullcalendar/interaction";
 
 import { CurrentDataContext } from "../../../dataContexts/CurrentDataContext";
@@ -11,9 +12,10 @@ import {
   CreateCartDateArray,
   CreateBlankCartDateArray,
 } from "../../../helpers/calendarBuildHelper";
+import { convertDatetoBPBDate } from "../../../helpers/dateTimeHelpers";
 
 
-const Calendar = ({ database }) => {
+const Cal = ({ database }) => {
   const {
     chosen,
     delivDate,
@@ -23,6 +25,13 @@ const Calendar = ({ database }) => {
   } = useContext(CurrentDataContext);
   const [products, customers, routes, standing, orders] = database;
   const { setModifications } = useContext(ToggleContext)
+
+  const [width, setWidth] = useState(window.innerWidth);
+  const breakpoint = 620;
+
+  useEffect(() => {
+    window.addEventListener("resize", () => setWidth(window.innerWidth));
+  });
 
 
   useEffect(() => {
@@ -70,15 +79,14 @@ const Calendar = ({ database }) => {
     } catch {
       console.log()
     }
-   
+    console.log(selectInfo)
     setDelivDate(selectInfo.dateStr);
     
   
   };
 
-  return (
-    <React.Fragment>
-      <div className="calendarApp" id="test">
+  const innards1 = (
+    <div className="calendarApp" id="test">
         <FullCalendar
           plugins={[dayGridPlugin, interactionPlugin]}
           defaultView="dayGridMonth"
@@ -94,8 +102,19 @@ const Calendar = ({ database }) => {
           events={calendarEvents}
         />
       </div>
+  )
+
+  const innards2 = (
+    <div className="p-field p-col-12 p-md-4">
+      <Calendar id="mask" value={delivDate} onChange={(e) => console.log(e)} />
+    </div>
+  )
+
+  return (
+    <React.Fragment>
+       {width > breakpoint ? innards1 : innards2 }
     </React.Fragment>
   );
 };
 
-export default Calendar;
+export default Cal;

@@ -291,7 +291,9 @@ function Ordering({ authType }) {
     <React.Fragment>
       <h2>Back Porch Bakery</h2>
     
-      
+      <BasicContainer>
+        <Calendar database={database} />
+      </BasicContainer>
 
       <BasicContainer>
         <CurrentOrderInfo

@@ -4,9 +4,12 @@
   "private": true,
   "dependencies": {
     "@aws-amplify/ui-react": "^1.0.3",
+    "@emotion/react": "^11.4.1",
+    "@emotion/styled": "^11.3.0",
     "@fullcalendar/daygrid": "^5.5.0",
     "@fullcalendar/interaction": "^5.5.0",
     "@fullcalendar/react": "^5.5.0",
+    "@mui/material": "^5.0.2",
     "@sweetalert/with-react": "^0.1.1",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",

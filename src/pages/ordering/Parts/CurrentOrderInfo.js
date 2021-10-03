@@ -5,6 +5,9 @@ import CustomerGroup from "./CurrentOrderInfoParts/CustomerGroup";
 import RouteSelect from "./CurrentOrderInfoParts/RouteSelect";
 import PONote from './CurrentOrderInfoParts/PONote'
 
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+
 import { ToggleContext } from "../../../dataContexts/ToggleContext";
 
 
@@ -45,6 +48,12 @@ const FulfillOptionsPhone = styled.div`
 
 const CurrentOrderInfo = ({ database, setDatabase, authType, customerGroup, setCustomerGroup }) => {
 
+  const [alignment, setAlignment] = useState('web');
+
+  const handleChange = (event, newAlignment) => {
+    setAlignment(newAlignment);
+  };
+
   const [products, customers, routes, standing, orders] = database;
 
   const [width, setWidth] = useState(window.innerWidth);
@@ -75,8 +84,17 @@ const CurrentOrderInfo = ({ database, setDatabase, authType, customerGroup, setC
           { cartList ? <RouteSelect database={database} setDatabase={setDatabase} customerGroup={customerGroup} /> : ''}
         </FulfillOptions> :
         <FulfillOptionsPhone>
-        <CustomerGroup database={database} customerGroup={customerGroup} setCustomerGroup={setCustomerGroup}/>
-        { cartList ? <RouteSelect database={database} setDatabase={setDatabase} customerGroup={customerGroup} /> : ''}
+       
+        { cartList ? <ToggleButtonGroup
+  color="primary"
+  value={alignment}
+  exclusive
+  onChange={handleChange}
+>
+  <ToggleButton value="web">Delivery</ToggleButton>
+  <ToggleButton value="android">SLO Pickup</ToggleButton>
+  <ToggleButton value="ios">Atascadero Pickup</ToggleButton>
+</ToggleButtonGroup> : ''}
       </FulfillOptionsPhone> }
 
 

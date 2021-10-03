@@ -328,6 +328,13 @@ function Ordering({ authType }) {
       <Calendar database={database} />
       </inlineContainer>
       <BasicContainer>
+      <CurrentOrderInfo
+          database={database}
+          setDatabase={setDatabase}
+          customerGroup={customerGroup}
+          setCustomerGroup={setCustomerGroup}
+          authType={authType}
+        />
         <CurrentOrderList
           database={database}
           setDatabase={setDatabase}

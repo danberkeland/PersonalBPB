@@ -3,15 +3,18 @@ import React, { useState, useContext, useEffect } from "react";
 import TitleBox from "./CurrentOrderInfoParts/TitleBox";
 import CustomerGroup from "./CurrentOrderInfoParts/CustomerGroup";
 import RouteSelect from "./CurrentOrderInfoParts/RouteSelect";
-import PONote from './CurrentOrderInfoParts/PONote'
+import PONote from "./CurrentOrderInfoParts/PONote";
 
-import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 
 import { ToggleContext } from "../../../dataContexts/ToggleContext";
-
+import { CurrentDataContext } from "../../../dataContexts/CurrentDataContext";
 
 import styled from "styled-components";
+import { convertDatetoBPBDate } from "../../../helpers/dateTimeHelpers";
+
+const clonedeep = require("lodash.clonedeep");
 
 const CurrentInfo = styled.div`
   width: 100%;
@@ -45,13 +48,55 @@ const FulfillOptionsPhone = styled.div`
   justify-items: left;
 `;
 
+const CurrentOrderInfo = ({
+  database,
+  setDatabase,
+  authType,
+  customerGroup,
+  setCustomerGroup,
+}) => {
+  const [alignment, setAlignment] = useState("web");
 
-const CurrentOrderInfo = ({ database, setDatabase, authType, customerGroup, setCustomerGroup }) => {
+  const { chosen, delivDate, route, currentCartList } =
+    useContext(CurrentDataContext);
 
-  const [alignment, setAlignment] = useState('web');
-
-  const handleChange = (event, newAlignment) => {
+  const handleChange = (e, newAlignment) => {
+    if (
+      newAlignment !== "deliv" &&
+      newAlignment !== "slopick" &&
+      newAlignment !== "atownpick"
+    ) {
+      newAlignment = "deliv";
+    }
     setAlignment(newAlignment);
+    let ordToMod = clonedeep(orders);
+
+    for (let ord of ordToMod) {
+      if (
+        ord.custName === chosen &&
+        ord.delivDate === convertDatetoBPBDate(delivDate)
+      ) {
+        ord.route = newAlignment;
+      }
+
+      if (
+        ordToMod.filter(
+          (ord) =>
+            ord.custName === chosen &&
+            ord.delivDate === convertDatetoBPBDate(delivDate)
+        ).length === 0
+      ) {
+        for (let curr of currentCartList) {
+          curr.route = route;
+          ordToMod.push(curr);
+        }
+      }
+    }
+
+    let DBToMod = clonedeep(database);
+    DBToMod[4] = ordToMod;
+    setDatabase(DBToMod);
+    setModifications(true);
   };
 
   const [products, customers, routes, standing, orders] = database;
@@ -63,43 +108,55 @@ const CurrentOrderInfo = ({ database, setDatabase, authType, customerGroup, setC
     window.addEventListener("resize", () => setWidth(window.innerWidth));
   });
 
-  const {
-    orderTypeWhole,
-    setOrderTypeWhole,
-    setModifications,
-    cartList,
-    setCartList,
-    setRouteIsOn,
-  } = useContext(ToggleContext);
-
-  
+  const { setModifications, cartList } = useContext(ToggleContext);
 
   return (
     <React.Fragment>
-      {width > breakpoint ? <TitleBox /> : ''}
+      {width > breakpoint ? <TitleBox /> : ""}
 
       <CurrentInfo>
-      {width > breakpoint ? <FulfillOptions>
-          <CustomerGroup database={database} customerGroup={customerGroup} setCustomerGroup={setCustomerGroup}/>
-          { cartList ? <RouteSelect database={database} setDatabase={setDatabase} customerGroup={customerGroup} /> : ''}
-        </FulfillOptions> :
-        <FulfillOptionsPhone>
-       
-        { cartList ? <ToggleButtonGroup
-  color="primary"
-  value={alignment}
-  exclusive
-  onChange={handleChange}
->
-  <ToggleButton value="web">Delivery</ToggleButton>
-  <ToggleButton value="android">SLO Pickup</ToggleButton>
-  <ToggleButton value="ios">Atown Pickup</ToggleButton>
-</ToggleButtonGroup> : ''}
-      </FulfillOptionsPhone> }
-
+        {width > breakpoint ? (
+          <FulfillOptions>
+            <CustomerGroup
+              database={database}
+              customerGroup={customerGroup}
+              setCustomerGroup={setCustomerGroup}
+            />
+            {cartList ? (
+              <RouteSelect
+                database={database}
+                setDatabase={setDatabase}
+                customerGroup={customerGroup}
+              />
+            ) : (
+              ""
+            )}
+          </FulfillOptions>
+        ) : (
+          <FulfillOptionsPhone>
+            {cartList ? (
+              <ToggleButtonGroup
+                color="primary"
+                value={alignment}
+                exclusive
+                onChange={handleChange}
+              >
+                <ToggleButton value="deliv">Delivery</ToggleButton>
+                <ToggleButton value="slopick">SLO Pickup</ToggleButton>
+                <ToggleButton value="atownpick">Atown Pickup</ToggleButton>
+              </ToggleButtonGroup>
+            ) : (
+              ""
+            )}
+          </FulfillOptionsPhone>
+        )}
 
         <SpecialInfo>
-          {cartList ? <PONote database={database} setDatabase={setDatabase}/> : ''}
+          {cartList ? (
+            <PONote database={database} setDatabase={setDatabase} />
+          ) : (
+            ""
+          )}
         </SpecialInfo>
       </CurrentInfo>
     </React.Fragment>

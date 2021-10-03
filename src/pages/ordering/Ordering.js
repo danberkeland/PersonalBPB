@@ -308,13 +308,6 @@ function Ordering({ authType }) {
           authType={authType}
         />
       </BasicContainer>
-      <BasicContainer>
-        {authType === "bpbadmin" ? (
-          <OrderCommandLine database={database} setDatabase={setDatabase} />
-        ) : (
-          ""
-        )}
-      </BasicContainer>
       
     </React.Fragment>
   );

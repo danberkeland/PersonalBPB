@@ -43,7 +43,7 @@ const FulfillOptionsPhone = styled.div`
 `;
 
 
-const CurrentOrderInfo = ({ database, setDatabase, authType }) => {
+const CurrentOrderInfo = ({ database, setDatabase, authType, customerGroup, setCustomerGroup }) => {
 
   const [products, customers, routes, standing, orders] = database;
 
@@ -63,11 +63,11 @@ const CurrentOrderInfo = ({ database, setDatabase, authType }) => {
     setRouteIsOn,
   } = useContext(ToggleContext);
 
-  const [ customerGroup, setCustomerGroup ] = useState(customers)
+  
 
   return (
     <React.Fragment>
-      <TitleBox />
+      {width > breakpoint ? <TitleBox /> : ''}
 
       <CurrentInfo>
       {width > breakpoint ? <FulfillOptions>

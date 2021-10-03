@@ -5,6 +5,7 @@ import CurrentOrderInfo from "./Parts/CurrentOrderInfo";
 import CurrentOrderList from "./Parts/CurrentOrderList";
 import OrderCommandLine from "./Parts/OrderCommandLine";
 import OrderEntryButtons from "./Parts/OrderEntryButtons";
+import CustomerGroup from "./Parts/CurrentOrderInfoParts/CustomerGroup";
 import {
   createOrder,
   updateDough,
@@ -19,6 +20,7 @@ import { promisedData } from "../../helpers/databaseFetchers";
 
 import styled from "styled-components";
 import { ToggleContext } from "../../dataContexts/ToggleContext";
+import { CurrentDataContext } from "../../dataContexts/CurrentDataContext";
 
 const clonedeep = require("lodash.clonedeep");
 
@@ -55,8 +57,28 @@ const BasicContainer = styled.div`
   box-sizing: border-box;
 `;
 
+const inlineContainer = styled.div`
+display: inline;
+
+`
+
+const Title = styled.h2`
+  padding: 0;
+  margin: 5px 10px;
+  color: rgb(66, 97, 201);
+`;
+
+const DateStyle = styled.div`
+  padding: 0;
+  color: grey;
+  margin: 5px 10px;
+`;
+
 function Ordering({ authType }) {
   const [database, setDatabase] = useState([]);
+  const [products, customers, routes, standing, orders] = database;
+
+  const [customerGroup, setCustomerGroup] = useState(customers);
   const {
     reload,
     setIsLoading,
@@ -64,6 +86,8 @@ function Ordering({ authType }) {
     ordersHasBeenChanged,
     setOrdersHasBeenChanged,
   } = useContext(ToggleContext);
+
+  const { chosen } = useContext(CurrentDataContext);
 
   const [width, setWidth] = useState(window.innerWidth);
   const breakpoint = 620;
@@ -271,6 +295,8 @@ function Ordering({ authType }) {
         <CurrentOrderInfo
           database={database}
           setDatabase={setDatabase}
+          customerGroup={customerGroup}
+          setCustomerGroup={setCustomerGroup}
           authType={authType}
         />
         <CurrentOrderList
@@ -289,20 +315,18 @@ function Ordering({ authType }) {
 
   const innards2 = (
     <React.Fragment>
-      <h2>Back Porch Bakery</h2>
-    
-      <BasicContainer>
-        <Calendar database={database} />
-      </BasicContainer>
-
-      <BasicContainer>
-        <CurrentOrderInfo
+      <Title>Back Porch Bakery</Title>
+      <inlineContainer>
+      <DateStyle>
+        <CustomerGroup
           database={database}
-          setDatabase={setDatabase}
-          authType={authType}
-        />
-      </BasicContainer>
-     
+          customerGroup={customerGroup}
+          setCustomerGroup={setCustomerGroup}
+        />{" "}
+        order for:
+      </DateStyle>
+      <Calendar database={database} />
+      </inlineContainer>
       <BasicContainer>
         <CurrentOrderList
           database={database}
@@ -310,7 +334,6 @@ function Ordering({ authType }) {
           authType={authType}
         />
       </BasicContainer>
-      
     </React.Fragment>
   );
 

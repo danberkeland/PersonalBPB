@@ -14,6 +14,13 @@ const ProductList = ({ database, pickedProduct, setPickedProduct }) => {
 
   const [productList, setProductList] = useState();
 
+  const [width, setWidth] = useState(window.innerWidth);
+  const breakpoint = 620;
+
+  useEffect(() => {
+    window.addEventListener("resize", () => setWidth(window.innerWidth));
+  });
+
   useEffect(() => {
     if (database.length>0 && currentCartList){
     let availableProducts = findAvailableProducts(

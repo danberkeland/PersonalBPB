@@ -7,16 +7,24 @@ import { InputText } from "primereact/inputtext";
 const Quantity = () => {
   
   const { chosen } = useContext(CurrentDataContext);
-  
-  return (
-    
-      <span className="p-float-label">
-        <InputText
+
+
+  const innards1 = (
+    <React.Fragment>
+      <InputText
           id="addedProdQty"
           size="10"
           disabled={chosen !== "  " ? false : true}
         />
         <label htmlFor="qty">Quantity</label>
+    </React.Fragment>
+    
+  )
+  
+  return (
+    
+      <span className="p-float-label">
+        {innards1}
       </span>
      
   );

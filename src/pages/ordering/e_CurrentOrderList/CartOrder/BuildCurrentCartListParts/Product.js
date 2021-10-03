@@ -101,9 +101,9 @@ const Product = ({ order, database, setDatabase }) => {
   const innards2 = (
     <InputNumber 
     value={order["qty"]}
-    
-    showButtons buttonLayout="vertical" style={{width: '4em'}}
-    decrementButtonClassName="p-button-primary" incrementButtonClassName="p-button-primary" incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus" />
+    size = "2"
+    style={{height: '5em'}}
+    />
   
   );
 

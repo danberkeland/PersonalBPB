@@ -37,7 +37,7 @@ const OrderGridPhone = styled.div`
   border: none;
   display: grid;
   align-items: center;
-  grid-template-columns: .5fr 2.5fr .75fr .75fr;
+  grid-template-columns: 2.5fr 1fr 1fr;
   row-gap: 2px;
   flex-shrink: 1;
 `;
@@ -196,13 +196,7 @@ const BuildCurrentCartList = ({ database, setDatabase }) => {
             <React.Fragment key={uuidv4() + "b"}>
               <PhoneWrap>
               <OrderGridPhone>
-              <TrashCanContainer>
-                <TrashCan
-                  order={order}
-                  database={database}
-                  setDatabase={setDatabase}
-                />
-              </TrashCanContainer>
+              
               <Product
                 order={order}
                 database={database}
@@ -211,8 +205,14 @@ const BuildCurrentCartList = ({ database, setDatabase }) => {
               <Previous order={order} />
               </OrderGridPhone>
               <OrderGridPhone>
-                <div></div>
-                <div></div>
+              <TrashCanContainer>
+                <TrashCan
+                  order={order}
+                  database={database}
+                  setDatabase={setDatabase}
+                />
+              </TrashCanContainer>
+               
               <Rate order={order} database={database} />
               
               

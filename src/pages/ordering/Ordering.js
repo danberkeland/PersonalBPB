@@ -51,7 +51,7 @@ const BasicContainer = styled.div`
   width: 95%;
   border: 1px solid lightgray;
   padding: 10px 10px;
-  margin: 0px 10px;
+  margin: 5px 10px;
   box-sizing: border-box;
 `;
 

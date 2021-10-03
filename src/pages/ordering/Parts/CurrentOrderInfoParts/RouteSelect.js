@@ -103,7 +103,7 @@ const RouteSelect = ({ database, setDatabase, customerGroup }) => {
   };
 
   return (
-    <div>
+    <React.Fragment>
       <RadioButton
         value="deliv"
         name="delivery"
@@ -135,7 +135,7 @@ const RouteSelect = ({ database, setDatabase, customerGroup }) => {
         }
       />
       <label htmlFor="pickupAtown">Pick up Carlton</label>
-    </div>
+    </React.Fragment>
   );
 };
 

@@ -12,11 +12,12 @@ const clonedeep = require("lodash.clonedeep");
 
 const TrashCan = ({ order, database, setDatabase }) => {
   const [products, customers, routes, standing, orders] = database;
-  const { chosen, delivDate } = useContext(CurrentDataContext);
+  const { chosen, delivDate,currentCartList,
+    setCurrentCartList, } = useContext(CurrentDataContext);
   const { setModifications } = useContext(ToggleContext);
 
   const handleTrash = (prodName) => {
-    let ordToMod = clonedeep(orders);
+    let ordToMod = clonedeep(currentCartList);
     let ind = ordToMod.findIndex(
       (ord) =>
         ord.prodName === prodName &&
@@ -24,9 +25,8 @@ const TrashCan = ({ order, database, setDatabase }) => {
         ord.delivDate === convertDatetoBPBDate(delivDate)
     );
     ordToMod[ind].qty = 0;
-    let DBToUpdate = clonedeep(database);
-    DBToUpdate[4] = ordToMod;
-    setDatabase(DBToUpdate);
+    
+    setCurrentCartList(ordToMod);
     setModifications(true);
   };
 

@@ -29,6 +29,25 @@ const OrderGrid = styled.div`
   row-gap: 4px;
   flex-shrink: 1;
 `;
+
+const OrderGridPhone = styled.div`
+  width: 100%;
+  
+  padding: 10px;
+  border: none;
+  display: grid;
+  align-items: center;
+  grid-template-columns: .5fr 2.5fr .75fr .75fr;
+  row-gap: 2px;
+  flex-shrink: 1;
+`;
+
+const PhoneWrap = styled.div`
+  border-style: solid;
+  border-width: 1px;
+  border-color: lightblue;
+  margin: 10px;
+  `
 const TrashCanContainer = styled.div`
   background-color: transparent;
   border: none;
@@ -48,6 +67,13 @@ const BuildCurrentCartList = ({ database, setDatabase }) => {
   } = useContext(CurrentDataContext);
 
   const { reload, setModifications } = useContext(ToggleContext);
+
+  const [width, setWidth] = useState(window.innerWidth);
+  const breakpoint = 620;
+
+  useEffect(() => {
+    window.addEventListener("resize", () => setWidth(window.innerWidth));
+  });
 
   useEffect(() => {
     if (database.length > 0) {
@@ -122,9 +148,8 @@ const BuildCurrentCartList = ({ database, setDatabase }) => {
     }
   }, [currentCartList]);
 
-  return (
-    <React.Fragment>
-      <OrderGrid>
+  const innards1 =(
+    <OrderGrid>
         <label></label>
         <label>PRODUCT</label>
         <label>QTY</label>
@@ -160,6 +185,52 @@ const BuildCurrentCartList = ({ database, setDatabase }) => {
         <label>GRAND TOTAL</label>
         <label>$ {grandTotal}</label>
       </OrderGrid>
+  )
+
+  const innards2 =(
+    <React.Fragment>
+        
+        {currentCartList
+          .filter((curr) => curr.qty !== 0 || curr.temp === true)
+          .map((order) => (
+            <React.Fragment key={uuidv4() + "b"}>
+              <PhoneWrap>
+              <OrderGridPhone>
+              <TrashCanContainer>
+                <TrashCan
+                  order={order}
+                  database={database}
+                  setDatabase={setDatabase}
+                />
+              </TrashCanContainer>
+              <Product
+                order={order}
+                database={database}
+                setDatabase={setDatabase}
+              />
+              <Previous order={order} />
+              </OrderGridPhone>
+              <OrderGridPhone>
+                <div></div>
+                <div></div>
+              <Rate order={order} database={database} />
+              
+              
+              <Total order={order} database={database} />
+              </OrderGridPhone>
+              </PhoneWrap>
+            </React.Fragment>
+          ))}
+       
+        <label></label>
+        <label>GRAND TOTAL</label>
+        <label>$ {grandTotal}</label>
+      </React.Fragment>
+  )
+
+  return (
+    <React.Fragment>
+      {width > breakpoint ? innards1 : innards2 }
     </React.Fragment>
   );
 };

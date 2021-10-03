@@ -290,9 +290,8 @@ function Ordering({ authType }) {
   const innards2 = (
     <React.Fragment>
       <h2>Back Porch Bakery</h2>
-      <BasicContainer>
-        <Calendar database={database} />
-      </BasicContainer>
+    
+      
 
       <BasicContainer>
         <CurrentOrderInfo
@@ -301,13 +300,7 @@ function Ordering({ authType }) {
           authType={authType}
         />
       </BasicContainer>
-      <BasicContainer>
-        <OrderEntryButtons
-          database={database}
-          setDatabase={setDatabase}
-          authType={authType}
-        />
-      </BasicContainer>
+     
       <BasicContainer>
         <CurrentOrderList
           database={database}
@@ -322,13 +315,7 @@ function Ordering({ authType }) {
           ""
         )}
       </BasicContainer>
-      <BasicContainer>
-        <OrderEntryButtons
-          database={database}
-          setDatabase={setDatabase}
-          authType={authType}
-        />
-      </BasicContainer>
+      
     </React.Fragment>
   );
 

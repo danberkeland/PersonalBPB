@@ -20,7 +20,7 @@ const Total = ({ order, database }) => {
   return (
    
       <TotalContainer key={uuidv4() + "d"}>
-        $ {price.toFixed(2)}
+        {price.toFixed(2)}
       </TotalContainer>
     
   );

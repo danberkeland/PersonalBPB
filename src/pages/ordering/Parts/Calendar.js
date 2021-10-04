@@ -205,6 +205,7 @@ const Cal = ({ database }) => {
     } catch (error) {
     
     }
+    /*
     try {
       for (let cal of calendarEvents) {
         
@@ -249,7 +250,7 @@ const Cal = ({ database }) => {
       }
     } catch (error) {
       
-    }
+    }*/
     return date.day;
   };
 

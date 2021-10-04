@@ -254,12 +254,25 @@ const Cal = ({ database }) => {
     return date.day;
   };
 
+  const handlePhoneChange = (date) => {
+    console.log("date",date.value)
+    let year = date.value.getFullYear()
+    let month = date.value.getMonth()+1
+    let day = date.value.getDate()
+    let formatted = year+'-'+month+'-'+day
+    console.log(formatted)
+        console.log("delivDate",delivDate)
+    setDelivDate(formatted)
+
+  }
+
   const innards2 = (
     <div className="p-field p-col-12 p-md-4">
       <Calendar
         id="mask"
-        value={delivDate}
-        onChange={(e) => console.log(e)}
+       
+        value={new Date(delivDate)}
+        onChange={(e) => handlePhoneChange(e)}
         dateTemplate={dateTemplate}
       />
     </div>

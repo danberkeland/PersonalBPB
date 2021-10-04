@@ -55,12 +55,17 @@ const CurrentOrderInfo = ({
   customerGroup,
   setCustomerGroup,
 }) => {
-  const [alignment, setAlignment] = useState("web");
-
+  
   const { chosen, delivDate, route, currentCartList } =
     useContext(CurrentDataContext);
 
+  const { setModifications, cartList } = useContext(ToggleContext);
+
+  const [alignment, setAlignment] = useState();
+
+
   const handleChange = (e, newAlignment) => {
+   
     if (
       newAlignment !== "deliv" &&
       newAlignment !== "slopick" &&
@@ -108,7 +113,18 @@ const CurrentOrderInfo = ({
     window.addEventListener("resize", () => setWidth(window.innerWidth));
   });
 
-  const { setModifications, cartList } = useContext(ToggleContext);
+  useEffect(() => {
+    try{
+      console.log("current",currentCartList)
+      currentCartList[0].route ? setAlignment(currentCartList[0].route) : setAlignment("deliv");
+    } catch(error) {
+      setAlignment("deliv")
+      console.log(error)
+    }
+    
+  },[currentCartList])
+
+  
 
   return (
     <React.Fragment>

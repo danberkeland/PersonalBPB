@@ -85,6 +85,8 @@ const Cal = ({ database }) => {
   
   };
 
+  
+
   const innards1 = (
     <div className="calendarApp" id="test">
         <FullCalendar
@@ -104,11 +106,26 @@ const Cal = ({ database }) => {
       </div>
   )
 
+  const dateTemplate = (date) => {
+    if (date.day > 10 && date.day < 15) {
+      return (
+          <div style={{backgroundColor: '#1dcbb3', color: '#ffffff', fontWeight: 'bold', borderRadius: '50%', width: '2em', height: '2em', lineHeight: '2em', padding: 0}}>{date.day}</div>
+      );
+  }
+  else {
+      return date.day;
+  }
+  }
+
   const innards2 = (
     <div className="p-field p-col-12 p-md-4">
-      <Calendar id="mask" value={delivDate} onChange={(e) => console.log(e)} />
+      <Calendar id="mask" value={delivDate} onChange={(e) => console.log(e)} dateTemplate={dateTemplate} />
     </div>
   )
+
+  
+
+  
 
   return (
     <React.Fragment>
@@ -116,5 +133,7 @@ const Cal = ({ database }) => {
     </React.Fragment>
   );
 };
+
+
 
 export default Cal;

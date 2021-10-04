@@ -271,7 +271,7 @@ const Cal = ({ database }) => {
       <Calendar
         id="mask"
        
-        value={new Date(delivDate)}
+        value={new Date(delivDate.replace("-","/"))}
         onChange={(e) => handlePhoneChange(e)}
         dateTemplate={dateTemplate}
       />

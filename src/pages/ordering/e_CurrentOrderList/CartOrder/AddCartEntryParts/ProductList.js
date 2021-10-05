@@ -52,6 +52,8 @@ const ProductList = ({ database, pickedProduct, setPickedProduct }) => {
         icon: 'pi pi-exclamation-triangle',
         accept: () => setPickedProduct(targ)
     });
+    } else {
+      setPickedProduct(targ)
     }
     
     

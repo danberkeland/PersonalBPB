@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 
 import { CurrentDataContext } from "../../../../../dataContexts/CurrentDataContext";
 import { ToggleContext } from "../../../../../dataContexts/ToggleContext";
@@ -21,6 +21,13 @@ const AddProduct = ({ database, setDatabase, pickedProduct, setPickedProduct }) 
     setCurrentCartList,
   } = useContext(CurrentDataContext);
   const { orderTypeWhole, setModifications } = useContext(ToggleContext);
+
+  const [width, setWidth] = useState(window.innerWidth);
+  const breakpoint = 620;
+
+  useEffect(() => {
+    window.addEventListener("resize", () => setWidth(window.innerWidth));
+  });
 
   const handleAdd = () => {
     let qty = Number(document.getElementById("addedProdQty").value);
@@ -54,9 +61,10 @@ const AddProduct = ({ database, setDatabase, pickedProduct, setPickedProduct }) 
 
   return (
     <Button
-      label="ADD"
+      label={width > breakpoint ? "ADD" : ''}
       disabled={chosen === "  " || pickedProduct === ""}
       icon="pi pi-plus"
+      className = {width > breakpoint ? '' : 'p-button-rounded p-button-lg'}
       onClick={() => handleAdd()}
     />
   );

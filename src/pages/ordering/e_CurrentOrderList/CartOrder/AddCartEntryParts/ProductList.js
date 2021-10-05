@@ -5,6 +5,7 @@ import { CurrentDataContext } from "../../../../../dataContexts/CurrentDataConte
 import { findAvailableProducts } from "../../../../../helpers/sortDataHelpers";
 
 import { Dropdown } from "primereact/dropdown";
+import { confirmDialog } from 'primereact/confirmdialog'
 
 import swal from "@sweetalert/with-react";
 import styled from "styled-components";
@@ -44,17 +45,19 @@ const ProductList = ({ database, pickedProduct, setPickedProduct }) => {
     let targ = e.target.value;
 
     if (targ.prodName.includes("IN PRODUCTION")) {
-      targ.prodName = targ.prodName.slice(0, -15);
-      swal({
-        text: `This product is already in Production.  We will do our best but we cannot guarantee delivery.  Rush fee may apply.`,
-        icon: "warning",
-        buttons: false,
-        timer: 6000,
-      });
+      targ.prodName = targ.prodName.slice(0, -16);
+      confirmDialog({
+        message: 'This product is already in production.  We will do our best but we cannot guarantee delivery.  Rush fee may apply. Continue?',
+        header: 'Confirmation',
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => setPickedProduct(targ)
+    });
     }
-    setPickedProduct(targ);
+    
     
   };
+
+  
 
   const itemTemplate = (option) => {
     console.log(option)

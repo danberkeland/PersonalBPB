@@ -113,6 +113,7 @@ const Product = ({ order, database, setDatabase }) => {
       <Title key={uuidv4()}>{order["prodName"]}</Title>
       <InputNumber 
     value={order["qty"]}
+    inputId={order["prodName"] + "item"}
     size = "2"
     style={{height: '5em'}}
     onValueChange={(e) => {

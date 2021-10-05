@@ -82,7 +82,7 @@ const BuildCurrentCartList = ({ database, setDatabase }) => {
     route,
   } = useContext(CurrentDataContext);
 
-  const { reload, setModifications } = useContext(ToggleContext);
+  const { reload, setModifications, deadlinePassed } = useContext(ToggleContext);
 
   const [width, setWidth] = useState(window.innerWidth);
   const breakpoint = 620;
@@ -181,6 +181,7 @@ const BuildCurrentCartList = ({ database, setDatabase }) => {
                   order={order}
                   database={database}
                   setDatabase={setDatabase}
+                  
                 />
               </TrashCanContainer>
 

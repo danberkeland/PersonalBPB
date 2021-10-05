@@ -32,7 +32,7 @@ const Product = ({ order, database, setDatabase }) => {
     route,
     ponote,
   } = useContext(CurrentDataContext);
-  const { setModifications } = useContext(ToggleContext);
+  const { setModifications, deadlinePassed } = useContext(ToggleContext);
 
   const [width, setWidth] = useState(window.innerWidth);
   const breakpoint = 620;
@@ -92,6 +92,7 @@ const Product = ({ order, database, setDatabase }) => {
         size="3"
         maxLength="4"
         key={uuidv4() + "c"}
+        disabled = {deadlinePassed ? true : false}
         id={order["prodName"] + "item"}
         name={order["prodName"]}
         data-qty={order["qty"]}

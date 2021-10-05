@@ -79,7 +79,8 @@ const Cal = ({ database }) => {
     } catch {
       console.log();
     }
-  
+
+    
     setDelivDate(selectInfo.dateStr);
   };
 

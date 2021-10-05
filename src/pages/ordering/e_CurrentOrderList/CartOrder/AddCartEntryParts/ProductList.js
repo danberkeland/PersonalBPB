@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 
 import { CurrentDataContext } from "../../../../../dataContexts/CurrentDataContext";
+import { ToggleContext } from "../../../../../dataContexts/ToggleContext";
 
 import { findAvailableProducts } from "../../../../../helpers/sortDataHelpers";
 
@@ -18,6 +19,7 @@ const OptionGroup = styled.div`
 const ProductList = ({ database, pickedProduct, setPickedProduct }) => {
   const [products, customers, routes, standing, orders] = database;
   const { chosen, delivDate, currentCartList } = useContext(CurrentDataContext);
+  const { deadlinePassed } = useContext(ToggleContext)
 
   const [productList, setProductList] = useState();
 
@@ -75,7 +77,7 @@ const ProductList = ({ database, pickedProduct, setPickedProduct }) => {
       name="products"
       value={pickedProduct}
       onChange={handleChange}
-      disabled={chosen !== "  " ? false : true}
+      disabled={chosen === "  " || deadlinePassed ? true : false}
     />
   );
 };

@@ -4,9 +4,11 @@ import { CurrentDataContext } from "../../../../../dataContexts/CurrentDataConte
 
 import { InputText } from "primereact/inputtext";
 import { InputNumber } from "primereact/inputnumber";
+import { ToggleContext } from "../../../../../dataContexts/ToggleContext";
 
 const Quantity = () => {
   const { chosen } = useContext(CurrentDataContext);
+  const { deadlinePassed } = useContext(ToggleContext)
 
   const [width, setWidth] = useState(window.innerWidth);
   const breakpoint = 620;
@@ -22,7 +24,7 @@ const Quantity = () => {
       <InputText
         id="addedProdQty"
         size="10"
-        disabled={chosen !== "  " ? false : true}
+        disabled={chosen === "  " || deadlinePassed ? true : false}
       />
       <label htmlFor="qty">Quantity</label>
     </React.Fragment>
@@ -34,7 +36,7 @@ const Quantity = () => {
       
         inputId="addedProdQty"
         size="4"
-        disabled={chosen !== "  " ? false : true}
+        disabled={chosen === "  " || deadlinePassed ? true : false}
         style={{ height: "3em" }}
       />
       <label htmlFor="qty">Qty</label>

@@ -15,7 +15,7 @@ const TrashCan = ({ order, database, setDatabase }) => {
   const [products, customers, routes, standing, orders] = database;
   const { chosen, delivDate,currentCartList,
     setCurrentCartList, } = useContext(CurrentDataContext);
-  const { setModifications } = useContext(ToggleContext);
+  const { setModifications, deadlinePassed } = useContext(ToggleContext);
 
   const handleTrash = (prodName) => {
     let ordToMod = clonedeep(currentCartList);
@@ -46,6 +46,7 @@ const TrashCan = ({ order, database, setDatabase }) => {
       icon="pi pi-trash"
       className="p-button-outlined p-button-rounded p-button-help p-button-sm"
       value={0}
+      disabled = {deadlinePassed ? true : false}
       onClick={(e) => {
         confirm(order["prodName"]);
       }}

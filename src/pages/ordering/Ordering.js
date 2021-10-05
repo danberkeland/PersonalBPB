@@ -90,9 +90,11 @@ function Ordering({ authType }) {
     setModifications,
     ordersHasBeenChanged,
     setOrdersHasBeenChanged,
+    deadlinePassed,
+    setDeadlinePassed
   } = useContext(ToggleContext);
 
-  const { chosen, setDelivDate } = useContext(CurrentDataContext);
+  const { chosen, delivDate, setDelivDate } = useContext(CurrentDataContext);
 
   const [width, setWidth] = useState(window.innerWidth);
   const breakpoint = 620;
@@ -100,6 +102,25 @@ function Ordering({ authType }) {
   useEffect(() => {
     window.addEventListener("resize", () => setWidth(window.innerWidth));
   });
+
+  useEffect(() => {
+    
+    let today = DateTime.now().setZone("America/Los_Angeles");
+    let hour = today.c.hour;
+    let minutes = today.c.minute/60;
+    let totalHour = hour+minutes
+    console.log("totalHour", totalHour)
+    console.log("delivDate",delivDate)
+    console.log("deadline",todayPlus()[1])
+    if ((totalHour > 18.5 && delivDate.toString() === todayPlus()[1].toString()) || delivDate.toString() === todayPlus()[0].toString()){
+      
+      setDeadlinePassed(true)
+    } else {
+      console.log("false")
+      setDeadlinePassed(false)
+    }
+    
+  }, [delivDate])
 
   useEffect(() => {
     let today = DateTime.now().setZone("America/Los_Angeles");
@@ -119,6 +140,7 @@ function Ordering({ authType }) {
         accept: () => setDelivDate(todayPlus()[2]),
       });
       setDelivDate(todayPlus()[2]);
+     
     } else {
       setDelivDate(todayPlus()[1]);
     }} catch (error){}
@@ -332,11 +354,11 @@ function Ordering({ authType }) {
           setDatabase={setDatabase}
           authType={authType}
         />
-        <OrderEntryButtons
+        {!deadlinePassed ? <OrderEntryButtons
           database={database}
           setDatabase={setDatabase}
           authType={authType}
-        />
+        /> : ''}
       </BasicContainer>
     </React.Fragment>
   );

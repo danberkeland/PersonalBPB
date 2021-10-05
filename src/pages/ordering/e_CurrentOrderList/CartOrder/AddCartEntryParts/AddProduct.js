@@ -20,7 +20,7 @@ const AddProduct = ({ database, setDatabase, pickedProduct, setPickedProduct }) 
     currentCartList,
     setCurrentCartList,
   } = useContext(CurrentDataContext);
-  const { orderTypeWhole, setModifications } = useContext(ToggleContext);
+  const { orderTypeWhole, setModifications, deadlinePassed } = useContext(ToggleContext);
 
   const [width, setWidth] = useState(window.innerWidth);
   const breakpoint = 620;
@@ -63,7 +63,7 @@ const AddProduct = ({ database, setDatabase, pickedProduct, setPickedProduct }) 
   return (
     <Button
       label={width > breakpoint ? "ADD" : ''}
-      disabled={chosen === "  " || pickedProduct === ""}
+      disabled={chosen === "  " || pickedProduct === "" || deadlinePassed}
       icon="pi pi-plus"
       className = {width > breakpoint ? '' : 'p-button-rounded p-button-lg'}
       onClick={() => handleAdd()}

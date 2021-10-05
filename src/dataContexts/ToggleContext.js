@@ -17,7 +17,8 @@ export const ToggleProvider = (props) => {
     const [ readyForSq, setReadyForSq ] = useState(false)
     const [ readyForWeekly, setReadyForWeekly ] = useState(false)
     const [ reload, setReload ] = useState(false)
-
+    const [ deadlinePassed, setDeadlinePassed ] = useState(false)
+ 
     return (
         <ToggleContext.Provider 
             value={{    
@@ -32,7 +33,8 @@ export const ToggleProvider = (props) => {
                 isLoading, setIsLoading,
                 readyForSq, setReadyForSq,
                 readyForWeekly, setReadyForWeekly,
-                reload, setReload
+                reload, setReload,
+                deadlinePassed, setDeadlinePassed
             }}>
             {props.children}
         </ToggleContext.Provider>

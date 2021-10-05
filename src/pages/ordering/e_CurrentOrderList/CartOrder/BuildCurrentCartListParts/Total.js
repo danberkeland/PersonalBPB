@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -14,16 +14,22 @@ const TotalContainer = styled.h3`
 const Total = ({ order, database }) => {
  
   const [products, customers, routes, standing, orders,d,dd, altPricing] = database;
+
+  const [width, setWidth] = useState(window.innerWidth);
+  const breakpoint = 620;
+
+  useEffect(() => {
+    window.addEventListener("resize", () => setWidth(window.innerWidth));
+  });
+
   let price = getRate(products,order, altPricing)
   price = price*order.qty
   
-  return (
-   
-      <TotalContainer key={uuidv4() + "d"}>
+  return width>breakpoint ? <div key={uuidv4() + "d"}>
+  {price.toFixed(2)}
+</div> : <TotalContainer key={uuidv4() + "d"}>
         {price.toFixed(2)}
-      </TotalContainer>
-    
-  );
+      </TotalContainer> 
 };
 
 export default Total;

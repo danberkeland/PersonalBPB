@@ -7,7 +7,7 @@ import AddProduct from './AddCartEntryParts/AddProduct'
 import styled from "styled-components";
 
 const AddProductButtons = styled.div`
-  display: block;
+  display: flex;
   width: 100%;
   margin: 20px 0;
   justify-content: space-around;

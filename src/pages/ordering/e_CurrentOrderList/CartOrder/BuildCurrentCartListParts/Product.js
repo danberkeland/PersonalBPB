@@ -84,7 +84,9 @@ const Product = ({ order, database, setDatabase }) => {
   };
 
   const innards1 = (
-    <InputBox>
+    <React.Fragment>
+      <div key={uuidv4()}>{order["prodName"]}</div>
+      <InputBox>
       <input
         type="text"
         size="3"
@@ -102,10 +104,14 @@ const Product = ({ order, database, setDatabase }) => {
         }}
       ></input>
     </InputBox>
+    </React.Fragment>
+    
   );
 
   const innards2 = (
-    <InputNumber 
+    <React.Fragment>
+      <Title key={uuidv4()}>{order["prodName"]}</Title>
+      <InputNumber 
     value={order["qty"]}
     size = "2"
     style={{height: '5em'}}
@@ -114,12 +120,14 @@ const Product = ({ order, database, setDatabase }) => {
     }}
     
     />
+    </React.Fragment>
+    
   
   );
 
   return (
     <React.Fragment>
-      <Title key={uuidv4()}>{order["prodName"]}</Title>
+      
       {width > breakpoint ? innards1 : innards2}
     </React.Fragment>
   );

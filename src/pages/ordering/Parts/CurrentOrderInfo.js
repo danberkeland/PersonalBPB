@@ -34,7 +34,7 @@ const SpecialInfo = styled.div`
 
 const FulfillOptions = styled.div`
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 2fr .25fr 1fr .25fr 1fr .25fr 1fr;
   margin: 10px;
   align-items: center;
   justify-items: left;

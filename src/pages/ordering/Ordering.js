@@ -21,6 +21,11 @@ import { promisedData } from "../../helpers/databaseFetchers";
 import styled from "styled-components";
 import { ToggleContext } from "../../dataContexts/ToggleContext";
 import { CurrentDataContext } from "../../dataContexts/CurrentDataContext";
+import { confirmDialog } from "primereact/confirmdialog";
+
+const { DateTime } = require("luxon");
+
+
 
 const clonedeep = require("lodash.clonedeep");
 
@@ -87,7 +92,7 @@ function Ordering({ authType }) {
     setOrdersHasBeenChanged,
   } = useContext(ToggleContext);
 
-  const { chosen } = useContext(CurrentDataContext);
+  const { chosen, setDelivDate } = useContext(CurrentDataContext);
 
   const [width, setWidth] = useState(window.innerWidth);
   const breakpoint = 620;
@@ -95,6 +100,29 @@ function Ordering({ authType }) {
   useEffect(() => {
     window.addEventListener("resize", () => setWidth(window.innerWidth));
   });
+
+  useEffect(() => {
+    let today = DateTime.now().setZone("America/Los_Angeles");
+    let hour = today.c.hour;
+    let minutes = today.c.minute/60;
+    let totalHour = hour+minutes
+    
+    try{
+    if (Number(totalHour) > 18.5 && authType !== "bpbadmin" && authType) {
+      confirmDialog({
+        message:
+          "6:00 PM order deadline for tomorrow has passed.  Next available order date is " +
+          todayPlus()[2] +
+          ". Continue?",
+        header: "Confirmation",
+        icon: "pi pi-exclamation-triangle",
+        accept: () => setDelivDate(todayPlus()[2]),
+      });
+      setDelivDate(todayPlus()[2]);
+    } else {
+      setDelivDate(todayPlus()[1]);
+    }} catch (error){}
+  },[authType])
 
   const loadDatabase = async (database) => {
     setIsLoading(true);
@@ -322,6 +350,7 @@ function Ordering({ authType }) {
           database={database}
           customerGroup={customerGroup}
           setCustomerGroup={setCustomerGroup}
+          authType={authType}
         />{" "}
         order for:
       </DateStyle>

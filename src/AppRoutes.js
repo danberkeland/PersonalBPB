@@ -88,7 +88,7 @@ function AppRoutes({ authType, userNum }) {
           <Route path="/customers" component={Customers} />
           <Route path="/billing" component={Billing} />
          
-          <Route path="/" exact component={Ordering} />
+          <Route path="/" render={(props)=><Ordering {...props} userNum={userNum} authType={authType} />}/> 
 
           <Route path="/test" exact component={TestComponent} />
         </Switch>

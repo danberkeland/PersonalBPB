@@ -14,7 +14,7 @@ const clonedeep = require("lodash.clonedeep");
 
 const { DateTime } = require("luxon");
 
-const CustomerGroup = ({ database, customerGroup, setCustomerGroup }) => {
+const CustomerGroup = ({ database, customerGroup, setCustomerGroup, authType }) => {
   const { orderTypeWhole, setModifications } = useContext(ToggleContext);
   const [userNum, setUserNum] = useState();
   const [products, customers, routes, standing, orders] = database;
@@ -28,7 +28,10 @@ const CustomerGroup = ({ database, customerGroup, setCustomerGroup }) => {
   useEffect(() => {
     let currentUser = Auth.currentAuthenticatedUser().then((use) =>
       setUserNum(use.attributes.sub)
+
+    
     );
+  
   }, []);
 
   useEffect(() => {
@@ -56,13 +59,13 @@ const CustomerGroup = ({ database, customerGroup, setCustomerGroup }) => {
     // let time = time right now
     let today = DateTime.now().setZone("America/Los_Angeles");
     let hour = today.c.hour;
-    let minutes = today.c.minute;
-    console.log("now", hour + ":" + minutes);
+    let minutes = today.c.minute/60;
+    let totalHour = hour+minutes
     setChosen(chosen);
-    if (Number(hour) > 9) {
+    if (Number(totalHour) > 18.5 && authType !== "bpbadmin" && authType) {
       confirmDialog({
         message:
-          "6:30 PM order deadline for tomorrow has passed.  Next available order date is " +
+          "6:00 PM order deadline for tomorrow has passed.  Next available order date is " +
           todayPlus()[2] +
           ". Continue?",
         header: "Confirmation",

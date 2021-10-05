@@ -137,6 +137,7 @@ const CurrentOrderInfo = ({
               database={database}
               customerGroup={customerGroup}
               setCustomerGroup={setCustomerGroup}
+              authType={authType}
             />
             {cartList ? (
               <RouteSelect

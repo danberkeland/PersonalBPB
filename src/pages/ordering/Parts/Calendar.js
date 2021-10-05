@@ -276,7 +276,7 @@ const Cal = ({ database }) => {
     <div className="p-field p-col-12 p-md-4">
       <Calendar
         id="mask"
-        placeholder = {calDate}
+        placeholder = {delivDate}
         value={calDate}
         onChange={(e) => handlePhoneChange(e)}
         dateTemplate={dateTemplate}

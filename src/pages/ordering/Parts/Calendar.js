@@ -23,6 +23,7 @@ const Cal = ({ database }) => {
     useContext(CurrentDataContext);
   const [products, customers, routes, standing, orders] = database;
   const { setModifications } = useContext(ToggleContext);
+  const [calDate, setCalDate] = useState(new Date(delivDate.replace("-","/")))
 
   const [width, setWidth] = useState(window.innerWidth);
   const breakpoint = 620;
@@ -262,6 +263,7 @@ const Cal = ({ database }) => {
     let formatted = year+'-'+month+'-'+day
     console.log(formatted)
         console.log("delivDate",delivDate)
+    setCalDate(new Date(delivDate.replace("-","/")))
     setDelivDate(formatted)
 
   }
@@ -271,7 +273,7 @@ const Cal = ({ database }) => {
       <Calendar
         id="mask"
        
-        value={new Date(delivDate.replace("-","/"))}
+        value={calDate}
         onChange={(e) => handlePhoneChange(e)}
         dateTemplate={dateTemplate}
       />

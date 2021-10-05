@@ -33,6 +33,10 @@ const Cal = ({ database }) => {
   });
 
   useEffect(() => {
+    setCalDate(new Date(delivDate.replace("-","/")))
+  },[delivDate])
+
+  useEffect(() => {
     if (database.length > 0) {
       let backToStandingArray = CreateStandingArray(standing, chosen);
       let cartDateArray = CreateCartDateArray(orders, chosen);
@@ -263,7 +267,7 @@ const Cal = ({ database }) => {
     let formatted = year+'-'+month+'-'+day
     console.log(formatted)
         console.log("delivDate",delivDate)
-    setCalDate(new Date(delivDate.replace("-","/")))
+    
     setDelivDate(formatted)
 
   }

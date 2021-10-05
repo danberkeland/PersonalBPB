@@ -42,6 +42,22 @@ const OrderGridPhone = styled.div`
   flex-shrink: 1;
 `;
 
+const GrandAlign = styled.div`
+  width: 100%;
+  
+  padding: 10px;
+  border: none;
+  display: grid;
+  align-items: center;
+  grid-template-columns: 2.5fr 1fr 1fr;
+  row-gap: 2px;
+  flex-shrink: 1;
+`;
+
+const TotalStyle = styled.div`
+  font-size: 1.5em;
+`
+
 const PhoneWrap = styled.div`
   border-style: solid;
   border-width: 1px;
@@ -222,9 +238,11 @@ const BuildCurrentCartList = ({ database, setDatabase }) => {
             </React.Fragment>
           ))}
        
+        <GrandAlign>
         <label></label>
-        <label>GRAND TOTAL</label>
-        <label>$ {grandTotal}</label>
+        <label>TOTAL</label>
+        <TotalStyle>${grandTotal}</TotalStyle>
+        </GrandAlign>
       </React.Fragment>
   )
 

@@ -5,7 +5,8 @@ import { v4 as uuidv4 } from "uuid";
 import styled from "styled-components";
 
 const PreviousContainer = styled.div`
-  font-weight: bold;
+ 
+  text-decoration: line-through;
   color: red;
 `;
 

@@ -7,6 +7,12 @@ import { findAvailableProducts } from "../../../../../helpers/sortDataHelpers";
 import { Dropdown } from "primereact/dropdown";
 
 import swal from "@sweetalert/with-react";
+import styled from "styled-components";
+
+
+const OptionGroup = styled.div`
+  font-size: .7em;
+`
 
 const ProductList = ({ database, pickedProduct, setPickedProduct }) => {
   const [products, customers, routes, standing, orders] = database;
@@ -50,10 +56,16 @@ const ProductList = ({ database, pickedProduct, setPickedProduct }) => {
     
   };
 
+  const itemTemplate = (option) => {
+    console.log(option)
+    return width>breakpoint ? option.prodName : <OptionGroup>{option.prodName}</OptionGroup>
+  }
+
   return (
     <Dropdown
       options={productList}
       optionLabel="prodName"
+      itemTemplate = {itemTemplate}
       placeholder="Select a product"
       name="products"
       value={pickedProduct}

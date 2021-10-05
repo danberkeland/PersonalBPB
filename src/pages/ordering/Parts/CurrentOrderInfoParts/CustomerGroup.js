@@ -5,15 +5,18 @@ import { ToggleContext } from "../../../../dataContexts/ToggleContext";
 import Amplify, { Auth, API, graphqlOperation } from "aws-amplify";
 
 import { Dropdown } from "primereact/dropdown";
+import { confirmDialog } from "primereact/confirmdialog";
 
-import { tomorrow } from "../../../../helpers/dateTimeHelpers";
+import { tomorrow, todayPlus } from "../../../../helpers/dateTimeHelpers";
 import { createRetailOrderCustomers } from "../../../../helpers/sortDataHelpers";
 
 const clonedeep = require("lodash.clonedeep");
 
+const { DateTime } = require("luxon");
+
 const CustomerGroup = ({ database, customerGroup, setCustomerGroup }) => {
   const { orderTypeWhole, setModifications } = useContext(ToggleContext);
-  const [userNum, setUserNum] = useState()
+  const [userNum, setUserNum] = useState();
   const [products, customers, routes, standing, orders] = database;
   const {
     chosen,
@@ -29,16 +32,20 @@ const CustomerGroup = ({ database, customerGroup, setCustomerGroup }) => {
   }, []);
 
   useEffect(() => {
-    let newCustList = clonedeep(customers)
+    let newCustList = clonedeep(customers);
     if (database.length > 0) {
-      for (let cust of newCustList){
-        if (cust.userSubs === null){
-          cust.userSubs = []
+      for (let cust of newCustList) {
+        if (cust.userSubs === null) {
+          cust.userSubs = [];
         }
       }
-      console.log("userNum",userNum)
-      console.log("customerSelect",newCustList)
-      let customerSelect = newCustList.filter(cust => cust.userSubs.includes(userNum) || userNum==="64205737-fcdc-44a2-bd87-e951873d2366")
+      console.log("userNum", userNum);
+      console.log("customerSelect", newCustList);
+      let customerSelect = newCustList.filter(
+        (cust) =>
+          cust.userSubs.includes(userNum) ||
+          userNum === "64205737-fcdc-44a2-bd87-e951873d2366"
+      );
       orderTypeWhole
         ? setCustomerGroup(customerSelect)
         : setCustomerGroup(createRetailOrderCustomers(orders));
@@ -46,9 +53,26 @@ const CustomerGroup = ({ database, customerGroup, setCustomerGroup }) => {
   }, [customers, orderTypeWhole, orders, database, userNum]);
 
   const handleChosen = (chosen) => {
+    // let time = time right now
+    let today = DateTime.now().setZone("America/Los_Angeles");
+    let hour = today.c.hour;
+    let minutes = today.c.minute;
+    console.log("now", hour + ":" + minutes);
     setChosen(chosen);
-    setDelivDate(tomorrow());
-   
+    if (Number(hour) > 9) {
+      confirmDialog({
+        message:
+          "6:30 PM order deadline for tomorrow has passed.  Next available order date is " +
+          todayPlus()[2] +
+          ". Continue?",
+        header: "Confirmation",
+        icon: "pi pi-exclamation-triangle",
+        accept: () => setDelivDate(todayPlus()[2]),
+      });
+      setDelivDate(todayPlus()[2]);
+    } else {
+      setDelivDate(tomorrow());
+    }
   };
 
   return (

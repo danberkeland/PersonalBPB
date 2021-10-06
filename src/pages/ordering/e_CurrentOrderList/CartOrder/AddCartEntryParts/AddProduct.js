@@ -10,7 +10,7 @@ import { Button } from "primereact/button";
 
 const clonedeep = require("lodash.clonedeep");
 
-const AddProduct = ({ database, setDatabase, pickedProduct, setPickedProduct }) => {
+const AddProduct = ({ database, setDatabase, pickedProduct, setPickedProduct, authType }) => {
   const [products, customers, routes, standing, orders] = database;
   const {
     chosen,
@@ -63,7 +63,7 @@ const AddProduct = ({ database, setDatabase, pickedProduct, setPickedProduct }) 
   return (
     <Button
       label={width > breakpoint ? "ADD" : ''}
-      disabled={chosen === "  " || pickedProduct === "" || deadlinePassed}
+      disabled={chosen === "  " || pickedProduct === "" || (deadlinePassed && (authType === "owner" || authType === "employee"))}
       icon="pi pi-plus"
       className = {width > breakpoint ? '' : 'p-button-rounded p-button-lg'}
       onClick={() => handleAdd()}

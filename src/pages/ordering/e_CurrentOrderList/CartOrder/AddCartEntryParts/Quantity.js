@@ -6,7 +6,7 @@ import { InputText } from "primereact/inputtext";
 import { InputNumber } from "primereact/inputnumber";
 import { ToggleContext } from "../../../../../dataContexts/ToggleContext";
 
-const Quantity = () => {
+const Quantity = ({ authType }) => {
   const { chosen } = useContext(CurrentDataContext);
   const { deadlinePassed } = useContext(ToggleContext)
 
@@ -24,7 +24,7 @@ const Quantity = () => {
       <InputText
         id="addedProdQty"
         size="10"
-        disabled={chosen === "  " || deadlinePassed ? true : false}
+        disabled={chosen === "  " || (deadlinePassed && authType !== "bpbadmin") ? true : false}
       />
       <label htmlFor="qty">Quantity</label>
     </React.Fragment>
@@ -36,7 +36,7 @@ const Quantity = () => {
       
         inputId="addedProdQty"
         size="4"
-        disabled={chosen === "  " || deadlinePassed ? true : false}
+        disabled={chosen === "  " || (deadlinePassed && authType !== "bpbadmin") ? true : false}
         style={{ height: "3em" }}
       />
       <label htmlFor="qty">Qty</label>

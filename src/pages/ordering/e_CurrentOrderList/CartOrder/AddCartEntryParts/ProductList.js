@@ -16,7 +16,7 @@ const OptionGroup = styled.div`
   font-size: .7em;
 `
 
-const ProductList = ({ database, pickedProduct, setPickedProduct }) => {
+const ProductList = ({ database, pickedProduct, setPickedProduct, authType }) => {
   const [products, customers, routes, standing, orders] = database;
   const { chosen, delivDate, currentCartList } = useContext(CurrentDataContext);
   const { deadlinePassed } = useContext(ToggleContext)
@@ -77,7 +77,7 @@ const ProductList = ({ database, pickedProduct, setPickedProduct }) => {
       name="products"
       value={pickedProduct}
       onChange={handleChange}
-      disabled={chosen === "  " || deadlinePassed ? true : false}
+      disabled={chosen === "  " || (deadlinePassed && authType !== "bpbadmin") ? true : false}
     />
   );
 };

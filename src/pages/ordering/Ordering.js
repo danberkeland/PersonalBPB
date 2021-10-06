@@ -25,8 +25,6 @@ import { confirmDialog } from "primereact/confirmdialog";
 
 const { DateTime } = require("luxon");
 
-
-
 const clonedeep = require("lodash.clonedeep");
 
 let tomorrow = todayPlus()[1];
@@ -63,9 +61,8 @@ const BasicContainer = styled.div`
 `;
 
 const inlineContainer = styled.div`
-display: inline;
-
-`
+  display: inline;
+`;
 
 const Title = styled.h2`
   padding: 0;
@@ -91,7 +88,7 @@ function Ordering({ authType }) {
     ordersHasBeenChanged,
     setOrdersHasBeenChanged,
     deadlinePassed,
-    setDeadlinePassed
+    setDeadlinePassed,
   } = useContext(ToggleContext);
 
   const { chosen, delivDate, setDelivDate } = useContext(CurrentDataContext);
@@ -104,47 +101,49 @@ function Ordering({ authType }) {
   });
 
   useEffect(() => {
-    
     let today = DateTime.now().setZone("America/Los_Angeles");
     let hour = today.c.hour;
-    let minutes = today.c.minute/60;
-    let totalHour = hour+minutes
-    console.log("totalHour", totalHour)
-    console.log("delivDate",delivDate)
-    console.log("deadline",todayPlus()[1])
-    if ((totalHour > 18.5 && delivDate.toString() === todayPlus()[1].toString()) || delivDate.toString() === todayPlus()[0].toString()){
-      
-      setDeadlinePassed(true)
+    let minutes = today.c.minute / 60;
+    let totalHour = hour + minutes;
+    console.log("totalHour", totalHour);
+    console.log("delivDate", delivDate);
+    console.log("deadline", todayPlus()[1]);
+    if (
+      ((totalHour > 18.5 &&
+        delivDate.toString() === todayPlus()[1].toString()) ||
+        delivDate.toString() === todayPlus()[0].toString()) &&
+      authType !== "bpbadmin"
+    ) {
+      setDeadlinePassed(true);
     } else {
-      console.log("false")
-      setDeadlinePassed(false)
+      console.log("false");
+      setDeadlinePassed(false);
     }
-    
-  }, [delivDate])
+  }, [delivDate]);
 
   useEffect(() => {
     let today = DateTime.now().setZone("America/Los_Angeles");
     let hour = today.c.hour;
-    let minutes = today.c.minute/60;
-    let totalHour = hour+minutes
-    
-    try{
-    if (Number(totalHour) > 18.5 && authType !== "bpbadmin" && authType) {
-      confirmDialog({
-        message:
-          "6:00 PM order deadline for tomorrow has passed.  Next available order date is " +
-          todayPlus()[2] +
-          ". Continue?",
-        header: "Confirmation",
-        icon: "pi pi-exclamation-triangle",
-        accept: () => setDelivDate(todayPlus()[2]),
-      });
-      setDelivDate(todayPlus()[2]);
-     
-    } else {
-      setDelivDate(todayPlus()[1]);
-    }} catch (error){}
-  },[authType])
+    let minutes = today.c.minute / 60;
+    let totalHour = hour + minutes;
+
+    try {
+      if (Number(totalHour) > 18.5 && authType !== "bpbadmin" && authType) {
+        confirmDialog({
+          message:
+            "6:00 PM order deadline for tomorrow has passed.  Next available order date is " +
+            todayPlus()[2] +
+            ". Continue?",
+          header: "Confirmation",
+          icon: "pi pi-exclamation-triangle",
+          accept: () => setDelivDate(todayPlus()[2]),
+        });
+        setDelivDate(todayPlus()[2]);
+      } else {
+        setDelivDate(todayPlus()[1]);
+      }
+    } catch (error) {}
+  }, [authType]);
 
   const loadDatabase = async (database) => {
     setIsLoading(true);
@@ -354,11 +353,15 @@ function Ordering({ authType }) {
           setDatabase={setDatabase}
           authType={authType}
         />
-        {!deadlinePassed ? <OrderEntryButtons
-          database={database}
-          setDatabase={setDatabase}
-          authType={authType}
-        /> : ''}
+        {!deadlinePassed && authType ==="bpbadmin"? (
+          <OrderEntryButtons
+            database={database}
+            setDatabase={setDatabase}
+            authType={authType}
+          />
+        ) : (
+          ""
+        )}
       </BasicContainer>
     </React.Fragment>
   );
@@ -367,19 +370,19 @@ function Ordering({ authType }) {
     <React.Fragment>
       <Title>Back Porch Bakery</Title>
       <inlineContainer>
-      <DateStyle>
-        <CustomerGroup
-          database={database}
-          customerGroup={customerGroup}
-          setCustomerGroup={setCustomerGroup}
-          authType={authType}
-        />{" "}
-        order for:
-      </DateStyle>
-      <Calendar database={database} />
+        <DateStyle>
+          <CustomerGroup
+            database={database}
+            customerGroup={customerGroup}
+            setCustomerGroup={setCustomerGroup}
+            authType={authType}
+          />{" "}
+          order for:
+        </DateStyle>
+        <Calendar database={database} />
       </inlineContainer>
       <BasicContainer>
-      <CurrentOrderInfo
+        <CurrentOrderInfo
           database={database}
           setDatabase={setDatabase}
           customerGroup={customerGroup}

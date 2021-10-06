@@ -16,6 +16,14 @@
         "grabSquare": {
           "deploymentBucketName": "amplify-amplify131cc0cbea5f4-staging-201340-deployment",
           "s3Key": "amplify-builds/grabSquare-4b4d7a534e646535514c-build.zip"
+        },
+        "orderUpdateAlert": {
+          "deploymentBucketName": "amplify-amplify131cc0cbea5f4-staging-201340-deployment",
+          "s3Key": "amplify-builds/orderUpdateAlert-623278715a696a49354a-build.zip"
+        },
+        "testsend": {
+          "deploymentBucketName": "amplify-amplify131cc0cbea5f4-staging-201340-deployment",
+          "s3Key": "amplify-builds/testsend-4b79682b6c755875386c-build.zip"
         }
       },
       "auth": {

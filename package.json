@@ -26,7 +26,6 @@
     "primeflex": "^2.0.0",
     "primeicons": "^4.1.0",
     "primereact": "^6.0.2",
-    "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
@@ -35,6 +34,7 @@
     "styled-components": "^5.2.1",
     "sweetalert": "^2.1.2",
     "timeago-react": "^3.0.2",
+    "twilio": "^3.68.0",
     "uuid": "^8.3.2",
     "web-vitals": "^0.2.4",
     "wildcard-regex": "^3.0.2"
@@ -71,6 +71,7 @@
     "babel-jest": "^26.6.3",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.6",
-    "enzyme-to-json": "^3.6.1"
+    "enzyme-to-json": "^3.6.1",
+    "react": "^17.0.2"
   }
 }

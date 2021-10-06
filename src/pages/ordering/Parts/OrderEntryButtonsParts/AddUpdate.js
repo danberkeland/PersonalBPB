@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useRef } from "react";
 
 import { CurrentDataContext } from "../../../../dataContexts/CurrentDataContext";
 import { ToggleContext } from "../../../../dataContexts/ToggleContext";
@@ -16,6 +16,8 @@ import {
 import { API, graphqlOperation } from "aws-amplify";
 
 import { Button } from "primereact/button";
+import { Toast } from 'primereact/toast';
+
 
 const clonedeep = require("lodash.clonedeep");
 
@@ -35,6 +37,14 @@ function AddUpdate({ database, setDatabase }) {
     standList,
     setIsLoading,
   } = useContext(ToggleContext);
+
+  const toast = useRef(null);
+
+  const showSuccess = (prod) => {
+    toast.current.show({severity:'success', summary: 'Order Updated', detail:prod+' successfully entered', life: 3000});
+}
+  
+    
 
   const handleUpdateCart = async () => {
     for (let ord of currentCartList) {
@@ -63,6 +73,7 @@ function AddUpdate({ database, setDatabase }) {
           await API.graphql(
             graphqlOperation(updateOrder, { input: { ...updateDetails } })
           );
+          showSuccess(updateDetails.prodName)
           console.log(updateDetails.prodName, "Successful update");
         } catch (error) {
           console.log(updateDetails.prodName, "Failed Update");
@@ -73,12 +84,15 @@ function AddUpdate({ database, setDatabase }) {
           await API.graphql(
             graphqlOperation(createOrder, { input: { ...updateDetails } })
           );
+          showSuccess(updateDetails.prodName)
           console.log(updateDetails.prodName, "Successful create");
         } catch (error) {
           console.log(updateDetails.prodName, "Failed create", error);
         }
       }
     }
+    
+    setModifications(false)
     setReload(!reload);
   };
 
@@ -152,13 +166,20 @@ function AddUpdate({ database, setDatabase }) {
     }
   };
 
-  const innards = <Button
+
+
+  const innards = 
+  <React.Fragment>
+    <Toast ref={toast} />
+    <Button
   label="Submit Order"
   icon="pi pi-plus"
   disabled={chosen === "  "}
   onClick={handleAddUpdate}
   className="p-button-raised p-button-rounded p-button-danger p-button-lg"
 />
+  </React.Fragment>
+  
 
   return modifications ? innards : ''
 }

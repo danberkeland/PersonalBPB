@@ -327,6 +327,7 @@ function Ordering({ authType }) {
 
   useEffect(() => {
     promisedData(setIsLoading).then((database) => loadDatabase(database));
+    setModifications(false)
   }, [reload]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const innards1 = (

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 
 import { CurrentDataContext } from "../../../dataContexts/CurrentDataContext";
 import { ToggleContext } from "../../../dataContexts/ToggleContext";
@@ -11,6 +11,16 @@ import styled from "styled-components";
 
 const OrderButtons = styled.div`
   display: flex;
+  justify-content: space-around;
+  width: 100%;
+  margin: 5px 0;
+`;
+
+const OrderButtonsFloat = styled.div`
+  display: flex;
+  position: fixed;
+  z-index: 100;
+  top: 30px;
   justify-content: space-around;
   width: 100%;
   margin: 5px 0;
@@ -37,6 +47,15 @@ function OrderEntryButtons({ database, setDatabase, authType }) {
 
   let type = orderTypeWhole ? "Retail" : "Wholesale";
   let cartStand = cartList ? "Standing" : "Cart";
+
+  const [width, setWidth] = useState(window.innerWidth);
+  const breakpoint = 620;
+
+  useEffect(() => {
+    window.addEventListener("resize", () => setWidth(window.innerWidth));
+  });
+
+  
 
   const handleChangeorderTypeWhole = () => {
     try{
@@ -68,34 +87,44 @@ function OrderEntryButtons({ database, setDatabase, authType }) {
  
   };
 
+  const innards1 = <OrderButtons>
+  <AddUpdate database={database} setDatabase={setDatabase}
+  />
+ 
+  <Button
+    label="Clear"
+    icon="pi pi-trash"
+    disabled={!cartList}
+    onClick={handleClear}
+    className="p-button-raised p-button-rounded p-button-info"
+  /> 
+
+  <Button
+    label={cartStand}
+    icon="pi pi-shopping-cart"
+    onClick={handleCartStandToggle}
+    className="p-button-raised p-button-rounded p-button-secondary"
+  />
+ 
+  <Button
+    label={type}
+    icon="pi pi-dollar"
+    onClick={handleChangeorderTypeWhole}
+    className="p-button-raised p-button-rounded p-button-secondary"
+  />
+</OrderButtons>
+
+
+const innards2 = <OrderButtonsFloat>
+<AddUpdate database={database} setDatabase={setDatabase}
+/></OrderButtonsFloat>
+
+
   
 
-  return (
-    <OrderButtons>
-      <AddUpdate database={database} setDatabase={setDatabase}
-      />
-      <Button
-        label="Clear"
-        icon="pi pi-trash"
-        disabled={!cartList}
-        onClick={handleClear}
-        className="p-button-raised p-button-rounded p-button-info"
-      />
-      <Button
-        label={cartStand}
-        icon="pi pi-shopping-cart"
-        onClick={handleCartStandToggle}
-        className="p-button-raised p-button-rounded p-button-secondary"
-      />
-      {authType === "bpbadmin" ?
-      <Button
-        label={type}
-        icon="pi pi-dollar"
-        onClick={handleChangeorderTypeWhole}
-        className="p-button-raised p-button-rounded p-button-secondary"
-      /> : ''}
-    </OrderButtons>
-  );
+  return width > breakpoint ? innards1 : innards2 
+    
+  
 }
 
 export default OrderEntryButtons;

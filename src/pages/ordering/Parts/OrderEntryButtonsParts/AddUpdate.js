@@ -4,9 +4,7 @@ import { CurrentDataContext } from "../../../../dataContexts/CurrentDataContext"
 import { ToggleContext } from "../../../../dataContexts/ToggleContext";
 
 import { convertDatetoBPBDate } from "../../../../helpers/dateTimeHelpers";
-import { getRate }from "../../../../helpers/billingGridHelpers"
-
-
+import { getRate } from "../../../../helpers/billingGridHelpers";
 
 import {
   updateOrder,
@@ -22,18 +20,12 @@ import { Button } from "primereact/button";
 const clonedeep = require("lodash.clonedeep");
 
 function AddUpdate({ database, setDatabase }) {
-  const [products, customers, routes, standing, orders,d,dd, altPricing] = database;
+  const [products, customers, routes, standing, orders, d, dd, altPricing] =
+    database;
   const { route, ponote } = useContext(CurrentDataContext);
-  const {
-    delivDate,
-    chosen,
-    currentCartList,
-    standArray,
-  } = useContext(CurrentDataContext);
-  const {
-      reload,
-      setReload 
-  } = useContext(ToggleContext)
+  const { delivDate, chosen, currentCartList, standArray } =
+    useContext(CurrentDataContext);
+  const { reload, setReload } = useContext(ToggleContext);
 
   const {
     orderTypeWhole,
@@ -45,11 +37,10 @@ function AddUpdate({ database, setDatabase }) {
   } = useContext(ToggleContext);
 
   const handleUpdateCart = async () => {
-    
     for (let ord of currentCartList) {
-      console.log("ord",ord)
+      console.log("ord", ord);
       let rte = route;
-      let price = getRate(products,ord, altPricing)
+      let price = getRate(products, ord, altPricing);
 
       const updateDetails = {
         qty: ord["qty"],
@@ -64,9 +55,8 @@ function AddUpdate({ database, setDatabase }) {
         timeStamp: new Date(),
       };
 
-    
       if (ord["id"]) {
-        console.log("trying update")
+        console.log("trying update");
         updateDetails.id = ord["id"];
         updateDetails._version = ord["_version"];
         try {
@@ -78,7 +68,7 @@ function AddUpdate({ database, setDatabase }) {
           console.log(updateDetails.prodName, "Failed Update");
         }
       } else {
-        console.log("trying create")
+        console.log("trying create");
         try {
           await API.graphql(
             graphqlOperation(createOrder, { input: { ...updateDetails } })
@@ -92,91 +82,85 @@ function AddUpdate({ database, setDatabase }) {
     setReload(!reload);
   };
 
-
   const handleUpdateStanding = async () => {
     for (let stand of standArray) {
-        if (stand["id"]) {
-          const updateDetails = {
-            prodName: stand["prodName"],
-            Mon: stand["Mon"],
-            Tue: stand["Tue"],
-            Wed: stand["Wed"],
-            Thu: stand["Thu"],
-            Fri: stand["Fri"],
-            Sat: stand["Sat"],
-            Sun: stand["Sun"],
-            isStand: standList,
-            timeStamp: new Date(),
-            id: stand["id"],
-            _version: stand["_version"],
-          };
-          try {
-            await API.graphql(
-              graphqlOperation(updateStanding, {
-                input: { ...updateDetails },
-              })
-            );
-          } catch (error) {
-            console.log("error on creating Orders", error);
-          }
-        } else {
-          const updateDetails = {
-            custName: chosen,
-            prodName: stand["prodName"],
-            Mon: stand["Mon"],
-            Tue: stand["Tue"],
-            Wed: stand["Wed"],
-            Thu: stand["Thu"],
-            Fri: stand["Fri"],
-            Sat: stand["Sat"],
-            Sun: stand["Sun"],
-            isStand: standList,
-            timeStamp: new Date(),
-          };
-          try {
-            await API.graphql(
-              graphqlOperation(createStanding, {
-                input: { ...updateDetails },
-              })
-            );
-          } catch (error) {
-            console.log("error on creating Orders", error);
-          }
+      if (stand["id"]) {
+        const updateDetails = {
+          prodName: stand["prodName"],
+          Mon: stand["Mon"],
+          Tue: stand["Tue"],
+          Wed: stand["Wed"],
+          Thu: stand["Thu"],
+          Fri: stand["Fri"],
+          Sat: stand["Sat"],
+          Sun: stand["Sun"],
+          isStand: standList,
+          timeStamp: new Date(),
+          id: stand["id"],
+          _version: stand["_version"],
+        };
+        try {
+          await API.graphql(
+            graphqlOperation(updateStanding, {
+              input: { ...updateDetails },
+            })
+          );
+        } catch (error) {
+          console.log("error on creating Orders", error);
+        }
+      } else {
+        const updateDetails = {
+          custName: chosen,
+          prodName: stand["prodName"],
+          Mon: stand["Mon"],
+          Tue: stand["Tue"],
+          Wed: stand["Wed"],
+          Thu: stand["Thu"],
+          Fri: stand["Fri"],
+          Sat: stand["Sat"],
+          Sun: stand["Sun"],
+          isStand: standList,
+          timeStamp: new Date(),
+        };
+        try {
+          await API.graphql(
+            graphqlOperation(createStanding, {
+              input: { ...updateDetails },
+            })
+          );
+        } catch (error) {
+          console.log("error on creating Orders", error);
         }
       }
-     setReload(!reload) 
-  }
-  
+    }
+    setReload(!reload);
+  };
+
   const handleAddUpdate = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     if (cartList) {
-      handleUpdateCart()
+      handleUpdateCart();
     } else {
-      handleUpdateStanding()
+      handleUpdateStanding();
     }
     //setReload(!reload)
-    
-   
-    try{
+
+    try {
       document.getElementById("orderCommand").focus();
     } catch {
-      console.log()
+      console.log();
     }
   };
 
-  return (
-    <Button
-      label="Add/Update"
-      icon="pi pi-plus"
-      disabled={chosen === "  "}
-      onClick={handleAddUpdate}
-      className={
-        modifications
-          ? "p-button-raised p-button-rounded p-button-danger"
-          : "p-button-raised p-button-rounded p-button-success"
-      }
-    />
-  );
+  const innards = <Button
+  label="Submit Order"
+  icon="pi pi-plus"
+  disabled={chosen === "  "}
+  onClick={handleAddUpdate}
+  className="p-button-raised p-button-rounded p-button-danger p-button-lg"
+/>
+
+  return modifications ? innards : ''
 }
 
 export default AddUpdate;

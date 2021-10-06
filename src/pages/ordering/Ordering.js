@@ -394,6 +394,11 @@ function Ordering({ authType }) {
           setDatabase={setDatabase}
           authType={authType}
         />
+        <OrderEntryButtons
+            database={database}
+            setDatabase={setDatabase}
+            authType={authType}
+          />
       </BasicContainer>
     </React.Fragment>
   );

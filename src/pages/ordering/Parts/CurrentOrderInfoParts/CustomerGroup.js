@@ -72,8 +72,10 @@ const CustomerGroup = ({ database, customerGroup, setCustomerGroup, authType }) 
         icon: "pi pi-exclamation-triangle",
         accept: () => setDelivDate(todayPlus()[2]),
       });
+      setModifications(false)
       setDelivDate(todayPlus()[2]);
     } else {
+      setModifications(false)
       setDelivDate(tomorrow());
     }
   };

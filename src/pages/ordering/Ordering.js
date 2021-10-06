@@ -353,7 +353,7 @@ function Ordering({ authType }) {
           setDatabase={setDatabase}
           authType={authType}
         />
-        {!deadlinePassed && authType ==="bpbadmin"? (
+        {!deadlinePassed || authType ==="bpbadmin"? (
           <OrderEntryButtons
             database={database}
             setDatabase={setDatabase}

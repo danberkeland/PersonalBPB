@@ -90,7 +90,7 @@ const BuildCurrentStandingList = ({ database, setDatabase }) => {
     let arrayToModify = clonedeep(standArray);
     let ind = arrayToModify.findIndex((array) => array["prodName"] === prod);
     arrayToModify[ind][day] = qty;
-
+    setModifications(true)
     setStandArray(arrayToModify);
 
    

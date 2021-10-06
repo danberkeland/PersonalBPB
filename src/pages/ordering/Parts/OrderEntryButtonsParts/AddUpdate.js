@@ -46,7 +46,14 @@ function AddUpdate({ database, setDatabase }) {
     toast.current.show({severity:'success', summary: 'Order Updated', detail:prod+' successfully entered', life: 3000});
 }
   
-  
+  const callApi = async () => {
+    try{
+      const getMessage = await API.get('testsend','/test')
+      console.log("message",getMessage)
+    }catch{
+
+    }
+  }
     
 
   const handleUpdateCart = async () => {
@@ -94,7 +101,7 @@ function AddUpdate({ database, setDatabase }) {
         }
       }
     }
-   
+    //callApi()
     setModifications(false)
     setReload(!reload);
   };

@@ -23,7 +23,7 @@
         },
         "testsend": {
           "deploymentBucketName": "amplify-amplify131cc0cbea5f4-staging-201340-deployment",
-          "s3Key": "amplify-builds/testsend-4b79682b6c755875386c-build.zip"
+          "s3Key": "amplify-builds/testsend-6a6f3447585745417854-build.zip"
         }
       },
       "auth": {

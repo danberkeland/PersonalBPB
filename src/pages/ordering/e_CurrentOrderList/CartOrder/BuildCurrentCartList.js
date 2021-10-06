@@ -69,7 +69,7 @@ const TrashCanContainer = styled.div`
   border: none;
 `;
 
-const BuildCurrentCartList = ({ database, setDatabase }) => {
+const BuildCurrentCartList = ({ database, setDatabase, authType }) => {
   const [grandTotal, setGrandTotal] = useState();
   const [products, customers, routes, standing, orders, d, dd, altPricing] =
     database;
@@ -181,6 +181,7 @@ const BuildCurrentCartList = ({ database, setDatabase }) => {
                   order={order}
                   database={database}
                   setDatabase={setDatabase}
+                  authType={authType}
                   
                 />
               </TrashCanContainer>
@@ -189,6 +190,7 @@ const BuildCurrentCartList = ({ database, setDatabase }) => {
                 order={order}
                 database={database}
                 setDatabase={setDatabase}
+                authType={authType}
               />
               <Previous order={order} />
               <Rate order={order} database={database} />
@@ -227,6 +229,7 @@ const BuildCurrentCartList = ({ database, setDatabase }) => {
                   order={order}
                   database={database}
                   setDatabase={setDatabase}
+                  authType={authType}
                 />
               </TrashCanContainer>
                

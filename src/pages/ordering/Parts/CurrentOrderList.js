@@ -15,7 +15,7 @@ const CurrentOrderList = ({ database, setDatabase, authType }) => {
       {cartList ? (
         <React.Fragment>
           <div className="currentOrderList">
-            <CartEntryItem database={database} setDatabase={setDatabase}/>
+            <CartEntryItem database={database} setDatabase={setDatabase} authType={authType}/>
           </div>
           <AddCartEntryItem database={database} setDatabase={setDatabase}/>
         </React.Fragment>

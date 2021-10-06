@@ -22,7 +22,7 @@ const Title = styled.h3`
   color: rgb(66, 97, 201);
 `;
 
-const Product = ({ order, database, setDatabase }) => {
+const Product = ({ order, database, setDatabase, authType }) => {
   const [products, customers, routes, standing, orders] = database;
   const {
     currentCartList,
@@ -92,7 +92,7 @@ const Product = ({ order, database, setDatabase }) => {
         size="3"
         maxLength="4"
         key={uuidv4() + "c"}
-        disabled = {deadlinePassed ? true : false}
+        disabled = {deadlinePassed && authType !=="bpbadmin" ? true : false}
         id={order["prodName"] + "item"}
         name={order["prodName"]}
         data-qty={order["qty"]}
@@ -114,6 +114,7 @@ const Product = ({ order, database, setDatabase }) => {
       <Title key={uuidv4()}>{order["prodName"]}</Title>
       <InputNumber 
     value={order["qty"]}
+    disabled = {deadlinePassed && authType !=="bpbadmin" ? true : false}
     inputId={order["prodName"] + "item"}
     size = "2"
     style={{height: '5em'}}

@@ -11,7 +11,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const clonedeep = require("lodash.clonedeep");
 
-const TrashCan = ({ order, database, setDatabase }) => {
+const TrashCan = ({ order, database, setDatabase, authType }) => {
   const [products, customers, routes, standing, orders] = database;
   const { chosen, delivDate,currentCartList,
     setCurrentCartList, } = useContext(CurrentDataContext);
@@ -46,7 +46,7 @@ const TrashCan = ({ order, database, setDatabase }) => {
       icon="pi pi-trash"
       className="p-button-outlined p-button-rounded p-button-help p-button-sm"
       value={0}
-      disabled = {deadlinePassed ? true : false}
+      disabled = {deadlinePassed && authType !== "bpbadmin" ? true : false}
       onClick={(e) => {
         confirm(order["prodName"]);
       }}

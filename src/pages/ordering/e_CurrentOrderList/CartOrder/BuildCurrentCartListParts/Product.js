@@ -3,12 +3,14 @@ import React, { useContext, useState, useEffect } from "react";
 import { CurrentDataContext } from "../../../../../dataContexts/CurrentDataContext";
 import { ToggleContext } from "../../../../../dataContexts/ToggleContext";
 
-import { InputNumber } from 'primereact/inputnumber';
+import { InputNumber } from "primereact/inputnumber";
 
 import { v4 as uuidv4 } from "uuid";
 
 import styled from "styled-components";
 import { convertDatetoBPBDate } from "../../../../../helpers/dateTimeHelpers";
+
+const { DateTime, Interval } = require("luxon");
 
 const clonedeep = require("lodash.clonedeep");
 
@@ -83,56 +85,77 @@ const Product = ({ order, database, setDatabase, authType }) => {
     }
   };
 
+  const checkAvailability = (prod) => {
+    console.log("prod", prod);
+    let ind = products.findIndex((pro) => pro.prodName === prod);
+    let leadTime = products[ind].leadTime;
+
+    let available = false;
+    let today = DateTime.now().setZone("America/Los_Angeles");
+    let ddate = DateTime.fromISO(delivDate).setZone("America/Los_Angeles");
+    const diff = Math.ceil(Interval.fromDateTimes(today, ddate).length("days"));
+    console.log("diff", diff);
+
+    if (Number(diff) > Number(leadTime) - 1) {
+      available = true;
+    }
+
+    return available;
+  };
+
   const innards1 = (
     <React.Fragment>
       <div key={uuidv4()}>{order["prodName"]}</div>
       <InputBox>
-      <input
-        type="text"
-        size="3"
-        maxLength="4"
-        key={uuidv4() + "c"}
-        disabled = {deadlinePassed && authType !=="bpbadmin" ? true : false}
-        id={order["prodName"] + "item"}
-        name={order["prodName"]}
-        data-qty={order["qty"]}
-        placeholder={order["qty"]}
-        onKeyUp={(e) => {
-          handleQtyModify(order["prodName"], e);
-        }}
-        onBlur={(e) => {
-          handleBlur(order["prodName"], e.target);
-        }}
-      ></input>
-    </InputBox>
+        <input
+          type="text"
+          size="3"
+          maxLength="4"
+          key={uuidv4() + "c"}
+          disabled={
+            (deadlinePassed && authType !== "bpbadmin") ||
+            (checkAvailability["prodName"] && authType !== "bpbadmin")
+              ? true
+              : false
+          }
+          id={order["prodName"] + "item"}
+          name={order["prodName"]}
+          data-qty={order["qty"]}
+          placeholder={order["qty"]}
+          onKeyUp={(e) => {
+            handleQtyModify(order["prodName"], e);
+          }}
+          onBlur={(e) => {
+            handleBlur(order["prodName"], e.target);
+          }}
+        ></input>
+      </InputBox>
     </React.Fragment>
-    
   );
 
   const innards2 = (
     <React.Fragment>
       <Title key={uuidv4()}>{order["prodName"]}</Title>
-      <InputNumber 
-    value={order["qty"]}
-    disabled = {deadlinePassed && authType !=="bpbadmin" ? true : false}
-    inputId={order["prodName"] + "item"}
-    size = "2"
-    style={{height: '5em'}}
-    onValueChange={(e) => {
-      handleBlur(order["prodName"], e);
-    }}
-    
-    />
+      <InputNumber
+        value={order["qty"]}
+        disabled={
+          (deadlinePassed && authType !== "bpbadmin") ||
+          (checkAvailability["prodName"] && authType !== "bpbadmin")
+            ? true
+            : false
+        }
+        inputId={order["prodName"] + "item"}
+        size="2"
+        style={{ height: "5em" }}
+        onValueChange={(e) => {
+          handleBlur(order["prodName"], e);
+        }}
+      />
     </React.Fragment>
-    
-  
   );
 
   return (
-    <React.Fragment>
-      
-      {width > breakpoint ? innards1 : innards2}
-    </React.Fragment>
+    <React.Fragment>{width > breakpoint ? innards1 : innards2}</React.Fragment>
   );
 };
 

@@ -21,6 +21,7 @@ import { Toast } from 'primereact/toast';
 
 
 const clonedeep = require("lodash.clonedeep");
+const axios = require('axios').default
 
 
 function AddUpdate({ database, setDatabase }) {
@@ -48,8 +49,10 @@ function AddUpdate({ database, setDatabase }) {
   
   const callApi = async () => {
     try{
-      const getMessage = await API.get('testsend','/test')
-      console.log("message",getMessage)
+      axios.post('https://cuorbg4yv5.execute-api.us-east-2.amazonaws.com/done',
+      {
+        key1: chosen
+      })
     }catch{
 
     }
@@ -101,7 +104,7 @@ function AddUpdate({ database, setDatabase }) {
         }
       }
     }
-    //callApi()
+    callApi()
     setModifications(false)
     setReload(!reload);
   };

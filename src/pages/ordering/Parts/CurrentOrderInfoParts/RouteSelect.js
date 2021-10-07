@@ -62,8 +62,10 @@ const RouteSelect = ({ database, setDatabase, customerGroup }) => {
             case "atownpick":
               setRoute("atownpick");
               break;
-            default:
-              setRoute("deliv");
+              default:
+                let ind = customers.findIndex(custo => custo.custName === chosen)
+                
+                setRoute(customers[ind].zoneName)
           }
         }
       }

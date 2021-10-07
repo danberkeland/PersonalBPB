@@ -63,6 +63,47 @@ const CurrentOrderInfo = ({
 
   const [alignment, setAlignment] = useState();
 
+  useEffect(() => {
+    if (customerGroup) {
+      for (let cust of customerGroup) {
+        if (cust["custName"] === chosen) {
+          switch (cust["zoneName"]) {
+            case "slopick":
+              setAlignment("slopick");
+              break;
+            case "atownpick":
+              setAlignment("atownpick");
+              break;
+            default:
+              setAlignment("deliv");
+          }
+        }
+      }
+      if (currentCartList) {
+        let orderCheck = currentCartList.filter(
+          (ord) =>
+            ord.custName === chosen &&
+            ord.delivDate === convertDatetoBPBDate(delivDate) &&
+            Number(ord.qty > 0)
+        );
+
+        if (orderCheck.length > 0) {
+          switch (orderCheck[0].route) {
+            case "slopick":
+              setAlignment("slopick");
+              break;
+            case "atownpick":
+              setAlignment("atownpick");
+              break;
+            default:
+              let ind = customers.findIndex(custo => custo.custName === chosen)
+              setAlignment(customers[ind].zoneName)
+          }
+        }
+      }
+    }
+  }, [chosen, delivDate, customerGroup, currentCartList]);
+
 
   const handleChange = (e, newAlignment) => {
    
@@ -113,19 +154,7 @@ const CurrentOrderInfo = ({
     window.addEventListener("resize", () => setWidth(window.innerWidth));
   });
 
-  useEffect(() => {
-    try{
-      console.log("current",currentCartList)
-      currentCartList[0].route ? setAlignment(currentCartList[0].route) : setAlignment("deliv");
-    } catch(error) {
-      setAlignment("deliv")
-      console.log(error)
-    }
-    
-  },[currentCartList])
-
   
-
   return (
     <React.Fragment>
       {width > breakpoint ? <TitleBox /> : ""}

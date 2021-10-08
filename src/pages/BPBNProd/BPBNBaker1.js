@@ -25,6 +25,14 @@ const WholeBox = styled.div`
   padding: 0 0 100px 0;
 `;
 
+const WholeBoxPhone = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  margin: auto;
+  padding: 0 0 100px 0;
+`;
+
 const ButtonContainer = styled.div`
   display: flex;
   width: 100%;
@@ -56,12 +64,18 @@ function BPBNBaker1() {
   const [oliveCount, setOliveCount] = useState([]);
   const [bcCount, setBcCount] = useState([]);
   const [bagDoughTwoDays, setBagDoughTwoDays] = useState([]);
-  const [infoWrap, setInfoWrap] = useState({})
+  const [infoWrap, setInfoWrap] = useState({});
 
   let delivDate = todayPlus()[0];
 
+  const [width, setWidth] = useState(window.innerWidth);
+  const breakpoint = 620;
+
   useEffect(() => {
-    
+    window.addEventListener("resize", () => setWidth(window.innerWidth));
+  });
+
+  useEffect(() => {
     setInfoWrap({
       whatToMake: whatToMake,
       whatToPrep: whatToPrep,
@@ -69,9 +83,15 @@ function BPBNBaker1() {
       oliveCount: oliveCount,
       bcCount: bcCount,
       bagDoughTwoDays: bagDoughTwoDays,
-    })
-  },[whatToMake, whatToPrep, oliveCount, bcCount, bagDoughTwoDays, bagAndEpiCount])
-  
+    });
+  }, [
+    whatToMake,
+    whatToPrep,
+    oliveCount,
+    bcCount,
+    bagDoughTwoDays,
+    bagAndEpiCount,
+  ]);
 
   useEffect(() => {
     promisedData(setIsLoading).then((database) =>
@@ -79,15 +99,14 @@ function BPBNBaker1() {
     );
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-
   const gatherWhatToMakeInfo = (database) => {
     let whatToMakeData = compose.returnWhatToMakeBreakDown(delivDate, database);
     setWhatToMake(whatToMakeData.whatToMake);
   };
 
   const handlePrint = () => {
-    ExportPastryPrepPdf(delivDate, doughs, infoWrap)
-  }
+    ExportPastryPrepPdf(delivDate, doughs, infoWrap);
+  };
 
   const header = (
     <ButtonContainer>
@@ -104,21 +123,29 @@ function BPBNBaker1() {
     </ButtonContainer>
   );
 
+  const innards = (
+    <React.Fragment>
+      <h1>What To Bake {convertDatetoBPBDate(delivDate)}</h1>
+      <div>{width > breakpoint ? header : ''}</div>
+
+      <DataTable value={whatToMake} className="p-datatable-sm">
+        <Column field="forBake" header="Product"></Column>
+        <Column field="qty" header="Qty"></Column>
+        <Column field="shaped" header="Shaped"></Column>
+        <Column field="short" header="Short"></Column>
+        <Column field="needEarly" header="Need Early"></Column>
+      </DataTable>
+    </React.Fragment>
+  );
+
   return (
     <React.Fragment>
-      
-      <WholeBox>
-        <h1>What To Bake {convertDatetoBPBDate(delivDate)}</h1>
-        <div>{header}</div>
+      {width > breakpoint ? (
+        <WholeBox>{innards}</WholeBox>
+      ) : (
+        <WholeBoxPhone>{innards}</WholeBoxPhone>
+      )}
 
-        <DataTable value={whatToMake} className="p-datatable-sm">
-          <Column field="forBake" header="Product"></Column>
-          <Column field="qty" header="Qty"></Column>
-          <Column field="shaped" header="Shaped"></Column>
-          <Column field="short" header="Short"></Column>
-          <Column field="needEarly" header="Need Early"></Column>
-        </DataTable>
-      </WholeBox>
       <BPBNBaker1WhatToPrep
         whatToPrep={whatToPrep}
         setWhatToPrep={setWhatToPrep}
@@ -132,8 +159,6 @@ function BPBNBaker1() {
         setOliveCount={setOliveCount}
         setBcCount={setBcCount}
         setBagDoughTwoDays={setBagDoughTwoDays}
-
-
         infoWrap={infoWrap}
       />
     </React.Fragment>

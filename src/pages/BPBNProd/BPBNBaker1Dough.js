@@ -31,6 +31,14 @@ const WholeBox = styled.div`
   padding: 0 0 100px 0;
 `;
 
+const WholeBoxPhone = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  margin: auto;
+  padding: 0 0 100px 0;
+`;
+
 const TwoColumnGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -51,9 +59,6 @@ function BPBNBaker1Dough({
   setOliveCount,
   setBcCount,
   setBagDoughTwoDays,
-
-
-
 }) {
   const { setIsLoading } = useContext(ToggleContext);
 
@@ -61,6 +66,13 @@ function BPBNBaker1Dough({
   const [bin, setBin] = useState([]);
   const [pans, setPans] = useState([]);
   const [buckets, setBuckets] = useState([]);
+
+  const [width, setWidth] = useState(window.innerWidth);
+  const breakpoint = 620;
+
+  useEffect(() => {
+    window.addEventListener("resize", () => setWidth(window.innerWidth));
+  });
 
   useEffect(() => {
     promisedData(setIsLoading).then((database) => gatherDoughInfo(database));
@@ -70,21 +82,20 @@ function BPBNBaker1Dough({
     let doughData = compose.returnDoughBreakDown(database, "Carlton");
     setDoughs(doughData.Baker1Dough);
     setDoughComponents(doughData.Baker1DoughComponents);
-    setBagAndEpiCount(doughData.bagAndEpiCount)
-    setOliveCount(doughData.oliveCount)
-    setBcCount(doughData.bcCount)
-    setBagDoughTwoDays(doughData.bagDoughTwoDays)
-
+    setBagAndEpiCount(doughData.bagAndEpiCount);
+    setOliveCount(doughData.oliveCount);
+    setBcCount(doughData.bcCount);
+    setBagDoughTwoDays(doughData.bagDoughTwoDays);
   };
 
   useEffect(() => {
     if (doughs[0] && infoWrap) {
       setMixes(getMixInfo(doughs, infoWrap)[4]);
-      setBin(binInfo(doughs, infoWrap))
-      setPans(panAmount(doughs,infoWrap))
-      setBuckets(bucketAmount(doughs,infoWrap))
+      setBin(binInfo(doughs, infoWrap));
+      setPans(panAmount(doughs, infoWrap));
+      setBuckets(bucketAmount(doughs, infoWrap));
     }
-  }, [doughs,infoWrap]);
+  }, [doughs, infoWrap]);
 
   let tomorrow = todayPlus()[1];
 
@@ -173,31 +184,38 @@ function BPBNBaker1Dough({
       </React.Fragment>
     );
   };
+
+  const innards = (
+    <React.Fragment>
+      <h1>BPBN Baguette Mix</h1>
+      {doughs[0] && doughMixList(doughs[0])}
+
+      <h2>Bins</h2>
+      <DataTable value={bin} className="p-datatable-sm">
+        <Column field="title" header="Product"></Column>
+        <Column field="amount" header="Amount"></Column>
+      </DataTable>
+
+      <h2>Pocket Pans</h2>
+      <DataTable value={pans} className="p-datatable-sm">
+        <Column field="title" header="Pan"></Column>
+        <Column field="amount" header="Amount"></Column>
+      </DataTable>
+
+      <h2>Bucket Sets</h2>
+      <DataTable value={buckets} className="p-datatable-sm">
+        <Column field="title" header="Bucket Sets"></Column>
+        <Column field="amount" header="Amount"></Column>
+      </DataTable>
+    </React.Fragment>
+  );
   return (
     <React.Fragment>
-      <WholeBox>
-        <h1>BPBN Baguette Mix</h1>
-        {doughs[0] && doughMixList(doughs[0])}
-
-        <h2>Bins</h2>
-        <DataTable value={bin} className="p-datatable-sm">
-          <Column field="title" header="Product"></Column>
-          <Column field="amount" header="Amount"></Column>
-        </DataTable>
-
-        <h2>Pocket Pans</h2>
-        <DataTable value={pans} className="p-datatable-sm">
-          <Column field="title" header="Pan"></Column>
-          <Column field="amount" header="Amount"></Column>
-        </DataTable>
-       
-
-        <h2>Bucket Sets</h2>
-        <DataTable value={buckets} className="p-datatable-sm">
-          <Column field="title" header="Bucket Sets"></Column>
-          <Column field="amount" header="Amount"></Column>
-        </DataTable>
-      </WholeBox>
+      {width > breakpoint ? (
+        <WholeBox>{innards}</WholeBox>
+      ) : (
+        <WholeBoxPhone>{innards}</WholeBoxPhone>
+      )}
     </React.Fragment>
   );
 }

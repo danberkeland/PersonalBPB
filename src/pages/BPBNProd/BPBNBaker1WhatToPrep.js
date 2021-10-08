@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -19,10 +19,25 @@ const WholeBox = styled.div`
   padding: 0 0 100px 0;
 `;
 
+const WholeBoxPhone = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  margin: auto;
+  padding: 0 0 100px 0;
+`;
+
 const compose = new ComposeWhatToPrep();
 
 function BPBNBaker1WhatToPrep({ whatToPrep, setWhatToPrep }) {
   const { setIsLoading } = useContext(ToggleContext);
+
+  const [width, setWidth] = useState(window.innerWidth);
+  const breakpoint = 620;
+
+  useEffect(() => {
+    window.addEventListener("resize", () => setWidth(window.innerWidth));
+  });
 
   let delivDate = todayPlus()[0];
 
@@ -37,16 +52,24 @@ function BPBNBaker1WhatToPrep({ whatToPrep, setWhatToPrep }) {
     setWhatToPrep(whatToPrepData.whatToPrep);
   };
 
+  const innards = (
+    <React.Fragment>
+      <h1>What To Prep {convertDatetoBPBDate(delivDate)}</h1>
+
+      <DataTable value={whatToPrep} className="p-datatable-sm">
+        <Column field="prodName" header="Product"></Column>
+        <Column field="qty" header="Qty"></Column>
+      </DataTable>
+    </React.Fragment>
+  );
+
   return (
     <React.Fragment>
-      <WholeBox>
-        <h1>What To Prep {convertDatetoBPBDate(delivDate)}</h1>
-
-        <DataTable value={whatToPrep} className="p-datatable-sm">
-          <Column field="prodName" header="Product"></Column>
-          <Column field="qty" header="Qty"></Column>
-        </DataTable>
-      </WholeBox>
+      {width > breakpoint ? (
+        <WholeBox>{innards}</WholeBox>
+      ) : (
+        <WholeBoxPhone>{innards}</WholeBoxPhone>
+      )}
     </React.Fragment>
   );
 }

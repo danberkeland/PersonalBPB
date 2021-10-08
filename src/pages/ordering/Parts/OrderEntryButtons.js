@@ -83,6 +83,7 @@ function OrderEntryButtons({ database, setDatabase, authType }) {
     for (let ord of cartToMod) {
       ord["qty"] = 0;
     }
+    setModifications(true)
     setCurrentCartList(cartToMod);
  
   };

@@ -31,9 +31,12 @@ const RouteSelect = ({ database, setDatabase, customerGroup }) => {
   });
 
   useEffect(() => {
+    
     if (customerGroup) {
       for (let cust of customerGroup) {
+        
         if (cust["custName"] === chosen) {
+         
           switch (cust["zoneName"]) {
             case "slopick":
               setRoute("slopick");
@@ -55,7 +58,9 @@ const RouteSelect = ({ database, setDatabase, customerGroup }) => {
         );
 
         if (orderCheck.length > 0) {
+         
           switch (orderCheck[0].route) {
+            
             case "slopick":
               setRoute("slopick");
               break;
@@ -63,13 +68,12 @@ const RouteSelect = ({ database, setDatabase, customerGroup }) => {
               setRoute("atownpick");
               break;
               default:
-                let ind = customers.findIndex(custo => custo.custName === chosen)
-                
-                setRoute(customers[ind].zoneName)
+                console.log("neither")
           }
         }
       }
     }
+    
   }, [chosen, delivDate, customerGroup, currentCartList]);
 
   const handleSetRoute = (e) => {

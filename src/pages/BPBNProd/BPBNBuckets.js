@@ -118,7 +118,7 @@ function BPBNBuckets() {
     let factor = 1
     amt = Number(amt)
     old = Number(old)
-    console.log((amt+old)/3,old)
+
     if ((amt+old)/3<old){
       let oldAmt = amt+old
       amt = amt + old -(oldAmt)/3;
@@ -163,7 +163,7 @@ function BPBNBuckets() {
       : (postTotals = 0);
     let dryWeight =
       (100 / (100 + wetWeight + levTotals + dryplusTotals + postTotals)) * amt;
-    console.log(dryWeight);
+   
 
     const doc = new jsPDF({
       orientation: "l",

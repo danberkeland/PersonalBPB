@@ -42,8 +42,7 @@ const CustomerGroup = ({ database, customerGroup, setCustomerGroup, authType }) 
           cust.userSubs = [];
         }
       }
-      console.log("userNum", userNum);
-      console.log("customerSelect", newCustList);
+      
       let customerSelect = newCustList.filter(
         (cust) =>
           cust.userSubs.includes(userNum) ||

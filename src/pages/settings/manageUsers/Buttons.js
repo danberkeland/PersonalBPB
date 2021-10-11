@@ -77,7 +77,7 @@ const Buttons = ({ selectedUser, setSelectedUser, target }) => {
 
   const createUsr = async (addDetails, signUp) => {
     let newbie = await Auth.signUp(signUp);
-    console.log("newbie", newbie);
+  
     addDetails.sub = newbie.userSub;
 
     try {
@@ -107,7 +107,7 @@ const Buttons = ({ selectedUser, setSelectedUser, target }) => {
       } catch {
         include = true;
       }
-      console.log(include);
+      
       let newSubs;
       try {
         newSubs = customers[ind].userSubs;

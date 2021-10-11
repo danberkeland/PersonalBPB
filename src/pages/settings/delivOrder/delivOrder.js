@@ -83,7 +83,7 @@ const DelivOrder = () => {
         await API.graphql(
           graphqlOperation(updateCustomer, { input: { ...updateDetails } })
         );
-        console.log("Updated", updateDetails.id)
+        
       } catch (error) {
         console.log("error on creating Orders", error);
         setIsLoading(false);

@@ -74,7 +74,7 @@ function BPBNSetOut({ loc }) {
   };
 
   const exportPastryPrepPdf = async () => {
-    console.log(setOut)
+    
     for (let set of setOut) {
       let addDetails = {
         id: set.id,

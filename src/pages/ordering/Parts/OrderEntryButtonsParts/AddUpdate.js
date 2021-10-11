@@ -61,7 +61,7 @@ function AddUpdate({ database, setDatabase }) {
 
   const handleUpdateCart = async () => {
     for (let ord of currentCartList) {
-      console.log("ord", ord);
+     
       let rte = route;
       let price = getRate(products, ord, altPricing);
 

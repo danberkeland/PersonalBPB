@@ -4,8 +4,6 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import { Calendar } from "primereact/calendar";
 import interactionPlugin from "@fullcalendar/interaction";
 
-
-
 import { CurrentDataContext } from "../../../dataContexts/CurrentDataContext";
 import { ToggleContext } from "../../../dataContexts/ToggleContext";
 
@@ -23,7 +21,7 @@ const Cal = ({ database }) => {
     useContext(CurrentDataContext);
   const [products, customers, routes, standing, orders] = database;
   const { setModifications } = useContext(ToggleContext);
-  const [calDate, setCalDate] = useState(new Date(delivDate.replace("-","/")))
+  const [calDate, setCalDate] = useState(new Date(delivDate.replace("-", "/")));
 
   const [width, setWidth] = useState(window.innerWidth);
   const breakpoint = 620;
@@ -33,8 +31,8 @@ const Cal = ({ database }) => {
   });
 
   useEffect(() => {
-    setCalDate(new Date(delivDate.replace("-","/")))
-  },[delivDate])
+    setCalDate(new Date(delivDate.replace("-", "/")));
+  }, [delivDate]);
 
   useEffect(() => {
     if (database.length > 0) {
@@ -80,7 +78,6 @@ const Cal = ({ database }) => {
       console.log();
     }
 
-    
     setDelivDate(selectInfo.dateStr);
   };
 
@@ -104,10 +101,9 @@ const Cal = ({ database }) => {
   );
 
   const dayOfTheWeek = (date) => {
-   
-    let dayDate = DateTime.local(date.year,date.month,date.day).weekday
-   
-    return dayDate
+    let dayDate = DateTime.local(date.year, date.month, date.day).weekday;
+
+    return dayDate;
   };
 
   const dateTemplate = (date) => {
@@ -121,8 +117,6 @@ const Cal = ({ database }) => {
     let dateStyle;
     try {
       for (let cal of calendarEvents) {
-      
-
         try {
           let calDay = Number(cal.date.split("-")[2]);
           let calMonth = Number(cal.date.split("-")[1]) - 1;
@@ -134,15 +128,10 @@ const Cal = ({ database }) => {
             cal.groupID === "blanks"
           ) {
             return date.day;
-          
           }
-        } catch (error) {
-        
-        }
+        } catch (error) {}
       }
-    } catch (error) {
-     
-    }
+    } catch (error) {}
     try {
       if (
         date.day === delivDay &&
@@ -165,15 +154,10 @@ const Cal = ({ database }) => {
             {date.day}
           </div>
         );
-       
       }
-    } catch (error) {
-     
-    }
+    } catch (error) {}
     try {
       for (let cal of calendarEvents) {
-      
-
         try {
           let calDay = Number(cal.date.split("-")[2]);
           let calMonth = Number(cal.date.split("-")[1]) - 1;
@@ -204,13 +188,9 @@ const Cal = ({ database }) => {
             // if date = date(year-day-month) and groupID = cart => cartStyle
             // if date = date(year-day-month) and groupID = blanks => blanks
           }
-        } catch (error) {
-          
-        }
+        } catch (error) {}
       }
-    } catch (error) {
-    
-    }
+    } catch (error) {}
     /*
     try {
       for (let cal of calendarEvents) {
@@ -261,23 +241,19 @@ const Cal = ({ database }) => {
   };
 
   const handlePhoneChange = (date) => {
-    console.log("date",date.value)
-    let year = date.value.getFullYear()
-    let month = date.value.getMonth()+1
-    let day = date.value.getDate()
-    let formatted = year+'-'+month+'-'+day
-    console.log(formatted)
-        console.log("delivDate",delivDate)
-    
-    setDelivDate(formatted)
+    let year = date.value.getFullYear();
+    let month = date.value.getMonth() + 1;
+    let day = date.value.getDate();
+    let formatted = year + "-" + month + "-" + day;
 
-  }
+    setDelivDate(formatted);
+  };
 
   const innards2 = (
     <div className="p-field p-col-12 p-md-4">
       <Calendar
         id="mask"
-        placeholder = {delivDate}
+        placeholder={delivDate}
         value={calDate}
         onChange={(e) => handlePhoneChange(e)}
         dateTemplate={dateTemplate}

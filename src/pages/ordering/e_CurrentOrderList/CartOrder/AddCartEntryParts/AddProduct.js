@@ -31,7 +31,6 @@ const AddProduct = ({ database, setDatabase, pickedProduct, setPickedProduct, au
 
   const handleAdd = () => {
     let qty = Number(document.getElementById("addedProdQty").value);
-    console.log("qty",document.getElementById("addedProdQty").value)
     let ind = products.findIndex(prod => prod.prodName === pickedProduct.prodName)
     let rate = products[ind].wholePrice
   

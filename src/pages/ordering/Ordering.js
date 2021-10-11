@@ -105,9 +105,7 @@ function Ordering({ authType }) {
     let hour = today.c.hour;
     let minutes = today.c.minute / 60;
     let totalHour = hour + minutes;
-    console.log("totalHour", totalHour);
-    console.log("delivDate", delivDate);
-    console.log("deadline", todayPlus()[1]);
+   
     if (
       ((totalHour > 18.5 &&
         delivDate.toString() === todayPlus()[1].toString()) ||

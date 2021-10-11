@@ -86,7 +86,6 @@ const Product = ({ order, database, setDatabase, authType }) => {
   };
 
   const checkAvailability = (prod) => {
-    console.log("prod", prod);
     let ind = products.findIndex((pro) => pro.prodName === prod);
     let leadTime = products[ind].leadTime;
 
@@ -94,7 +93,6 @@ const Product = ({ order, database, setDatabase, authType }) => {
     let today = DateTime.now().setZone("America/Los_Angeles");
     let ddate = DateTime.fromISO(delivDate).setZone("America/Los_Angeles");
     const diff = Math.ceil(Interval.fromDateTimes(today, ddate).length("days"));
-    console.log("diff", diff);
 
     if (Number(diff) > Number(leadTime) - 1) {
       available = true;

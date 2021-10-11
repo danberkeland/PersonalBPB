@@ -13,11 +13,6 @@ export const mixFormula = (doughs, infoWrap, multi) => {
       Number(dough.short)
     ).toFixed(2);
     
-    console.log(info.bucketSets)
-    console.log(bucketSets)
-    console.log("stickerAmount",stickerAmount)
-    console.log(multiple[multi])
-    console.log(dough.oldDough)
     let Mix1BucketSets = Math.round(dough.bucketSets * multiple[multi]);
     
     let Mix1OldDough = (dough.oldDough * multiple[multi]).toFixed(2);

@@ -65,7 +65,7 @@ const ProductList = ({ database, pickedProduct, setPickedProduct, authType }) =>
   
 
   const itemTemplate = (option) => {
-    console.log(option)
+   
     return width>breakpoint ? option.prodName : <OptionGroup>{option.prodName}</OptionGroup>
   }
 

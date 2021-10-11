@@ -67,7 +67,7 @@ function BPBNBaker2() {
 
   const exportPastryPrepPdf = async () => {
     // UPDATE preshaped Nombers
-    console.log(whatToMake);
+   
     for (let make of whatToMake) {
       let addDetails = {
         id: make.id,

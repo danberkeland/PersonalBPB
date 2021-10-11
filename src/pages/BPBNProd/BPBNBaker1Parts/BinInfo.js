@@ -1,7 +1,6 @@
 import { getMixInfo } from './GetMixInfo'
 
 export const binInfo = (doughs, infoWrap) => {
-    console.log(infoWrap)
    
     let baguetteBins = getMixInfo(doughs, infoWrap)[5].baguetteBins;
     let oliveWeight = getMixInfo(doughs, infoWrap)[5].oliveWeight;

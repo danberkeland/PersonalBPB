@@ -9,7 +9,7 @@ import {
   pastryPrepFilter,
   almondPrepFilter,
   frozenAlmondFilter,
-  setOutPlainsForAlmondsFilter
+  setOutPlainsForAlmondsFilter,
 } from "./filters";
 import { ceil } from "lodash";
 
@@ -33,38 +33,39 @@ export default class ComposePastryPrep {
   returnSetOut = (database, loc) => {
     const products = database[0];
     let setOutList = getOrdersList(tomorrow, database, true);
-    let setOutForAlmonds = getOrdersList(twoDay,database,true);
+    let setOutForAlmonds = getOrdersList(twoDay, database, true);
     let twoDayList = getOrdersList(twoDay, database, true);
     let threeDayList = getOrdersList(threeDay, database, true);
     let setOutToday = setOutList.filter((set) => setOutFilter(set, loc));
-    console.log("setOutToday",setOutToday)
-    let almondSetOut = setOutForAlmonds.filter((set) => setOutPlainsForAlmondsFilter(set,loc));
-    console.log("almondSetOut",almondSetOut)
+
+    let almondSetOut = setOutForAlmonds.filter((set) =>
+      setOutPlainsForAlmondsFilter(set, loc)
+    );
+
     let twoDayToday = twoDayList.filter((set) => twoDayFrozenFilter(set, loc));
-    console.log("twoDayToday",twoDayToday)
+
     let threeDayToday = threeDayList.filter((set) =>
       threeDayAlFilter(set, loc)
     );
-    console.log("threeDayToday",threeDayToday)
 
     for (let setout of setOutToday) {
       if (setout.custName === "Back Porch Bakery") {
-        setout.qty = ceil(setout.qty/2)
+        setout.qty = ceil(setout.qty / 2);
       }
     }
     for (let setout of twoDayToday) {
       if (setout.custName === "Back Porch Bakery") {
-        setout.qty = ceil(setout.qty/2)
+        setout.qty = ceil(setout.qty / 2);
       }
     }
     for (let setout of almondSetOut) {
       if (setout.custName === "Back Porch Bakery") {
-        setout.qty = ceil(setout.qty/2)
+        setout.qty = ceil(setout.qty / 2);
       }
     }
     for (let setout of threeDayToday) {
       if (setout.custName === "Back Porch Bakery") {
-        setout.qty = ceil(setout.qty/2)
+        setout.qty = ceil(setout.qty / 2);
       }
     }
     setOutToday = this.makeAddQty(setOutToday, products);
@@ -93,24 +94,21 @@ export default class ComposePastryPrep {
 
     if (loc === "Prado") {
       setOutToday[setOutToday.findIndex((set) => set.prodNick === "pl")].qty +=
-        twoDayFreeze + threeDayFreeze+almondSet;
+        twoDayFreeze + threeDayFreeze + almondSet;
     }
-    console.log("setOutToday",setOutToday)
 
     // Find index of 'mb'
-    let mbInd = setOutToday.findIndex(ind => ind.prodNick==="mb")
+    let mbInd = setOutToday.findIndex((ind) => ind.prodNick === "mb");
 
     // Find index of 'unmb'
-    let unmbInd = setOutToday.findIndex(ind => ind.prodNick==="unmb")
+    let unmbInd = setOutToday.findIndex((ind) => ind.prodNick === "unmb");
 
     // Add unmb.qty to mb.qty
-    setOutToday[mbInd].qty += setOutToday[unmbInd].qty
+    setOutToday[mbInd].qty += setOutToday[unmbInd].qty;
 
     // Remove 'unmb'
-    setOutToday = setOutToday.filter(ind => ind.prodNick !=="unmb")
+    setOutToday = setOutToday.filter((ind) => ind.prodNick !== "unmb");
 
-   
-    
     return setOutToday;
   };
 
@@ -123,12 +121,11 @@ export default class ComposePastryPrep {
   };
 
   returnAlmondPrep = (database, loc) => {
-
     // Still need to account for splitting of BPB locations and special order deductions
-    
+
     const products = database[0];
     let setOutList = getOrdersList(tomorrow, database, true);
-   
+
     let bakedNorthTwoDayList = getOrdersList(twoDay, database, true);
 
     let deliveredFrozenTomorrow = setOutList.filter((set) =>
@@ -136,12 +133,10 @@ export default class ComposePastryPrep {
     );
 
     let setOutToday = setOutList.filter((set) => almondPrepFilter(set, loc));
-  
+
     bakedNorthTwoDayList = bakedNorthTwoDayList.filter((set) =>
       almondPrepFilter(set, "Carlton")
     );
-
-   
 
     bakedNorthTwoDayList = bakedNorthTwoDayList.filter(
       (ord) => ord.routeDepart === "Carlton"
@@ -200,7 +195,7 @@ export default class ComposePastryPrep {
       prodNick: mk,
       qty: 0,
     }));
-  
+
     for (let make of makeList2) {
       make.qty = 1;
 
@@ -221,6 +216,4 @@ export default class ComposePastryPrep {
     }
     return makeList2;
   };
-
-  
 }

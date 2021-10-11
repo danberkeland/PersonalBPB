@@ -141,7 +141,7 @@ const BuildCurrentCartList = ({ database, setDatabase, authType }) => {
             temp: true,
           };
           currentOrderList.push(tempOrder);
-          console.log("currentOrderList",currentOrderList)
+         
         }
         sortAtoZDataByIndex(currentOrderList, "prodName");
         setCurrentCartList(currentOrderList);

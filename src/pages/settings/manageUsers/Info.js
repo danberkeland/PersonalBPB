@@ -39,10 +39,6 @@ const Info = ({
   ];
 
   useEffect(() => {
-    console.log("selectedUser",selectedUser)
-  },[selectedUser])
-
-  useEffect(() => {
     let select = [];
 
     try {
@@ -58,7 +54,7 @@ const Info = ({
         }
       }
      
-      console.log("Target", select);
+      
 
       setTarget(select);
     } catch (error) {

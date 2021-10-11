@@ -19,7 +19,7 @@ const OptionGroup = styled.div`
 const ProductList = ({ database, pickedProduct, setPickedProduct, authType }) => {
   const [products, customers, routes, standing, orders] = database;
   const { chosen, delivDate, currentCartList } = useContext(CurrentDataContext);
-  const { deadlinePassed } = useContext(ToggleContext)
+  const { deadlinePassed, cartList } = useContext(ToggleContext)
 
   const [productList, setProductList] = useState();
 
@@ -37,7 +37,8 @@ const ProductList = ({ database, pickedProduct, setPickedProduct, authType }) =>
       currentCartList,
       chosen,
       delivDate,
-      customers
+      customers,
+      cartList
     );
     setProductList(availableProducts);
   }

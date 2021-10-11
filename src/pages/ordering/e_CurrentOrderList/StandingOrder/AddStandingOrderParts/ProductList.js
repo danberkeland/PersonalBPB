@@ -5,13 +5,14 @@ import { CurrentDataContext } from "../../../../../dataContexts/CurrentDataConte
 import { Dropdown } from "primereact/dropdown";
 
 import { findAvailableProducts } from "../../../../../helpers/sortDataHelpers";
+import { ToggleContext } from "../../../../../dataContexts/ToggleContext";
 
 
 const ProductList = ({ database, pickedProduct, setPickedProduct, productList, setProductList }) => {
   const [products, customers, routes, standing, orders] = database;
   const { chosen, delivDate } =
     useContext(CurrentDataContext);
-  
+  const { cartList } = useContext(ToggleContext)
   
   useEffect(() => {
     if (database.length>0){
@@ -20,7 +21,8 @@ const ProductList = ({ database, pickedProduct, setPickedProduct, productList, s
       orders,
       chosen,
       delivDate,
-      customers
+      customers,
+      cartList
     );
     setProductList(availableProducts);
   }

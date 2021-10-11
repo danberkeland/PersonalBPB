@@ -92,7 +92,8 @@ export const findAvailableProducts = (
   orders,
   chosen,
   delivDate,
-  customers
+  customers,
+  cartList
 ) => {
   let availableProducts = cloneDeep(products);
 
@@ -125,9 +126,11 @@ export const findAvailableProducts = (
 
   const diff = Math.ceil(Interval.fromDateTimes(today, ddate).length("days"));
 
-  for (let avail of availableProducts) {
-    if (Number(avail.leadTime) > Number(diff)) {
-      avail.prodName = avail.prodName + " (IN PRODUCTION)";
+  if (cartList) {
+    for (let avail of availableProducts) {
+      if (Number(avail.leadTime) > Number(diff)) {
+        avail.prodName = avail.prodName + " (IN PRODUCTION)";
+      }
     }
   }
 

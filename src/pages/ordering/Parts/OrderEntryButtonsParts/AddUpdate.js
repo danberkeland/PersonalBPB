@@ -48,14 +48,16 @@ function AddUpdate({ database, setDatabase }) {
 }
   
   const callApi = async () => {
+    /*
     try{
       axios.post('https://cuorbg4yv5.execute-api.us-east-2.amazonaws.com/done',
       {
         key1: chosen + " has updated Cart order for "+delivDate
       })
     }catch{
-
+      
     }
+    */
   }
     
 

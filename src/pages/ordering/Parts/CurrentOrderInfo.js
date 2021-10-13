@@ -96,8 +96,13 @@ const CurrentOrderInfo = ({
               setAlignment("atownpick");
               break;
             default:
-              let ind = customers.findIndex(custo => custo.custName === chosen)
+              try{
+                let ind = customers.findIndex(custo => custo.custName === chosen)
               setAlignment(customers[ind].zoneName)
+              } catch {
+                setAlignment("atownpick")
+              }
+              
           }
         }
       }

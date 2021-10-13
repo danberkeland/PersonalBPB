@@ -1,4 +1,4 @@
-import React, { useContext, useEffect,useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import { CurrentDataContext } from "../../../../dataContexts/CurrentDataContext";
 import { ToggleContext } from "../../../../dataContexts/ToggleContext";
@@ -12,7 +12,8 @@ const clonedeep = require("lodash.clonedeep");
 const RouteSelect = ({ database, setDatabase, customerGroup }) => {
   const [products, customers, routes, standing, orders] = database;
 
-  const { setModifications, cartList } = useContext(ToggleContext);
+  const { setModifications, cartList, orderTypeWhole } =
+    useContext(ToggleContext);
 
   const {
     chosen,
@@ -31,12 +32,10 @@ const RouteSelect = ({ database, setDatabase, customerGroup }) => {
   });
 
   useEffect(() => {
-    
+    setRoute("atownpick")
     if (customerGroup) {
       for (let cust of customerGroup) {
-        
         if (cust["custName"] === chosen) {
-         
           switch (cust["zoneName"]) {
             case "slopick":
               setRoute("slopick");
@@ -58,22 +57,19 @@ const RouteSelect = ({ database, setDatabase, customerGroup }) => {
         );
 
         if (orderCheck.length > 0) {
-         
           switch (orderCheck[0].route) {
-            
             case "slopick":
               setRoute("slopick");
               break;
             case "atownpick":
               setRoute("atownpick");
               break;
-              default:
-                console.log("neither")
+            default:
+              console.log("neither");
           }
         }
       }
     }
-    
   }, [chosen, delivDate, customerGroup, currentCartList]);
 
   const handleSetRoute = (e) => {
@@ -104,22 +100,29 @@ const RouteSelect = ({ database, setDatabase, customerGroup }) => {
     let DBToMod = clonedeep(database);
     DBToMod[4] = ordToMod;
     setDatabase(DBToMod);
-    setModifications(true)
-    
+    setModifications(true);
   };
 
   return (
     <React.Fragment>
-      <RadioButton
-        value="deliv"
-        name="delivery"
-        onChange={(e) => handleSetRoute(e.value)}
-        checked={route === "deliv"}
-        disabled={
-          currentCartList.length !== 0 || cartList === true ? false : true
-        }
-      />
-      <label htmlFor="delivery">Delivery</label>
+      {orderTypeWhole ? (
+        <React.Fragment>
+          <RadioButton
+            value="deliv"
+            name="delivery"
+            onChange={(e) => handleSetRoute(e.value)}
+            checked={route === "deliv"}
+            disabled={
+              currentCartList.length !== 0 || cartList === true ? false : true
+            }
+          />
+          <label htmlFor="delivery">Delivery</label>
+        </React.Fragment>
+      ) : (
+        ""
+      )}
+
+      
       <RadioButton
         value="slopick"
         name="delivery"

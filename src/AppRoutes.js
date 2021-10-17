@@ -86,6 +86,7 @@ function AppRoutes({ authType, userNum }) {
          
           <Route path="/products" component={Products} />
           <Route path="/customers" component={Customers} />
+          <Route path="/billing" component={Billing} />
           <Route path="/billing/:code" component={Billing} />
          
           <Route path="/" render={(props)=><Ordering {...props} userNum={userNum} authType={authType} />}/> 

@@ -327,7 +327,16 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
         </div>
 
         <Button className="p-button-success" onClick={exportCSV}>
+          Auth QB
+        </Button>
+        <Button className="p-button-success" onClick={exportCSV}>
           EXPORT CSV
+        </Button>
+        <Button className="p-button-success" onClick={exportCSV}>
+          Send Invoices
+        </Button>
+        <Button className="p-button-success" onClick={exportCSV}>
+          PDF
         </Button>
       </BasicContainer>
     </React.Fragment>

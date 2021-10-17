@@ -57,13 +57,7 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
     try{
       const response = await axios.get('https://9f8pe4o3wk.execute-api.us-east-2.amazonaws.com/done');
       window.open(response.data.body)
-      confirmDialog({
-        message:
-          "Ready to export invoices to Quick Books?",
-        header: "Confirmation",
-        icon: "pi pi-exclamation-triangle",
-        /*accept: () => setDelivDate(todayPlus()[2]),*/
-      });
+      
     }catch{
       
     }

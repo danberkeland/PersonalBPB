@@ -10,6 +10,7 @@ import { ToggleContext } from "../../dataContexts/ToggleContext";
 import { promisedData } from "../../helpers/databaseFetchers";
 import { listZones } from "../../graphql/queries";
 import { API, graphqlOperation } from "aws-amplify";
+import { useParams } from "react-router";
 
 const BasicContainer = styled.div`
   display: flex;
@@ -45,11 +46,14 @@ function Billing() {
   const [zones, setZones] = useState([]);
   const [database, setDatabase] = useState([]);
 
+  const {code } = useParams();
+
   useEffect(() => {
     promisedData(setIsLoading).then((database) => setDatabase(database));
   }, [reload]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
+    console.log("props", code)
     setIsLoading(true);
     fetchZones();
     
@@ -67,6 +71,7 @@ function Billing() {
 
   return (
     <React.Fragment>
+      {code}
       <BasicContainer>
         <h1>Billing</h1>
       </BasicContainer>

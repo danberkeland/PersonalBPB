@@ -4,6 +4,7 @@ import { CurrentDataContext } from "../../../dataContexts/CurrentDataContext";
 
 import { Calendar } from "primereact/calendar";
 import { Button } from "primereact/button";
+import { confirmDialog } from "primereact/confirmdialog";
 
 import styled from "styled-components";
 
@@ -18,6 +19,8 @@ import {
 } from "../../../helpers/sortDataHelpers";
 
 const { DateTime } = require("luxon");
+const axios = require('axios').default
+
 
 const BasicContainer = styled.div`
   display: flex;
@@ -49,6 +52,23 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
   };
 
   const exportCSV = async () => {
+
+
+    try{
+      const response = await axios.get('https://9f8pe4o3wk.execute-api.us-east-2.amazonaws.com/done');
+      window.open(response.data.body)
+      confirmDialog({
+        message:
+          "Ready to export invoices to Quick Books?",
+        header: "Confirmation",
+        icon: "pi pi-exclamation-triangle",
+        /*accept: () => setDelivDate(todayPlus()[2]),*/
+      });
+    }catch{
+      
+    }
+    
+    
     let data = [];
 
     let dailyInvoices = orders.filter(
@@ -183,7 +203,7 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
           timeStamp: order["timeStamp"],
           SO: order[dayOfWeek],
         }));
-        console.log("toAdd", toAddToConvertedStandList);
+       
         for (let item of toAddToConvertedStandList) {
           convertedStandList.push(item);
         }
@@ -195,17 +215,14 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
       }
 
       let newDate = dateSplit[1] + dateSplit[2] + dateSplit[0];
-      console.log("fullOrders",fullOrders)
+     
 
       fullOrders = fullOrders.filter((ord) => ord.qty > 0);
 
       sortZtoADataByIndex(fullOrders, "delivDate");
       sortAtoZDataByIndex(fullOrders, "custName");
-      console.log("fullOrders", fullOrders);
-
+     
       for (let ord of fullOrders) {
-        
-        
         let ddate = convertDatetoBPBDate(delivDate);
         let dueDate = convertDatetoBPBDate(
           DateTime.now()
@@ -225,9 +242,9 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
         if (!ord.rate) {
           ord.rate = products[prodIndex].wholePrice;
         }
-        let nick
+        let nick;
         nick = custIndex > -1 ? customers[custIndex].nickName : "";
-        ord.invNum = newDate+nick
+        ord.invNum = newDate + nick;
         let qty = custIndex > -1 ? ord.qty : 0;
         let BillAddrLine1 = custIndex > -1 ? customers[custIndex].addr1 : "";
         let BillAddrLine2 = custIndex > -1 ? customers[custIndex].addr2 : "";
@@ -269,7 +286,7 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
           ord.rate,
           "Y",
         ];
-        console.log("newEntry", newEntry);
+      
         data.push(newEntry);
       }
 
@@ -285,7 +302,7 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
     }
 
     //  Sort data by deliveryDate and then customer
-
+    /*
     var csv =
       "RefNumber,Customer,TxnDate,DueDate,ShpDate,SalesTerm,Class,BillAddrLine1,BillAddrLine2,BillAddrLine3,BillAddrCity,BillAddrState,BillAddrPostalCode,Msg,AllowOnlineACHPayment,LineItem,LineDescrip,LineQty,LineUnitPrice,LineTaxable\n";
     data.forEach(function (row) {
@@ -298,6 +315,7 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
     hiddenElement.target = "_blank";
     hiddenElement.download = `${delivDate}invoiceExport.csv`;
     hiddenElement.click();
+    */
   };
 
   return (

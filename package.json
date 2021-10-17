@@ -19,6 +19,7 @@
     "axios": "^0.21.4",
     "calendarpickerjs": "^1.4.0",
     "dotenv": "^8.2.0",
+    "intuit-oauth": "^4.0.0",
     "jspdf": "^2.3.1",
     "jspdf-autotable": "^3.5.14",
     "lodash": "^4.17.21",

@@ -38,22 +38,36 @@ const fetchInfo = async (operation, opString, limit) => {
   }
 };
 
-function Billing() {
+function Billing( props ) {
   let { reload, setIsLoading } = useContext(ToggleContext);
 
   const [nextInv, setNextInv] = useState(0);
   const [dailyInvoices, setDailyInvoices] = useState([]);
   const [zones, setZones] = useState([]);
   const [database, setDatabase] = useState([]);
+  const [code, setCode] = useState()
+  const [realm, setRealm ] = useState()
 
-  const {code } = useParams();
+  
 
   useEffect(() => {
     promisedData(setIsLoading).then((database) => setDatabase(database));
   }, [reload]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    console.log("props", code)
+    let code
+    let realm
+    try {
+      code = (props.location.search.split('&')[0].split('=')[1])
+      realm = props.location.search.split('&')[2].split('=')[1]
+
+    } catch {
+
+    }
+
+    setCode(code);
+    setRealm(realm)
+    
     setIsLoading(true);
     fetchZones();
     
@@ -71,7 +85,8 @@ function Billing() {
 
   return (
     <React.Fragment>
-      {code}
+      {code}<br />
+      {realm}
       <BasicContainer>
         <h1>Billing</h1>
       </BasicContainer>

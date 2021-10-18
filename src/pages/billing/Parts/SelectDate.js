@@ -313,6 +313,18 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
     */
   };
 
+  const showCode = () => {
+    let win = window.location.href
+    confirmDialog({
+      message:
+        win
+       ,
+      header: "Confirmation",
+      icon: "pi pi-exclamation-triangle",
+      
+    });
+  }
+
   return (
     <React.Fragment>
       <BasicContainer>
@@ -329,7 +341,7 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
         <Button className="p-button-success" onClick={exportCSV}>
           Auth QB
         </Button>
-        <Button className="p-button-success" onClick={exportCSV}>
+        <Button className="p-button-success" onClick={showCode}>
           EXPORT CSV
         </Button>
         <Button className="p-button-success" onClick={exportCSV}>

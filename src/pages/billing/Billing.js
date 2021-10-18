@@ -58,7 +58,7 @@ function Billing( props ) {
     let code
     let realm
     try {
-      code = (props.location.search.split('&')[0].split('=')[1])
+      code = props.locations.search /*(props.location.search.split('&')[0].split('=')[1])*/
       realm = props.location.search.split('&')[2].split('=')[1]
 
     } catch {

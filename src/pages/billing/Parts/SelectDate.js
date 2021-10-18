@@ -56,8 +56,8 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
 
     try{
       const response = await axios.get('https://9f8pe4o3wk.execute-api.us-east-2.amazonaws.com/done');
-      console.log(response.data.body)
-      window.open(response.data.body)
+      console.log(response.data)
+      window.open(response.data)
       
     }catch{
       

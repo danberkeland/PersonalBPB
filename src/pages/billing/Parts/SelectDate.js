@@ -314,7 +314,7 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
   };
 
   const showCode = () => {
-    let win = window.location.href
+    let win = "/"+window.location.href.split('/')[4]
     confirmDialog({
       message:
         win

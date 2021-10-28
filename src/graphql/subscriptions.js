@@ -32,6 +32,8 @@ export const onCreateCustomer = /* GraphQL */ `
       customProd
       templateProd
       userSubs
+      qbID
+      currentBalance
       createdAt
       updatedAt
     }
@@ -68,6 +70,8 @@ export const onUpdateCustomer = /* GraphQL */ `
       customProd
       templateProd
       userSubs
+      qbID
+      currentBalance
       createdAt
       updatedAt
     }
@@ -104,6 +108,8 @@ export const onDeleteCustomer = /* GraphQL */ `
       customProd
       templateProd
       userSubs
+      qbID
+      currentBalance
       createdAt
       updatedAt
     }
@@ -147,6 +153,7 @@ export const onCreateProduct = /* GraphQL */ `
       bpbssetout
       defaultInclude
       leadTime
+      qbID
       createdAt
       updatedAt
     }
@@ -190,6 +197,7 @@ export const onUpdateProduct = /* GraphQL */ `
       bpbssetout
       defaultInclude
       leadTime
+      qbID
       createdAt
       updatedAt
     }
@@ -233,6 +241,7 @@ export const onDeleteProduct = /* GraphQL */ `
       bpbssetout
       defaultInclude
       leadTime
+      qbID
       createdAt
       updatedAt
     }
@@ -809,6 +818,39 @@ export const onDeleteAuthSettings = /* GraphQL */ `
       phone
       email
       verified
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateInfoQBAuth = /* GraphQL */ `
+  subscription OnCreateInfoQBAuth {
+    onCreateInfoQBAuth {
+      id
+      infoName
+      infoContent
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateInfoQBAuth = /* GraphQL */ `
+  subscription OnUpdateInfoQBAuth {
+    onUpdateInfoQBAuth {
+      id
+      infoName
+      infoContent
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteInfoQBAuth = /* GraphQL */ `
+  subscription OnDeleteInfoQBAuth {
+    onDeleteInfoQBAuth {
+      id
+      infoName
+      infoContent
       createdAt
       updatedAt
     }

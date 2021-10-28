@@ -41,6 +41,7 @@ const Buttons = ({ selectedProduct, setSelectedProduct }) => {
       }).then((value) => {
         nickName = value;
         const addDetails = {
+          qbID: null,
           prodName: prodName,
           nickName: nickName,
           packGroup: "",
@@ -65,11 +66,57 @@ const Buttons = ({ selectedProduct, setSelectedProduct }) => {
           bakeExtra: 0,
           batchSize: 1,
           defaultInclude: false,
-          leadTime: 3
+          leadTime: 3,
         };
-        createProd(addDetails, nickName, prodName);
+        addDetails.qbID = createQBProd(addDetails);
+        createProd(addDetails, nickName, prodName)
       });
     });
+  };
+
+  const createQBProd = (addDetails) => {
+   
+    let timeNow = new Date().toISOString()
+    let QBDetails = {
+      Item: {
+        Name: addDetails.prodName,
+        Active: true,
+        FullyQualifiedName: addDetails.prodName,
+        Taxable: false,
+        UnitPrice: addDetails.wholePrice,
+        Type: "Service",
+        IncomeAccountRef: {
+          value: "56",
+          name: "Uncategorized Income",
+        },
+        PurchaseCost: 0,
+        ExpenseAccountRef: {
+          value: "57",
+          name: "Outside Expense",
+        },
+        TrackQtyOnHand: false,
+        domain: "QBO",
+        sparse: false,
+        SyncToken: "0",
+        MetaData: {
+          CreateTime: "2016-12-30T20:01:37-08:00",
+          LastUpdatedTime: "2016-12-30T20:01:37-08:00",
+        },
+      },
+      time: timeNow,
+    };
+
+    if (addDetails.qbID === null || addDetails.qbID.includes("error")){
+      console.log("no ID")
+    //     create new QB Product
+         return "filler ID"  // qbID
+    } else {
+      console.log("yes, ID")
+      QBDetails.Item["Id"] = addDetails.qbID
+      console.log(QBDetails)
+      // else, update according to qbID
+      
+    }
   };
 
   const createProd = async (addDetails) => {
@@ -85,34 +132,37 @@ const Buttons = ({ selectedProduct, setSelectedProduct }) => {
 
   const updateProd = async () => {
     const updateDetails = {
-        id: selectedProduct["id"],
-        _version: selectedProduct["_version"],
-        prodName: selectedProduct["prodName"],
-        nickName: selectedProduct["nickName"],
-        packGroup: selectedProduct["packGroup"],
-        packSize: selectedProduct["packSize"],
-        doughType: selectedProduct["doughType"],
-        freezerThaw: selectedProduct["freezerThaw"],
-        eodCount: selectedProduct["eodCount"],
-        packGroupOrder: selectedProduct["packGroupOrder"],
-        readyTime: selectedProduct["readyTime"],
-        bakedWhere: selectedProduct["bakedWhere"],
-        wholePrice: selectedProduct["wholePrice"],
-        retailPrice: selectedProduct["retailPrice"],
-        isWhole: selectedProduct["isWhole"],
-        depends: selectedProduct["depends"],
-        weight: selectedProduct["weight"],
-        descrip: selectedProduct["descrip"],
-        picURL: selectedProduct["picURL"],
-        squareID: selectedProduct["squareID"],
-        currentStock: selectedProduct["currentStock"],
-        whoCountedLast: selectedProduct["whoCountedLast"],
-        forBake: selectedProduct["forBake"],
-        bakeExtra: selectedProduct["bakeExtra"],
-        batchSize: selectedProduct["batchSize"],
-        defaultInclude: selectedProduct["defaultInclude"],
-        leadTime: selectedProduct["leadTime"]
+      qbID: selectedProduct["qbID"],
+      id: selectedProduct["id"],
+      _version: selectedProduct["_version"],
+      prodName: selectedProduct["prodName"],
+      nickName: selectedProduct["nickName"],
+      packGroup: selectedProduct["packGroup"],
+      packSize: selectedProduct["packSize"],
+      doughType: selectedProduct["doughType"],
+      freezerThaw: selectedProduct["freezerThaw"],
+      eodCount: selectedProduct["eodCount"],
+      packGroupOrder: selectedProduct["packGroupOrder"],
+      readyTime: selectedProduct["readyTime"],
+      bakedWhere: selectedProduct["bakedWhere"],
+      wholePrice: selectedProduct["wholePrice"],
+      retailPrice: selectedProduct["retailPrice"],
+      isWhole: selectedProduct["isWhole"],
+      depends: selectedProduct["depends"],
+      weight: selectedProduct["weight"],
+      descrip: selectedProduct["descrip"],
+      picURL: selectedProduct["picURL"],
+      squareID: selectedProduct["squareID"],
+      currentStock: selectedProduct["currentStock"],
+      whoCountedLast: selectedProduct["whoCountedLast"],
+      forBake: selectedProduct["forBake"],
+      bakeExtra: selectedProduct["bakeExtra"],
+      batchSize: selectedProduct["batchSize"],
+      defaultInclude: selectedProduct["defaultInclude"],
+      leadTime: selectedProduct["leadTime"],
     };
+
+    createQBProd(updateDetails)
 
     try {
       const prodData = await API.graphql(
@@ -133,8 +183,7 @@ const Buttons = ({ selectedProduct, setSelectedProduct }) => {
 
   const deleteProdWarn = async () => {
     swal({
-      text:
-        " Are you sure that you would like to permanently delete this product?",
+      text: " Are you sure that you would like to permanently delete this product?",
       icon: "warning",
       buttons: ["Yes", "Don't do it!"],
       dangerMode: true,
@@ -150,9 +199,9 @@ const Buttons = ({ selectedProduct, setSelectedProduct }) => {
   const deleteProd = async () => {
     const deleteDetails = {
       id: selectedProduct["id"],
-      _version: selectedProduct["_version"]
+      _version: selectedProduct["_version"],
     };
-    
+
     try {
       await API.graphql(
         graphqlOperation(deleteProduct, { input: { ...deleteDetails } })

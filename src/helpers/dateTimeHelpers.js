@@ -57,6 +57,9 @@ export const todayPlus = () => {
   let minus6 = DateTime.now().setZone("America/Los_Angeles").minus({ days: 6 });
   let minus6Send = minus6.toString().split("T")[0];
 
+  let net15 = DateTime.now().setZone("America/Los_Angeles").plus({ days: 15 });
+  let net15Send = net15.toString().split("T")[0];
+
   return [
     todaySend,
     tomorrowSend,
@@ -68,7 +71,8 @@ export const todayPlus = () => {
     minus3Send,
     minus4Send,
     minus5Send,
-    minus6Send
+    minus6Send,
+    net15Send
   ];
 };
 

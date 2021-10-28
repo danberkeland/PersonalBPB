@@ -35,6 +35,8 @@ export const createCustomer = /* GraphQL */ `
       customProd
       templateProd
       userSubs
+      qbID
+      currentBalance
       createdAt
       updatedAt
     }
@@ -74,6 +76,8 @@ export const updateCustomer = /* GraphQL */ `
       customProd
       templateProd
       userSubs
+      qbID
+      currentBalance
       createdAt
       updatedAt
     }
@@ -113,6 +117,8 @@ export const deleteCustomer = /* GraphQL */ `
       customProd
       templateProd
       userSubs
+      qbID
+      currentBalance
       createdAt
       updatedAt
     }
@@ -159,6 +165,7 @@ export const createProduct = /* GraphQL */ `
       bpbssetout
       defaultInclude
       leadTime
+      qbID
       createdAt
       updatedAt
     }
@@ -205,6 +212,7 @@ export const updateProduct = /* GraphQL */ `
       bpbssetout
       defaultInclude
       leadTime
+      qbID
       createdAt
       updatedAt
     }
@@ -251,6 +259,7 @@ export const deleteProduct = /* GraphQL */ `
       bpbssetout
       defaultInclude
       leadTime
+      qbID
       createdAt
       updatedAt
     }
@@ -935,6 +944,48 @@ export const deleteAuthSettings = /* GraphQL */ `
       phone
       email
       verified
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createInfoQBAuth = /* GraphQL */ `
+  mutation CreateInfoQBAuth(
+    $input: CreateInfoQBAuthInput!
+    $condition: ModelInfoQBAuthConditionInput
+  ) {
+    createInfoQBAuth(input: $input, condition: $condition) {
+      id
+      infoName
+      infoContent
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateInfoQBAuth = /* GraphQL */ `
+  mutation UpdateInfoQBAuth(
+    $input: UpdateInfoQBAuthInput!
+    $condition: ModelInfoQBAuthConditionInput
+  ) {
+    updateInfoQBAuth(input: $input, condition: $condition) {
+      id
+      infoName
+      infoContent
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteInfoQBAuth = /* GraphQL */ `
+  mutation DeleteInfoQBAuth(
+    $input: DeleteInfoQBAuthInput!
+    $condition: ModelInfoQBAuthConditionInput
+  ) {
+    deleteInfoQBAuth(input: $input, condition: $condition) {
+      id
+      infoName
+      infoContent
       createdAt
       updatedAt
     }

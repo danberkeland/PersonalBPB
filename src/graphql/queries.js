@@ -32,6 +32,8 @@ export const getCustomer = /* GraphQL */ `
       customProd
       templateProd
       userSubs
+      qbID
+      currentBalance
       createdAt
       updatedAt
     }
@@ -73,6 +75,8 @@ export const listCustomers = /* GraphQL */ `
         customProd
         templateProd
         userSubs
+        qbID
+        currentBalance
         createdAt
         updatedAt
       }
@@ -118,6 +122,7 @@ export const getProduct = /* GraphQL */ `
       bpbssetout
       defaultInclude
       leadTime
+      qbID
       createdAt
       updatedAt
     }
@@ -166,6 +171,7 @@ export const listProducts = /* GraphQL */ `
         bpbssetout
         defaultInclude
         leadTime
+        qbID
         createdAt
         updatedAt
       }
@@ -638,6 +644,35 @@ export const listAuthSettingss = /* GraphQL */ `
         phone
         email
         verified
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getInfoQBAuth = /* GraphQL */ `
+  query GetInfoQBAuth($id: ID!) {
+    getInfoQBAuth(id: $id) {
+      id
+      infoName
+      infoContent
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listInfoQBAuths = /* GraphQL */ `
+  query ListInfoQBAuths(
+    $filter: ModelInfoQBAuthFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listInfoQBAuths(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        infoName
+        infoContent
         createdAt
         updatedAt
       }

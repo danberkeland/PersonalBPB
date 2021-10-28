@@ -21,6 +21,7 @@ export const buildInvList = (custListArray, customers, delivDate) => {
   console.log("made it here")
   custListArray = custListArray.map((cust) => ({
     custName: cust,
+    qbID: customers[customers.findIndex(ind => ind.custName === cust)].qbID,
     nickName:
       customers[customers.findIndex((ind) => ind.custName === cust)].nickName,
   }));
@@ -28,6 +29,7 @@ export const buildInvList = (custListArray, customers, delivDate) => {
   console.log(custListArray)
   let invList = custListArray.map((cust) => ({
     custName: cust.custName,
+    qbID: cust.qbID,
     invNum: newDate + cust.nickName,
     orders: [],
   }));

@@ -18,9 +18,15 @@ import {
   sortZtoADataByIndex,
 } from "../../../helpers/sortDataHelpers";
 
-const { DateTime } = require("luxon");
-const axios = require('axios').default
+import { listInfoQBAuths } from "../../../graphql/queries";
+import { updateProduct } from "../../../graphql/mutations";
 
+import { API, graphqlOperation } from "aws-amplify";
+import { zip, zipObjectDeep } from "lodash";
+import { CustomerProfilesEntityAssignmentsList } from "twilio/lib/rest/trusthub/v1/customerProfiles/customerProfilesEntityAssignments";
+
+const { DateTime } = require("luxon");
+const axios = require("axios").default;
 
 const BasicContainer = styled.div`
   display: flex;
@@ -52,278 +58,248 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
   };
 
   const exportCSV = async () => {
-
-
-    try{
-      const response = await axios.get('https://9f8pe4o3wk.execute-api.us-east-2.amazonaws.com/done');
-      console.log(response.data)
-      window.open(response.data)
-      
-    }catch{
-      
-    }
-    
-    
-    let data = [];
-
-    let dailyInvoices = orders.filter(
-      (ord) => ord.delivDate === convertDatetoBPBDate(delivDate)
+    let access;
+    let val = await axios.get(
+      "https://28ue1wrzng.execute-api.us-east-2.amazonaws.com/done"
     );
 
-    for (let daily of dailyInvoices) {
+    if (val.data) {
+      let authData = await API.graphql(
+        graphqlOperation(listInfoQBAuths, { limit: "50" })
+      );
+      access = authData.data.listInfoQBAuths.items[0].infoContent;
+
+      console.log(access);
+    } else {
+      console.log("not valid QB Auth");
+    }
+    let invFilt = dailyInvoices.filter(daily => daily.custName === "Novo")
+    for (let inv of invFilt) {
+      let total = 0;
+
+      let custOrders = [];
+      let count = 0;
+      for (let ord of inv.orders) {
+        count = count + 1;
+        total = total + Number(ord.rate) * Number(ord.qty);
+
+        // need QB Product IDs for tracking
+
+        let item = {
+          Id: count.toString() + delivDate.replace(/-/g, ""),
+          
+          Description: ord.prodName,
+          Amount: Number(ord.rate) * Number(ord.qty),
+          DetailType: "SalesItemLineDetail",
+          SalesItemLineDetail: {
+            ServiceDate: delivDate,
+            
+            UnitPrice: ord.rate,
+            Qty: ord.qty,
+            ItemAccountRef: {
+              name: "Uncategorized Income",
+            },
+            TaxCodeRef: {
+              value: "TAX",
+            },
+          },
+        };
+        custOrders.push(item);
+      }
+
+      let TxnDate = delivDate;
+      let DocNum = inv.invNum;
+      let dueDate = todayPlus()[11];
+      //  If cust is weekly
+      //     TxnDate = the next Sunday
+      //     DocNum = DocNum + adjusted date aprt
+      //     dueDate = TxnDate + terms
+
+      let ponote;
       try {
-        if (
-          customers[
-            customers.findIndex((custo) => custo.custName === daily.custName)
-          ].invoicing !== "daily"
-        ) {
-          daily["invoicing"] = "none";
-        } else {
-          daily["invoicing"] = "daily";
-        }
+        ponote =
+          orders[
+            orders.findIndex(
+              (order) =>
+                order.delivDate === delivDate && order.custName === inv.custName
+            )
+          ].PONote;
       } catch {
-        daily["invoicing"] = "daily";
+        ponote = "na";
+      }
+      let addr1;
+      let addr2;
+      let state;
+      let zipCode;
+      let terms;
+      let custEmail;
+      let ind = customers.findIndex(
+        (custom) => custom.custName === inv.custName
+      );
+
+      try {
+        addr1 = customers[ind].addr1;
+        addr2 = customers[ind].city;
+        state = "CA";
+        zipCode = customers[ind].zip;
+        terms = customers[ind].terms;
+        custEmail = customers[ind].email;
+      } catch {}
+
+      let custSetup = {
+      
+              AllowIPNPayment: false,
+              AllowOnlinePayment: false,
+              AllowOnlineCreditCardPayment: false,
+              AllowOnlineACHPayment: true,
+              domain: "QBO",
+              DocNumber: DocNum,
+              TxnDate: TxnDate,
+              CurrencyRef: {
+                value: "USD",
+                name: "United States Dollar",
+              },
+              Line: custOrders,
+              CustomerRef: {
+                value: inv.qbID,
+                name: inv.custName
+              },
+              CustomerMemo: {
+                value: ponote,
+              },
+              BillAddr: {
+                Line1: addr1,
+                CountrySubDivisionCode: state,
+                PostalCode: zipCode,
+              },
+              ShipAddr: {
+                Line1: addr1,
+                Line2: addr2,
+              },
+              FreeFormAddress: true,
+
+              ClassRef: {
+                value: "3600000000001292604",
+                name: "Wholesale",
+              },
+              SalesTermRef: {
+                name: terms,
+              },
+              DueDate: dueDate,
+              ShipDate: TxnDate,
+              TotalAmt: total,
+
+              BillEmail: {
+                Address: custEmail,
+              },
+            
+          
+      };
+
+      console.log(custSetup);
+
+      let invID;
+      try {
+        invID = await axios.post(
+          "https://unfaeakk8g.execute-api.us-east-2.amazonaws.com/done",
+          {
+            accessCode: "Bearer " + access,
+            doc: DocNum,
+          }
+        );
+      } catch {
+        console.log("Error grabbing invID for " + DocNum);
+      }
+
+      if (invID.data !== null) {
+        console.log("yes");
+        //  if customer is weekly -
+        //          read full invoice
+        //          if order lines from current date - remove
+        //          soft update current date orders
+        //      if daily - full update
+        //          axios post to update inv with body.  Return 200
+      } else {
+        console.log("no");
+        
+        try {
+          invID = await axios.post(
+            "https://9u7sp5khrc.execute-api.us-east-2.amazonaws.com/done",
+            {
+              accessCode: "Bearer " + access,
+              invInfo: custSetup,
+            }
+          );
+        } catch {
+          console.log("Error creating Invoice " + DocNum);
+        }
       }
     }
-
-    dailyInvoices = dailyInvoices.filter(
-      (daily) => daily.invoicing === "daily"
-    );
-
-    let todayDay = DateTime.now().setZone("America/Los_Angeles").weekdayLong;
-
-    if (todayDay) {
-      for (let ord of orders) {
-        try {
-          if (
-            customers[
-              customers.findIndex((custo) => custo.custName === ord.custName)
-            ].invoicing === "weekly"
-          ) {
-            ord["invoicing"] = "weekly";
-          } else {
-            ord["invoicing"] = "none";
-          }
-        } catch {
-          ord["invoicing"] = "none";
-        }
-      }
-
-      let weeklyOrders = orders.filter(
-        (ord) =>
-          ord.invoicing === "weekly" &&
-          (ord.delivDate === convertDatetoBPBDate(todayPlus()[0]) ||
-            ord.delivDate === convertDatetoBPBDate(todayPlus()[4]) ||
-            ord.delivDate === convertDatetoBPBDate(todayPlus()[6]) ||
-            ord.delivDate === convertDatetoBPBDate(todayPlus()[7]) ||
-            ord.delivDate === convertDatetoBPBDate(todayPlus()[8]) ||
-            ord.delivDate === convertDatetoBPBDate(todayPlus()[9]) ||
-            ord.delivDate === convertDatetoBPBDate(todayPlus()[10]))
-      );
-
-      for (let stand of standing) {
-        try {
-          if (
-            customers[
-              customers.findIndex((custo) => custo.custName === stand.custName)
-            ].invoicing === "weekly"
-          ) {
-            stand["invoicing"] = "weekly";
-          } else {
-            stand["invoicing"] = "none";
-          }
-        } catch {
-          stand["invoicing"] = "none";
-        }
-      }
-
-      let convertedDailyStandList = [];
-
-      let builtDailyStandList = standing.filter(
-        (stand) => stand.isStand === true && stand.invoicing === "daily"
-      );
-
-      let dateSplit = todayPlus()[0].split("-");
-      let dayOfWeek = DateTime.local(
-        Number(dateSplit[0]),
-        Number(dateSplit[1]),
-        Number(dateSplit[2])
-      ).weekdayShort;
-      let toAddToConvertedStandList = builtDailyStandList.map((order) => ({
-        id: null,
-        version: order["_version"],
-        qty: order[dayOfWeek],
-        prodName: order["prodName"],
-        custName: order["custName"],
-
-        isWhole: true,
-        delivDate: convertDatetoBPBDate(todayPlus()[0]),
-        timeStamp: order["timeStamp"],
-        SO: order[dayOfWeek],
-      }));
-      for (let item of toAddToConvertedStandList) {
-        convertedDailyStandList.push(item);
-      }
-
-      let convertedStandList = [];
-      let dateArray = [
-        todayPlus()[0],
-        todayPlus()[4],
-        todayPlus()[6],
-        todayPlus()[7],
-        todayPlus()[8],
-        todayPlus()[9],
-        todayPlus()[10],
-      ];
-      let builtStandList = standing.filter(
-        (stand) => stand.isStand === true && stand.invoicing === "weekly"
-      );
-
-      for (let d of dateArray) {
-        let dateSplit = d.split("-");
-        let dayOfWeek = DateTime.local(
-          Number(dateSplit[0]),
-          Number(dateSplit[1]),
-          Number(dateSplit[2])
-        ).weekdayShort;
-        let toAddToConvertedStandList = builtStandList.map((order) => ({
-          id: null,
-          version: order["_version"],
-          qty: order[dayOfWeek],
-          prodName: order["prodName"],
-          custName: order["custName"],
-
-          isWhole: true,
-          delivDate: convertDatetoBPBDate(d),
-          timeStamp: order["timeStamp"],
-          SO: order[dayOfWeek],
-        }));
-       
-        for (let item of toAddToConvertedStandList) {
-          convertedStandList.push(item);
-        }
-      }
-      let fullOrders = compileOrderList(dailyInvoices, convertedDailyStandList);
-      if (todayDay === "Sunday") {
-        fullOrders = compileOrderList(fullOrders, weeklyOrders);
-        fullOrders = compileOrderList(fullOrders, convertedStandList);
-      }
-
-      let newDate = dateSplit[1] + dateSplit[2] + dateSplit[0];
-     
-
-      fullOrders = fullOrders.filter((ord) => ord.qty > 0);
-
-      sortZtoADataByIndex(fullOrders, "delivDate");
-      sortAtoZDataByIndex(fullOrders, "custName");
-     
-      for (let ord of fullOrders) {
-        let ddate = convertDatetoBPBDate(delivDate);
-        let dueDate = convertDatetoBPBDate(
-          DateTime.now()
-            .setZone("America/Los_Angeles")
-            .plus({ days: 15 })
-            .toString()
-            .split("T")[0]
-        );
-        let custIndex = customers.findIndex(
-          (cust) => cust["custName"] === ord["custName"]
-        );
-
-        let prodIndex = products.findIndex(
-          (prod) => prod["prodName"] === ord["prodName"]
-        );
-
-        if (!ord.rate) {
-          ord.rate = products[prodIndex].wholePrice;
-        }
-        let nick;
-        nick = custIndex > -1 ? customers[custIndex].nickName : "";
-        ord.invNum = newDate + nick;
-        let qty = custIndex > -1 ? ord.qty : 0;
-        let BillAddrLine1 = custIndex > -1 ? customers[custIndex].addr1 : "";
-        let BillAddrLine2 = custIndex > -1 ? customers[custIndex].addr2 : "";
-        let BillAddrCity = custIndex > -1 ? customers[custIndex].city : "";
-        let PostalCode = custIndex > -1 ? customers[custIndex].zip : "";
-        let ponote;
-        try {
-          ponote =
-            orders[
-              orders.findIndex(
-                (order) =>
-                  order.delivDate === delivDate &&
-                  order.custName === ord.custName
-              )
-            ].PONote;
-        } catch {
-          ponote = "na";
-        }
-
-        let newEntry = [
-          ord.invNum,
-          ord.custName,
-          ddate,
-          dueDate,
-          ord.delivDate,
-          "net15",
-          "Wholesale",
-          BillAddrLine1,
-          BillAddrLine2,
-          "",
-          BillAddrCity,
-          "CA",
-          PostalCode,
-          ponote,
-          true,
-          ord.prodName,
-          ord.prodName,
-          qty,
-          ord.rate,
-          "Y",
-        ];
-      
-        data.push(newEntry);
-      }
-
-      data = data.filter((dat) => dat[17] > 0);
-
-      /*
-      
-      //  Create weeklyInvoices
-      //  Append orders to data similar to weekly but with attention to delivDate and fulfill date
-
-
-      */
-    }
-
-    //  Sort data by deliveryDate and then customer
-    /*
-    var csv =
-      "RefNumber,Customer,TxnDate,DueDate,ShpDate,SalesTerm,Class,BillAddrLine1,BillAddrLine2,BillAddrLine3,BillAddrCity,BillAddrState,BillAddrPostalCode,Msg,AllowOnlineACHPayment,LineItem,LineDescrip,LineQty,LineUnitPrice,LineTaxable\n";
-    data.forEach(function (row) {
-      csv += row.join(",");
-      csv += "\n";
-    });
-
-    var hiddenElement = document.createElement("a");
-    hiddenElement.href = "data:text/csv;charset=utf-8," + encodeURI(csv);
-    hiddenElement.target = "_blank";
-    hiddenElement.download = `${delivDate}invoiceExport.csv`;
-    hiddenElement.click();
-    */
   };
 
   const showCode = () => {
-    let win = "/"+window.location.href.split('/')[4]
+    let win = "/" + window.location.href.split("/")[4];
     confirmDialog({
-      message:
-        win
-       ,
+      message: win,
       header: "Confirmation",
       icon: "pi pi-exclamation-triangle",
-      
     });
-  }
+  };
+
+  const createQBCodes = async () => {
+    // Refresh QB Auth
+    let access;
+    let val = await axios.get(
+      "https://28ue1wrzng.execute-api.us-east-2.amazonaws.com/done"
+    );
+
+    if (val.data) {
+      let authData = await API.graphql(
+        graphqlOperation(listInfoQBAuths, { limit: "50" })
+      );
+      access = authData.data.listInfoQBAuths.items[0].infoContent;
+
+      console.log(access);
+    } else {
+      console.log("not valid QB Auth");
+    }
+
+    for (let prod of products) {
+      let product = prod.prodName;
+      let qbID;
+      
+
+      try {
+        qbID = await axios.post(
+          "https://2ai471mlv6.execute-api.us-east-2.amazonaws.com/done",
+          {
+            accessCode: "Bearer " + access,
+            produ: product,
+          }
+        );
+      } catch {
+        console.log("Error grabbing custNum for " + product);
+      }
+
+      let prodId =
+        products[products.findIndex((prodo) => product === prodo.prodName)]
+          .id;
+
+      let updateDetails = {
+        id: prodId,
+        qbID: qbID.data,
+      };
+
+      try {
+        await API.graphql(
+          graphqlOperation(updateProduct, { input: { ...updateDetails } })
+        );
+        console.log(product, "Successful update");
+      } catch (error) {
+        console.log(error, "Failed Update");
+      }
+    }
+  };
 
   return (
     <React.Fragment>
@@ -337,19 +313,21 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
             onChange={(e) => setDate(e.value)}
           />
         </div>
-
+        {/*
         <Button className="p-button-success" onClick={exportCSV}>
           Auth QB
-        </Button>
-        <Button className="p-button-success" onClick={showCode}>
+        </Button>*/}
+        <Button className="p-button-success" onClick={exportCSV}>
           EXPORT CSV
         </Button>
-        <Button className="p-button-success" onClick={exportCSV}>
-          Send Invoices
+        
+        <Button className="p-button-success" onClick={createQBCodes}>
+          Create QB Codes
         </Button>
+        {/*}
         <Button className="p-button-success" onClick={exportCSV}>
           PDF
-        </Button>
+      </Button>*/}
       </BasicContainer>
     </React.Fragment>
   );

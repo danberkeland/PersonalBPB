@@ -15,6 +15,9 @@ import {
 import { Button } from "primereact/button";
 
 import { API, graphqlOperation } from "aws-amplify";
+import { listInfoQBAuths } from "../../../graphql/queries";
+
+const axios = require("axios").default;
 
 const ButtonBox = styled.div`
   display: flex;
@@ -68,17 +71,33 @@ const Buttons = ({ selectedProduct, setSelectedProduct }) => {
           defaultInclude: false,
           leadTime: 3,
         };
-        addDetails.qbID = createQBProd(addDetails);
-        createProd(addDetails, nickName, prodName)
+        return createQBProd(addDetails, "create").Item.id
+        
+       
       });
     });
   };
 
-  const createQBProd = (addDetails) => {
-   
-    let timeNow = new Date().toISOString()
+  const createQBProd = async (addDetails, func) => {
+    let access;
+    let val = await axios.get(
+      "https://28ue1wrzng.execute-api.us-east-2.amazonaws.com/done"
+    );
+
+    if (val.data) {
+      let authData = await API.graphql(
+        graphqlOperation(listInfoQBAuths, { limit: "50" })
+      );
+      access = authData.data.listInfoQBAuths.items[0].infoContent;
+
+      console.log(access);
+    } else {
+      console.log("not valid QB Auth");
+    }
+
+    
     let QBDetails = {
-      Item: {
+      
         Name: addDetails.prodName,
         Active: true,
         FullyQualifiedName: addDetails.prodName,
@@ -97,25 +116,55 @@ const Buttons = ({ selectedProduct, setSelectedProduct }) => {
         TrackQtyOnHand: false,
         domain: "QBO",
         sparse: false,
-        SyncToken: "0",
-        MetaData: {
-          CreateTime: "2016-12-30T20:01:37-08:00",
-          LastUpdatedTime: "2016-12-30T20:01:37-08:00",
-        },
-      },
-      time: timeNow,
+        SyncToken: "0"
+        
+        
+      
+      
     };
 
-    if (addDetails.qbID === null || addDetails.qbID.includes("error")){
-      console.log("no ID")
-    //     create new QB Product
-         return "filler ID"  // qbID
+    let grabQBID;
+
+    if (addDetails.qbID === null || addDetails.qbID.includes("error")) {
+      console.log("no ID");
+
+      try {
+        grabQBID = await axios.post(
+          "https://brzqs4z7y3.execute-api.us-east-2.amazonaws.com/done",
+          {
+            accessCode: "Bearer " + access,
+            itemInfo: QBDetails
+          }
+        );
+      } catch {
+        console.log("Error creating Item " + addDetails.prodName);
+      }
+      return grabQBID.data
+      // store new qbID in database
+     
     } else {
-      console.log("yes, ID")
-      QBDetails.Item["Id"] = addDetails.qbID
-      console.log(QBDetails)
-      // else, update according to qbID
+
+      console.log("yes, ID");
+      QBDetails["Id"] = addDetails.qbID;
+      QBDetails["sparse"] = false;
+     
+      console.log("QBDets",QBDetails)
       
+      
+
+      try {
+        grabQBID = await axios.post(
+          "https://brzqs4z7y3.execute-api.us-east-2.amazonaws.com/done",
+          {
+            accessCode: "Bearer " + access,
+            itemInfo: QBDetails
+          }
+        );
+        
+      } catch {
+        console.log("Error creating Item " + addDetails.prodName);
+      }
+      return grabQBID.data
     }
   };
 
@@ -162,7 +211,8 @@ const Buttons = ({ selectedProduct, setSelectedProduct }) => {
       leadTime: selectedProduct["leadTime"],
     };
 
-    createQBProd(updateDetails)
+    updateDetails.qbID = await createQBProd(updateDetails, "update");
+    console.log("updateDets",updateDetails)
 
     try {
       const prodData = await API.graphql(

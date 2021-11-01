@@ -5,6 +5,7 @@ import swal from "@sweetalert/with-react";
 import "primereact/resources/themes/saga-blue/theme.css";
 
 import { CustomerContext } from "../../../dataContexts/CustomerContext";
+import { ToggleContext } from "../../../dataContexts/ToggleContext";
 
 import {
   updateCustomer,
@@ -15,6 +16,9 @@ import {
 import { Button } from "primereact/button";
 
 import { API, graphqlOperation } from "aws-amplify";
+import { listInfoQBAuths } from "../../../graphql/queries";
+
+const axios = require("axios").default;
 
 const ButtonBox = styled.div`
   display: flex;
@@ -41,10 +45,13 @@ const handleStandClick = (e, selectedCustomer) => {
 
 const Buttons = ({ selectedCustomer, setSelectedCustomer }) => {
   const { setCustLoaded } = useContext(CustomerContext);
+  const { setIsLoading } = useContext(ToggleContext);
 
   const handleAddCust = () => {
     let custName;
     let nickName;
+    let addDetails;
+    let newID;
 
     swal("Enter Customer Name:", {
       content: "input",
@@ -52,9 +59,10 @@ const Buttons = ({ selectedCustomer, setSelectedCustomer }) => {
       custName = value;
       swal(`Enter Nickname for ${value}:`, {
         content: "input",
-      }).then((value) => {
+      }).then(async(value) => {
         nickName = value;
-        const addDetails = {
+        addDetails = {
+          qbID: newID,
           nickName: nickName,
           custName: custName,
           zoneName: "",
@@ -73,12 +81,89 @@ const Buttons = ({ selectedCustomer, setSelectedCustomer }) => {
           latestFirstDeliv: 10,
           latestFinalDeliv: 10
         };
-        createCust(addDetails, nickName, custName);
+       
+        setIsLoading(true)
+        await createQBCust(addDetails).then((data) => {
+          newID = data;
+        });
+
+        addDetails.qbID = newID;
+
+        createCust(addDetails);
       });
     });
   };
 
-  const createCust = async (addDetails, nickName, custName) => {
+  const createQBCust = async (addDetails, SyncToken) => {
+    let Sync = "0"
+    if (SyncToken){
+      Sync = SyncToken
+    }
+    console.log("Sync",Sync)
+    let access;
+    let val = await axios.get(
+      "https://28ue1wrzng.execute-api.us-east-2.amazonaws.com/done"
+    );
+
+    if (val.data) {
+      let authData = await API.graphql(
+        graphqlOperation(listInfoQBAuths, { limit: "50" })
+      );
+      access = authData.data.listInfoQBAuths.items[0].infoContent;
+
+      console.log(access);
+    } else {
+      console.log("not valid QB Auth");
+    }
+
+    let QBDetails = {
+      FullyQualifiedName: addDetails.custName, 
+      PrimaryEmailAddr: {
+        Address: addDetails.email
+      }, 
+      DisplayName: addDetails.custName, 
+      PrimaryPhone: {
+        FreeFormNumber: addDetails.phone
+      }, 
+      CompanyName: addDetails.custName, 
+      BillAddr: {
+        CountrySubDivisionCode: "CA", 
+        City: addDetails.city, 
+        PostalCode: addDetails.zip, 
+        Line1: addDetails.addr1, 
+        Line2: addDetails.addr2, 
+        Country: "USA"
+      }, 
+      sparse: false,
+      SyncToken: Sync
+    }
+
+    try{
+      if(Number(addDetails.qbID)>0){
+        QBDetails.Id = addDetails.qbID
+      }
+    } catch {}
+    console.log("QBDetails",QBDetails)
+    let res;
+
+    try {
+      await axios
+        .post("https://brzqs4z7y3.execute-api.us-east-2.amazonaws.com/done", {
+          accessCode: "Bearer " + access,
+          itemInfo: QBDetails,
+          itemType: "Customer"
+        })
+        .then((data) => {
+          res = data.data;
+        });
+    } catch {
+      console.log("Error creating Item " + addDetails.custName);
+    }
+
+    return res;
+  };
+
+  const createCust = async (addDetails) => {
     try {
       await API.graphql(
         graphqlOperation(createCustomer, { input: { ...addDetails } })
@@ -92,7 +177,12 @@ const Buttons = ({ selectedCustomer, setSelectedCustomer }) => {
   };
 
   const updateCust = async () => {
+    let newID;
+    let SyncToken;
+    setIsLoading(true)
+
     const updateDetails = {
+      qbID: selectedCustomer["qbID"],
       id: selectedCustomer["id"],
       nickName: selectedCustomer["nickName"],
       custName: selectedCustomer["custName"],
@@ -114,28 +204,68 @@ const Buttons = ({ selectedCustomer, setSelectedCustomer }) => {
       latestFinalDeliv: selectedCustomer["latestFinalDeliv"],
       _version: selectedCustomer["_version"],
     };
+    console.log(updateDetails);
+
+    let access;
+    let val = await axios.get(
+      "https://28ue1wrzng.execute-api.us-east-2.amazonaws.com/done"
+    );
+
+    if (val.data) {
+      let authData = await API.graphql(
+        graphqlOperation(listInfoQBAuths, { limit: "50" })
+      );
+      access = authData.data.listInfoQBAuths.items[0].infoContent;
+
+      console.log(access);
+    } else {
+      console.log("not valid QB Auth");
+    }
+
 
     try {
-      const custData = await API.graphql(
+      await axios
+        .post("https://sntijvwmv6.execute-api.us-east-2.amazonaws.com/done", {
+          accessCode: "Bearer " + access,
+          itemInfo: updateDetails.qbID,
+          itemType: "Customer"
+        })
+        .then((data) => {
+          SyncToken = data.data;
+        });
+    } catch {
+      console.log("Error creating Item " + updateDetails.custName);
+    }
+    
+
+    await createQBCust(updateDetails, SyncToken).then((data) => {
+      newID = data;
+    });
+
+    updateDetails.qbID = newID;
+    console.log("newID",newID)
+    
+    try {
+      await API.graphql(
         graphqlOperation(updateCustomer, { input: { ...updateDetails } })
       );
-
-      swal({
-        text: `${custData.data.updateCustomer.custName} has been updated.`,
-        icon: "success",
-        buttons: false,
-        timer: 2000,
-      });
       setCustLoaded(false);
+      setIsLoading(false)
     } catch (error) {
-      console.log("error on fetching Cust List", error);
+      console.log("error on updating products", error);
     }
+
+    swal({
+      text: `${updateDetails.custName} has been updated.`,
+      icon: "success",
+      buttons: false,
+      timer: 2000,
+    });
   };
 
   const deleteCustWarn = async () => {
     swal({
-      text:
-        " Are you sure that you would like to permanently delete this customer?",
+      text: " Are you sure that you would like to permanently delete this product?",
       icon: "warning",
       buttons: ["Yes", "Don't do it!"],
       dangerMode: true,

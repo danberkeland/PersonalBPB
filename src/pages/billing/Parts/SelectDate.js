@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 
 import { CurrentDataContext } from "../../../dataContexts/CurrentDataContext";
+import { ToggleContext } from "../../../dataContexts/ToggleContext";
 
 import { Calendar } from "primereact/calendar";
 import { Button } from "primereact/button";
@@ -45,7 +46,7 @@ let weekAgo = todayPlus()[5];
 const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
   const [products, customers, routes, standing, orders] = database;
   const { delivDate, setDelivDate } = useContext(CurrentDataContext);
-
+  const { setIsLoading } = useContext(ToggleContext)
   const [pickedCustomer, setPickedCustomer] = useState();
 
   useEffect(() => {
@@ -58,6 +59,7 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
   };
 
   const exportCSV = async () => {
+    setIsLoading(true)
     let access;
     let val = await axios.get(
       "https://28ue1wrzng.execute-api.us-east-2.amazonaws.com/done"
@@ -82,7 +84,12 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
       for (let ord of inv.orders) {
         count = count + 1;
         total = total + Number(ord.rate) * Number(ord.qty);
+        let qbID = null
+        try{
+          qbID = products[products.findIndex(pro => pro.prodName === ord.prodName)].qbID
 
+        }catch{}
+       
         // need QB Product IDs for tracking
 
         let item = {
@@ -96,6 +103,10 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
             
             UnitPrice: ord.rate,
             Qty: ord.qty,
+            ItemRef: {
+              name: ord.prodName,
+              value: qbID
+            },
             ItemAccountRef: {
               name: "Uncategorized Income",
             },
@@ -199,6 +210,7 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
       console.log(custSetup);
 
       let invID;
+      console.log("DocNum",DocNum)
       try {
         invID = await axios.post(
           "https://unfaeakk8g.execute-api.us-east-2.amazonaws.com/done",
@@ -210,9 +222,14 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
       } catch {
         console.log("Error grabbing invID for " + DocNum);
       }
-
+      console.log("invID",invID.data.Id)
+      console.log("SyncToken",invID.data.SyncToken)
+      
       if (invID.data !== null) {
         console.log("yes");
+        custSetup.Id = invID.data.Id
+        custSetup.SyncToken = invID.data.SyncToken
+        custSetup.sparse = true
         //  if customer is weekly -
         //          read full invoice
         //          if order lines from current date - remove
@@ -222,19 +239,21 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
       } else {
         console.log("no");
         
-        try {
-          invID = await axios.post(
-            "https://9u7sp5khrc.execute-api.us-east-2.amazonaws.com/done",
-            {
-              accessCode: "Bearer " + access,
-              invInfo: custSetup,
-            }
-          );
-        } catch {
-          console.log("Error creating Invoice " + DocNum);
-        }
+        
+      }
+      try {
+        invID = await axios.post(
+          "https://9u7sp5khrc.execute-api.us-east-2.amazonaws.com/done",
+          {
+            accessCode: "Bearer " + access,
+            invInfo: custSetup,
+          }
+        );
+      } catch {
+        console.log("Error creating Invoice " + DocNum);
       }
     }
+    setIsLoading(false)
   };
 
   const showCode = () => {
@@ -320,11 +339,11 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
         <Button className="p-button-success" onClick={exportCSV}>
           EXPORT CSV
         </Button>
-        
+        {/*}
         <Button className="p-button-success" onClick={createQBCodes}>
           Create QB Codes
         </Button>
-        {/*}
+        
         <Button className="p-button-success" onClick={exportCSV}>
           PDF
       </Button>*/}

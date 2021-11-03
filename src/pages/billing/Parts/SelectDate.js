@@ -12,6 +12,7 @@ import styled from "styled-components";
 import {
   convertDatetoBPBDate,
   todayPlus,
+  daysOfTheWeek
 } from "../../../helpers/dateTimeHelpers";
 import { compileOrderList } from "../../../helpers/CartBuildingHelpers";
 import {
@@ -42,6 +43,8 @@ let tomorrow = todayPlus()[1];
 let today = todayPlus()[0];
 let yesterday = todayPlus()[4];
 let weekAgo = todayPlus()[5];
+let Sunday = daysOfTheWeek()[0]
+let Sunday15due = daysOfTheWeek()[7]
 
 const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
   const [products, customers, routes, standing, orders] = database;
@@ -75,7 +78,7 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
     } else {
       console.log("not valid QB Auth");
     }
-    let invFilt = dailyInvoices.filter(daily => daily.custName === "Novo")
+    let invFilt = dailyInvoices.filter(daily => daily.custName === "High St. Deli")
     for (let inv of invFilt) {
       let total = 0;
 
@@ -90,7 +93,6 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
 
         }catch{}
        
-        // need QB Product IDs for tracking
 
         let item = {
           Id: count.toString() + delivDate.replace(/-/g, ""),
@@ -120,11 +122,19 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
 
       let TxnDate = delivDate;
       let DocNum = inv.invNum;
-      let dueDate = todayPlus()[11];
-      //  If cust is weekly
-      //     TxnDate = the next Sunday
-      //     DocNum = DocNum + adjusted date aprt
-      //     dueDate = TxnDate + terms
+      let dueDate = todayPlus()[11]; // relate this to terms
+      let custInvoicing = customers[customers.findIndex(cust => cust.custName === inv.custName)].invoicing
+      let custNick = customers[customers.findIndex(cust => cust.custName === inv.custName)].nickName
+      if (custInvoicing === "weekly"){
+          TxnDate = Sunday
+          DocNum = TxnDate.split("-")[1]+TxnDate.split("-")[2]+TxnDate.split("-")[0]+custNick
+          dueDate = Sunday15due
+          console.log("TaxDate",TxnDate)
+          console.log("DocNum",DocNum)
+          console.log("dueDate",dueDate)
+
+      }
+      
 
       let ponote;
       try {

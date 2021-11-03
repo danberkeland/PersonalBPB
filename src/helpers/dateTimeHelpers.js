@@ -119,7 +119,14 @@ export const daysOfTheWeek = () => {
     .plus({ days: (timeDelta + 6) % 7 });
   let SatSend = Sat.toString().split("T")[0];
 
-  return [SunSend, MonSend, TuesSend, WedSend, ThursSend, FriSend, SatSend];
+  let Sun15Due = DateTime.now()
+    .setZone("America/Los_Angeles")
+    .plus({ days: timeDelta+15 });
+  let Sun15dueSend = Sun15Due.toString().split("T")[0];
+
+
+
+  return [SunSend, MonSend, TuesSend, WedSend, ThursSend, FriSend, SatSend,Sun15dueSend];
 };
 
 export const daysOfBillingWeek = () => {

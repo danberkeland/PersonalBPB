@@ -9,6 +9,10 @@ import "jspdf-autotable";
 import { formatter } from "../../../../helpers/billingGridHelpers";
 
 
+import { listZones } from "../../../../graphql/queries";
+
+import { API, graphqlOperation } from "aws-amplify";
+
 import {
   buildProductArray,
   createRouteGridColumns,
@@ -51,6 +55,32 @@ const RouteGrid = ({ route,
 
   const [columns, setColumns] = useState([]);
   const [data, setData] = useState([]);
+  const [zones, setZones] = useState([]);
+
+  const fetchInfo = async (operation, opString, limit) => {
+    try {
+      let info = await API.graphql(
+        graphqlOperation(operation, {
+          limit: limit,
+        })
+      );
+      let list = info.data[opString].items;
+  
+      let noDelete = list.filter((li) => li["_deleted"] !== true);
+      return noDelete;
+    } catch {
+      return [];
+    }
+  };
+
+  const fetchZones = async () => {
+    try {
+      let zones = await fetchInfo(listZones, "listZones", "50");
+      setZones(zones);
+    } catch (error) {
+      console.log("error on fetching Zone List", error);
+    }
+  };
 
   const constructColumns = () => {
     const [products, customers, routes, standing, orders] = database;
@@ -84,6 +114,7 @@ const RouteGrid = ({ route,
   };
 
   useEffect(() => {
+    fetchZones()
     let col = constructColumns();
     let dat = constructData();
    
@@ -198,9 +229,10 @@ const RouteGrid = ({ route,
       let duedate = DateTime.now()
         .plus({ days: 15 })
         .toLocaleString(DateTime.DATE_FULL);
-
+     
       let head = [["Item", "Price", "Qty", "Total", "Returns"]];
       let body = orderList.filter((ord) => ord.custName === inv);
+      let custTest = body[0].custName
       body = body.map((ord) => [
         ord.prodName,
         formatter.format(Number(ratePull(ord))),
@@ -213,11 +245,25 @@ const RouteGrid = ({ route,
         ordTotal = ordTotal + Number(b[3])
       }
 
+      //  Construct deliv fee
+      let fee = 0
+      console.log("zones",zones)
+      try{
+        let custZone = customers[customers.findIndex(custo => custTest === custo.custName)].zoneName
+      for (let zone of zones){
+        if (custZone === zone.zoneName){
+          fee = Number(zone.zoneFee)
+        }}
+      } catch {}
+      
+      
 
+
+      let delivFee = ['Delivery Fee',formatter.format(fee),'1',formatter.format(fee)]
       let blank = ['','','','']
       let total = ["TOTAL",'','',formatter.format(ordTotal)]
 
-
+      body.push(delivFee)
       body.push(blank)
       body.push(total)
 
@@ -253,6 +299,7 @@ const RouteGrid = ({ route,
         margin: { top: 80, left: leftMargin, right: leftMargin },
         styles: { fontSize: 12 },
       });
+
 
       doc.autoTable({
         head: head,

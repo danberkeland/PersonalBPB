@@ -316,6 +316,10 @@ const RouteGrid = ({ route,
 
   const exportFullPdf = () => {
     const [products, customers, routes, standing, orders] = database;
+
+    /* Authenticate qv */
+
+    
     let init = true;
     let routeList = Array.from(new Set(orderList.map((ord) => ord.route)));
     const doc = new jsPDF("l", "mm", "a4");
@@ -374,8 +378,22 @@ const RouteGrid = ({ route,
     ThinnedCustFil = Array.from(ThinnedCustFil);
 
     
+      console.log("ThinnedList",ThinnedCustFil)
 
-    
+    /*
+    ----- new system -----
+
+    for name in Thinned List
+      grab PDF from QB if available
+      attach pdf to current doc
+
+    ----- new system -----
+
+
+
+
+
+
     for (let inv of ThinnedCustFil) {
       let leftMargin = 22;
       let rightColumn = 130;
@@ -474,9 +492,10 @@ const RouteGrid = ({ route,
       });
 
     }}
-      
+    */
     init = false
     }
+    
     doc.save("invoices.pdf");
     
   };

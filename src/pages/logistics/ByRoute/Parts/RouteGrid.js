@@ -6,7 +6,7 @@ import { Button } from "primereact/button";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 
-import { formatter } from "../../../../helpers/billingGridHelpers";
+import { PDFDocument } from 'pdf-lib'
 
 
 import { listZones } from "../../../../graphql/queries";
@@ -22,9 +22,12 @@ import {
 } from "../../../../helpers/delivGridHelpers";
 
 import styled from "styled-components";
-import { sortAtoZDataByIndex } from "../../../../helpers/sortDataHelpers";
+import { listInfoQBAuths } from "../../../../graphql/queries";
+import fs from 'fs';
 
 const { DateTime } = require("luxon");
+const axios = require("axios").default;
+
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -118,7 +121,7 @@ const RouteGrid = ({ route,
     let col = constructColumns();
     let dat = constructData();
    
-    //sortAtoZDataByIndex(dat,"delivOrder")
+    
     
     setColumns(col ? col : []);
     setData(dat ? dat : []);
@@ -171,335 +174,84 @@ const RouteGrid = ({ route,
   }
   
 
-  const exportInvPdf = () => {
+  const exportInvPdf = async () => {
     const [products, customers, routes, standing, orders] = database;
-    let invListFilt = orderList.filter((ord) => ord.route === route);
-    let custFil = invListFilt.map((inv) => inv.custName);
-    custFil = new Set(custFil);
-    custFil = Array.from(custFil);
-    let customersCompare = customers.map((cust) => cust.custName);
-    let ordersToInv = orderList.filter(
-      (ord) =>
-        custFil.includes(ord.custName) &&
-        customersCompare.includes(ord.custName)
+
+    let access;
+    let val = await axios.get(
+      "https://28ue1wrzng.execute-api.us-east-2.amazonaws.com/done"
     );
-    ordersToInv = ordersToInv.filter(
-      (ord) =>
-        customers[customers.findIndex((cust) => cust.custName === ord.custName)]
-          .toBePrinted === true
-    );
-    let ThinnedCustFil = ordersToInv.map((ord) => ord.custName);
-    ThinnedCustFil = new Set(ThinnedCustFil);
-    ThinnedCustFil = Array.from(ThinnedCustFil);
 
-    const doc = new jsPDF("0", "mm", "a4");
-
-    let init = true;
-    for (let inv of ThinnedCustFil) {
-      let leftMargin = 22;
-      let rightColumn = 130;
-
-      let custInd = customers.findIndex((cust) => cust.custName === inv);
-
-      let addr1 = customers[custInd].addr1;
-      let addr2 = customers[custInd].addr2;
-      let phone = customers[custInd].phone;
-
-      let dateSplit = delivDate.split("-");
-      let newDate = dateSplit[1] + dateSplit[2] + dateSplit[0];
-      let invNum =
-        newDate +
-        customers[customers.findIndex((cst) => cst.custName === inv)].nickName;
-      let ponote;
-      try {
-        ponote =
-          orders[
-            orders.findIndex(
-              (ord) => ord.custName === customers[custInd].custName
-            )
-          ].ponote;
-        if (ponote === undefined) {
-          ponote = "";
-        }
-      } catch {
-        ponote = "";
-      }
-
-      let delivdate = DateTime.now().toLocaleString(DateTime.DATE_FULL);
-      let duedate = DateTime.now()
-        .plus({ days: 15 })
-        .toLocaleString(DateTime.DATE_FULL);
-     
-      let head = [["Item", "Price", "Qty", "Total", "Returns"]];
-      let body = orderList.filter((ord) => ord.custName === inv);
-      let custTest = body[0].custName
-      body = body.map((ord) => [
-        ord.prodName,
-        formatter.format(Number(ratePull(ord))),
-        ord.qty,
-        (Number(ratePull(ord)) * Number(ord.qty)).toFixed(2),
-      ]);
-
-      let ordTotal = 0
-      for (let b of body){
-        ordTotal = ordTotal + Number(b[3])
-      }
-
-      //  Construct deliv fee
-      let fee = 0
-      console.log("zones",zones)
-      try{
-        let custZone = customers[customers.findIndex(custo => custTest === custo.custName)].zoneName
-      for (let zone of zones){
-        if (custZone === zone.zoneName){
-          fee = Number(zone.zoneFee)
-        }}
-      } catch {}
-      
-      
-
-
-      let delivFee = ['Delivery Fee',formatter.format(fee),'1',formatter.format(fee)]
-      let blank = ['','','','']
-      let total = ["TOTAL",'','',formatter.format(ordTotal)]
-
-      body.push(delivFee)
-      body.push(blank)
-      body.push(total)
-
-      let dup
-      customers[custInd].printDuplicate===true ? dup = 2 : dup = 1
-
-      for (let i=0; i<dup; i++){
-      !init && doc.addPage("0", "mm", "a4");
-
-      doc.setFontSize(26);
-      doc.text(leftMargin, 26, "Back Porch Bakery");
-      doc.setFontSize(14);
-      doc.text(
-        leftMargin,
-        32,
-        "849 West St., San Luis Obispo, CA 93405 (805)242-4403"
+    if (val.data) {
+      let authData = await API.graphql(
+        graphqlOperation(listInfoQBAuths, { limit: "50" })
       );
-      doc.setFontSize(14);
-      doc.text(rightColumn, 46, `Customer:`);
-      doc.setFontSize(12);
-      doc.text(rightColumn, 56, `${inv}`);
-      doc.text(rightColumn, 62, `${addr1}`);
-      doc.text(rightColumn, 68, `${addr2}`);
-      doc.text(rightColumn, 74, `${phone}`);
+      access = authData.data.listInfoQBAuths.items[0].infoContent;
 
-      doc.autoTable({
-        body: [
-          ["Invoice #:", `${invNum}`],
-          ["PO #:", `${ponote}`],
-          ["Delivery Date:", `${delivdate}`],
-          ["Due Date:", `${duedate}`],
-        ],
-        margin: { top: 80, left: leftMargin, right: leftMargin },
-        styles: { fontSize: 12 },
-      });
-
-
-      doc.autoTable({
-        head: head,
-        body: body,
-        margin: { top: 110, left: leftMargin, right: leftMargin },
-        styles: { fontSize: 12 },
-      });
-
-      init = false;
+      console.log(access);
+    } else {
+      console.log("not valid QB Auth");
     }
-  }
-    doc.save("invoices.pdf");
-  };
 
-  const exportFullPdf = () => {
-    const [products, customers, routes, standing, orders] = database;
-
-    /* Authenticate qv */
-
-    
+    const doc = await PDFDocument.create()
     let init = true;
     let routeList = Array.from(new Set(orderList.map((ord) => ord.route)));
-    const doc = new jsPDF("l", "mm", "a4");
     for (let rt of routeList) {
-      let columns;
-      if (orderList) {
-        let buildGridSetUp = orderList.filter((ord) => ord["route"] === rt);
-
-        let gridToEdit = buildGridSetUp.filter((grd) => grd["route"] === rt);
-        let listOfProducts = buildProductArray(gridToEdit, products);
-
-        columns = createRouteGridColumns(listOfProducts);
-      }
-      columns = columns.map((col) => ({
-        title: col.header,
-        dataKey: col.field,
-      }));
-      let qtyGrid;
-     
-      if (orderList) {
-        let buildGridSetUp = orderList.filter((ord) => ord["route"] === rt);
-        
-        
-        let listOfCustomers = createListOfCustomers(buildGridSetUp, rt);
-        qtyGrid = createQtyGrid(listOfCustomers, buildGridSetUp);
-        
-      }
-
-      !init && doc.addPage("a4",'l');
-      doc.setFontSize(20);
-      doc.text(10, 20, rt);
-      doc.autoTable({
-        columns: columns,
-        body: qtyGrid,
-        margin: { top: 26 },
-        styles: { fontSize: 12 },
-      });
-  
+      
       let invListFilt = orderList.filter((ord) => ord.route === rt);
-    let custFil = invListFilt.map((inv) => inv.custName);
-    custFil = new Set(custFil);
-    custFil = Array.from(custFil);
-    let customersCompare = customers.map((cust) => cust.custName);
-    let ordersToInv = orderList.filter(
-      (ord) =>
-        custFil.includes(ord.custName) &&
-        customersCompare.includes(ord.custName)
-    );
-    ordersToInv = ordersToInv.filter(
-      (ord) =>
-        customers[customers.findIndex((cust) => cust.custName === ord.custName)]
-          .toBePrinted === true
-    );
-    let ThinnedCustFil = ordersToInv.map((ord) => ord.custName);
-    ThinnedCustFil = new Set(ThinnedCustFil);
-    ThinnedCustFil = Array.from(ThinnedCustFil);
-
-    
-      console.log("ThinnedList",ThinnedCustFil)
-
-    /*
-    ----- new system -----
-
-    for name in Thinned List
-      grab PDF from QB if available
-      attach pdf to current doc
-
-    ----- new system -----
-
-
-
-
-
-
-    for (let inv of ThinnedCustFil) {
-      let leftMargin = 22;
-      let rightColumn = 130;
-
-      let custInd = customers.findIndex((cust) => cust.custName === inv);
-
-      let addr1 = customers[custInd].addr1;
-      let addr2 = customers[custInd].addr2;
-      let phone = customers[custInd].phone;
-
-      let dateSplit = delivDate.split("-");
-      let newDate = dateSplit[1] + dateSplit[2] + dateSplit[0];
-      let invNum =
-        newDate +
-        customers[customers.findIndex((cst) => cst.custName === inv)].nickName;
-      let ponote;
-      try {
-        ponote =
-          orders[
-            orders.findIndex(
-              (ord) => ord.custName === customers[custInd].custName
-            )
-          ].ponote;
-        if (ponote === undefined) {
-          ponote = "";
-        }
-      } catch {
-        ponote = "";
-      }
-
-      let delivdate = DateTime.now().toLocaleString(DateTime.DATE_FULL);
-      let duedate = DateTime.now()
-        .plus({ days: 15 })
-        .toLocaleString(DateTime.DATE_FULL);
-
-      let head = [["Item", "Price", "Qty", "Total", "Returns"]];
-      let body = orderList.filter((ord) => ord.custName === inv);
-      body = body.map((ord) => [
-        ord.prodName,
-        formatter.format(Number(ratePull(ord))),
-        ord.qty,
-        (Number(ratePull(ord)) * Number(ord.qty)).toFixed(2),
-      ]);
-
-      let ordTotal = 0
-      for (let b of body){
-        ordTotal = ordTotal + Number(b[3])
-      }
-
-
-      let blank = ['','','','']
-      let total = ["TOTAL",'','',formatter.format(ordTotal)]
-
-
-      body.push(blank)
-      body.push(total)
-
-      let dup
-      customers[custInd].printDuplicate===true ? dup = 2 : dup = 1
-
-      for (let i=0; i<dup; i++){
-      doc.addPage('a4','portrait');
-
-      doc.setFontSize(26);
-      doc.text(leftMargin, 26, "Back Porch Bakery");
-      doc.setFontSize(14);
-      doc.text(
-        leftMargin,
-        32,
-        "849 West St., San Luis Obispo, CA 93405 (805)242-4403"
+      let custFil = invListFilt.map((inv) => inv.custName);
+      custFil = new Set(custFil);
+      custFil = Array.from(custFil);
+      let customersCompare = customers.map((cust) => cust.custName);
+      let ordersToInv = orderList.filter(
+        (ord) =>
+          custFil.includes(ord.custName) &&
+          customersCompare.includes(ord.custName)
       );
-      doc.setFontSize(14);
-      doc.text(rightColumn, 46, `Customer:`);
-      doc.setFontSize(12);
-      doc.text(rightColumn, 56, `${inv}`);
-      doc.text(rightColumn, 62, `${addr1}`);
-      doc.text(rightColumn, 68, `${addr2}`);
-      doc.text(rightColumn, 74, `${phone}`);
+      ordersToInv = ordersToInv.filter(
+        (ord) =>
+          customers[
+            customers.findIndex((cust) => cust.custName === ord.custName)
+          ].toBePrinted === true
+      );
+      let ThinnedCustFil = ordersToInv.map((ord) => ord.custName);
+      ThinnedCustFil = new Set(ThinnedCustFil);
+      ThinnedCustFil = Array.from(ThinnedCustFil);
 
-      doc.autoTable({
-        body: [
-          ["Invoice #:", `${invNum}`],
-          ["PO #:", `${ponote}`],
-          ["Delivery Date:", `${delivdate}`],
-          ["Due Date:", `${duedate}`],
-        ],
-        margin: { top: 80, left: leftMargin, right: leftMargin },
-        styles: { fontSize: 12 },
-      });
+      for (let thin of ThinnedCustFil) {
+        let invPDF;
+        console.log("gonna try "+thin)
+        try {
+          let custQBID =
+            customers[customers.findIndex((cust) => cust.custName === thin)]
+              .qbID;
+          let txnDate = delivDate;
+          console.log("gonna try to get a pdf")
+          try {
+            invPDF = await axios.post(
+              "https://47i7i665dd.execute-api.us-east-2.amazonaws.com/done",
+              {
+                accessCode: "Bearer " + access,
+                delivDate: txnDate,
+                custID: custQBID,
+              }
+            );
+            window.open("data:application/pdf,"+invPDF.data);
+            console.log(invPDF)
+          } catch {}
+         
+          
 
-      doc.autoTable({
-        head: head,
-        body: body,
-        margin: { top: 110, left: leftMargin, right: leftMargin },
-        styles: { fontSize: 12 },
-      });
-
-    }}
-    */
-    init = false
+          
+         
+        } catch {}
+      }
     }
-    
-    doc.save("invoices.pdf");
+   
     
   };
-  
+
+
   const header = (
     <ButtonContainer>
       <ButtonWrapper>
@@ -519,14 +271,7 @@ const RouteGrid = ({ route,
         >
           Print Invoices
         </Button>
-        <Button
-          type="button"
-          onClick={exportFullPdf}
-          className="p-button-success"
-          data-pr-tooltip="PDF"
-        >
-          Print Full Delivery Lists
-        </Button>
+       
       </ButtonWrapper>
     </ButtonContainer>
   );

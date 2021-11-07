@@ -50,8 +50,8 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
   }, []);
 
   useEffect(() => {
-    console.log("delivDate",delivDate)
-  })
+    console.log("dailyInvoices",dailyInvoices)
+  },[dailyInvoices])
 
   const setDate = (date) => {
     const dt2 = DateTime.fromJSDate(date);
@@ -75,7 +75,9 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
     } else {
       console.log("not valid QB Auth");
     }
+
     
+
     for (let inv of dailyInvoices) {
       try {
         let total = 0;
@@ -240,7 +242,7 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
         console.log("invID", invID.data.Id);
         console.log("SyncToken", invID.data.SyncToken);
 
-        if (invID.data !== null) {
+        if (Number(invID.data.Id)>0) {
           console.log("yes");
           custSetup.Id = invID.data.Id;
           custSetup.SyncToken = invID.data.SyncToken;
@@ -253,18 +255,19 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
           //          axios post to update inv with body.  Return 200
         } else {
           console.log("no");
+          try {
+            invID = await axios.post(
+              "https://9u7sp5khrc.execute-api.us-east-2.amazonaws.com/done",
+              {
+                accessCode: "Bearer " + access,
+                invInfo: custSetup,
+              }
+            );
+          } catch {
+            console.log("Error creating Invoice " + DocNum);
+          }
         }
-        try {
-          invID = await axios.post(
-            "https://9u7sp5khrc.execute-api.us-east-2.amazonaws.com/done",
-            {
-              accessCode: "Bearer " + access,
-              invInfo: custSetup,
-            }
-          );
-        } catch {
-          console.log("Error creating Invoice " + DocNum);
-        }
+        
       } catch {}
     }
     setIsLoading(false);

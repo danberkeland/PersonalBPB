@@ -122,6 +122,7 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
 
   const exportListPdf = () => {
     const doc = new jsPDF("l", "mm", "a4");
+    console.log("doc",doc)
     doc.setFontSize(20);
     doc.text(10, 20, "Delivery Sheet");
     doc.autoTable({
@@ -191,6 +192,76 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
     setIsLoading(false);
   };
 
+  
+
+  const exportFullPdf = () => {
+    const [products, customers, routes, standing, orders] = database;
+    let init = true;
+    let routeList = Array.from(new Set(orderList.map((ord) => ord.route)));
+    const doc = new jsPDF("l", "mm", "a4");
+    for (let rt of routeList) {
+      let columns;
+      if (orderList) {
+        let buildGridSetUp = orderList.filter((ord) => ord["route"] === rt);
+
+        let gridToEdit = buildGridSetUp.filter((grd) => grd["route"] === rt);
+        let listOfProducts = buildProductArray(gridToEdit, products);
+
+        columns = createRouteGridColumns(listOfProducts);
+      }
+      columns = columns.map((col) => ({
+        title: col.header,
+        dataKey: col.field,
+      }));
+      let qtyGrid;
+     
+      if (orderList) {
+        let buildGridSetUp = orderList.filter((ord) => ord["route"] === rt);
+        
+        
+        let listOfCustomers = createListOfCustomers(buildGridSetUp, rt);
+        qtyGrid = createQtyGrid(listOfCustomers, buildGridSetUp);
+        
+      }
+
+      !init && doc.addPage("a4",'l');
+      doc.setFontSize(20);
+      doc.text(10, 20, rt);
+      doc.autoTable({
+        columns: columns,
+        body: qtyGrid,
+        margin: { top: 26 },
+        styles: { fontSize: 12 },
+      });
+  
+      let invListFilt = orderList.filter((ord) => ord.route === rt);
+    let custFil = invListFilt.map((inv) => inv.custName);
+    custFil = new Set(custFil);
+    custFil = Array.from(custFil);
+    let customersCompare = customers.map((cust) => cust.custName);
+    let ordersToInv = orderList.filter(
+      (ord) =>
+        custFil.includes(ord.custName) &&
+        customersCompare.includes(ord.custName)
+    );
+    ordersToInv = ordersToInv.filter(
+      (ord) =>
+        customers[customers.findIndex((cust) => cust.custName === ord.custName)]
+          .toBePrinted === true
+    );
+    let ThinnedCustFil = ordersToInv.map((ord) => ord.custName);
+    ThinnedCustFil = new Set(ThinnedCustFil);
+    ThinnedCustFil = Array.from(ThinnedCustFil);
+
+    
+
+    init = false
+    }
+    doc.save("invoices.pdf");
+    
+  };
+  
+
   const header = (
     <ButtonContainer>
       <Toast ref={toast} />
@@ -210,6 +281,14 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
           data-pr-tooltip="PDF"
         >
           Print Invoices
+        </Button>
+        <Button
+          type="button"
+          onClick={exportFullPdf}
+          className="p-button-success"
+          data-pr-tooltip="PDF"
+        >
+          Print All Routes
         </Button>
       </ButtonWrapper>
     </ButtonContainer>

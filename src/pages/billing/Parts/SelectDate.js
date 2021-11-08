@@ -15,12 +15,11 @@ import {
   daysOfTheWeek,
 } from "../../../helpers/dateTimeHelpers";
 
-import { listInfoQBAuths } from "../../../graphql/queries";
-import { updateProduct } from "../../../graphql/mutations";
-
-import { API, graphqlOperation } from "aws-amplify";
-import { checkQBValidation } from "../../../helpers/QBHelpers";
-
+import {
+  checkQBValidation,
+  createQBInvoice,
+  getQBInvIDandSyncToken,
+} from "../../../helpers/QBHelpers";
 
 const { DateTime } = require("luxon");
 const axios = require("axios").default;
@@ -41,82 +40,86 @@ let weekAgo = todayPlus()[5];
 let Sunday = daysOfTheWeek()[0];
 let Sunday15due = daysOfTheWeek()[7];
 
-const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
+
+const SelectDate = ({ database, dailyInvoices }) => {
   const [products, customers, routes, standing, orders] = database;
   const { delivDate, setDelivDate } = useContext(CurrentDataContext);
   const { setIsLoading } = useContext(ToggleContext);
-  
+
   useEffect(() => {
     setDelivDate(today);
   }, []);
 
   useEffect(() => {
-    console.log("dailyInvoices",dailyInvoices)
-  },[dailyInvoices])
+    console.log("dailyInvoices", dailyInvoices);
+  }, [dailyInvoices]);
 
   const setDate = (date) => {
     const dt2 = DateTime.fromJSDate(date);
     setDelivDate(dt2.toFormat("yyyy-MM-dd"));
   };
 
+  const createQBItem = (count,ord,qbID) => {
+    return {
+      Id: count.toString() + delivDate.replace(/-/g, ""),
+
+      Description: ord.prodName,
+      Amount: Number(ord.rate) * Number(ord.qty),
+      DetailType: "SalesItemLineDetail",
+      SalesItemLineDetail: {
+        ServiceDate: delivDate,
+
+        UnitPrice: ord.rate,
+        Qty: ord.qty,
+        ItemRef: {
+          name: ord.prodName,
+          value: qbID,
+        },
+        ItemAccountRef: {
+          name: "Uncategorized Income",
+        },
+        TaxCodeRef: {
+          value: "TAX",
+        },
+      },
+    };
+  }
+
   const exportCSV = async () => {
     setIsLoading(true);
-    let access = await checkQBValidation()
-    
+    let access = await checkQBValidation();
+
     for (let inv of dailyInvoices) {
       try {
-        let total = 0;
-
-        let custOrders = [];
         let count = 0;
+        let total = 0;
+        let custOrders = [];
+        
         for (let ord of inv.orders) {
           count = count + 1;
           total = total + Number(ord.rate) * Number(ord.qty);
+          let thisProd = products[
+            products.findIndex((pro) => pro.prodName === ord.prodName)
+          ]
           let qbID = null;
           try {
             qbID =
-              products[
-                products.findIndex((pro) => pro.prodName === ord.prodName)
-              ].qbID;
+              thisProd.qbID;
           } catch {}
 
-          let item = {
-            Id: count.toString() + delivDate.replace(/-/g, ""),
-
-            Description: ord.prodName,
-            Amount: Number(ord.rate) * Number(ord.qty),
-            DetailType: "SalesItemLineDetail",
-            SalesItemLineDetail: {
-              ServiceDate: delivDate,
-
-              UnitPrice: ord.rate,
-              Qty: ord.qty,
-              ItemRef: {
-                name: ord.prodName,
-                value: qbID,
-              },
-              ItemAccountRef: {
-                name: "Uncategorized Income",
-              },
-              TaxCodeRef: {
-                value: "TAX",
-              },
-            },
-          };
+          let item = createQBItem(count,ord,qbID)
           custOrders.push(item);
         }
 
         let TxnDate = delivDate;
         let DocNum = inv.invNum;
         let dueDate = todayPlus()[11]; // relate this to terms
-        let custInvoicing =
+        let custo =
           customers[
             customers.findIndex((cust) => cust.custName === inv.custName)
-          ].invoicing;
-        let custNick =
-          customers[
-            customers.findIndex((cust) => cust.custName === inv.custName)
-          ].nickName;
+          ];
+        let custInvoicing = custo.invoicing;
+        let custNick = custo.nickName;
         if (custInvoicing === "weekly") {
           TxnDate = Sunday;
           DocNum =
@@ -136,7 +139,7 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
             orders[
               orders.findIndex(
                 (order) =>
-                  order.delivDate === delivDate &&
+                  order.delivDate === convertDatetoBPBDate(delivDate) &&
                   order.custName === inv.custName
               )
             ].PONote;
@@ -149,17 +152,14 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
         let zipCode;
         let terms;
         let custEmail;
-        let ind = customers.findIndex(
-          (custom) => custom.custName === inv.custName
-        );
 
         try {
-          addr1 = customers[ind].addr1;
-          addr2 = customers[ind].city;
+          addr1 = custo.addr1;
+          addr2 = custo.city;
           state = "CA";
-          zipCode = customers[ind].zip;
-          terms = customers[ind].terms;
-          custEmail = customers[ind].email;
+          zipCode = custo.zip;
+          terms = custo.terms;
+          custEmail = custo.email;
         } catch {}
 
         let custSetup = {
@@ -209,29 +209,16 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
           },
         };
 
-        console.log(custSetup);
-
         let invID;
-        console.log("DocNum", DocNum);
-        try {
-          invID = await axios.post(
-            "https://unfaeakk8g.execute-api.us-east-2.amazonaws.com/done",
-            {
-              accessCode: "Bearer " + access,
-              doc: DocNum,
-            }
-          );
-        } catch {
-          console.log("Error grabbing invID for " + DocNum);
-        }
-        console.log("invID", invID.data.Id);
-        console.log("SyncToken", invID.data.SyncToken);
 
-        if (Number(invID.data.Id)>0) {
+        invID = await getQBInvIDandSyncToken(access, DocNum);
+
+        if (Number(invID.data.Id) > 0) {
           console.log("yes");
           custSetup.Id = invID.data.Id;
           custSetup.SyncToken = invID.data.SyncToken;
           custSetup.sparse = true;
+          createQBInvoice(access, custSetup);
           //  if customer is weekly -
           //          read full invoice
           //          if order lines from current date - remove
@@ -240,71 +227,11 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
           //          axios post to update inv with body.  Return 200
         } else {
           console.log("no");
-          try {
-            invID = await axios.post(
-              "https://9u7sp5khrc.execute-api.us-east-2.amazonaws.com/done",
-              {
-                accessCode: "Bearer " + access,
-                invInfo: custSetup,
-              }
-            );
-          } catch {
-            console.log("Error creating Invoice " + DocNum);
-          }
+          createQBInvoice(access, custSetup);
         }
-        
       } catch {}
     }
     setIsLoading(false);
-  };
-
-  const showCode = () => {
-    let win = "/" + window.location.href.split("/")[4];
-    confirmDialog({
-      message: win,
-      header: "Confirmation",
-      icon: "pi pi-exclamation-triangle",
-    });
-  };
-
-  const createQBCodes = async () => {
-    // Refresh QB Auth
-    let access = await checkQBValidation()
-    
-
-    for (let prod of products) {
-      let product = prod.prodName;
-      let qbID;
-
-      try {
-        qbID = await axios.post(
-          "https://2ai471mlv6.execute-api.us-east-2.amazonaws.com/done",
-          {
-            accessCode: "Bearer " + access,
-            produ: product,
-          }
-        );
-      } catch {
-        console.log("Error grabbing custNum for " + product);
-      }
-
-      let prodId =
-        products[products.findIndex((prodo) => product === prodo.prodName)].id;
-
-      let updateDetails = {
-        id: prodId,
-        qbID: qbID.data,
-      };
-
-      try {
-        await API.graphql(
-          graphqlOperation(updateProduct, { input: { ...updateDetails } })
-        );
-        console.log(product, "Successful update");
-      } catch (error) {
-        console.log(error, "Failed Update");
-      }
-    }
   };
 
   return (
@@ -319,21 +246,10 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
             onChange={(e) => setDate(e.value)}
           />
         </div>
-        {/*
-        <Button className="p-button-success" onClick={exportCSV}>
-          Auth QB
-        </Button>*/}
+
         <Button className="p-button-success" onClick={exportCSV}>
           EXPORT CSV
         </Button>
-        {/*}
-        <Button className="p-button-success" onClick={createQBCodes}>
-          Create QB Codes
-        </Button>
-        
-        <Button className="p-button-success" onClick={exportCSV}>
-          PDF
-      </Button>*/}
       </BasicContainer>
     </React.Fragment>
   );

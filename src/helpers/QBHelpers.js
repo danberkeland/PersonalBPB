@@ -63,3 +63,38 @@ export const createQBInvItem = (count, ord, qbID, delivDate) => {
     } catch {}
     return qbID;
   };
+
+
+  export const getQBInvIDandSyncToken = async (access, docNum) => {
+    let invID
+    try {
+        invID = await axios.post(
+          "https://unfaeakk8g.execute-api.us-east-2.amazonaws.com/done",
+          {
+            accessCode: "Bearer " + access,
+            doc: docNum,
+          }
+        );
+      } catch {
+        console.log("Error grabbing invID for " + docNum);
+      }
+    return invID
+  }
+
+
+
+  export const createQBInvoice = async (access, custSetup) => {
+    let invID
+    try {
+        invID = await axios.post(
+          "https://9u7sp5khrc.execute-api.us-east-2.amazonaws.com/done",
+          {
+            accessCode: "Bearer " + access,
+            invInfo: custSetup,
+          }
+        );
+      } catch {
+        console.log("Error creating Invoice " + custSetup.CustomerRef.name);
+      }
+    return invID
+  }

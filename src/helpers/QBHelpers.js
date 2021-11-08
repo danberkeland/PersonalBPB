@@ -98,3 +98,46 @@ export const createQBInvItem = (count, ord, qbID, delivDate) => {
       }
     return invID
   }
+
+
+  export const createQBCustomer = async (access, QBDetails) => {
+    let cust
+    try {
+      cust = await axios
+        .post("https://brzqs4z7y3.execute-api.us-east-2.amazonaws.com/done", {
+          accessCode: "Bearer " + access,
+          itemInfo: QBDetails,
+          itemType: "Customer"
+        })
+        .then((data) => 
+          data.data
+        );
+    } catch {
+      console.log("Error creating Item ");
+    }
+    return cust
+  }
+
+
+  export const getQBProdSyncToken = async (access,updateDetails) => {
+    let SyncToken
+    try {
+      await axios
+        .post("https://sntijvwmv6.execute-api.us-east-2.amazonaws.com/done", {
+          accessCode: "Bearer " + access,
+          itemInfo: updateDetails.qbID,
+          itemType: "Customer"
+        })
+        .then((data) => {
+          SyncToken = data.data;
+        });
+    } catch {
+      console.log("Error creating Item " + updateDetails.custName);
+    }
+    return SyncToken
+  }
+
+
+
+
+  

@@ -16,10 +16,11 @@ import {
 import { Button } from "primereact/button";
 
 import { API, graphqlOperation } from "aws-amplify";
-import { listInfoQBAuths } from "../../../graphql/queries";
-import { checkQBValidation } from "../../../helpers/QBHelpers";
-
-const axios = require("axios").default;
+import {
+  checkQBValidation,
+  createQBCustomer,
+  getQBProdSyncToken,
+} from "../../../helpers/QBHelpers";
 
 const ButtonBox = styled.div`
   display: flex;
@@ -60,7 +61,7 @@ const Buttons = ({ selectedCustomer, setSelectedCustomer }) => {
       custName = value;
       swal(`Enter Nickname for ${value}:`, {
         content: "input",
-      }).then(async(value) => {
+      }).then(async (value) => {
         nickName = value;
         addDetails = {
           qbID: newID,
@@ -80,10 +81,10 @@ const Buttons = ({ selectedCustomer, setSelectedCustomer }) => {
           terms: "",
           invoicing: "",
           latestFirstDeliv: 10,
-          latestFinalDeliv: 10
+          latestFinalDeliv: 10,
         };
-       
-        setIsLoading(true)
+
+        setIsLoading(true);
         await createQBCust(addDetails).then((data) => {
           newID = data;
         });
@@ -96,60 +97,44 @@ const Buttons = ({ selectedCustomer, setSelectedCustomer }) => {
   };
 
   const createQBCust = async (addDetails, SyncToken) => {
-    let Sync = "0"
-    if (SyncToken){
-      Sync = SyncToken
+    let Sync = "0";
+    if (SyncToken) {
+      Sync = SyncToken;
     }
-    console.log("Sync",Sync)
-    let access = await checkQBValidation()
-    
+    console.log("Sync", Sync);
+    let access = await checkQBValidation();
 
     let QBDetails = {
-      FullyQualifiedName: addDetails.custName, 
+      FullyQualifiedName: addDetails.custName,
       PrimaryEmailAddr: {
-        Address: addDetails.email
-      }, 
-      DisplayName: addDetails.custName, 
+        Address: addDetails.email,
+      },
+      DisplayName: addDetails.custName,
       PrimaryPhone: {
-        FreeFormNumber: addDetails.phone
-      }, 
-      CompanyName: addDetails.custName, 
+        FreeFormNumber: addDetails.phone,
+      },
+      CompanyName: addDetails.custName,
       BillAddr: {
-        CountrySubDivisionCode: "CA", 
-        City: addDetails.city, 
-        PostalCode: addDetails.zip, 
+        CountrySubDivisionCode: "CA",
+        City: addDetails.city,
+        PostalCode: addDetails.zip,
         Line1: addDetails.addr1,
-        Line2: addDetails.addr2, 
-        
-        Country: "USA"
-      }, 
-      sparse: false,
-      SyncToken: Sync
-    }
+        Line2: addDetails.addr2,
 
-    try{
-      if(Number(addDetails.qbID)>0){
-        QBDetails.Id = addDetails.qbID
-      }
-    } catch {}
-    console.log("QBDetails",QBDetails)
-    let res;
+        Country: "USA",
+      },
+      sparse: false,
+      SyncToken: Sync,
+    };
 
     try {
-      await axios
-        .post("https://brzqs4z7y3.execute-api.us-east-2.amazonaws.com/done", {
-          accessCode: "Bearer " + access,
-          itemInfo: QBDetails,
-          itemType: "Customer"
-        })
-        .then((data) => {
-          res = data.data;
-        });
-    } catch {
-      console.log("Error creating Item " + addDetails.custName);
-    }
+      if (Number(addDetails.qbID) > 0) {
+        QBDetails.Id = addDetails.qbID;
+      }
+    } catch {}
+    console.log("QBDetails", QBDetails);
 
-    return res;
+    return createQBCustomer(access, QBDetails);
   };
 
   const createCust = async (addDetails) => {
@@ -157,7 +142,6 @@ const Buttons = ({ selectedCustomer, setSelectedCustomer }) => {
       await API.graphql(
         graphqlOperation(createCustomer, { input: { ...addDetails } })
       );
-      
 
       setCustLoaded(false);
     } catch (error) {
@@ -167,8 +151,8 @@ const Buttons = ({ selectedCustomer, setSelectedCustomer }) => {
 
   const updateCust = async () => {
     let newID;
-    let SyncToken;
-    setIsLoading(true)
+
+    setIsLoading(true);
 
     const updateDetails = {
       qbID: selectedCustomer["qbID"],
@@ -195,37 +179,20 @@ const Buttons = ({ selectedCustomer, setSelectedCustomer }) => {
     };
     console.log(updateDetails);
 
-    let access = await checkQBValidation()
-    
-
-    try {
-      await axios
-        .post("https://sntijvwmv6.execute-api.us-east-2.amazonaws.com/done", {
-          accessCode: "Bearer " + access,
-          itemInfo: updateDetails.qbID,
-          itemType: "Customer"
-        })
-        .then((data) => {
-          SyncToken = data.data;
-        });
-    } catch {
-      console.log("Error creating Item " + updateDetails.custName);
-    }
-    
-
+    let access = await checkQBValidation();
+    let SyncToken = await getQBProdSyncToken(access, updateDetails);
     await createQBCust(updateDetails, SyncToken).then((data) => {
       newID = data;
     });
 
     updateDetails.qbID = newID;
-    console.log("newID",newID)
-    
+
     try {
       await API.graphql(
         graphqlOperation(updateCustomer, { input: { ...updateDetails } })
       );
       setCustLoaded(false);
-      setIsLoading(false)
+      setIsLoading(false);
     } catch (error) {
       console.log("error on updating products", error);
     }

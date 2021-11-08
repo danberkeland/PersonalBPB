@@ -1,10 +1,11 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 
 import { CurrentDataContext } from "../../../dataContexts/CurrentDataContext";
 import { ToggleContext } from "../../../dataContexts/ToggleContext";
 
 import { Calendar } from "primereact/calendar";
 import { Button } from "primereact/button";
+import { Toast } from 'primereact/toast';
 
 import styled from "styled-components";
 
@@ -39,6 +40,12 @@ const SelectDate = ({ database, dailyInvoices }) => {
   const [products, customers, routes, standing, orders] = database;
   const { delivDate, setDelivDate } = useContext(CurrentDataContext);
   const { setIsLoading } = useContext(ToggleContext);
+
+  const toast = useRef(null);
+
+  const showSuccess = (invNum) => {
+    toast.current.show({severity:'success', summary: 'Invoice created', detail:invNum+' successfully entered', life: 3000});
+}
 
   useEffect(() => {
     setDelivDate(today);
@@ -219,6 +226,7 @@ const SelectDate = ({ database, dailyInvoices }) => {
             console.log("no");
           }
           createQBInvoice(access, custSetup);
+          showSuccess(DocNum)
         }
       } catch {}
     }
@@ -227,6 +235,7 @@ const SelectDate = ({ database, dailyInvoices }) => {
 
   return (
     <React.Fragment>
+      <Toast ref={toast} />
       <BasicContainer>
         <div className="p-field p-col-12 p-md-4">
           <label htmlFor="delivDate">Pick Delivery Date: </label>

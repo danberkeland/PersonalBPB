@@ -35,7 +35,6 @@ let today = todayPlus()[0];
 let Sunday = daysOfTheWeek()[0];
 let Sunday15due = daysOfTheWeek()[7];
 
-
 const SelectDate = ({ database, dailyInvoices }) => {
   const [products, customers, routes, standing, orders] = database;
   const { delivDate, setDelivDate } = useContext(CurrentDataContext);
@@ -54,7 +53,7 @@ const SelectDate = ({ database, dailyInvoices }) => {
     setDelivDate(dt2.toFormat("yyyy-MM-dd"));
   };
 
-  const createQBItem = (count,ord,qbID) => {
+  const createQBItem = (count, ord, qbID) => {
     return {
       Id: count.toString() + delivDate.replace(/-/g, ""),
 
@@ -78,7 +77,7 @@ const SelectDate = ({ database, dailyInvoices }) => {
         },
       },
     };
-  }
+  };
 
   const exportCSV = async () => {
     setIsLoading(true);
@@ -89,20 +88,20 @@ const SelectDate = ({ database, dailyInvoices }) => {
         let count = 0;
         let total = 0;
         let custOrders = [];
-        
+
         for (let ord of inv.orders) {
           count = count + 1;
           total = total + Number(ord.rate) * Number(ord.qty);
-          let thisProd = products[
-            products.findIndex((pro) => pro.prodName === ord.prodName)
-          ]
+          let thisProd =
+            products[
+              products.findIndex((pro) => pro.prodName === ord.prodName)
+            ];
           let qbID = null;
           try {
-            qbID =
-              thisProd.qbID;
+            qbID = thisProd.qbID;
           } catch {}
 
-          let item = createQBItem(count,ord,qbID)
+          let item = createQBItem(count, ord, qbID);
           custOrders.push(item);
         }
 
@@ -203,23 +202,24 @@ const SelectDate = ({ database, dailyInvoices }) => {
             Address: custEmail,
           },
         };
+        if (custInvoicing !== "no invoice") {
+          let invID;
 
-        let invID;
+          invID = await getQBInvIDandSyncToken(access, DocNum);
 
-        invID = await getQBInvIDandSyncToken(access, DocNum);
-
-        if (Number(invID.data.Id) > 0) {
-          console.log("yes");
-          custSetup.Id = invID.data.Id;
-          custSetup.SyncToken = invID.data.SyncToken;
-          custSetup.sparse = true;
-          if (custInvoicing==="daily"){
-            custSetup.sparse = false;
+          if (Number(invID.data.Id) > 0) {
+            console.log("yes");
+            custSetup.Id = invID.data.Id;
+            custSetup.SyncToken = invID.data.SyncToken;
+            custSetup.sparse = true;
+            if (custInvoicing === "daily") {
+              custSetup.sparse = false;
+            }
+          } else {
+            console.log("no");
           }
-        } else {
-          console.log("no");
+          createQBInvoice(access, custSetup);
         }
-        createQBInvoice(access, custSetup);
       } catch {}
     }
     setIsLoading(false);

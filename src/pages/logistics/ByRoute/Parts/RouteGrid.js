@@ -1,29 +1,27 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
+import { Toast } from 'primereact/toast';
 
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 
-import { PDFDocument } from "pdf-lib";
-
-import { listZones } from "../../../../graphql/queries";
-
-import { API, graphqlOperation } from "aws-amplify";
 
 import {
   buildProductArray,
   createRouteGridColumns,
-  createColumns,
   createListOfCustomers,
   createQtyGrid,
 } from "../../../../helpers/delivGridHelpers";
 
+import { fetchZones } from "../../../../helpers/databaseFetchers";
+
+import { ToggleContext } from "../../../../dataContexts/ToggleContext";
+
 import styled from "styled-components";
-import { listInfoQBAuths } from "../../../../graphql/queries";
-import fs from "fs";
-import { checkQBValidation } from "../../../../helpers/QBHelpers";
+import { checkQBValidation, grabQBInvoicePDF } from "../../../../helpers/QBHelpers";
+import { downloadPDF } from "../../../../helpers/PDFHelpers";
 
 const axios = require("axios").default;
 
@@ -49,34 +47,24 @@ const ButtonWrapper = styled.div`
 const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
   const dt = useRef(null);
 
+  let { reload, setIsLoading } = useContext(ToggleContext);
+
   const [columns, setColumns] = useState([]);
   const [data, setData] = useState([]);
   const [zones, setZones] = useState([]);
 
-  const fetchInfo = async (operation, opString, limit) => {
-    try {
-      let info = await API.graphql(
-        graphqlOperation(operation, {
-          limit: limit,
-        })
-      );
-      let list = info.data[opString].items;
+  const toast = useRef(null);
 
-      let noDelete = list.filter((li) => li["_deleted"] !== true);
-      return noDelete;
-    } catch {
-      return [];
-    }
-  };
+  const showSuccess = (invNum) => {
+    toast.current.show({severity:'success', summary: 'Invoice created', detail:invNum+' PDF created', life: 3000});
+}
 
-  const fetchZones = async () => {
-    try {
-      let zones = await fetchInfo(listZones, "listZones", "50");
-      setZones(zones);
-    } catch (error) {
-      console.log("error on fetching Zone List", error);
-    }
-  };
+  
+  useEffect(() => {
+    setIsLoading(true);
+    fetchZones().then((getZones) => setZones(getZones));
+  }, []);
+  
 
   const constructColumns = () => {
     const [products, customers, routes, standing, orders] = database;
@@ -108,7 +96,7 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
   };
 
   useEffect(() => {
-    fetchZones();
+   
     let col = constructColumns();
     let dat = constructData();
 
@@ -145,59 +133,11 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
     doc.save("products.pdf");
   };
 
-  const ratePull = (ord) => {
-    const [products, customers, routes, standing, orders] = database;
-    let ratePull =
-      products[
-        products.findIndex((prod) => prod["prodName"] === ord["prodName"])
-      ].wholePrice;
-    for (let alt of altPricing) {
-      if (
-        alt["custName"] === ord["custName"] &&
-        alt["prodName"] === ord["prodName"]
-      ) {
-        ratePull = alt["wholePrice"];
-      }
-    }
-    return ratePull;
-  };
 
-  const downloadPDF = async (pdfs) => {
-    
-    const mergedPdf = await PDFDocument.create();
-
-    for (let pdf of pdfs){
-      try{
-        let pdfA = await PDFDocument.load(pdf);
-      const copiedPagesA = await mergedPdf.copyPages(
-        pdfA,
-        pdfA.getPageIndices()
-      );
-      copiedPagesA.forEach((page) => mergedPdf.addPage(page));
-      } catch {}
-     
-    }
-
-
-    const mergedPdfFile = await mergedPdf.saveAsBase64({ dataUri: true});
-           
-
-
-
-    let pdf = mergedPdfFile.split("base64,")[1];
-    
-    const linkSource = `data:application/pdf;base64,${pdf}`;
-    const downloadLink = document.createElement("a");
-    const fileName = "abc.pdf";
-    downloadLink.href = linkSource;
-    downloadLink.download = fileName;
-    downloadLink.click();
-    
-  };
-
+  
   const exportInvPdf = async () => {
     const [products, customers, routes, standing, orders] = database;
-
+    setIsLoading(true);
     let access = await checkQBValidation()
     
 
@@ -242,27 +182,18 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
             customers[customers.findIndex((cust) => cust.custName === thin)]
               .qbID;
           let txnDate = delivDate;
-          try {
-            invPDF = await axios.post(
-              "https://47i7i665dd.execute-api.us-east-2.amazonaws.com/done",
-              {
-                accessCode: "Bearer " + access,
-                delivDate: txnDate,
-                custID: custQBID,
-              }
-            );
-            console.log(invPDF.data)
-            pdfs.push(invPDF.data)
-            
-          } catch {}
+          await grabQBInvoicePDF(access,invPDF,txnDate,custQBID,pdfs)
+          showSuccess(thin)
         } catch {}
       }
     }
     downloadPDF(pdfs)
+    setIsLoading(false);
   };
 
   const header = (
     <ButtonContainer>
+      <Toast ref={toast} />
       <ButtonWrapper>
         <Button
           type="button"

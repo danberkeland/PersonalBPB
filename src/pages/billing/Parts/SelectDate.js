@@ -19,6 +19,7 @@ import { listInfoQBAuths } from "../../../graphql/queries";
 import { updateProduct } from "../../../graphql/mutations";
 
 import { API, graphqlOperation } from "aws-amplify";
+import { checkQBValidation } from "../../../helpers/QBHelpers";
 
 
 const { DateTime } = require("luxon");
@@ -60,24 +61,8 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
 
   const exportCSV = async () => {
     setIsLoading(true);
-    let access;
-    let val = await axios.get(
-      "https://28ue1wrzng.execute-api.us-east-2.amazonaws.com/done"
-    );
-
-    if (val.data) {
-      let authData = await API.graphql(
-        graphqlOperation(listInfoQBAuths, { limit: "50" })
-      );
-      access = authData.data.listInfoQBAuths.items[0].infoContent;
-
-      console.log(access);
-    } else {
-      console.log("not valid QB Auth");
-    }
-
+    let access = await checkQBValidation()
     
-
     for (let inv of dailyInvoices) {
       try {
         let total = 0;
@@ -284,21 +269,8 @@ const SelectDate = ({ database, dailyInvoices, setDailyInvoices }) => {
 
   const createQBCodes = async () => {
     // Refresh QB Auth
-    let access;
-    let val = await axios.get(
-      "https://28ue1wrzng.execute-api.us-east-2.amazonaws.com/done"
-    );
-
-    if (val.data) {
-      let authData = await API.graphql(
-        graphqlOperation(listInfoQBAuths, { limit: "50" })
-      );
-      access = authData.data.listInfoQBAuths.items[0].infoContent;
-
-      console.log(access);
-    } else {
-      console.log("not valid QB Auth");
-    }
+    let access = await checkQBValidation()
+    
 
     for (let prod of products) {
       let product = prod.prodName;

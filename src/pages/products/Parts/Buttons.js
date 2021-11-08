@@ -19,6 +19,7 @@ import { API, graphqlOperation } from "aws-amplify";
 import { listInfoQBAuths } from "../../../graphql/queries";
 
 import { v4 as uuidv4 } from "uuid";
+import { checkQBValidation } from "../../../helpers/QBHelpers";
 
 const axios = require("axios").default;
 
@@ -96,21 +97,8 @@ const Buttons = ({ selectedProduct, setSelectedProduct }) => {
       Sync = SyncToken
     }
     console.log("Sync",Sync)
-    let access;
-    let val = await axios.get(
-      "https://28ue1wrzng.execute-api.us-east-2.amazonaws.com/done"
-    );
-
-    if (val.data) {
-      let authData = await API.graphql(
-        graphqlOperation(listInfoQBAuths, { limit: "50" })
-      );
-      access = authData.data.listInfoQBAuths.items[0].infoContent;
-
-      console.log(access);
-    } else {
-      console.log("not valid QB Auth");
-    }
+    let access = await checkQBValidation()
+    
 
     let QBDetails = {
       Name: addDetails.prodName,
@@ -209,21 +197,7 @@ const Buttons = ({ selectedProduct, setSelectedProduct }) => {
 
     console.log(updateDetails);
 
-    let access;
-    let val = await axios.get(
-      "https://28ue1wrzng.execute-api.us-east-2.amazonaws.com/done"
-    );
-
-    if (val.data) {
-      let authData = await API.graphql(
-        graphqlOperation(listInfoQBAuths, { limit: "50" })
-      );
-      access = authData.data.listInfoQBAuths.items[0].infoContent;
-
-      console.log(access);
-    } else {
-      console.log("not valid QB Auth");
-    }
+    let access = await checkQBValidation()
 
     console.log("updateQBID",updateDetails.qbID)
     console.log(access)

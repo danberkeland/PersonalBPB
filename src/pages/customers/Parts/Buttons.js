@@ -17,6 +17,7 @@ import { Button } from "primereact/button";
 
 import { API, graphqlOperation } from "aws-amplify";
 import { listInfoQBAuths } from "../../../graphql/queries";
+import { checkQBValidation } from "../../../helpers/QBHelpers";
 
 const axios = require("axios").default;
 
@@ -100,21 +101,8 @@ const Buttons = ({ selectedCustomer, setSelectedCustomer }) => {
       Sync = SyncToken
     }
     console.log("Sync",Sync)
-    let access;
-    let val = await axios.get(
-      "https://28ue1wrzng.execute-api.us-east-2.amazonaws.com/done"
-    );
-
-    if (val.data) {
-      let authData = await API.graphql(
-        graphqlOperation(listInfoQBAuths, { limit: "50" })
-      );
-      access = authData.data.listInfoQBAuths.items[0].infoContent;
-
-      console.log(access);
-    } else {
-      console.log("not valid QB Auth");
-    }
+    let access = await checkQBValidation()
+    
 
     let QBDetails = {
       FullyQualifiedName: addDetails.custName, 
@@ -207,22 +195,8 @@ const Buttons = ({ selectedCustomer, setSelectedCustomer }) => {
     };
     console.log(updateDetails);
 
-    let access;
-    let val = await axios.get(
-      "https://28ue1wrzng.execute-api.us-east-2.amazonaws.com/done"
-    );
-
-    if (val.data) {
-      let authData = await API.graphql(
-        graphqlOperation(listInfoQBAuths, { limit: "50" })
-      );
-      access = authData.data.listInfoQBAuths.items[0].infoContent;
-
-      console.log(access);
-    } else {
-      console.log("not valid QB Auth");
-    }
-
+    let access = await checkQBValidation()
+    
 
     try {
       await axios

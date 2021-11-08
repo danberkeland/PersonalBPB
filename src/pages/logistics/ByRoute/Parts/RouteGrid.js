@@ -23,6 +23,7 @@ import {
 import styled from "styled-components";
 import { listInfoQBAuths } from "../../../../graphql/queries";
 import fs from "fs";
+import { checkQBValidation } from "../../../../helpers/QBHelpers";
 
 const axios = require("axios").default;
 
@@ -197,21 +198,8 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
   const exportInvPdf = async () => {
     const [products, customers, routes, standing, orders] = database;
 
-    let access;
-    let val = await axios.get(
-      "https://28ue1wrzng.execute-api.us-east-2.amazonaws.com/done"
-    );
-
-    if (val.data) {
-      let authData = await API.graphql(
-        graphqlOperation(listInfoQBAuths, { limit: "50" })
-      );
-      access = authData.data.listInfoQBAuths.items[0].infoContent;
-
-      console.log(access);
-    } else {
-      console.log("not valid QB Auth");
-    }
+    let access = await checkQBValidation()
+    
 
     let init = true;
     let routeList = Array.from(new Set(orderList.map((ord) => ord.route)));

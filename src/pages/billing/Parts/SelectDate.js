@@ -1,11 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 
 import { CurrentDataContext } from "../../../dataContexts/CurrentDataContext";
 import { ToggleContext } from "../../../dataContexts/ToggleContext";
 
 import { Calendar } from "primereact/calendar";
 import { Button } from "primereact/button";
-import { confirmDialog } from "primereact/confirmdialog";
 
 import styled from "styled-components";
 
@@ -22,7 +21,6 @@ import {
 } from "../../../helpers/QBHelpers";
 
 const { DateTime } = require("luxon");
-const axios = require("axios").default;
 
 const BasicContainer = styled.div`
   display: flex;
@@ -33,10 +31,7 @@ const BasicContainer = styled.div`
   box-sizing: border-box;
 `;
 
-let tomorrow = todayPlus()[1];
 let today = todayPlus()[0];
-let yesterday = todayPlus()[4];
-let weekAgo = todayPlus()[5];
 let Sunday = daysOfTheWeek()[0];
 let Sunday15due = daysOfTheWeek()[7];
 
@@ -218,17 +213,13 @@ const SelectDate = ({ database, dailyInvoices }) => {
           custSetup.Id = invID.data.Id;
           custSetup.SyncToken = invID.data.SyncToken;
           custSetup.sparse = true;
-          createQBInvoice(access, custSetup);
-          //  if customer is weekly -
-          //          read full invoice
-          //          if order lines from current date - remove
-          //          soft update current date orders
-          //      if daily - full update
-          //          axios post to update inv with body.  Return 200
+          if (custInvoicing==="daily"){
+            custSetup.sparse = false;
+          }
         } else {
           console.log("no");
-          createQBInvoice(access, custSetup);
         }
+        createQBInvoice(access, custSetup);
       } catch {}
     }
     setIsLoading(false);

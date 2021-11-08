@@ -166,12 +166,15 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
     const mergedPdf = await PDFDocument.create();
 
     for (let pdf of pdfs){
-      let pdfA = await PDFDocument.load(pdf);
+      try{
+        let pdfA = await PDFDocument.load(pdf);
       const copiedPagesA = await mergedPdf.copyPages(
         pdfA,
         pdfA.getPageIndices()
       );
       copiedPagesA.forEach((page) => mergedPdf.addPage(page));
+      } catch {}
+     
     }
 
 

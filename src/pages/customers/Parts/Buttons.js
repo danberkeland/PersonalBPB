@@ -130,8 +130,9 @@ const Buttons = ({ selectedCustomer, setSelectedCustomer }) => {
         CountrySubDivisionCode: "CA", 
         City: addDetails.city, 
         PostalCode: addDetails.zip, 
-        Line1: addDetails.addr1, 
+        Line1: addDetails.addr1,
         Line2: addDetails.addr2, 
+        
         Country: "USA"
       }, 
       sparse: false,

@@ -5,18 +5,9 @@ import { Column } from "primereact/column";
 import { CurrentDataContext } from "../../../dataContexts/CurrentDataContext";
 import { ToggleContext } from "../../../dataContexts/ToggleContext";
 
-import {
-  buildCartList,
-  buildStandList,
-  compileFullOrderList,
-} from "../../../helpers/CartBuildingHelpers";
+import { createDailyInvoices } from "../../../helpers/billingGridHelpers";
 
-import {
-  buildCustList,
-  buildInvList,
-  attachInvoiceOrders,
-  formatter,
-} from "../../../helpers/billingGridHelpers";
+import { calcInvoiceTotal } from "../helpers";
 
 import { ExpandedBillingRows } from "./Parts/ExpandedBillingRows";
 import { DeleteInvoice } from "./Parts/DeleteInvoice";
@@ -28,59 +19,29 @@ const BillingGrid = ({
   setDailyInvoices,
   zones,
 }) => {
-  const [products, customers, routes, standing, orders,d,dd,altPricing] = database;
+  const [products, customers, routes, standing, orders, d, dd, altPricing] =
+    database;
   const [expandedRows, setExpandedRows] = useState(null);
-
   const [pickedProduct, setPickedProduct] = useState();
   const [pickedRate, setPickedRate] = useState();
   const [pickedQty, setPickedQty] = useState();
 
   const { delivDate } = useContext(CurrentDataContext);
   const { setIsLoading, reload, setReload } = useContext(ToggleContext);
- 
-  useEffect(() => {
-    try {
-      let buildOrders = buildCartList("*", delivDate, orders);
-      let buildStand = buildStandList("*", delivDate, standing);
-      let fullOrder = compileFullOrderList(buildOrders, buildStand);
 
-      let custListArray = buildCustList(fullOrder);
-      let invList = buildInvList(custListArray, customers, delivDate);
-      
-      let invOrders = attachInvoiceOrders(
-        invList,
-        fullOrder,
+  useEffect(() => {
+    if (standing && orders && customers && products && altPricing && zones) {
+      createDailyInvoices(
+        delivDate,
+        orders,
+        standing,
+        customers,
         products,
         altPricing,
-        customers,
-        zones,
-        "daily"
-      );
-
-      // construct setWeeklyInvoices
-
-      setDailyInvoices(invOrders);
-      console.log("invOrders",invOrders)
-    } catch {
-      console.log("Whoops");
+        zones
+      ).then((data) => setDailyInvoices(data));
     }
   }, [delivDate, database, nextInv, zones]);
-
-  
-
-  const calcSumTotal = (data) => {
-    let sum = 0;
-    try {
-      for (let i of data) {
-        sum = sum + Number(i.qty) * Number(i.rate);
-      }
-    } catch {
-      console.log("No data to calc.");
-    }
-    sum = formatter.format(sum);
-
-    return <div>{sum}</div>;
-  };
 
   const rowExpansionTemplate = (data) => {
     return (
@@ -116,12 +77,21 @@ const BillingGrid = ({
           <Column expander style={{ width: "3em" }} />
           <Column field="invNum" header="Invoice#" />
           <Column field="custName" header="Customer" />
-          <Column header="total" body={(e) => calcSumTotal(e.orders)} />
+          <Column header="total" body={(e) => calcInvoiceTotal(e.orders)} />
 
           <Column
             headerStyle={{ width: "4rem" }}
             body={(e) =>
-              DeleteInvoice(e.invNum, dailyInvoices, setDailyInvoices,orders, delivDate, setIsLoading, reload, setReload)
+              DeleteInvoice(
+                e.invNum,
+                dailyInvoices,
+                setDailyInvoices,
+                orders,
+                delivDate,
+                setIsLoading,
+                reload,
+                setReload
+              )
             }
           ></Column>
         </DataTable>

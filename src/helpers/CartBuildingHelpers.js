@@ -44,8 +44,8 @@ export const buildStandList = (chosen, delivDate, standing, route, ponote) => {
   let filteredStanding = clonedeep(standing);
   let builtStandList = [];
   builtStandList = filteredStanding.filter(
-    (standing) =>
-      standing["custName"].match(wildcardRegExp(`${chosen}`))
+    (stand) =>
+      stand["custName"].match(wildcardRegExp(`${chosen}`))
   );
  
   builtStandList = builtStandList.filter(stand => stand.isStand===true)

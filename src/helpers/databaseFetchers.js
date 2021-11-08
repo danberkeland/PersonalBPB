@@ -8,6 +8,7 @@ import {
   listDoughs,
   listDoughComponents,
   listNotess,
+  listZones
 } from "../graphql/queries";
 
 import { sortAtoZDataByIndex } from "../helpers/sortDataHelpers";
@@ -186,5 +187,31 @@ const fetchNotesData = async (setIsLoading) => {
     return [];
   } else {
     return notes;
+  }
+};
+
+
+export const fetchInfo = async (operation, opString, limit) => {
+  try {
+    let info = await API.graphql(
+      graphqlOperation(operation, {
+        limit: limit,
+      })
+    );
+    let list = info.data[opString].items;
+
+    let noDelete = list.filter((li) => li["_deleted"] !== true);
+    return noDelete;
+  } catch {
+    return [];
+  }
+};
+
+export const fetchZones = async () => {
+  try {
+    let zones = await fetchInfo(listZones, "listZones", "50");
+    return zones
+  } catch (error) {
+    console.log("error on fetching Zone List", error);
   }
 };

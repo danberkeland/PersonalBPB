@@ -91,7 +91,6 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
 
       qtyGrid = createQtyGrid(listOfCustomers, gridToEdit);
     }
-
     return qtyGrid;
   };
 

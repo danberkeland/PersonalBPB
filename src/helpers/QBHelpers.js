@@ -156,5 +156,21 @@ export const createQBInvItem = (count, ord, qbID, delivDate) => {
   }
 
 
+  export const emailQBInvoice = async (access,docNum) => {
+    let emailResponse
+    try {
+      emailResponse = await axios
+        .post("https://uhjpmnpz12.execute-api.us-east-2.amazonaws.com/emailQBInvoice", {
+          accessCode: "Bearer " + access,
+          docNum: docNum,
+        })
+        .then((data) => 
+          data
+        );
+    } catch {
+      console.log("Error creating Item ");
+    }
+    return emailResponse
+ }
 
   

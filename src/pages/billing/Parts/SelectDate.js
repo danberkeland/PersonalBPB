@@ -5,7 +5,8 @@ import { ToggleContext } from "../../../dataContexts/ToggleContext";
 
 import { Calendar } from "primereact/calendar";
 import { Button } from "primereact/button";
-import { Toast } from 'primereact/toast';
+import { Toast } from "primereact/toast";
+import { confirmDialog } from 'primereact/confirmdialog'
 
 import styled from "styled-components";
 
@@ -19,6 +20,7 @@ import {
   checkQBValidation,
   createQBInvoice,
   getQBInvIDandSyncToken,
+  emailQBInvoice,
 } from "../../../helpers/QBHelpers";
 
 const { DateTime } = require("luxon");
@@ -44,8 +46,40 @@ const SelectDate = ({ database, dailyInvoices }) => {
   const toast = useRef(null);
 
   const showSuccess = (invNum) => {
-    toast.current.show({severity:'success', summary: 'Invoice created', detail:invNum+' successfully entered', life: 3000});
-}
+    toast.current.show({
+      severity: "success",
+      summary: "Invoice created",
+      detail: invNum + " successfully entered",
+      life: 3000,
+    });
+  };
+
+  const showSuccessEmail = (custo, status) => {
+    toast.current.show({
+      severity: status === 200 ? "success" : "error",
+      summary: "Invoice Emailed",
+      detail: "Invoice Status for " + custo,
+      life: 3000,
+    });
+  };
+
+  const showNoEmail = (custo) => {
+    toast.current.show({
+      severity: "warn",
+      summary: "No Invoice",
+      detail: "No Invoice for " + custo,
+      life: 3000,
+    });
+  };
+
+  const showDoNotMail = (custo) => {
+    toast.current.show({
+      severity: "info",
+      summary: "No Mail",
+      detail: "No Mailing Option for " + custo,
+      life: 3000,
+    });
+  };
 
   useEffect(() => {
     setDelivDate(today);
@@ -61,8 +95,11 @@ const SelectDate = ({ database, dailyInvoices }) => {
   };
 
   const createQBItem = (count, ord, qbID) => {
+    let lineID = qbID ? delivDate.replace(/-/g, "") + qbID : "0000991234";
+    lineID = lineID.slice(5);
+    console.log("Id", lineID);
     return {
-      Id: count.toString() + delivDate.replace(/-/g, ""),
+      Id: lineID,
 
       Description: ord.prodName,
       Amount: Number(ord.rate) * Number(ord.qty),
@@ -121,6 +158,7 @@ const SelectDate = ({ database, dailyInvoices }) => {
           ];
         let custInvoicing = custo.invoicing;
         let custNick = custo.nickName;
+        /*
         if (custInvoicing === "weekly") {
           TxnDate = Sunday;
           DocNum =
@@ -133,7 +171,7 @@ const SelectDate = ({ database, dailyInvoices }) => {
           console.log("DocNum", DocNum);
           console.log("dueDate", dueDate);
         }
-
+        */
         let ponote;
         try {
           ponote =
@@ -170,6 +208,7 @@ const SelectDate = ({ database, dailyInvoices }) => {
           AllowOnlineACHPayment: true,
           domain: "QBO",
           DocNumber: DocNum,
+          sparse: true,
           TxnDate: TxnDate,
           CurrencyRef: {
             value: "USD",
@@ -203,7 +242,7 @@ const SelectDate = ({ database, dailyInvoices }) => {
           },
           DueDate: dueDate,
           ShipDate: TxnDate,
-          TotalAmt: total,
+          //TotalAmt: total,
 
           BillEmail: {
             Address: custEmail,
@@ -213,25 +252,64 @@ const SelectDate = ({ database, dailyInvoices }) => {
           let invID;
 
           invID = await getQBInvIDandSyncToken(access, DocNum);
-
+          console.log("invID", invID);
           if (Number(invID.data.Id) > 0) {
             console.log("yes");
             custSetup.Id = invID.data.Id;
             custSetup.SyncToken = invID.data.SyncToken;
-            custSetup.sparse = true;
+
             if (custInvoicing === "daily") {
               custSetup.sparse = false;
             }
           } else {
             console.log("no");
           }
+          console.log("custSetup", custSetup);
           createQBInvoice(access, custSetup);
-          showSuccess(DocNum)
+          showSuccess(DocNum);
         }
       } catch {}
     }
     setIsLoading(false);
   };
+
+  const emailInvoices = async () => {
+    setIsLoading(true);
+    let access = await checkQBValidation();
+    for (let inv of dailyInvoices) {
+      let DocNum = inv.invNum;
+      let invID = await getQBInvIDandSyncToken(access, DocNum);
+      console.log(DocNum,invID.data.Id)
+      if (Number(invID.data.Id) > 0) {
+        invID = invID.data.Id;
+        let custo =
+          customers[
+            customers.findIndex((cust) => cust.custName === inv.custName)
+          ];
+        if (custo.toBeEmailed) {
+          let didItEmail = await emailQBInvoice(access, invID);
+          showSuccessEmail(inv.custName, didItEmail.status);
+          console.log(didItEmail.status);
+        } else {
+          console.log("No Invoice to email for " + inv.custName);
+          showDoNotMail(inv.custName)}
+      } else {
+        console.log("No Invoice to email for " + inv.custName);
+        showNoEmail(inv.custName);
+      }
+    }
+    setIsLoading(false);
+  };
+
+  const confirm = (e) => {
+    confirmDialog({
+        message: 'Are all invoices accurate and ready for publishing?',
+        header: 'Confirmation',
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => emailInvoices(),
+       
+    });
+}
 
   return (
     <React.Fragment>
@@ -249,6 +327,11 @@ const SelectDate = ({ database, dailyInvoices }) => {
 
         <Button className="p-button-success" onClick={exportCSV}>
           EXPORT CSV
+        </Button>
+        <Button className="p-button-success" onClick={(e) => {
+        confirm();
+      }}>
+          Email Invoices
         </Button>
       </BasicContainer>
     </React.Fragment>

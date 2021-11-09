@@ -14,6 +14,7 @@ export const getFullOrders = (delivDate, database) => {
    let buildOrders = buildCartList("*", delivDate, orders);
    let buildStand = buildStandList("*", delivDate, standing);
    let fullOrder = compileFullOrderList(buildOrders, buildStand);
+   
    return fullOrder;
  };
 

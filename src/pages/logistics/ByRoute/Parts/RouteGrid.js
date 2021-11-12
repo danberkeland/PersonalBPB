@@ -125,6 +125,7 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
     doc.setFontSize(20);
     doc.text(10, 20, "Delivery Sheet");
     doc.autoTable({
+      theme: 'grid',
       columns: exportColumns,
       body: data,
       margin: { top: 26 },
@@ -137,6 +138,7 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
   
   const exportInvPdf = async () => {
     const [products, customers, routes, standing, orders] = database;
+    let alreadyPrinted = []
     setIsLoading(true);
     let access = await checkQBValidation()
     
@@ -175,16 +177,21 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
       //
 
       for (let thin of ThinnedCustFil) {
-        console.log("cust",thin)
-        let invPDF;
-        try {
-          let custQBID =
-            customers[customers.findIndex((cust) => cust.custName === thin)]
-              .qbID;
-          let txnDate = delivDate;
-          await grabQBInvoicePDF(access,invPDF,txnDate,custQBID,pdfs)
-          showSuccess(thin)
-        } catch {}
+        console.log("cust", thin);
+        let custo =
+          customers[customers.findIndex((cust) => cust.custName === thin)];
+        let invCt = custo.printDuplicate ? 2 : 1;
+        if (!alreadyPrinted.includes(thin))
+        for (let i = 0; i < invCt; i++) {
+          let invPDF;
+          try {
+            let custQBID = custo.qbID;
+            let txnDate = delivDate;
+            await grabQBInvoicePDF(access, invPDF, txnDate, custQBID, pdfs);
+            showSuccess(thin);
+          } catch {}
+        } alreadyPrinted.push(thin)
+        
       }
     }
     downloadPDF(pdfs)
@@ -227,6 +234,7 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
       doc.setFontSize(20);
       doc.text(10, 20, rt);
       doc.autoTable({
+        theme: 'grid',
         columns: columns,
         body: qtyGrid,
         margin: { top: 26 },

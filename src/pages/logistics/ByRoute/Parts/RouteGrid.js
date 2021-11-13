@@ -121,6 +121,9 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
   }));
 
   const exportListPdf = () => {
+   
+    let fileName = route.replace(' ','')+delivDate.replaceAll('-','')+".pdf"
+
     const doc = new jsPDF("l", "mm", "a4");
     console.log("doc",doc)
     doc.setFontSize(20);
@@ -132,13 +135,14 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
       margin: { top: 26 },
       styles: { fontSize: 12 },
     });
-    doc.save("products.pdf");
+    doc.save(fileName);
   };
 
 
   
   const exportInvPdf = async () => {
     const [products, customers, routes, standing, orders] = database;
+    let fileName = delivDate.replaceAll('-','')+"AllInvoices.pdf"
     let alreadyPrinted = []
     setIsLoading(true);
     let access = await checkQBValidation()
@@ -146,12 +150,22 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
 
     let init = true;
     let routeList = Array.from(new Set(orderList.map((ord) => ord.route)));
+    routeList = routeList.map((rt) => ({ route: rt }));
+      for (let rt of routeList){
+        let printOrder = routes[routes.findIndex(rou => rou.routeName === rt.route)].printOrder
+        rt.printOrder = printOrder
+      }
+      sortAtoZDataByIndex(routeList,"printOrder")
+      let routeArray = []
+      for (let rt of routeList){
+        routeArray.push(rt.route)
+      }
 
     //
     //routeList = routeList.filter((rt) => rt === "AM North");
     //
     let pdfs =[]
-    for (let rt of routeList) {
+    for (let rt of routeArray) {
       console.log("rt",rt)
       let invListFilt = orderList.filter((ord) => ord.route === rt);
       let custFil = invListFilt.map((inv) => inv.custName);
@@ -195,7 +209,7 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
         
       }
     }
-    downloadPDF(pdfs)
+    downloadPDF(pdfs, fileName)
     setIsLoading(false);
   };
 
@@ -203,6 +217,7 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
 
   const exportFullPdf = () => {
     const [products, customers, routes, standing, orders] = database;
+    let fileName = delivDate.replaceAll('-','')+"AllRoutes.pdf"
     let init = true;
     let routeList = Array.from(new Set(orderList.map((ord) => ord.route)));
     routeList = routeList.map((rt) => ({ route: rt }));
@@ -275,7 +290,7 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
 
     init = false
     }
-    doc.save("invoices.pdf");
+    doc.save(fileName);
     
   };
   

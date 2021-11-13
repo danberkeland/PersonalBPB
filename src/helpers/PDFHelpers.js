@@ -1,7 +1,7 @@
 
 import { PDFDocument } from "pdf-lib";
 
-export const downloadPDF = async (pdfs) => {
+export const downloadPDF = async (pdfs, name) => {
     
     const mergedPdf = await PDFDocument.create();
 
@@ -27,7 +27,7 @@ export const downloadPDF = async (pdfs) => {
     
     const linkSource = `data:application/pdf;base64,${pdf}`;
     const downloadLink = document.createElement("a");
-    const fileName = "abc.pdf";
+    const fileName = name;
     downloadLink.href = linkSource;
     downloadLink.download = fileName;
     downloadLink.click();

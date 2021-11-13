@@ -22,6 +22,7 @@ import { ToggleContext } from "../../../../dataContexts/ToggleContext";
 import styled from "styled-components";
 import { checkQBValidation, grabQBInvoicePDF } from "../../../../helpers/QBHelpers";
 import { downloadPDF } from "../../../../helpers/PDFHelpers";
+import { sortAtoZDataByIndex } from "../../../../helpers/sortDataHelpers";
 
 const axios = require("axios").default;
 
@@ -204,8 +205,18 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
     const [products, customers, routes, standing, orders] = database;
     let init = true;
     let routeList = Array.from(new Set(orderList.map((ord) => ord.route)));
+    routeList = routeList.map((rt) => ({ route: rt }));
+      for (let rt of routeList){
+        let printOrder = routes[routes.findIndex(rou => rou.routeName === rt.route)].printOrder
+        rt.printOrder = printOrder
+      }
+      sortAtoZDataByIndex(routeList,"printOrder")
+      let routeArray = []
+      for (let rt of routeList){
+        routeArray.push(rt.route)
+      }
     const doc = new jsPDF("l", "mm", "a4");
-    for (let rt of routeList) {
+    for (let rt of routeArray) {
       let columns;
       if (orderList) {
         let buildGridSetUp = orderList.filter((ord) => ord["route"] === rt);

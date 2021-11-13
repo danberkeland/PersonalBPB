@@ -123,6 +123,7 @@ type Route @model @auth(rules: [{allow: public}]) {
   RouteArrive: String
   RouteServe: [String]
   RouteSched: [String]
+  printOrder: Int
 }
 
 type Zone @model @auth(rules: [{allow: public}]) {

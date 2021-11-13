@@ -329,6 +329,7 @@ export const getRoute = /* GraphQL */ `
       RouteArrive
       RouteServe
       RouteSched
+      printOrder
       createdAt
       updatedAt
     }
@@ -350,6 +351,7 @@ export const listRoutes = /* GraphQL */ `
         RouteArrive
         RouteServe
         RouteSched
+        printOrder
         createdAt
         updatedAt
       }

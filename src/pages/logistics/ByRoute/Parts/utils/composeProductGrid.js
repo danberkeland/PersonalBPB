@@ -44,6 +44,16 @@ const addRoutes = (delivDate, prodGrid, database) => {
                 grd.routeServe = rte.RouteServe;
               }
 
+              // Lincoln Market French exception
+              if (
+                grd.prodName === "French Stick" && grd.custName === "Lincoln Market"
+              ){
+                grd.route = "Lunch";
+                grd.routeDepart = "Prado";
+                grd.routeStart = 9.5;
+                grd.routeServe = ['Downtown SLO', 'Foothill'];
+              }
+
 
             }
           }
@@ -86,7 +96,7 @@ export default class ComposeProductGrid {
   getProdGrid(database, delivDate) {
     const [products, customers, routes, standing, orders] = database;
     let prodGrid = getFullOrders(delivDate, database);
-    
+   
     prodGrid = zerosDelivFilter(prodGrid, delivDate, database);
     
     prodGrid = buildGridOrderArray(prodGrid, database);
@@ -106,7 +116,7 @@ export default class ComposeProductGrid {
     
       
     }
-   
+    
     return prodGrid;
   }
 

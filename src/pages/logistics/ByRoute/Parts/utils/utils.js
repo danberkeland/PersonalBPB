@@ -128,6 +128,7 @@ export const routeRunsThatDay = (rte, dayNum) => {
   };
 
   export const productCanBeInPlace = (grd, routes, customers, rte) => {
+   
     if (
       grd["where"].includes("Mixed") ||
       grd["where"].includes(

@@ -71,8 +71,10 @@ const buildCustName = (ord, customers) => {
 };
 
 export const buildGridOrderArray = (filterServe, database) => {
+
   const [products, customers, routes, standing, orders] = database;
   let gridOrderArray;
+  console.log("gridOrder",filterServe)
   gridOrderArray = filterServe.map((ord) => ({
     prodName: ord["prodName"],
     delivOrder:
@@ -88,6 +90,7 @@ export const buildGridOrderArray = (filterServe, database) => {
     custName: ord["custName"],
     custNick: buildCustName(ord, customers),
     zone: ord["zoneName"],
+    //  Lincoln Market french exception
     route: ord["route"],
     qty: ord["qty"],
     doughType:
@@ -146,7 +149,7 @@ export const buildGridOrderArray = (filterServe, database) => {
         products.findIndex((prod) => prod["prodName"] === ord["prodName"])
       ].packGroup,
   }));
-
+  
   return gridOrderArray;
 };
 

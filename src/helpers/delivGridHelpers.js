@@ -252,7 +252,8 @@ export const createRouteGridColumns = (listOfProducts) => {
 };
 
 export const createListOfCustomers = (orderList) => {
-  let listOfCustomers = orderList.map((order) => order["custName"]);
+
+  let listOfCustomers = orderList.filter(ord => ord.custNick).map((order) => order["custName"]);
   listOfCustomers = Array.from(new Set(listOfCustomers));
   return listOfCustomers;
 };

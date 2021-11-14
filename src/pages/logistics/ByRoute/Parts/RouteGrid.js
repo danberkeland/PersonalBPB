@@ -89,6 +89,7 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
         (order) => order["route"] === route
       );
       let listOfCustomers = createListOfCustomers(gridToEdit, route);
+      console.log("listofCustomers",listOfCustomers)
 
       qtyGrid = createQtyGrid(listOfCustomers, gridToEdit);
     }

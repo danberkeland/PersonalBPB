@@ -45,6 +45,33 @@ export const addRetailBagQty = (
 };
 
 
+export const addRetailBagQtyTomorrow = (
+  make,
+  fullOrders,
+  fullOrdersTomorrow,
+  products,
+  routes
+) => {
+  make.tomQty = 0;
+
+  let qtyAccToday = 0;
+ 
+  
+  let qtyToday = fullOrders
+    .filter(
+      (full) =>
+        make.prodName === full.prodName 
+    )
+    .map((ord) => ord.qty);
+
+  if (qtyToday.length > 0) {
+    qtyAccToday = qtyToday.reduce(addUp);
+  }
+  make.tomQty = qtyAccToday;
+
+};
+
+
 
 
 

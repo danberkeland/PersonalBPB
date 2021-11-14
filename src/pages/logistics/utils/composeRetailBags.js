@@ -2,7 +2,8 @@ import { todayPlus } from "../../../helpers/dateTimeHelpers";
 import { getFullOrders } from "../../../helpers/CartBuildingHelpers";
 import {
   addProdAttr,
-  addRetailBagQty
+  addRetailBagQty,
+  addRetailBagQtyTomorrow
 } from "./utils";
 
 
@@ -15,6 +16,7 @@ const makeRetailBags = (products, filt) => {
   ).map((make) => ({
     prodName: make,
     qty: 0,
+    tomQty: 0
   }));
   return make;
 };
@@ -42,9 +44,13 @@ export default class ComposeRetailBags {
     const [products, customers, routes, standing, orders] = database;
     let retailBags = makeRetailBags(products, this.retailBagsFilter);
     let fullOrdersToday = getRetailBags(today, database);
+    let fullOrdersTomorrow = getRetailBags(tomorrow, database);
     for (let ret of retailBags) {
       addRetailBagQty(ret, fullOrdersToday);
+      addRetailBagQtyTomorrow(ret, fullOrdersTomorrow);
     }
+    console.log("retail",retailBags)
+    
     return retailBags;
   }
 

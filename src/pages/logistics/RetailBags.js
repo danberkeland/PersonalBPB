@@ -52,6 +52,7 @@ function RetailBags() {
   const [retailBags, setRetailBags] = useState();
 
   let delivDate = todayPlus()[0];
+  let tomorrow = todayPlus()[1];
 
   useEffect(() => {
     promisedData(setIsLoading).then(database => gatherRetailBagInfo(database));
@@ -71,20 +72,21 @@ function RetailBags() {
     let tableFont = 11;
     let titleFont = 14;
 
-    const doc = new jsPDF("p", "mm", "a4");
+    const doc = new jsPDF("l", "mm", "a4");
     doc.setFontSize(20);
     doc.text(pageMargin, 20, `Retail Bags ${convertDatetoBPBDate(delivDate)}`);
 
     finalY = 20
     
     doc.setFontSize(titleFont);
-    doc.text(pageMargin, finalY+tableToNextTitle, `Retail Bag Quantities`);
+    doc.text(pageMargin, finalY+tableToNextTitle, `Prep Date: ${convertDatetoBPBDate(tomorrow)}`);
 
     doc.autoTable({    
       body: retailBags,
       columns: [
         {header: 'Product', dataKey: 'prodName'},
-        {header: 'Quantity', dataKey: 'qty'}
+        {header: 'NEED TODAY', dataKey: 'qty'},
+        {header: 'PREP FOR TOMORROW', dataKey: 'tomQty'}
       ],
       startY: finalY+titleToNextTable,
       styles: { fontSize: tableFont },
@@ -96,27 +98,7 @@ function RetailBags() {
     doc.save(`RetailBags${delivDate}.pdf`);
   };
 
-  const exportTestSticker = () => {
-    
-    const doc = new jsPDF({
-      orientation: "l",
-      unit: "in",
-      format:[2,4]
-    });
-    doc.setFontSize(30);
-    doc.text("Hello World",.5,.5);
-    doc.addPage({
-      format:[2,4],
-      orientation: "l"
-    })
-    doc.setFontSize(30);
-    doc.text("Second Sticker",.5,.5);
-
-
-    
-    
-    doc.save(`TestSticker.pdf`);
-  };
+  
 
   const header = (
     <ButtonContainer>
@@ -129,14 +111,7 @@ function RetailBags() {
         >
           Print Retail Bag List
         </Button>
-        <Button
-          type="button"
-          onClick={exportTestSticker}
-          className="p-button-success"
-          data-pr-tooltip="PDF"
-        >
-          Print Test Sticker
-        </Button>   
+        
       </ButtonWrapper>
     </ButtonContainer>
   );
@@ -148,12 +123,15 @@ function RetailBags() {
     <React.Fragment>
       <WholeBox>
         <h1>Retail Bags for {convertDatetoBPBDate(delivDate)}</h1>
+        
         <div>{header}</div>
 
-        <h2>Retail Bags</h2>
+        
+        <h2>Prep Date: {convertDatetoBPBDate(tomorrow)}</h2>
         <DataTable value={retailBags} className="p-datatable-sm">
           <Column field="prodName" header="Product"></Column>
-          <Column field="qty" header="Number of Bags"></Column>
+          <Column field="qty" header="NEED TODAY"></Column>
+          <Column field="tomQty" header="PREP FOR TOMORROW"></Column>
         </DataTable>
       </WholeBox>
     </React.Fragment>

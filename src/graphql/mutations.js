@@ -484,6 +484,7 @@ export const createRoute = /* GraphQL */ `
       RouteServe
       RouteSched
       printOrder
+      driver
       createdAt
       updatedAt
     }
@@ -504,6 +505,7 @@ export const updateRoute = /* GraphQL */ `
       RouteServe
       RouteSched
       printOrder
+      driver
       createdAt
       updatedAt
     }
@@ -524,6 +526,7 @@ export const deleteRoute = /* GraphQL */ `
       RouteServe
       RouteSched
       printOrder
+      driver
       createdAt
       updatedAt
     }

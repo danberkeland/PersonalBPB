@@ -330,6 +330,7 @@ export const getRoute = /* GraphQL */ `
       RouteServe
       RouteSched
       printOrder
+      driver
       createdAt
       updatedAt
     }
@@ -352,6 +353,7 @@ export const listRoutes = /* GraphQL */ `
         RouteServe
         RouteSched
         printOrder
+        driver
         createdAt
         updatedAt
       }

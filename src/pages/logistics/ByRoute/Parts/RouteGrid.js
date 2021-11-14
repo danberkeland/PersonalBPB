@@ -120,7 +120,9 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
     dataKey: col.field,
   }));
 
-  const exportListPdf = () => {
+  const exportListPdf = (driver) => {
+
+    console.log(driver)
    
     let fileName = route.replace(' ','')+delivDate.replaceAll('-','')+".pdf"
 
@@ -140,9 +142,9 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
 
 
   
-  const exportInvPdf = async () => {
+  const exportInvPdf = async (driver) => {
     const [products, customers, routes, standing, orders] = database;
-    let fileName = delivDate.replaceAll('-','')+"AllInvoices.pdf"
+    let fileName = delivDate.replaceAll('-','')+driver+".pdf"
     let alreadyPrinted = []
     setIsLoading(true);
     let access = await checkQBValidation()
@@ -150,7 +152,25 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
 
     let init = true;
     let routeList = Array.from(new Set(orderList.map((ord) => ord.route)));
-    routeList = routeList.map((rt) => ({ route: rt }));
+    if (driver !== "all"){
+
+      routeList=routeList.filter(rou => routes[routes.findIndex(ro => ro.routeName === rou)].driver === driver)
+
+     
+    }
+   
+    if (driver === "current"){
+      routeList = route
+      console.log("routeList")
+    }
+
+    console.log("rtList",routeList)
+    if (driver === "current"){
+      routeList = [{route: routeList}]
+    } else {
+      routeList = routeList.map((rt) => ({ route: rt }));
+    }
+    
       for (let rt of routeList){
         let printOrder = routes[routes.findIndex(rou => rou.routeName === rt.route)].printOrder
         rt.printOrder = printOrder
@@ -161,9 +181,6 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
         routeArray.push(rt.route)
       }
 
-    //
-    //routeList = routeList.filter((rt) => rt === "AM North");
-    //
     let pdfs =[]
     for (let rt of routeArray) {
       console.log("rt",rt)
@@ -215,12 +232,29 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
 
   
 
-  const exportFullPdf = () => {
+  const exportFullPdf = (driver) => {
     const [products, customers, routes, standing, orders] = database;
-    let fileName = delivDate.replaceAll('-','')+"AllRoutes.pdf"
+    let fileName = delivDate.replaceAll('-','')+driver+".pdf"
     let init = true;
     let routeList = Array.from(new Set(orderList.map((ord) => ord.route)));
-    routeList = routeList.map((rt) => ({ route: rt }));
+    if (driver !== "all"){
+
+      routeList=routeList.filter(rou => routes[routes.findIndex(ro => ro.routeName === rou)].driver === driver)
+
+     
+    }
+    
+    if (driver === "current"){
+      routeList = route
+      console.log("routeList")
+    }
+
+    
+    if (driver === "current"){
+      routeList = [{route: routeList}]
+    } else {
+      routeList = routeList.map((rt) => ({ route: rt }));
+    }
       for (let rt of routeList){
         let printOrder = routes[routes.findIndex(rou => rou.routeName === rt.route)].printOrder
         rt.printOrder = printOrder
@@ -291,6 +325,7 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
     init = false
     }
     doc.save(fileName);
+    exportInvPdf(driver)
     
   };
   
@@ -301,27 +336,43 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
       <ButtonWrapper>
         <Button
           type="button"
-          onClick={exportListPdf}
+          onClick={e => exportFullPdf("current")}
           className="p-button-success"
           data-pr-tooltip="PDF"
         >
-          Print Delivery List
+          Current Route
         </Button>
         <Button
           type="button"
-          onClick={exportInvPdf}
-          className="p-button-success"
-          data-pr-tooltip="PDF"
-        >
-          Print Invoices
-        </Button>
-        <Button
-          type="button"
-          onClick={exportFullPdf}
+          onClick={e => exportFullPdf("all")}
           className="p-button-success"
           data-pr-tooltip="PDF"
         >
           Print All Routes
+        </Button>
+        <Button
+          type="button"
+          onClick={e => exportFullPdf("LongDriver")}
+          className="p-button-success"
+          data-pr-tooltip="PDF"
+        >
+          Driver 1 (Long Driver)
+        </Button>
+        <Button
+          type="button"
+          onClick={e => exportFullPdf("AMPastry")}
+          className="p-button-success"
+          data-pr-tooltip="PDF"
+        >
+          Driver 2 (Pastry)
+        </Button>
+        <Button
+          type="button"
+          onClick={e => exportFullPdf("AMSouth")}
+          className="p-button-success"
+          data-pr-tooltip="PDF"
+        >
+          Driver 3 (South Driver)
         </Button>
       </ButtonWrapper>
     </ButtonContainer>

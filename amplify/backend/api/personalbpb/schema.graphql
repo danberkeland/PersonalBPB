@@ -124,6 +124,7 @@ type Route @model @auth(rules: [{allow: public}]) {
   RouteServe: [String]
   RouteSched: [String]
   printOrder: Int
+  driver: String
 }
 
 type Zone @model @auth(rules: [{allow: public}]) {

@@ -127,6 +127,9 @@ export default class ComposeWhatToMake {
       addNeedEarly(make, products);
     }
 
+    console.log("makeShelfProds",makeShelfProds)
+    makeShelfProds = makeShelfProds.filter(make => (make.makeTotal + make.needEarly + make.qty)>0)
+
     return makeShelfProds;
   }
 

@@ -12,16 +12,41 @@ import {
   setOutPlainsForAlmondsFilter,
 } from "./filters";
 import { ceil } from "lodash";
+const { DateTime } = require("luxon");
 
-let tomorrow = todayPlus()[1];
-let twoDay = todayPlus()[2];
-let threeDay = todayPlus()[3];
+const tomBasedOnDelivDate = (delivDate) => {
+  console.log("delivStart", delivDate);
+  let tomorrow = DateTime.fromFormat(delivDate, "yyyy-MM-dd")
+    .setZone("America/Los_Angeles")
+    .plus({ days: 1 });
+
+  return tomorrow.toString().split("T")[0];
+}
+
+const TwodayBasedOnDelivDate = (delivDate) => {
+  console.log("delivStart", delivDate);
+  let tomorrow = DateTime.fromFormat(delivDate, "yyyy-MM-dd")
+    .setZone("America/Los_Angeles")
+    .plus({ days: 2 });
+
+  return tomorrow.toString().split("T")[0];
+}
+
+const ThreedayBasedOnDelivDate = (delivDate) => {
+  console.log("delivStart", delivDate);
+  let tomorrow = DateTime.fromFormat(delivDate, "yyyy-MM-dd")
+    .setZone("America/Los_Angeles")
+    .plus({ days: 2 });
+
+  return tomorrow.toString().split("T")[0];
+}
 
 export default class ComposePastryPrep {
+  
   returnPastryPrepBreakDown = (delivDate, database, loc) => {
-    let setOut = this.returnSetOut(database, loc);
-    let pastryPrep = this.returnPastryPrep(database, loc);
-    let almondPrep = this.returnAlmondPrep(database, loc);
+    let setOut = this.returnSetOut(database, loc,delivDate);
+    let pastryPrep = this.returnPastryPrep(database, loc,delivDate);
+    let almondPrep = this.returnAlmondPrep(database, loc,delivDate);
 
     return {
       setOut: setOut,
@@ -30,12 +55,15 @@ export default class ComposePastryPrep {
     };
   };
 
-  returnSetOut = (database, loc) => {
+  returnSetOut = (database, loc,delivDate) => {
+    let tom = tomBasedOnDelivDate(delivDate)
+    let twoday = TwodayBasedOnDelivDate(delivDate)
+    let threeday = ThreedayBasedOnDelivDate(delivDate)
     const products = database[0];
-    let setOutList = getOrdersList(tomorrow, database, true);
-    let setOutForAlmonds = getOrdersList(twoDay, database, true);
-    let twoDayList = getOrdersList(twoDay, database, true);
-    let threeDayList = getOrdersList(threeDay, database, true);
+    let setOutList = getOrdersList(tom, database, true);
+    let setOutForAlmonds = getOrdersList(twoday, database, true);
+    let twoDayList = getOrdersList(twoday, database, true);
+    let threeDayList = getOrdersList(threeday, database, true);
     let setOutToday = setOutList.filter((set) => setOutFilter(set, loc));
 
     let almondSetOut = setOutForAlmonds.filter((set) =>
@@ -112,21 +140,25 @@ export default class ComposePastryPrep {
     return setOutToday;
   };
 
-  returnPastryPrep = (database, loc) => {
+  returnPastryPrep = (database, loc,delivDate) => {
+    let tom = tomBasedOnDelivDate(delivDate)
+    
     const products = database[0];
-    let setOutList = getOrdersList(tomorrow, database, true);
+    let setOutList = getOrdersList(tom, database, true);
     let setOutToday = setOutList.filter((set) => pastryPrepFilter(set, loc));
     setOutToday = this.makeAddQty(setOutToday, products);
     return setOutToday;
   };
 
-  returnAlmondPrep = (database, loc) => {
+  returnAlmondPrep = (database, loc,delivDate) => {
     // Still need to account for splitting of BPB locations and special order deductions
-
+    let tom = tomBasedOnDelivDate(delivDate)
+    let twoday = TwodayBasedOnDelivDate(delivDate)
+    
     const products = database[0];
-    let setOutList = getOrdersList(tomorrow, database, true);
+    let setOutList = getOrdersList(tom, database, true);
 
-    let bakedNorthTwoDayList = getOrdersList(twoDay, database, true);
+    let bakedNorthTwoDayList = getOrdersList(twoday, database, true);
 
     let deliveredFrozenTomorrow = setOutList.filter((set) =>
       frozenAlmondFilter(set, loc)

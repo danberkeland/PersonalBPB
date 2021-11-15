@@ -3,9 +3,11 @@ import React, { useEffect, useState, useContext } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
+import { confirmDialog } from 'primereact/confirmdialog'
 
 import { ToggleContext } from "../../dataContexts/ToggleContext";
 import ToolBar from "../logistics/ByRoute/Parts/ToolBar"
+
 
 import jsPDF from "jspdf";
 import "jspdf-autotable";
@@ -44,6 +46,8 @@ const ButtonWrapper = styled.div`
   background: #ffffff;
 `;
 
+let today = todayPlus()[0];
+
 const compose = new ComposeWhatToMake();
 
 function BPBSWhatToMake() {
@@ -70,11 +74,27 @@ function BPBSWhatToMake() {
     setFreezerProds(makeData.freezerProds);
   };
 
+  
+
+  const checkDateAlert = (delivDate) => {
+    if (delivDate !== today) {
+      confirmDialog({
+        message:
+          "This is not the list for TODAY.  Are you sure this is the one you want to print?",
+        header: "Confirmation",
+        icon: "pi pi-exclamation-triangle",
+        accept: () => exportListPdf(),
+      });
+    } else {
+      exportListPdf();
+    }
+  };
+
   const exportListPdf = () => {
     let finalY;
     let pageMargin = 10;
-    let tableToNextTitle = 12;
-    let titleToNextTable = tableToNextTitle + 4;
+    let tableToNextTitle = 8;
+    let titleToNextTable = tableToNextTitle;
     let tableFont = 11;
     let titleFont = 14;
 
@@ -82,87 +102,92 @@ function BPBSWhatToMake() {
     doc.setFontSize(20);
     doc.text(pageMargin, 20, `What to Make ${convertDatetoBPBDate(delivDate)}`);
 
-    finalY = 20;
+    finalY = 10;
 
     if (youllBeShort.length>0) {
       doc.setFontSize(titleFont);
-      doc.text(pageMargin, finalY + tableToNextTitle, `You'll Be Short`);
+      
 
       doc.autoTable({
         body: youllBeShort,
         columns: [
-          { header: "Pocket Weight", dataKey: "pocketWeight" },
-          { header: "Short", dataKey: "makeTotal" },
+          { header: "You'll Be Short", dataKey: "pocketWeight" },
+          { header: "Pockets", dataKey: "makeTotal" },
         ],
-        startY: finalY + titleToNextTable,
+        startY: finalY + 20,
         styles: { fontSize: tableFont },
+        theme: "grid"
       });
 
       finalY = doc.previousAutoTable.finalY;
+    } else {
+      finalY = 20
     }
 
     doc.setFontSize(titleFont);
-    doc.text(pageMargin, finalY + tableToNextTitle, `Pockets North`);
+   
 
     doc.autoTable({
       body: pocketsNorth,
       columns: [
-        { header: "Product", dataKey: "forBake" },
+        { header: "Pockets North", dataKey: "forBake" },
         { header: "Quantity", dataKey: "qty" },
       ],
       startY: finalY + titleToNextTable,
       styles: { fontSize: tableFont },
+      theme: "grid"
     });
 
     finalY = doc.previousAutoTable.finalY;
 
     doc.setFontSize(titleFont);
-    doc.text(pageMargin, finalY + tableToNextTitle, `Fresh Product`);
+    
 
     doc.autoTable({
       body: freshProds,
       columns: [
-        { header: "Product", dataKey: "forBake" },
+        { header: "Fresh Product", dataKey: "forBake" },
         { header: "Total Deliv", dataKey: "qty" },
         { header: "Make Total", dataKey: "makeTotal" },
         { header: "Bag For Tomorrow", dataKey: "bagEOD" },
       ],
       startY: finalY + titleToNextTable,
       styles: { fontSize: tableFont },
+      theme: "grid"
     });
 
     finalY = doc.previousAutoTable.finalY;
 
     doc.setFontSize(titleFont);
-    doc.text(pageMargin, finalY + tableToNextTitle, `Shelf Product`);
-
+    
     doc.autoTable({
       body: shelfProds,
       columns: [
-        { header: "Product", dataKey: "forBake" },
+        { header: "Shelf Product", dataKey: "forBake" },
         { header: "Total Deliv", dataKey: "qty" },
         { header: "Need Early", dataKey: "needEarly" },
         { header: "Make Total", dataKey: "makeTotal" },
       ],
       startY: finalY + titleToNextTable,
       styles: { fontSize: tableFont },
+      theme: "grid"
     });
 
     finalY = doc.previousAutoTable.finalY;
 
     doc.setFontSize(titleFont);
-    doc.text(pageMargin, finalY + tableToNextTitle, `Freezer Product`);
-
+   
     doc.autoTable({
       body: freezerProds,
       columns: [
-        { header: "Product", dataKey: "forBake" },
+        { header: "Freezer Product", dataKey: "forBake" },
         { header: "Total Deliv", dataKey: "qty" },
         { header: "Need Early", dataKey: "needEarly" },
         { header: "Make Total", dataKey: "makeTotal" },
       ],
       startY: finalY + titleToNextTable,
       styles: { fontSize: tableFont },
+      theme: "grid"
     });
 
     doc.save(`WhatToMake${delivDate}.pdf`);
@@ -173,7 +198,7 @@ function BPBSWhatToMake() {
       <ButtonWrapper>
         <Button
           type="button"
-          onClick={exportListPdf}
+          onClick={e => checkDateAlert(delivDate)}
           className="p-button-success"
           data-pr-tooltip="PDF"
         >

@@ -3,6 +3,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
+import ToolBar from "../logistics/ByRoute/Parts/ToolBar"
 
 import { ToggleContext } from "../../dataContexts/ToggleContext";
 
@@ -51,16 +52,17 @@ const compose = new ComposePastryPrep();
 function BPBNSetOut({ loc }) {
   const { setIsLoading } = useContext(ToggleContext);
   const [setOut, setSetOut] = useState([]);
+  const [delivDate, setDelivDate] = useState(todayPlus()[0]);
   const [pastryPrep, setPastryPrep] = useState([]);
   const [almondPrep, setAlmondPrep] = useState([]);
 
-  let delivDate = todayPlus()[0];
+  
 
   useEffect(() => {
     promisedData(setIsLoading).then((database) =>
       gatherPastryPrepInfo(database)
     );
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [delivDate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const gatherPastryPrepInfo = (database) => {
     let pastryPrepData = compose.returnPastryPrepBreakDown(
@@ -172,7 +174,7 @@ function BPBNSetOut({ loc }) {
           {loc} PASTRY PREP {convertDatetoBPBDate(delivDate)}
         </h1>
         <div>{header}</div>
-
+        <ToolBar delivDate={delivDate} setDelivDate={setDelivDate} />
         <h3>Set Out</h3>
         <DataTable value={setOut} className="p-datatable-sm">
           <Column field="prodNick" header="Product"></Column>

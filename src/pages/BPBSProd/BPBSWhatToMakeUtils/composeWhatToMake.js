@@ -9,6 +9,7 @@ import {
   addPocketsQty,
 } from "./utils";
 import { handleFrenchConundrum } from "./conundrums";
+const { DateTime } = require("luxon");
 
 let tomorrow = todayPlus()[1];
 let today = todayPlus()[0];
@@ -46,13 +47,21 @@ const getFullProdMakeOrders = (delivDate, database) => {
   return fullOrder;
 };
 
+const tomBasedOnDelivDate = (delivDate) => {
+  console.log("delivStart", delivDate);
+  let tomorrow = DateTime.fromFormat(delivDate, "yyyy-MM-dd")
+    .setZone("America/Los_Angeles")
+    .plus({ days: 1 });
+
+  return tomorrow.toString().split("T")[0];
+};
 export default class ComposeWhatToMake {
-  returnMakeBreakDown = (database) => {
-    let pocketsNorth = this.getPocketsNorth(database);
-    let freshProds = this.getFreshProds(database);
-    let shelfProds = this.getShelfProds(database);
-    let freezerProds = this.getFreezerProds(database);
-    let youllBeShort = this.getYoullBeShort(database);
+  returnMakeBreakDown = (database,delivDate) => {
+    let pocketsNorth = this.getPocketsNorth(database,delivDate);
+    let freshProds = this.getFreshProds(database,delivDate);
+    let shelfProds = this.getShelfProds(database,delivDate);
+    let freezerProds = this.getFreezerProds(database,delivDate);
+    let youllBeShort = this.getYoullBeShort(database,delivDate);
 
     [freshProds, shelfProds] = handleFrenchConundrum(freshProds, shelfProds);
 
@@ -65,10 +74,10 @@ export default class ComposeWhatToMake {
     };
   };
 
-  getPocketsNorth(database) {
+  getPocketsNorth(database,delivDate) {
     const [products, customers, routes, standing, orders] = database;
     let makePocketsNorth = makeProds(products, this.pocketsNorthFilter);
-    let fullOrdersToday = getFullMakeOrders(today, database);
+    let fullOrdersToday = getFullMakeOrders(delivDate, database);
     for (let make of makePocketsNorth) {
       addPocketsQty(make, fullOrdersToday);
     }
@@ -85,12 +94,12 @@ export default class ComposeWhatToMake {
     return fil;
   };
 
-  getFreshProds = (database) => {
+  getFreshProds = (database, delivDate) => {
     const [products, customers, routes, standing, orders] = database;
     let makeFreshProds = makeProds(products, this.freshProdFilter);
-
-    let fullOrdersToday = getFullMakeOrders(today, database);
-    let fullOrdersTomorrow = getFullMakeOrders(tomorrow, database);
+    let tom = tomBasedOnDelivDate(delivDate)
+    let fullOrdersToday = getFullMakeOrders(delivDate, database);
+    let fullOrdersTomorrow = getFullMakeOrders(tom, database);
     for (let make of makeFreshProds) {
       addFresh(make, fullOrdersToday, fullOrdersTomorrow, products, routes);
     }
@@ -106,11 +115,12 @@ export default class ComposeWhatToMake {
     return fil;
   };
 
-  getShelfProds(database) {
+  getShelfProds(database,delivDate) {
     const [products, customers, routes, standing, orders] = database;
     let makeShelfProds = makeProds(products, this.shelfProdsFilter);
-    let fullOrdersToday = getFullMakeOrders(today, database);
-    let fullOrdersTomorrow = getFullProdMakeOrders(tomorrow, database);
+    let tom = tomBasedOnDelivDate(delivDate)
+    let fullOrdersToday = getFullMakeOrders(delivDate, database);
+    let fullOrdersTomorrow = getFullProdMakeOrders(tom, database);
   
     for (let make of makeShelfProds) {
       addShelf(make, fullOrdersToday, fullOrdersTomorrow, products, routes);
@@ -130,11 +140,12 @@ export default class ComposeWhatToMake {
     return fil;
   };
 
-  getFreezerProds(database) {
+  getFreezerProds(database,delivDate) {
     const [products, customers, routes, standing, orders] = database;
     let makeFreezerProds = makeProds(products, this.freezerProdsFilter);
-    let fullOrdersToday = getFullMakeOrders(today, database);
-    let fullOrdersTomorrow = getFullProdMakeOrders(tomorrow, database);
+    let tom = tomBasedOnDelivDate(delivDate)
+    let fullOrdersToday = getFullMakeOrders(delivDate, database);
+    let fullOrdersTomorrow = getFullProdMakeOrders(tom, database);
     for (let make of makeFreezerProds) {
       addShelf(make, fullOrdersToday, fullOrdersTomorrow, products, routes);
       addNeedEarly(make, products);
@@ -152,27 +163,27 @@ export default class ComposeWhatToMake {
     return fil;
   };
 
-  getYoullBeShort = (database) => {
+  getYoullBeShort = (database,delivDate) => {
     const [products, customers, routes, standing, orders] = database;
-    let pocketsNorth = this.getPocketsNorth(database)
+    let pocketsNorth = this.getPocketsNorth(database,delivDate)
       .filter((item) => item.doughType === "French")
       .map((item) => ({
         pocketWeight: item.weight,
         makeTotal: item.makeTotal,
       }));
-    let shelfProds = this.getShelfProds(database)
+    let shelfProds = this.getShelfProds(database,delivDate)
       .filter((item) => item.doughType === "French")
       .map((item) => ({
         pocketWeight: item.weight,
         makeTotal: item.makeTotal,
       }));
-    let freshProds = this.getFreshProds(database)
+    let freshProds = this.getFreshProds(database,delivDate)
       .filter((item) => item.doughType === "French")
       .map((item) => ({
         pocketWeight: item.weight,
         makeTotal: item.makeTotal,
       }));
-    let freezerProds = this.getFreezerProds(database)
+    let freezerProds = this.getFreezerProds(database,delivDate)
       .filter((item) => item.doughType === "French")
       .map((item) => ({
         pocketWeight: item.weight,

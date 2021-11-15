@@ -5,6 +5,7 @@ import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 
 import { ToggleContext } from "../../dataContexts/ToggleContext";
+import ToolBar from "../logistics/ByRoute/Parts/ToolBar"
 
 import jsPDF from "jspdf";
 import "jspdf-autotable";
@@ -49,18 +50,19 @@ function BPBSWhatToMake() {
   const { setIsLoading } = useContext(ToggleContext);
   const [youllBeShort, setYoullBeShort] = useState();
   const [freshProds, setFreshProds] = useState();
+  const [delivDate, setDelivDate] = useState(todayPlus()[0]);
   const [shelfProds, setShelfProds] = useState();
   const [freezerProds, setFreezerProds] = useState();
   const [pocketsNorth, setPocketsNorth] = useState();
 
-  let delivDate = todayPlus()[0];
+  
 
   useEffect(() => {
     promisedData(setIsLoading).then((database) => gatherMakeInfo(database));
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [delivDate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const gatherMakeInfo = (database) => {
-    let makeData = compose.returnMakeBreakDown(database);
+    let makeData = compose.returnMakeBreakDown(database,delivDate);
     setYoullBeShort(makeData.youllBeShort);
     setPocketsNorth(makeData.pocketsNorth);
     setFreshProds(makeData.freshProds);
@@ -185,6 +187,7 @@ function BPBSWhatToMake() {
     <React.Fragment>
       <WholeBox>
         <h1>BPBS What To Make {convertDatetoBPBDate(delivDate)}</h1>
+        <ToolBar delivDate={delivDate} setDelivDate={setDelivDate} />
         <div>{header}</div>
         {(youllBeShort && youllBeShort.length>0) && (
           <React.Fragment>

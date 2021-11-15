@@ -4,6 +4,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import ToolBar from "../logistics/ByRoute/Parts/ToolBar"
+import { confirmDialog } from 'primereact/confirmdialog'
 
 import { ToggleContext } from "../../dataContexts/ToggleContext";
 
@@ -47,6 +48,8 @@ const ButtonWrapper = styled.div`
   background: #ffffff;
 `;
 
+let today = todayPlus()[0];
+
 const compose = new ComposePastryPrep();
 
 function BPBNSetOut({ loc }) {
@@ -75,6 +78,20 @@ function BPBNSetOut({ loc }) {
     setAlmondPrep(pastryPrepData.almondPrep);
   };
 
+  const checkDateAlert = (delivDate) => {
+    if (delivDate !== today) {
+      confirmDialog({
+        message:
+          "This is not the list for TODAY.  Are you sure this is the one you want to print?",
+        header: "Confirmation",
+        icon: "pi pi-exclamation-triangle",
+        accept: () => exportPastryPrepPdf(),
+      });
+    } else {
+      exportPastryPrepPdf();
+    }
+  };
+
   const exportPastryPrepPdf = async () => {
     
     for (let set of setOut) {
@@ -91,7 +108,7 @@ function BPBNSetOut({ loc }) {
       }
     }
     let finalY;
-    let pageMargin = 20;
+    let pageMargin = 60;
     let tableToNextTitle = 12;
     let titleToNextTable = tableToNextTitle + 4;
     let tableFont = 11;
@@ -114,11 +131,12 @@ function BPBNSetOut({ loc }) {
       body: setOut,
       margin: pageMargin,
       columns: [
-        { header: "Product", dataKey: "prodNick" },
+        { header: "Frozen Croissants", dataKey: "prodNick" },
         { header: "Qty", dataKey: "qty" },
       ],
       startY: finalY + titleToNextTable,
       styles: { fontSize: tableFont },
+      theme: "grid"
     });
 
     finalY = doc.previousAutoTable.finalY;
@@ -127,11 +145,12 @@ function BPBNSetOut({ loc }) {
       body: pastryPrep,
       margin: pageMargin,
       columns: [
-        { header: "Product", dataKey: "prodNick" },
+        { header: "Pastry Prep", dataKey: "prodNick" },
         { header: "Qty", dataKey: "qty" },
       ],
       startY: finalY + titleToNextTable,
       styles: { fontSize: tableFont },
+      theme: "grid"
     });
 
     if (loc === "Prado") {
@@ -141,11 +160,12 @@ function BPBNSetOut({ loc }) {
         body: almondPrep,
         margin: pageMargin,
         columns: [
-          { header: "Product", dataKey: "prodNick" },
+          { header: "Almond Prep", dataKey: "prodNick" },
           { header: "Qty", dataKey: "qty" },
         ],
         startY: finalY + titleToNextTable,
         styles: { fontSize: tableFont },
+        theme: "grid"
       });
     }
 
@@ -154,10 +174,11 @@ function BPBNSetOut({ loc }) {
 
   const header = (
     <ButtonContainer>
+     
       <ButtonWrapper>
         <Button
           type="button"
-          onClick={exportPastryPrepPdf}
+          onClick={e => checkDateAlert(delivDate)}
           className="p-button-success"
           data-pr-tooltip="PDF"
         >
@@ -173,8 +194,9 @@ function BPBNSetOut({ loc }) {
         <h1>
           {loc} PASTRY PREP {convertDatetoBPBDate(delivDate)}
         </h1>
-        <div>{header}</div>
         <ToolBar delivDate={delivDate} setDelivDate={setDelivDate} />
+        <div>{header}</div>
+        
         <h3>Set Out</h3>
         <DataTable value={setOut} className="p-datatable-sm">
           <Column field="prodNick" header="Product"></Column>

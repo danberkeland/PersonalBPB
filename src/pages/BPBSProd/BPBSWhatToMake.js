@@ -92,7 +92,7 @@ function BPBSWhatToMake() {
 
   const exportListPdf = () => {
     let finalY;
-    let pageMargin = 10;
+    let pageMargin = 40;
     let tableToNextTitle = 8;
     let titleToNextTable = tableToNextTitle;
     let tableFont = 11;
@@ -110,11 +110,12 @@ function BPBSWhatToMake() {
 
       doc.autoTable({
         body: youllBeShort,
+        margin: pageMargin,
         columns: [
           { header: "You'll Be Short", dataKey: "pocketWeight" },
           { header: "Pockets", dataKey: "makeTotal" },
         ],
-        startY: finalY + 20,
+        startY: finalY +20,
         styles: { fontSize: tableFont },
         theme: "grid"
       });
@@ -129,6 +130,7 @@ function BPBSWhatToMake() {
 
     doc.autoTable({
       body: pocketsNorth,
+      margin: pageMargin,
       columns: [
         { header: "Pockets North", dataKey: "forBake" },
         { header: "Quantity", dataKey: "qty" },
@@ -145,6 +147,7 @@ function BPBSWhatToMake() {
 
     doc.autoTable({
       body: freshProds,
+      margin: pageMargin,
       columns: [
         { header: "Fresh Product", dataKey: "forBake" },
         { header: "Total Deliv", dataKey: "qty" },
@@ -162,6 +165,7 @@ function BPBSWhatToMake() {
     
     doc.autoTable({
       body: shelfProds,
+      margin: pageMargin,
       columns: [
         { header: "Shelf Product", dataKey: "forBake" },
         { header: "Total Deliv", dataKey: "qty" },
@@ -179,6 +183,7 @@ function BPBSWhatToMake() {
    
     doc.autoTable({
       body: freezerProds,
+      margin: pageMargin,
       columns: [
         { header: "Freezer Product", dataKey: "forBake" },
         { header: "Total Deliv", dataKey: "qty" },

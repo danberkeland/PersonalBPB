@@ -3,6 +3,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { Toast } from 'primereact/toast';
+import { confirmDialog } from 'primereact/confirmdialog'
 
 import jsPDF from "jspdf";
 import "jspdf-autotable";
@@ -23,7 +24,7 @@ import styled from "styled-components";
 import { checkQBValidation, grabQBInvoicePDF } from "../../../../helpers/QBHelpers";
 import { downloadPDF } from "../../../../helpers/PDFHelpers";
 import { sortAtoZDataByIndex } from "../../../../helpers/sortDataHelpers";
-import { convertDatetoBPBDate } from "../../../../helpers/dateTimeHelpers";
+import { convertDatetoBPBDate, todayPlus } from "../../../../helpers/dateTimeHelpers";
 
 const axios = require("axios").default;
 
@@ -45,6 +46,8 @@ const ButtonWrapper = styled.div`
 
   background: #ffffff;
 `;
+
+let today = todayPlus()[0];
 
 const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
   const dt = useRef(null);
@@ -232,7 +235,19 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
     setIsLoading(false);
   };
 
-  
+  const checkDateAlert = (driver, delivDate) => {
+    if (delivDate !== today) {
+      confirmDialog({
+        message:
+          "This is not the list for TODAY.  Are you sure this is the one you want to print?",
+        header: "Confirmation",
+        icon: "pi pi-exclamation-triangle",
+        accept: () => exportListPdf(),
+      });
+    } else {
+      exportFullPdf(driver);
+    }
+  };
 
   const exportFullPdf = (driver) => {
     const [products, customers, routes, standing, orders] = database;
@@ -338,7 +353,7 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
       <ButtonWrapper>
         <Button
           type="button"
-          onClick={e => exportFullPdf("current")}
+          onClick={e => checkDateAlert("current",delivDate)}
           className="p-button-success"
           data-pr-tooltip="PDF"
         >
@@ -346,7 +361,7 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
         </Button>
         <Button
           type="button"
-          onClick={e => exportFullPdf("all")}
+          onClick={e => checkDateAlert("all",delivDate)}
           className="p-button-success"
           data-pr-tooltip="PDF"
         >
@@ -354,7 +369,7 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
         </Button>
         <Button
           type="button"
-          onClick={e => exportFullPdf("LongDriver")}
+          onClick={e => checkDateAlert("LongDriver",delivDate)}
           className="p-button-success"
           data-pr-tooltip="PDF"
         >
@@ -362,7 +377,7 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
         </Button>
         <Button
           type="button"
-          onClick={e => exportFullPdf("AMPastry")}
+          onClick={e => checkDateAlert("AMPastry",delivDate)}
           className="p-button-success"
           data-pr-tooltip="PDF"
         >
@@ -370,7 +385,7 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
         </Button>
         <Button
           type="button"
-          onClick={e => exportFullPdf("AMSouth")}
+          onClick={e => checkDateAlert("AMSouth",delivDate)}
           className="p-button-success"
           data-pr-tooltip="PDF"
         >

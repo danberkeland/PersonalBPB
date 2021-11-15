@@ -23,6 +23,7 @@ import styled from "styled-components";
 import { checkQBValidation, grabQBInvoicePDF } from "../../../../helpers/QBHelpers";
 import { downloadPDF } from "../../../../helpers/PDFHelpers";
 import { sortAtoZDataByIndex } from "../../../../helpers/sortDataHelpers";
+import { convertDatetoBPBDate } from "../../../../helpers/dateTimeHelpers";
 
 const axios = require("axios").default;
 
@@ -293,7 +294,7 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
 
       !init && doc.addPage("a4",'l');
       doc.setFontSize(20);
-      doc.text(10, 20, rt);
+      doc.text(10, 20, rt+" "+convertDatetoBPBDate(delivDate));
       doc.autoTable({
         theme: 'grid',
         columns: columns,

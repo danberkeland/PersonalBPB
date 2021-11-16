@@ -171,6 +171,12 @@ function Nav() {
             window.location = "/logistics/SpecialOrders";
           },
         },
+        {
+          label: "Voice",
+          command: () => {
+            window.location = "/settings/voice";
+          },
+        },
       ],
     },
     {
@@ -272,12 +278,7 @@ function Nav() {
             window.location = "/settings/manageUsers";
           },
         },
-        {
-          label: "Voice",
-          command: () => {
-            window.location = "/settings/voice";
-          },
-        },
+        
       ],
     },
   ];

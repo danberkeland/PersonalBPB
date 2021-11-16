@@ -7,7 +7,7 @@ import { createColumns } from "../../../helpers/delivGridHelpers";
 let tomorrow = todayPlus()[1];
 let today = todayPlus()[0];
 
-const getProdNickNames = (database, loc) => {
+const getProdNickNames = (database, loc,delivDate) => {
   const [products, customers, routes, standing, orders] = database;
   
   let fullNames = Array.from(
@@ -16,7 +16,7 @@ const getProdNickNames = (database, loc) => {
         .filter(
           (ord) =>
             !customers.map((cust) => cust.custName).includes(ord.custName) &&
-            ord.delivDate === convertDatetoBPBDate(today) &&
+            ord.delivDate === convertDatetoBPBDate(delivDate) &&
             ord.route === loc
         )
         .map((fil) => fil.prodName)
@@ -29,7 +29,7 @@ const getProdNickNames = (database, loc) => {
   return nickNames;
 };
 
-const getCustNames = (database, loc) => {
+const getCustNames = (database, loc,delivDate) => {
   const [products, customers, routes, standing, orders] = database;
   return Array.from(
     new Set(
@@ -37,7 +37,7 @@ const getCustNames = (database, loc) => {
         .filter(
           (ord) =>
             !customers.map((cust) => cust.custName).includes(ord.custName) &&
-            ord.delivDate === convertDatetoBPBDate(today) &&
+            ord.delivDate === convertDatetoBPBDate(delivDate) &&
             ord.route === loc
         )
         .map((fil) => fil.custName)
@@ -45,17 +45,17 @@ const getCustNames = (database, loc) => {
   );
 };
 
-const makeSpecialColumns = (database, loc) => {
+const makeSpecialColumns = (database, loc,delivDate) => {
   const [products, customers, routes, standing, orders] = database;
-  let filteredOrders = getProdNickNames(database, loc);
+  let filteredOrders = getProdNickNames(database, loc,delivDate);
   filteredOrders = createColumns(filteredOrders);
   return filteredOrders;
 };
 
-const makeSpecialOrders = (database, loc) => {
+const makeSpecialOrders = (database, loc,delivDate) => {
   const [products, customers, routes, standing, orders] = database;
-  let prodNames = getProdNickNames(database, loc);
-  let custNames = getCustNames(database, loc);
+  let prodNames = getProdNickNames(database, loc,delivDate);
+  let custNames = getCustNames(database, loc,delivDate);
   let orderArray = [];
   for (let cust of custNames) {
     let custItem = {};
@@ -73,12 +73,12 @@ const makeSpecialOrders = (database, loc) => {
               (ord) =>
                 ord.custName === cust &&
                 ord.prodName === prodFullName &&
-                ord.delivDate === convertDatetoBPBDate(today) &&
+                ord.delivDate === convertDatetoBPBDate(delivDate) &&
                 ord.route === loc
             )
           ].qty;
       } catch {
-        custItem[prod] = 0;
+        custItem[prod] = '';
       }
     }
     orderArray.push(custItem);
@@ -87,53 +87,53 @@ const makeSpecialOrders = (database, loc) => {
 };
 
 export default class ComposeSpecialOrders {
-  returnSpecialNorthColumns = (database) => {
-    let columns = this.getSpecialNorthColumns(database);
+  returnSpecialNorthColumns = (database,delivDate) => {
+    let columns = this.getSpecialNorthColumns(database,delivDate);
     return {
       columns: columns,
     };
   };
 
-  getSpecialNorthColumns(database) {
-    let specialNorthColumns = makeSpecialColumns(database, "atownpick");
+  getSpecialNorthColumns(database,delivDate) {
+    let specialNorthColumns = makeSpecialColumns(database, "atownpick",delivDate);
     return specialNorthColumns;
   }
 
-  returnSpecialSouthColumns = (database) => {
-    let columns = this.getSpecialSouthColumns(database);
+  returnSpecialSouthColumns = (database,delivDate) => {
+    let columns = this.getSpecialSouthColumns(database,delivDate);
     return {
       columns: columns,
     };
   };
 
-  getSpecialSouthColumns(database) {
-    let specialSouthColumns = makeSpecialColumns(database, "slopick");
+  getSpecialSouthColumns(database,delivDate) {
+    let specialSouthColumns = makeSpecialColumns(database, "slopick",delivDate);
     return specialSouthColumns;
   }
 
-  returnBPBNSpecialOrders = (database) => {
-    let specialOrders = this.getBPBNSpecialOrders(database);
+  returnBPBNSpecialOrders = (database,delivDate) => {
+    let specialOrders = this.getBPBNSpecialOrders(database, delivDate);
     return {
       specialOrders: specialOrders,
     };
   };
 
-  getBPBNSpecialOrders(database) {
+  getBPBNSpecialOrders(database,delivDate) {
     const [products, customers, routes, standing, orders] = database;
-    let BPBNSpecialOrders = makeSpecialOrders(database, "atownpick");
+    let BPBNSpecialOrders = makeSpecialOrders(database, "atownpick",delivDate);
     return BPBNSpecialOrders;
   }
 
-  returnBPBSSpecialOrders = (database) => {
-    let specialOrders = this.getBPBSSpecialOrders(database);
+  returnBPBSSpecialOrders = (database,delivDate) => {
+    let specialOrders = this.getBPBSSpecialOrders(database,delivDate);
     return {
       specialOrders: specialOrders,
     };
   };
 
-  getBPBSSpecialOrders(database) {
+  getBPBSSpecialOrders(database,delivDate) {
     const [products, customers, routes, standing, orders] = database;
-    let BPBSSpecialOrders = makeSpecialOrders(database, "slopick");
+    let BPBSSpecialOrders = makeSpecialOrders(database, "slopick",delivDate);
     return BPBSSpecialOrders;
   }
 }

@@ -54,6 +54,10 @@ export const getRate = (products, order, altPricing) => {
     price = products[ind].wholePrice;
   }
 
+  if (!price){
+    price =0
+  }
+
   return price;
 };
 

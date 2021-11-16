@@ -248,14 +248,18 @@ function Ordering({ authType }) {
 
           let rt = "slopick";
           let custName = newOrd["custName"];
-
-          let prodName =
+          let prodName
+          try{
+            prodName =
             products[
               products.findIndex((prod) =>
                 newOrd["item"].includes(prod.squareID)
               )
             ]["prodName"];
-
+          } catch {
+            prodName = "Brownie"
+          }
+          
           if (newOrd.location === locIDBPBN) {
             rt = "atownpick";
           }

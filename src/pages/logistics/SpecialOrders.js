@@ -3,6 +3,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
+import ToolBar from "../logistics/ByRoute/Parts/ToolBar"
 
 import { ToggleContext } from "../../dataContexts/ToggleContext";
 
@@ -18,7 +19,7 @@ import styled from "styled-components";
 const WholeBox = styled.div`
   display: flex;
   flex-direction: column;
-  width: 50%;
+  width: 70%;
   margin: auto;
   padding: 0 0 100px 0;
 `;
@@ -46,12 +47,13 @@ const compose = new ComposeSpecialOrders();
 
 function SpecialOrders() {
   const { setIsLoading } = useContext(ToggleContext);
+  const [delivDate, setDelivDate] = useState(todayPlus()[0]);
   const [BPBNSpecialOrders, setBPBNSpecialOrders] = useState();
   const [BPBSSpecialOrders, setBPBSSpecialOrders] = useState();
   const [columnsNorth, setColumnsNorth] = useState([]);
   const [columnsSouth, setColumnsSouth] = useState([]);
 
-  let delivDate = todayPlus()[0];
+  
 
   const dynamicColumnsNorth = columnsNorth.map((col, i) => {
     return (
@@ -79,13 +81,13 @@ function SpecialOrders() {
     promisedData(setIsLoading).then((database) =>
       gatherSpecialOrdersInfo(database)
     );
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [delivDate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const gatherSpecialOrdersInfo = (database) => {
-    let colNorth = compose.returnSpecialNorthColumns(database);
-    let colSouth = compose.returnSpecialSouthColumns(database);
-    let BPBNSpecials = compose.returnBPBNSpecialOrders(database);
-    let BPBSSpecials = compose.returnBPBSSpecialOrders(database);
+    let colNorth = compose.returnSpecialNorthColumns(database,delivDate);
+    let colSouth = compose.returnSpecialSouthColumns(database,delivDate);
+    let BPBNSpecials = compose.returnBPBNSpecialOrders(database,delivDate);
+    let BPBSSpecials = compose.returnBPBSSpecialOrders(database,delivDate);
     setBPBNSpecialOrders(BPBNSpecials.specialOrders);
     setBPBSSpecialOrders(BPBSSpecials.specialOrders);
     setColumnsNorth(colNorth.columns);
@@ -112,13 +114,14 @@ function SpecialOrders() {
     finalY = 20;
 
     doc.setFontSize(titleFont);
-    doc.text(pageMargin, finalY + tableToNextTitle, `Special Orders`);
+    
 
     doc.autoTable({
       body: BPBNSpecialOrders,
       columns: columnsNorth,
       startY: finalY + titleToNextTable,
       styles: { fontSize: tableFont },
+      theme: "grid"
     });
 
     doc.save(`BPBNSpecial${delivDate}.pdf`);
@@ -143,12 +146,13 @@ function SpecialOrders() {
     finalY = 20;
 
     doc.setFontSize(titleFont);
-    doc.text(pageMargin, finalY + tableToNextTitle, `Special Orders`);
+    
     doc.autoTable({
       body: BPBSSpecialOrders,
       columns: columnsSouth,
       startY: finalY + titleToNextTable,
       styles: { fontSize: tableFont },
+      theme: "grid"
     });
 
     doc.save(`BPBSSpecial${delivDate}.pdf`);
@@ -188,6 +192,7 @@ function SpecialOrders() {
     <React.Fragment>
       <WholeBox>
         <h1>Carlton Special Orders for {convertDatetoBPBDate(delivDate)}</h1>
+        <ToolBar delivDate={delivDate} setDelivDate={setDelivDate} />
         <div>{headerNorth}</div>
         <DataTable
           className="p-datatable-gridlines p-datatable-sm p-datatable-striped"
@@ -198,6 +203,7 @@ function SpecialOrders() {
       </WholeBox>
       <WholeBox>
         <h1>Prado Special Orders for {convertDatetoBPBDate(delivDate)}</h1>
+        <ToolBar delivDate={delivDate} setDelivDate={setDelivDate} />
         <div>{headerSouth}</div>
         <DataTable
           className="p-datatable-gridlines p-datatable-sm p-datatable-striped"

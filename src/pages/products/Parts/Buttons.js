@@ -195,6 +195,10 @@ const Buttons = ({ selectedProduct, setSelectedProduct }) => {
       leadTime: selectedProduct["leadTime"],
     };
 
+    if (!updateDetails.squareID){
+      updateDetails.squareID = "xxx"
+    }
+
     console.log(updateDetails);
 
     let access = await checkQBValidation()

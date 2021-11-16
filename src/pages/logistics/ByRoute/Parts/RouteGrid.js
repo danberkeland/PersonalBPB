@@ -242,7 +242,7 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
           "This is not the list for TODAY.  Are you sure this is the one you want to print?",
         header: "Confirmation",
         icon: "pi pi-exclamation-triangle",
-        accept: () => exportListPdf(),
+        accept: () => exportFullPdf(driver),
       });
     } else {
       exportFullPdf(driver);

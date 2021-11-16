@@ -36,6 +36,7 @@ import EditDough from './pages/settings/editDough/editDough';
 import DelivOrder from './pages/settings/delivOrder/delivOrder';
 import CustProd from './pages/settings/custProd/custProd';
 import ManageUsers from './pages/settings/manageUsers/manageUsers';
+import Voice from './pages/settings/voice/voice';
 import TestComponent from './pages/testComponent/testComponent'
 
 
@@ -65,6 +66,7 @@ function AppRoutes({ authType, userNum }) {
           <Route path="/settings/delivOrder" component={DelivOrder} />
           <Route path="/settings/custProd" component={CustProd} />
           <Route path="/settings/manageUsers" component={ManageUsers} />
+          <Route path="/settings/voice" component={Voice} />
         
 
           <Route path="/BPBNProd/BPBNBaker1" component={BPBNBaker1} />

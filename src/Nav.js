@@ -272,6 +272,12 @@ function Nav() {
             window.location = "/settings/manageUsers";
           },
         },
+        {
+          label: "Voice",
+          command: () => {
+            window.location = "/settings/voice";
+          },
+        },
       ],
     },
   ];

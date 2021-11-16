@@ -68,7 +68,7 @@ const Buttons = ({ selectedProduct, setSelectedProduct }) => {
           weight: 0,
           descrip: "description",
           picURL: "",
-          squareID: "",
+          squareID: "xxx",
           currentStock: 0,
           whoCountedLast: "",
           eodCount: false,

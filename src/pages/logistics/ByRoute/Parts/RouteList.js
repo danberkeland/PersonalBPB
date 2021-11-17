@@ -26,7 +26,13 @@ const RouteList = ({ orderList, setRouteList, setRoute, routeList, database }) =
       let rtListArray = Array.from(setRtList);
       rtListArray = rtListArray.map((rt) => ({ route: rt }));
       for (let rt of rtListArray){
-        let printOrder = routes[routes.findIndex(rou => rou.routeName === rt.route)].printOrder
+        let printOrder
+        try{
+          printOrder = routes[routes.findIndex(rou => rou.routeName === rt.route)].printOrder
+        } catch {
+          printOrder=0
+        }
+
         rt.printOrder = printOrder
       }
       sortAtoZDataByIndex(rtListArray,"printOrder")

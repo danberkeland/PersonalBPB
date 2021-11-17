@@ -79,7 +79,7 @@ export const twoDayFrozenFilter = (ord, loc) => {
 
 export const threeDayAlFilter = (ord, loc) => {
   return (
-    ord.routeDepart === "Carlton" &&
+    (ord.routeDepart === "Carlton" || ord.route ==="Pick up Carlton") &&
     ord.prodNick === "al" &&
     ord.custName !== "BPB Extras"
   );

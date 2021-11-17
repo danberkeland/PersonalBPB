@@ -7,24 +7,25 @@ const { DateTime } = require("luxon");
 
 const clonedeep = require("lodash.clonedeep");
 
-const today = todayPlus()[0]
+const today = todayPlus()[0];
 
 export const getFullOrders = (delivDate, database) => {
-  const [ products, customers, routes, standing, orders ] = database
-   let buildOrders = buildCartList("*", delivDate, orders);
-   let buildStand = buildStandList("*", delivDate, standing);
-   let fullOrder = compileFullOrderList(buildOrders, buildStand);
-   
-   return fullOrder;
- };
+  const [products, customers, routes, standing, orders] = database;
+  let buildOrders = buildCartList("*", delivDate, orders);
+  let buildStand = buildStandList("*", delivDate, standing);
+  let fullOrder = compileFullOrderList(buildOrders, buildStand);
 
- export const getFullProdOrders = (delivDate, database) => {
-  const [ products, customers, routes, standing, orders ] = database
-   let buildOrders = buildCartList("*", delivDate, orders);
-   let buildStand = buildProdStandList("*", delivDate, standing);
-   let fullOrder = compileFullOrderList(buildOrders, buildStand);
-   return fullOrder;
- };
+  return fullOrder;
+};
+
+export const getFullProdOrders = (delivDate, database) => {
+  const [products, customers, routes, standing, orders] = database;
+  let buildOrders = buildCartList("*", delivDate, orders);
+  let buildStand = buildProdStandList("*", delivDate, standing);
+  let fullOrder = compileFullOrderList(buildOrders, buildStand);
+
+  return fullOrder;
+};
 
 export const buildCartList = (chosen, delivDate, orders) => {
   let BPBDate = convertDatetoBPBDate(delivDate);
@@ -37,20 +38,19 @@ export const buildCartList = (chosen, delivDate, orders) => {
         order["custName"].match(wildcardRegExp(`${chosen}`))
     );
   }
-  console.log("builtCartList",builtCartList)
+
   return builtCartList;
 };
 
 export const buildStandList = (chosen, delivDate, standing, route, ponote) => {
   let filteredStanding = clonedeep(standing);
   let builtStandList = [];
-  builtStandList = filteredStanding.filter(
-    (stand) =>
-      stand["custName"].match(wildcardRegExp(`${chosen}`))
+  builtStandList = filteredStanding.filter((stand) =>
+    stand["custName"].match(wildcardRegExp(`${chosen}`))
   );
- 
-  builtStandList = builtStandList.filter(stand => stand.isStand===true)
-  
+
+  builtStandList = builtStandList.filter((stand) => stand.isStand === true);
+
   let convertedStandList = convertStandListtoStandArray(
     builtStandList,
     delivDate,
@@ -60,15 +60,19 @@ export const buildStandList = (chosen, delivDate, standing, route, ponote) => {
   return convertedStandList;
 };
 
-export const buildProdStandList = (chosen, delivDate, standing, route, ponote) => {
+export const buildProdStandList = (
+  chosen,
+  delivDate,
+  standing,
+  route,
+  ponote
+) => {
   let filteredStanding = clonedeep(standing);
   let builtStandList = [];
-  builtStandList = filteredStanding.filter(
-    (standing) =>
-      standing["custName"].match(wildcardRegExp(`${chosen}`))
+  builtStandList = filteredStanding.filter((standing) =>
+    standing["custName"].match(wildcardRegExp(`${chosen}`))
   );
- 
-  
+
   let convertedStandList = convertStandListtoStandArray(
     builtStandList,
     delivDate,
@@ -96,7 +100,7 @@ const convertStandListtoStandArray = (
     qty: order[dayOfWeek],
     prodName: order["prodName"],
     custName: order["custName"],
-    
+
     isWhole: true,
     delivDate: convertDatetoBPBDate(delivDate),
     timeStamp: order["timeStamp"],
@@ -107,16 +111,15 @@ const convertStandListtoStandArray = (
 
 export const compileOrderList = (cartList, standList) => {
   let orderList = cartList.concat(standList);
-  
 
   // Remove old cart order from orders if it exists
   for (let i = 0; i < orderList.length; ++i) {
     for (let j = i + 1; j < orderList.length; ++j) {
       if (
-        orderList[i]["prodName"] === orderList[j]["prodName"] && 
+        orderList[i]["prodName"] === orderList[j]["prodName"] &&
         orderList[i]["custName"] === orderList[j]["custName"] &&
-        orderList[i]["delivDate"] === orderList[j]["delivDate"] 
-        ) {
+        orderList[i]["delivDate"] === orderList[j]["delivDate"]
+      ) {
         orderList.splice(j, 1);
       }
     }
@@ -125,7 +128,6 @@ export const compileOrderList = (cartList, standList) => {
   sortAtoZDataByIndex(orderList, "prodName");
   return orderList;
 };
-
 
 export const compileFullOrderList = (cartList, standList) => {
   let orderList = cartList.concat(standList);
@@ -157,7 +159,7 @@ export const buildCurrentOrder = (
   let cartList = buildCartList(chosen, delivDate, orders);
   let standList = buildStandList(chosen, delivDate, standing, route, ponote);
   let currentOrderList = compileOrderList(cartList, standList);
-  console.log("currentOrderList",currentOrderList)
+  console.log("currentOrderList", currentOrderList);
   return currentOrderList;
 };
 
@@ -209,7 +211,6 @@ export const buildOrdersToModify = (
   custOrderList,
   ponote,
   route
-
 ) => {
   let ordersToModify = [...orders];
   for (let orderToUpdate of ordersToUpdate) {

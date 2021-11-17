@@ -74,7 +74,7 @@ export const buildGridOrderArray = (filterServe, database) => {
 
   const [products, customers, routes, standing, orders] = database;
   let gridOrderArray;
-  console.log("gridOrder",filterServe)
+  
   gridOrderArray = filterServe.map((ord) => ({
     prodName: ord["prodName"],
     delivOrder:
@@ -259,7 +259,7 @@ export const createListOfCustomers = (orderList) => {
 };
 
 export const createQtyGrid = (listOfCustomers, orderList) => {
-  console.log("orderList in create", orderList);
+ 
   let data = [];
   for (let cust of listOfCustomers) {
     let newData = {
@@ -273,7 +273,7 @@ export const createQtyGrid = (listOfCustomers, orderList) => {
     }
     data.push(newData);
   }
-  console.log("qtyGrid", data);
+  
   sortAtoZDataByIndex(data, "delivOrder");
   return data;
 };

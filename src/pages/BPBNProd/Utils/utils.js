@@ -191,10 +191,11 @@ export const getOrdersList = (delivDate, database, prod) => {
   } else {
     fullOrder = getFullOrders(delivDate, database);
   }
-
+  
   fullOrder = zerosDelivFilter(fullOrder, delivDate, database);
   fullOrder = buildGridOrderArray(fullOrder, database);
   fullOrder = addRoutes(delivDate, fullOrder, database);
+  
   return fullOrder;
 };
 

@@ -1,24 +1,43 @@
 import { todayPlus } from "../../../helpers/dateTimeHelpers";
 
 import { DayOneFilter, DayTwoFilter, getOrdersList, addUp } from "./utils";
+const { DateTime } = require("luxon");
 
-let tomorrow = todayPlus()[1];
-let twoDay = todayPlus()[2];
+const tomBasedOnDelivDate = (delivDate) => {
+  console.log("delivStart", delivDate);
+  let tomorrow = DateTime.fromFormat(delivDate, "yyyy-MM-dd")
+    .setZone("America/Los_Angeles")
+    .plus({ days: 1 });
+
+  return tomorrow.toString().split("T")[0];
+}
+
+const TwodayBasedOnDelivDate = (delivDate) => {
+  console.log("delivStart", delivDate);
+  let tomorrow = DateTime.fromFormat(delivDate, "yyyy-MM-dd")
+    .setZone("America/Los_Angeles")
+    .plus({ days: 2 });
+
+  return tomorrow.toString().split("T")[0];
+}
 
 export default class ComposeWhatToMake {
-  returnWhatToMakeBreakDown = (database) => {
-    let whatToMake = this.returnWhatToMake(database);
+  returnWhatToMakeBreakDown = (database,delivDate) => {
+    let whatToMake = this.returnWhatToMake(database,delivDate);
     return {
       whatToMake: whatToMake,
     };
   };
 
-  returnWhatToMake = (database) => {
+  returnWhatToMake = (database,delivDate) => {
+    let tom = tomBasedOnDelivDate(delivDate)
+    let twoday = TwodayBasedOnDelivDate(delivDate)
+    
     let whatToMake = this.makeAddQty(
-      getOrdersList(tomorrow, database, true)
+      getOrdersList(tom, database, true)
         .filter((set) => DayOneFilter(set))
         .concat(
-          getOrdersList(twoDay, database, true).filter((set) =>
+          getOrdersList(twoday, database, true).filter((set) =>
             DayTwoFilter(set)
           )
         )

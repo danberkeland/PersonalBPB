@@ -3,6 +3,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
+import ToolBar from "../logistics/ByRoute/Parts/ToolBar"
 
 import { ToggleContext } from "../../dataContexts/ToggleContext";
 
@@ -55,6 +56,7 @@ const ButtonWrapper = styled.div`
 const compose = new ComposeWhatToBake();
 
 function BPBNBaker1() {
+  const [delivDate, setDelivDate] = useState(todayPlus()[0]);
   const { setIsLoading } = useContext(ToggleContext);
   const [whatToMake, setWhatToMake] = useState();
   const [whatToPrep, setWhatToPrep] = useState();
@@ -66,7 +68,6 @@ function BPBNBaker1() {
   const [bagDoughTwoDays, setBagDoughTwoDays] = useState([]);
   const [infoWrap, setInfoWrap] = useState({});
 
-  let delivDate = todayPlus()[0];
 
   const [width, setWidth] = useState(window.innerWidth);
   const breakpoint = 620;
@@ -97,7 +98,7 @@ function BPBNBaker1() {
     promisedData(setIsLoading).then((database) =>
       gatherWhatToMakeInfo(database)
     );
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [delivDate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const gatherWhatToMakeInfo = (database) => {
     let whatToMakeData = compose.returnWhatToMakeBreakDown(delivDate, database);
@@ -126,6 +127,7 @@ function BPBNBaker1() {
   const innards = (
     <React.Fragment>
       <h1>What To Bake {convertDatetoBPBDate(delivDate)}</h1>
+      <ToolBar delivDate={delivDate} setDelivDate={setDelivDate} />
       <div>{width > breakpoint ? header : ''}</div>
 
       <DataTable value={whatToMake} className="p-datatable-sm">

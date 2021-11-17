@@ -3,6 +3,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
+import ToolBar from "../logistics/ByRoute/Parts/ToolBar"
 
 import { ToggleContext } from "../../dataContexts/ToggleContext";
 
@@ -50,18 +51,18 @@ const compose = new ComposeWhatToMake();
 
 function BPBNBaker2() {
   const { setIsLoading } = useContext(ToggleContext);
+  const [delivDate, setDelivDate] = useState(todayPlus()[0]);
   const [whatToMake, setWhatToMake] = useState([]);
 
-  let delivDate = todayPlus()[0];
 
   useEffect(() => {
     promisedData(setIsLoading).then((database) =>
       gatherWhatToMakeInfo(database)
     );
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [delivDate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const gatherWhatToMakeInfo = (database) => {
-    let whatToMakeData = compose.returnWhatToMakeBreakDown(database);
+    let whatToMakeData = compose.returnWhatToMakeBreakDown(database,delivDate);
     setWhatToMake(whatToMakeData.whatToMake);
   };
 
@@ -134,6 +135,7 @@ function BPBNBaker2() {
     <React.Fragment>
       <WholeBox>
         <h1>What To Shape {convertDatetoBPBDate(delivDate)}</h1>
+        <ToolBar delivDate={delivDate} setDelivDate={setDelivDate} />
         <div>{header}</div>
 
         <h3>What To Shape</h3>

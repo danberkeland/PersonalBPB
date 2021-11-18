@@ -182,7 +182,7 @@ function SpecialOrders() {
           className="p-button-success"
           data-pr-tooltip="PDF"
         >
-          Print BPBN Special Orders List
+          Print BPBS Special Orders List
         </Button>
       </ButtonWrapper>
     </ButtonContainer>

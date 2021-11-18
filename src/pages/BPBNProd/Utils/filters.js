@@ -102,7 +102,7 @@ export const almondPrepFilter = (ord, loc) => {
     ord.prodNick === "al" &&
     (ord.routeDepart === loc ||
       ord.custName === "Back Porch Bakery" ||
-      ord.route === "Pick up SLO") &&
+      ord.route === "Pick up Carlton" ) &&
     ord.custName !== "BPB Extras"
   );
 };

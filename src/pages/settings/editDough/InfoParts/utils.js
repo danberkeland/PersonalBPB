@@ -7,6 +7,9 @@ import { sortAtoZDataByIndex } from "../../../../helpers/sortDataHelpers";
 const clonedeep = require("lodash.clonedeep");
 
 export const getCompList = (comp, doughComponents, selectedDough) => {
+  console.log("compList",doughComponents)
+  console.log("doughName",selectedDough.doughName)
+  console.log("type",comp)
   let compList = doughComponents
     .filter(
       (dgh) =>
@@ -50,10 +53,14 @@ export const handleBlur = (value, id, doughComponents, setIsModified) => {
 };
 
 export const getAmount = (e, doughComponents, selectedDough) => {
-  let thisAmount = doughComponents.filter(
-    (dgh) =>
-      dgh.dough === selectedDough.doughName && dgh.componentName === e.ing
-  )[0].amount;
+  let thisAmount = 0
+  try{
+    thisAmount = doughComponents.filter(
+      (dgh) =>
+        dgh.dough === selectedDough.doughName && dgh.componentName === e.ing
+    )[0].amount;
+  } catch {}
+  
   return thisAmount;
 };
 
@@ -143,7 +150,7 @@ export const fetchDoughs = async (setDoughs) => {
   try {
     const doughData = await API.graphql(
       graphqlOperation(listDoughs, {
-        limit: "50",
+        limit: "500",
       })
     );
     const doughList = doughData.data.listDoughs.items;
@@ -160,7 +167,7 @@ export const fetchDoughComponents = async (setDoughComponents) => {
   try {
     const doughData = await API.graphql(
       graphqlOperation(listDoughComponents, {
-        limit: "50",
+        limit: "500",
       })
     );
     const doughList = doughData.data.listDoughComponents.items;

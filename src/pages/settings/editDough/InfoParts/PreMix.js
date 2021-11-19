@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import "primeflex/primeflex.css";
 
@@ -41,8 +41,14 @@ const PreMix = ({
   setIsModified,
 }) => {
   const [selectedPre, setSelectedPre] = useState("");
+  const [ pre, setPre ] = useState();
 
-  const pre = getCompList("lev", doughComponents, selectedDough);
+  useEffect(() => {
+    const preDo = getCompList("lev", doughComponents, selectedDough);
+    console.log("preDo",preDo)
+    setPre(preDo)
+  }, []);
+  
 
   const handlePrePick = (e) => {
    
@@ -72,7 +78,7 @@ const PreMix = ({
     <React.Fragment>
       <div className="datatable-templating-demo">
         <div className="card">
-          {pre.length > 0 ? (
+          {pre && pre.length > 0 ? (
             <DataTable value={pre} className="p-datatable-sm">
               <Column field="ing" header="Pre Mix"></Column>
 

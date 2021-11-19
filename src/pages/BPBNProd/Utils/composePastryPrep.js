@@ -62,6 +62,7 @@ export default class ComposePastryPrep {
     let threeDayList = getOrdersList(threeday, database, true);
     
     let setOutToday = setOutList.filter((set) => setOutFilter(set, loc));
+    console.log("setouttoday", setOutToday)
 
     let almondSetOut = setOutForAlmonds.filter((set) =>
       setOutPlainsForAlmondsFilter(set, loc)

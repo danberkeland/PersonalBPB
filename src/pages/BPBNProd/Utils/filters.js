@@ -53,8 +53,16 @@ export const baker1PocketFilter = (ord, loc) => {
 };
 
 export const setOutFilter = (ord, loc) => {
+  
+  let specialCheck
+  if (loc==="Prado"){
+    specialCheck = "Pick up SLO"
+  }
+  if (loc==="Carlton"){
+    specialCheck = "Pick up Carlton"
+  }
   return (
-    (ord.routeDepart === loc || ord.custName === "Back Porch Bakery") &&
+    (ord.routeDepart === loc || ord.route === specialCheck || ord.custName === "Back Porch Bakery") &&
     ord.custName !== "BPB Extras" &&
     ord.packGroup === "baked pastries" &&
     ord.prodNick !== "al" &&
@@ -98,11 +106,18 @@ export const pastryPrepFilter = (ord, loc) => {
 };
 
 export const almondPrepFilter = (ord, loc) => {
+  let specialCheck
+  if (loc==="Prado"){
+    specialCheck = "Pick up SLO"
+  }
+  if (loc==="Carlton"){
+    specialCheck = "Pick up Carlton"
+  }
   return (
     ord.prodNick === "al" &&
     (ord.routeDepart === loc ||
       ord.custName === "Back Porch Bakery" ||
-      ord.route === "Pick up Carlton" ) &&
+      ord.route === specialCheck ) &&
     ord.custName !== "BPB Extras"
   );
 };

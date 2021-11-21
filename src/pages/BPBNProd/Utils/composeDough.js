@@ -10,7 +10,8 @@ import {
 } from "./utils";
 
 import {
-  pocketFilter,
+  pocketFilterToday,
+  pocketFilterTwoDay,
   baker1PocketFilter,
   baguette,
   noBaguette,
@@ -82,11 +83,28 @@ export default class ComposeDough {
   };
 
   returnPockets = (database, loc) => {
-    let pocketsToday = getOrdersList(tomorrow, database, true).filter((set) =>
-      pocketFilter(set, loc)
+    let pocketsTodayPrep = getOrdersList(tomorrow, database, true).filter((set) =>
+      pocketFilterToday(set, loc)
     );
-    pocketsToday = makePocketQty(pocketsToday);
+    console.log("pocketsTodayPrep",pocketsTodayPrep)
+    let pocketsToday = makePocketQty(pocketsTodayPrep);
+    console.log("pocketsToday",pocketsToday)
 
+    let pocketsTomPrep = getOrdersList(twoDay, database, true).filter((set) =>
+      pocketFilterTwoDay(set, loc)
+    );
+    console.log("pocketsTomPrep",pocketsTomPrep)
+    let pocketsTom = makePocketQty(pocketsTomPrep);
+    console.log("pocketsTom",pocketsTom)
+    
+    for (let item of pocketsToday){
+      for (let otherItem of pocketsTom){
+        if (item.pocketSize === otherItem.pocketSize){
+          item.qty = item.qty+otherItem.qty
+        }
+      }
+    }
+    
     return pocketsToday;
   };
 

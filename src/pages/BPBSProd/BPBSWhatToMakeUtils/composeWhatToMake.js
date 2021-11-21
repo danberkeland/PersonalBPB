@@ -36,6 +36,7 @@ const makeProds = (products, filt) => {
 };
 
 const getFullMakeOrders = (delivDate, database) => {
+  console.log("getFullMakeOrder",delivDate)
   let fullOrder = getFullOrders(delivDate, database);
   fullOrder = addProdAttr(fullOrder, database); // adds forBake, packSize, currentStock
   return fullOrder;
@@ -77,6 +78,7 @@ export default class ComposeWhatToMake {
   getPocketsNorth(database,delivDate) {
     const [products, customers, routes, standing, orders] = database;
     let makePocketsNorth = makeProds(products, this.pocketsNorthFilter);
+    console.log("getPocketsNorth",delivDate)
     let fullOrdersToday = getFullMakeOrders(delivDate, database);
     for (let make of makePocketsNorth) {
       addPocketsQty(make, fullOrdersToday);
@@ -167,6 +169,7 @@ export default class ComposeWhatToMake {
   };
 
   getYoullBeShort = (database,delivDate) => {
+    console.log("youllBeShort",delivDate)
     const [products, customers, routes, standing, orders] = database;
     let pocketsNorth = this.getPocketsNorth(database,delivDate)
       .filter((item) => item.doughType === "French")

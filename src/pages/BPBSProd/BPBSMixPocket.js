@@ -73,6 +73,7 @@ const shortage = new ComposeWhatToMake()
 
 function BPBSMixPocket() {
   const { setIsLoading } = useContext(ToggleContext);
+  const [delivDate, setDelivDate] = useState(todayPlus()[0]);
 
   const [ pockets, setPockets ] = useState([])
   const [ doughs, setDoughs ] = useState([]);
@@ -82,13 +83,13 @@ function BPBSMixPocket() {
   let twoDay = todayPlus()[2];
 
   useEffect(() => {
-    promisedData(setIsLoading).then((database) => gatherDoughInfo(database));
+    promisedData(setIsLoading).then((database) => gatherDoughInfo(database,delivDate));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   
-  const gatherDoughInfo = (database) => {
+  const gatherDoughInfo = (database,delivDate) => {
     let doughData = compose.returnDoughBreakDown(database, "Prado");
-    let shortageData = shortage.getYoullBeShort(database)
+    let shortageData = shortage.getYoullBeShort(database,delivDate)
     setDoughs(doughData.doughs);
     setDoughComponents(doughData.doughComponents);
     setPockets(doughData.pockets)

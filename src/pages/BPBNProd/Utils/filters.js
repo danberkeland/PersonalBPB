@@ -37,8 +37,12 @@ export const noBaguette = (ord, loc) => {
   return ord.mixedWhere === loc && ord.doughName !== "Baguette";
 };
 
-export const pocketFilter = (ord, loc) => {
-  return ord.doughType === "French";
+export const pocketFilterToday = (ord, loc) => {
+  return ord.doughType === "French" && ord.when<15;
+};
+
+export const pocketFilterTwoDay = (ord, loc) => {
+  return ord.doughType === "French" && ord.when===15;
 };
 
 export const whatToMakeFilter = (ord, loc) => {

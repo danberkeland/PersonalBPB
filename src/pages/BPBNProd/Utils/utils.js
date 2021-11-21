@@ -223,6 +223,8 @@ export const makePocketQty = (bakedTomorrow) => {
   return makeList2;
 };
 
+
+
 export const whatToMakeList = (database, delivDate) => {
   let [products, customers, routes, standing, orders] = database;
   let whatToMakeList = getOrdersList(delivDate, database, true);

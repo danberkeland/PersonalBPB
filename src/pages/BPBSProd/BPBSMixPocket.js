@@ -24,7 +24,7 @@ import styled from "styled-components";
 const WholeBox = styled.div`
   display: flex;
   flex-direction: column;
-  width: 50%;
+  width: 70%;
   margin: auto;
   padding: 0 0 100px 0;
 `;
@@ -449,7 +449,9 @@ function BPBSMixPocket() {
             <h3>French Pockets</h3>
             <DataTable value={pockets} className="p-datatable-sm">
               <Column field="pocketSize" header="Pocket Size"></Column>
-              <Column field="qty" header="Qty"></Column>
+              <Column field="prepped" header="Pre Shaped"></Column>
+              <Column field="late" header="Need Early"></Column>
+              <Column field="qty" header="Pocket Today"></Column>
             </DataTable>
           </WholeBox>
       </WholeBox>

@@ -20,6 +20,7 @@ import {
 let twoDay = todayPlus()[2];
 let oneDay = todayPlus()[1];
 let tomorrow = todayPlus()[1];
+let today = todayPlus()[0];
 
 export default class ComposeDough {
   returnDoughBreakDown = (database, loc) => {
@@ -78,33 +79,81 @@ export default class ComposeDough {
     for (let make of whatToMakeToday) {
       qty += Number(make.qty * make.weight);
     }
-    console.log("bagDoughQty",qty)
+    console.log("bagDoughQty", qty);
     return Math.round(qty / 82);
   };
 
   returnPockets = (database, loc) => {
-    let pocketsTodayPrep = getOrdersList(tomorrow, database, true).filter((set) =>
-      pocketFilterToday(set, loc)
+    let pocketsTodayPrep = getOrdersList(tomorrow, database, true).filter(
+      (set) => pocketFilterToday(set, loc)
     );
-    console.log("pocketsTodayPrep",pocketsTodayPrep)
+    console.log("pocketsTodayPrep", pocketsTodayPrep);
     let pocketsToday = makePocketQty(pocketsTodayPrep);
-    console.log("pocketsToday",pocketsToday)
+    console.log("pocketsToday", pocketsToday);
 
     let pocketsTomPrep = getOrdersList(twoDay, database, true).filter((set) =>
       pocketFilterTwoDay(set, loc)
     );
-    console.log("pocketsTomPrep",pocketsTomPrep)
+    console.log("pocketsTomPrep", pocketsTomPrep);
     let pocketsTom = makePocketQty(pocketsTomPrep);
-    console.log("pocketsTom",pocketsTom)
-    
-    for (let item of pocketsToday){
-      for (let otherItem of pocketsTom){
-        if (item.pocketSize === otherItem.pocketSize){
-          item.qty = item.qty+otherItem.qty
+    console.log("pocketsTom", pocketsTom);
+
+    for (let item of pocketsToday) {
+      for (let otherItem of pocketsTom) {
+        if (item.pocketSize === otherItem.pocketSize) {
+          item.qty = item.qty + otherItem.qty;
         }
       }
     }
-    
+
+    let pocketsTodayLate = getOrdersList(today, database, false).filter((set) =>
+      pocketFilterToday(set, loc)
+    );
+    console.log("pocketsTodayLate", pocketsTodayLate);
+    let pocketsLateToday = makePocketQty(pocketsTodayLate);
+    console.log("pocketsToday", pocketsLateToday);
+
+    let pocketsTomLate = getOrdersList(tomorrow, database, true).filter((set) =>
+      pocketFilterTwoDay(set, loc)
+    );
+    console.log("pocketsTomLate", pocketsTomLate);
+    let pocketsLateTom = makePocketQty(pocketsTomLate);
+    console.log("pocketsLateTom", pocketsLateTom);
+
+    for (let item of pocketsLateToday) {
+      for (let otherItem of pocketsTomLate) {
+        if (item.pocketSize === otherItem.pocketSize) {
+          item.qty = item.qty + otherItem.qty;
+        }
+      }
+    }
+
+    for (let item of pocketsToday) {
+      for (let otherItem of pocketsLateToday) {
+        if (item.pocketSize === otherItem.pocketSize) {
+          item.late = otherItem.qty;
+        }
+      }
+    }
+
+    for (let item of pocketsToday) {
+      for (let otherItem of pocketsTodayLate) {
+        if (item.pocketSize === otherItem.weight) {
+          item.prepped = otherItem.prepreshaped;
+        }
+      }
+    }
+
+    for (let item of pocketsToday) {
+      console.log("pre", item);
+      item.late = Number(item.qty) - Number(item.prepped);
+      if (item.late < 0) {
+        item.late = 0;
+      }
+      item.qty = item.qty + item.late;
+    }
+
+
     return pocketsToday;
   };
 

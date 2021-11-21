@@ -128,6 +128,7 @@ function BPBNBaker2() {
   };
 
   const exportPastryPrepPdf = async (infoWrap) => {
+    setIsLoading(true)
     
     for (let set of setOut) {
       let addDetails = {
@@ -217,6 +218,7 @@ function BPBNBaker2() {
     });
     */
     doc.save(`WhatToShape${delivDate}.pdf`);
+    setIsLoading(false)
   };
 
   const header = (

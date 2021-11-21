@@ -13,6 +13,8 @@ import "jspdf-autotable";
 import { convertDatetoBPBDate, todayPlus } from "../../helpers/dateTimeHelpers";
 import { promisedData } from "../../helpers/databaseFetchers";
 import ComposeWhatToMake from "./Utils/composeWhatToMake";
+import ComposePastryPrep from "./Utils/composePastryPrep";
+import ComposeWhatToPrep from "./Utils/composeWhatToPrep";
 
 import { updateProduct } from "../../graphql/mutations";
 
@@ -48,12 +50,55 @@ const ButtonWrapper = styled.div`
 `;
 
 const compose = new ComposeWhatToMake();
+const composePastry = new ComposePastryPrep();
+const composePrep = new ComposeWhatToPrep();
+
+let finalY;
+let pageMargin = 20;
+let tableToNextTitle = 4;
+let titleToNextTable = tableToNextTitle + 2;
+let tableFont = 11;
+let titleFont = 14;
+
+const buildTable = (title, doc, body, col) => {
+  
+  doc.autoTable({
+    theme: "grid",
+    body: body,
+    margin: pageMargin+25,
+    columns: col,
+    startY: finalY + titleToNextTable,
+    styles: { fontSize: tableFont },
+  });
+};
 
 function BPBNBaker2() {
   const { setIsLoading } = useContext(ToggleContext);
+  const [setOut, setSetOut] = useState([]);
   const [delivDate, setDelivDate] = useState(todayPlus()[0]);
   const [whatToMake, setWhatToMake] = useState([]);
+  const [pastryPrep, setPastryPrep] = useState([]);
+  const [infoWrap, setInfoWrap] = useState({});
+  const [whatToPrep, setWhatToPrep] = useState();
 
+
+  useEffect(() => {
+    promisedData(setIsLoading).then((database) =>
+      gatherWhatToPrepInfo(database)
+    );
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const gatherWhatToPrepInfo = (database) => {
+    let whatToPrepData = composePrep.returnWhatToPrepBreakDown(delivDate, database);
+    setWhatToPrep(whatToPrepData.whatToPrep);
+  };
+  
+
+  useEffect(() => {
+    setInfoWrap({
+      whatToPrep: whatToPrep,
+    });
+  }, [whatToPrep]);
 
   useEffect(() => {
     promisedData(setIsLoading).then((database) =>
@@ -66,8 +111,37 @@ function BPBNBaker2() {
     setWhatToMake(whatToMakeData.whatToMake);
   };
 
-  const exportPastryPrepPdf = async () => {
-    // UPDATE preshaped Nombers
+  useEffect(() => {
+    promisedData(setIsLoading).then((database) =>
+      gatherPastryPrepInfo(database)
+    );
+  }, [delivDate]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const gatherPastryPrepInfo = (database) => {
+    let pastryPrepData = composePastry.returnPastryPrepBreakDown(
+      delivDate,
+      database,
+      "Carlton"
+    );
+    setSetOut(pastryPrepData.setOut);
+    setPastryPrep(pastryPrepData.pastryPrep);
+  };
+
+  const exportPastryPrepPdf = async (infoWrap) => {
+    
+    for (let set of setOut) {
+      let addDetails = {
+        id: set.id,
+        prepreshaped: set.qty,
+      };
+      try {
+        await API.graphql(
+          graphqlOperation(updateProduct, { input: { ...addDetails } })
+        );
+      } catch (error) {
+        console.log("error on updating product", error);
+      }
+    }
    
     for (let make of whatToMake) {
       let addDetails = {
@@ -83,12 +157,6 @@ function BPBNBaker2() {
       }
     }
 
-    let finalY;
-    let pageMargin = 20;
-    let tableToNextTitle = 12;
-    let titleToNextTable = tableToNextTitle + 4;
-    let tableFont = 11;
-    let titleFont = 14;
 
     const doc = new jsPDF("p", "mm", "a4");
     doc.setFontSize(20);
@@ -97,8 +165,7 @@ function BPBNBaker2() {
     finalY = 20;
 
     doc.setFontSize(titleFont);
-    doc.text(pageMargin, finalY + tableToNextTitle, `Shape List`);
-
+   
     doc.autoTable({
       theme: 'grid',
       body: whatToMake,
@@ -113,6 +180,42 @@ function BPBNBaker2() {
       styles: { fontSize: tableFont },
     });
 
+    finalY = doc.previousAutoTable.finalY + tableToNextTitle;
+
+  let col = [
+    { header: "Product", dataKey: "prodName" },
+    { header: "Qty", dataKey: "qty" },
+  ];
+  buildTable('',doc, infoWrap.whatToPrep, col);
+
+  finalY = doc.previousAutoTable.finalY + tableToNextTitle;
+
+    doc.autoTable({
+      body: setOut,
+      margin: pageMargin+25,
+      columns: [
+        { header: "Set Out", dataKey: "prodNick" },
+        { header: "Qty", dataKey: "qty" },
+      ],
+      startY: finalY + titleToNextTable,
+      styles: { fontSize: tableFont },
+      theme: "grid"
+    });
+    /*
+    finalY = doc.previousAutoTable.finalY;
+
+    doc.autoTable({
+      body: pastryPrep,
+      margin: pageMargin+25,
+      columns: [
+        { header: "Pastry Prep", dataKey: "prodNick" },
+        { header: "Qty", dataKey: "qty" },
+      ],
+      startY: finalY + titleToNextTable,
+      styles: { fontSize: tableFont },
+      theme: "grid"
+    });
+    */
     doc.save(`WhatToShape${delivDate}.pdf`);
   };
 
@@ -121,7 +224,7 @@ function BPBNBaker2() {
       <ButtonWrapper>
         <Button
           type="button"
-          onClick={exportPastryPrepPdf}
+          onClick={e => exportPastryPrepPdf(infoWrap)}
           className="p-button-success"
           data-pr-tooltip="PDF"
         >

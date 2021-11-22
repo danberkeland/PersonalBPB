@@ -83,6 +83,27 @@ function BPBSMixPocket() {
   let twoDay = todayPlus()[2];
 
   useEffect(() => {
+    try{
+      console.log("pockets",pockets)
+      let total = 0
+      for (let pock of pockets){
+        total = total + pock.pocketSize*pock.qty
+      }
+      console.log("Total",total.toFixed(2))
+
+      let newDoughs = clonedeep(doughs)
+      let ind = doughs.findIndex(dg => dg.doughName === "French")
+      console.log("ind",ind)
+      
+      newDoughs[ind].needed = total.toFixed(2)
+      console.log("newDoughs",newDoughs)
+      setDoughs(newDoughs)
+
+
+    }catch{}
+  },[pockets])
+
+  useEffect(() => {
     promisedData(setIsLoading).then((database) => gatherDoughInfo(database,delivDate));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -91,6 +112,7 @@ function BPBSMixPocket() {
     let doughData = compose.returnDoughBreakDown(database, "Prado");
     let shortageData = shortage.getYoullBeShort(database,delivDate)
     setDoughs(doughData.doughs);
+    console.log("doughs",doughData)
     setDoughComponents(doughData.doughComponents);
     setPockets(doughData.pockets)
     let short = 0

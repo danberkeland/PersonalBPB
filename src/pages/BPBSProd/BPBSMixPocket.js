@@ -39,7 +39,7 @@ const TwoColumnGrid = styled.div`
 
 const ThreeColumnGrid = styled.div`
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-columns: 3fr 1fr 1fr 1fr;
   column-gap: 10px;
   row-gap: 10px;
   padding: 5px;
@@ -155,9 +155,8 @@ function BPBSMixPocket() {
     }
   };
 
-  const handleClick = (e, amt) => {
+  const handleClick = (e, amt, mixNumber) => {
    
-    let mixNumber = Math.ceil(amt/230)
     amt = amt/mixNumber
     let doughName = e.target.id.split("_")[0];
     let components = doughComponents.filter((dgh) => dgh.dough === doughName);
@@ -407,6 +406,40 @@ function BPBSMixPocket() {
     doc.save(`${doughName}Stickers.pdf`);
   };
 
+  const handleInput = (e) => {
+    console.log("firstE",e)
+    let weight = e.pocketSize
+    return (
+      <InputText
+        id={e.weight}
+        style={{
+          width: "50px",
+          backgroundColor: "#E3F2FD",
+          fontWeight: "bold",
+        }}
+        placeholder="0"
+        onKeyUp={(e) => e.code === "Enter" ? handlePockChange(e,weight) : ''}
+        onBlur={(e) => handlePockChange(e,weight)}
+      />
+    );
+  }
+
+  const handlePockChange = (e,weight) => {
+    let value = e.target.value
+    console.log("pockets",pockets)
+    let copyPockets = clonedeep(pockets)
+    let ind = copyPockets.findIndex(cop => cop.pocketSize === weight)
+    console.log("ind",ind)
+    if (ind>-1){
+      copyPockets[ind].qty = copyPockets[ind].qtyFixed - value
+      if (copyPockets[ind].qty<0){
+        copyPockets[ind].qty=0
+      }
+    }
+    
+    setPockets(copyPockets)
+  }
+
   return (
     <React.Fragment>
       <WholeBox>
@@ -420,7 +453,7 @@ function BPBSMixPocket() {
             <ThreeColumnGrid key={dough.id + "_first2Col"}>
               <div>
                 <TwoColumnGrid key={dough.id + "_second2Col"}>
-                  <span>Old Dough:</span>
+                  <span>Old BULK Dough (to be thrown in mix):</span>
                   <div className="p-inputgroup">
                     <InputText
                       key={dough.id + "_oldDough"}
@@ -454,14 +487,51 @@ function BPBSMixPocket() {
                     e,
                     Number(dough.buffer) +
                       Number(dough.needed) + Number(shortWeight) -
-                      Number(dough.oldDough)
+                      Number(dough.oldDough),
+                      1
                   )
                 }
-                label="Print Sticker Set"
+                label="Print 1x Set"
                 className="p-button-rounded p-button-lg"
                 icon="pi pi-print"
               >
-                Print Sticker Set
+                1x Mix
+              </ButtonStyle>
+              <ButtonStyle
+                key={dough.id + "_print"}
+                id={dough.doughName + "_print"}
+                onClick={(e) =>
+                  handleClick(
+                    e,
+                    Number(dough.buffer) +
+                      Number(dough.needed) + Number(shortWeight) -
+                      Number(dough.oldDough),
+                      2
+                  )
+                }
+                label="Print 2x Set"
+                className="p-button-rounded p-button-lg"
+                icon="pi pi-print"
+              >
+                2x Mix
+              </ButtonStyle>
+              <ButtonStyle
+                key={dough.id + "_print"}
+                id={dough.doughName + "_print"}
+                onClick={(e) =>
+                  handleClick(
+                    e,
+                    Number(dough.buffer) +
+                      Number(dough.needed) + Number(shortWeight) -
+                      Number(dough.oldDough),
+                      3
+                  )
+                }
+                label="Print 3x Set"
+                className="p-button-rounded p-button-lg"
+                icon="pi pi-print"
+              >
+                3x Mix
               </ButtonStyle>
               
             </ThreeColumnGrid>
@@ -470,6 +540,11 @@ function BPBSMixPocket() {
         <WholeBox>
             <h3>French Pockets</h3>
             <DataTable value={pockets} className="p-datatable-sm">
+            <Column
+              className="p-text-center"
+              header="Carry Pockets"
+              body={(e) => handleInput(e)}
+            ></Column>
               <Column field="pocketSize" header="Pocket Size"></Column>
               <Column field="prepped" header="Pre Shaped"></Column>
               <Column field="late" header="Need Early"></Column>

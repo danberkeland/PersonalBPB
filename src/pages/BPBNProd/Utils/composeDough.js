@@ -155,6 +155,9 @@ export default class ComposeDough {
      
     }
 
+    for (let item of pocketsToday){
+      item.qtyFixed = item.qty
+    }
     return pocketsToday;
   };
 

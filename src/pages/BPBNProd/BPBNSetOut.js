@@ -15,7 +15,7 @@ import { convertDatetoBPBDate, todayPlus } from "../../helpers/dateTimeHelpers";
 import { promisedData } from "../../helpers/databaseFetchers";
 import ComposePastryPrep from "./Utils/composePastryPrep";
 
-import { updateProduct } from "../../graphql/mutations";
+import { updateProduct, updateInfoQBAuth } from "../../graphql/mutations";
 
 import { API, graphqlOperation } from "aws-amplify";
 
@@ -59,13 +59,38 @@ function BPBNSetOut({ loc }) {
   const [pastryPrep, setPastryPrep] = useState([]);
   const [almondPrep, setAlmondPrep] = useState([]);
 
-  
+  useEffect(() => {
+    confirmDialog({
+      message:
+        "Click YES to confirm these setout numbers will be used.",
+      header: "Confirmation",
+      icon: "pi pi-exclamation-triangle",
+      accept: () => setoutTimeInStone(),
+    });
+  },[])
 
   useEffect(() => {
     promisedData(setIsLoading).then((database) =>
       gatherPastryPrepInfo(database)
     );
   }, [delivDate]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const setoutTimeInStone = async () => {
+    
+      let addDetails = {
+        id: loc+"setoutTime",
+        infoContent: "updated",
+        infoName: loc+"setoutTime"
+      };
+      try {
+        await API.graphql(
+          graphqlOperation(updateInfoQBAuth, { input: { ...addDetails } })
+        );
+      } catch (error) {
+        console.log("error on updating info", error);
+      }
+    
+  }
 
   const gatherPastryPrepInfo = (database) => {
     let pastryPrepData = compose.returnPastryPrepBreakDown(

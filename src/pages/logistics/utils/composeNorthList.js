@@ -18,7 +18,7 @@ import {
   productReadyBeforeRouteStarts,
   customerIsOpen,
 } from "../ByRoute/Parts/utils/utils";
-import { first } from "lodash";
+
 
 const clonedeep = require("lodash.clonedeep");
 let tomorrow = todayPlus()[1];
@@ -107,14 +107,12 @@ const getCustNames = (delivDate, database, filter) => {
   );
 };
 
-
-
 const getOrdersList = (delivDate, database) => {
   let fullOrder = getFullOrders(delivDate, database);
   fullOrder = zerosDelivFilter(fullOrder, delivDate, database);
   fullOrder = buildGridOrderArray(fullOrder, database);
   fullOrder = addRoutes(delivDate, fullOrder, database);
-  return fullOrder
+  return fullOrder;
 };
 
 const makeOrders = (delivDate, database, filter) => {
@@ -188,7 +186,6 @@ export default class ComposeNorthList {
       database
     );
 
-    // [freshProds, shelfProds] = handleFrenchConundrum(freshProds, shelfProds);
 
     return {
       croixNorth: croixNorth,
@@ -210,43 +207,74 @@ export default class ComposeNorthList {
   };
 
   returnCroixNorth = (delivDate, database) => {
-    const [products, customers, routes, standing, orders] = database;
+    const [products, customers, routes, standing, orders, d, dd, alt, QBInfo] =
+      database;
+
+    // for Prado - if difference between now and QBDate is greater than 24 hours, set for 7 am yesterday
+    // for Carlton - if difference between now and QBDate is greater than 24 hours, set for 7 am yesterday
+
+    let todayOrders = orders.filter(
+      (ord) =>
+        (ord.route === "slopick" &&
+          ord.delivDate === convertDatetoBPBDate(today) &&
+          new Date(ord.updatedAt) > new Date(QBInfo[1].updatedAt) &&
+          ord.isWhole === false) ||
+        (ord.route === "atownpick" &&
+          ord.delivDate === convertDatetoBPBDate(today) &&
+          new Date(ord.updatedAt) > new Date(QBInfo[0].updatedAt) &&
+          ord.isWhole === false)
+    );
+    
+    console.log("orders", todayOrders);
+    
+    console.log("QB", QBInfo);
     let frozensOrdersList = getOrdersList(today, database);
+    console.log("ordList", getOrdersList(today, database));
     let frozenToday = frozensOrdersList.filter((frz) =>
       this.frzNorthFilter(frz)
     );
     frozenToday = this.makeAddFrozenQty(frozenToday);
-    
+
     let bakedOrdersList = getOrdersList(tomorrow, database);
     let bakedTomorrow = bakedOrdersList.filter((frz) =>
       this.tomBakeFilter(frz)
     );
     bakedTomorrow = this.makeAddQty(bakedTomorrow);
-    
 
     let combogrid = this.combineGrids(frozenToday, bakedTomorrow);
-    combogrid = this.subtractCurrentStock(products, combogrid)
+    combogrid = this.subtractCurrentStock(products, combogrid);
     combogrid = this.adjustForPackSize(combogrid);
 
-    for (let combo of combogrid){
-      combo.prodNick = combo.prodNick.substring(2)
-      combo.bakedNorth = 5
-
-      let ind = products.findIndex(prod => prod.nickName === combo.prodNick)
-      let backporchbakery = products[ind].backporchbakery
-      let bpbssetout = products[ind].bpbssetout
-      let bpbextra = products[ind].bpbextra
-      let diff = bpbssetout
-      // diff = BPBS deliv of prod for today
-      combo.bakedNorth = (Number(backporchbakery)/2) - (Number(diff) - Number(bpbssetout)) - Number(bpbextra)
-      if (combo.bakedNorth < 0){
-        combo.bakedNorth = 0
+    for (let combo of combogrid) {
+      console.log("combo", combo);
+      combo.prodNick = combo.prodNick.substring(2);
+      let BackPorchOrders = getOrdersList(today, database).filter(
+        (ord) => ord.custName === "Back Porch Bakery"
+      );
+      let backporchbakery = BackPorchOrders.filter(
+        (back) => back.prodNick === combo.prodNick
+      )[0].qty;
+      console.log("backporchbakery", backporchbakery);
+      let BPBExtraOrders = getOrdersList(today, database).filter(
+        (ord) => ord.custName === "BPB Extras"
+      );
+      let bpbextra = BPBExtraOrders.filter(
+        (back) => back.prodNick === combo.prodNick
+      )[0].qty;
+      console.log("bpbextra", bpbextra);
+      let minusQty = 0
+      for (let ord of todayOrders){
+        if (ord.prodNick === combo.prodNick){
+          minusQty = minusQty+ord.qty
+        }
       }
+      let newRetail = backporchbakery - minusQty
+      let Nfactor = 1 - bpbextra / backporchbakery;
+      let newNorth = Math.round(newRetail * Nfactor);
+      let sendNorth = newNorth - backporchbakery / 2;
+      combo.baked = sendNorth;
     }
-
-    
-
-    
+    console.log("Combo", combogrid);
     return combogrid;
   };
 
@@ -268,19 +296,17 @@ export default class ComposeNorthList {
   };
 
   makeAddFrozenQty = (frozenToday) => {
-    let makeList = frozenToday.map(frz => frz.prodNick)
-    makeList = new Set(makeList)
-    makeList = Array.from(makeList)
+    let makeList = frozenToday.map((frz) => frz.prodNick);
+    makeList = new Set(makeList);
+    makeList = Array.from(makeList);
     makeList = makeList.map((mk) => ({
       prodNick: mk.substring(2),
       qty: 0,
     }));
     for (let make of makeList) {
-
       make.qty = 1;
 
       let qtyAccToday = 0;
-      
 
       let qtyToday = frozenToday
         .filter((frz) => make.prodNick === frz.prodNick.substring(2))
@@ -292,7 +318,6 @@ export default class ComposeNorthList {
       make.qty = qtyAccToday;
     }
     return makeList;
-  
   };
 
   makeAddQty = (bakedTomorrow) => {
@@ -306,7 +331,6 @@ export default class ComposeNorthList {
       make.qty = 1;
 
       let qtyAccToday = 0;
-      
 
       let qtyToday = bakedTomorrow
         .filter((frz) => make.prodNick === frz.prodNick)
@@ -318,11 +342,9 @@ export default class ComposeNorthList {
       make.qty = qtyAccToday;
     }
     return makeList2;
-  
   };
 
   combineGrids = (obj1, obj2) => {
-   
     let firstObject = clonedeep(obj1);
     let secondObject = clonedeep(obj2);
     for (let first of firstObject) {
@@ -333,36 +355,34 @@ export default class ComposeNorthList {
       }
     }
 
-    for (let sec of secondObject){
-      for (let first of firstObject){
-        if (sec.prodNick === first.prodNick){
-          sec.qty = first.qty
-          continue
+    for (let sec of secondObject) {
+      for (let first of firstObject) {
+        if (sec.prodNick === first.prodNick) {
+          sec.qty = first.qty;
+          continue;
         }
       }
-      sec.prodNick = "fr"+sec.prodNick
+      sec.prodNick = "fr" + sec.prodNick;
     }
 
     return secondObject;
   };
 
   subtractCurrentStock = (products, grid) => {
-    for ( let gr of grid){
-      let subQty = products[products.findIndex(prod => prod.nickName === gr.prodNick)].currentStock
-      gr.qty -=subQty
+    for (let gr of grid) {
+      let subQty =
+        products[products.findIndex((prod) => prod.nickName === gr.prodNick)]
+          .currentStock;
+      gr.qty -= subQty;
     }
-    return grid
-  }
-    
-    
-    
-  
+    return grid;
+  };
 
   adjustForPackSize = (grid) => {
-    for ( let gr of grid){
-      gr.qty = Math.ceil(gr.qty/12)*12
+    for (let gr of grid) {
+      gr.qty = Math.ceil(gr.qty / 12) * 12;
     }
-    return grid
+    return grid;
   };
 
   returnPocketsNorth = (database) => {

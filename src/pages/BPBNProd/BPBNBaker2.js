@@ -4,6 +4,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import ToolBar from "../logistics/ByRoute/Parts/ToolBar"
+import { confirmDialog } from 'primereact/confirmdialog'
 
 import { ToggleContext } from "../../dataContexts/ToggleContext";
 
@@ -16,7 +17,7 @@ import ComposeWhatToMake from "./Utils/composeWhatToMake";
 import ComposePastryPrep from "./Utils/composePastryPrep";
 import ComposeWhatToPrep from "./Utils/composeWhatToPrep";
 
-import { updateProduct } from "../../graphql/mutations";
+import { updateProduct,updateInfoQBAuth } from "../../graphql/mutations";
 
 import { API, graphqlOperation } from "aws-amplify";
 
@@ -92,6 +93,16 @@ function BPBNBaker2() {
     let whatToPrepData = composePrep.returnWhatToPrepBreakDown(delivDate, database);
     setWhatToPrep(whatToPrepData.whatToPrep);
   };
+
+  useEffect(() => {
+    confirmDialog({
+      message:
+        "Click YES to confirm these setout numbers will be used.",
+      header: "Confirmation",
+      icon: "pi pi-exclamation-triangle",
+      accept: () => setoutTimeInStone(),
+    });
+  },[])
   
 
   useEffect(() => {
@@ -116,6 +127,23 @@ function BPBNBaker2() {
       gatherPastryPrepInfo(database)
     );
   }, [delivDate]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const setoutTimeInStone = async () => {
+    
+    let addDetails = {
+      id: "CarltonsetoutTime",
+      infoContent: "updated",
+      infoName: "CarltonsetoutTime"
+    };
+    try {
+      await API.graphql(
+        graphqlOperation(updateInfoQBAuth, { input: { ...addDetails } })
+      );
+    } catch (error) {
+      console.log("error on updating info", error);
+    }
+  
+}
 
   const gatherPastryPrepInfo = (database) => {
     let pastryPrepData = composePastry.returnPastryPrepBreakDown(

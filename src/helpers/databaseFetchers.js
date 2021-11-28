@@ -8,7 +8,8 @@ import {
   listDoughs,
   listDoughComponents,
   listNotess,
-  listZones
+  listZones,
+  listInfoQBAuths
 } from "../graphql/queries";
 
 import { sortAtoZDataByIndex } from "../helpers/sortDataHelpers";
@@ -108,6 +109,15 @@ export const fetchAltPricing = async () => {
   return altPricing;
 };
 
+export const fetchQBInfo = async () => {
+  let QBInfo = await fetchFromDataBase(
+    listInfoQBAuths,
+    "listInfoQBAuths",
+    "50"
+  );
+  return QBInfo;
+};
+
 export const fetchNotes = async () => {
   let notes = await fetchFromDataBase(listNotess, "listNotess", "1000");
   return notes;
@@ -157,6 +167,8 @@ const fetchData = async (setIsLoading) => {
   let doughComponents = await fetchDoughComponents();
   console.log("Fetching AltPricing Info")
   let altPricing = await fetchAltPricing();
+  console.log("Fetching QBInfo")
+  let QBInfo = await fetchQBInfo();
   let data = [
     products,
     customers,
@@ -165,7 +177,8 @@ const fetchData = async (setIsLoading) => {
     orders,
     doughs,
     doughComponents,
-    altPricing
+    altPricing,
+    QBInfo
   ];
   setIsLoading(false);
   
@@ -182,7 +195,7 @@ export const notesData = (setIsLoading) => {
 const fetchNotesData = async (setIsLoading) => {
   setIsLoading(true);
   let notes = await fetchNotes();
-  setIsLoading(false);
+ 
   if (!notes) {
     return [];
   } else {

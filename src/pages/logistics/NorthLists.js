@@ -61,6 +61,7 @@ function NorthList() {
   const [columnsOtherRustics, setColumnsOtherRustics] = useState([]);
   const [columnsRetailStuff, setColumnsRetailStuff] = useState([]);
   const [columnsEarlyDeliveries, setColumnsEarlyDeliveries] = useState([]);
+  
   const [notes, setNotes] = useState([])
 
   let delivDate = todayPlus()[0];
@@ -97,6 +98,9 @@ function NorthList() {
       setNotes(notes.filter(note => note.when === convertDatetoBPBDate(delivDate)))
     );
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  
+  
 
   const gatherMakeInfo = (database) => {
     let northData = compose.returnNorthBreakDown(delivDate, database);
@@ -162,6 +166,7 @@ function NorthList() {
       columns: [
         { header: "Product", dataKey: "prodNick" },
         { header: "Qty", dataKey: "qty" },
+        { header: "Baked", dataKey: "baked" },
       ],
       startY: finalY + titleToNextTable,
       styles: { fontSize: tableFont },
@@ -317,7 +322,7 @@ function NorthList() {
         <DataTable value={croixNorth} className="p-datatable-sm">
           <Column field="prodNick" header="Product"></Column>
           <Column field="qty" header="Frozen"></Column>
-          <Column field="bakedNorth" header="Baked"></Column>
+          <Column field="baked" header="Baked"></Column>
          
         </DataTable>
 

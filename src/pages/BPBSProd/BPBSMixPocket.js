@@ -584,7 +584,7 @@ function BPBSMixPocket() {
               <Column field="prepped" header="Pre Shaped"></Column>
               <Column
               className="p-text-center"
-              header="Need Early"
+              header="Early/Extra"
               field="qty"
               body={(e) => handleExtraInput(e)}
             ></Column>

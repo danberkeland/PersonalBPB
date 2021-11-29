@@ -12,12 +12,14 @@ const getFreezer = (delivDate, database) => {
 
 export default class ComposeFreezerThaw {
   returnFreezerThaw = (database) => {
-    let freezerThaw = this.getFreezerThaw(database);
+    let freezerThaw,allProds = this.getFreezerThaw(database);
+   
 
     // [freshProds, shelfProds] = handleFrenchConundrum(freshProds, shelfProds);
 
     return {
       freezerThaw: freezerThaw,
+      allProds: allProds
     };
   };
 
@@ -35,8 +37,12 @@ export default class ComposeFreezerThaw {
     }
     let freezeFilter = fullOrdersToday.filter(full => full.freezerThaw === true)
     console.log("full", freezeFilter);
-
-    return freezeFilter
+    let allProds = Array.from(new Set(freezeFilter.map(freeze => freeze.prodName)))
+    console.log("allProds",allProds)
+    return [freezeFilter, allProds]
   }
+
+
+  
 
 }

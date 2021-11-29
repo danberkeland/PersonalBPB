@@ -1,10 +1,9 @@
-
-
-
 import React, { useEffect, useState, useContext } from "react";
 
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
+import { ColumnGroup } from "primereact/columngroup";
+import { Row } from "primereact/row";
 
 import { ToggleContext } from "../../dataContexts/ToggleContext";
 
@@ -27,41 +26,68 @@ const compose = new ComposeFreezerThaw();
 
 function RetailBags() {
   const { setIsLoading } = useContext(ToggleContext);
-  const [retailBags, setRetailBags] = useState();
-  const [freezerThaw,setFreezerThaw] = useState();
+  const [freezerThaw, setFreezerThaw] = useState([]);
+  const [allProds, setAllProds] = useState([]);
 
   let delivDate = todayPlus()[0];
-  
 
   useEffect(() => {
-    promisedData(setIsLoading).then(database => gatherFreezerThaw(database));
-}, []); // eslint-disable-line react-hooks/exhaustive-deps
+    promisedData(setIsLoading).then((database) => gatherFreezerThaw(database));
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const gatherFreezerThaw = (database) => {
-    let freezerThawData = compose.returnFreezerThaw(database)
-   
-    setFreezerThaw(freezerThawData.freezerThaw);
-  }
+    let freezerThawData = compose.returnFreezerThaw(database);
+    
+    setFreezerThaw(freezerThawData.allProds[0]);
+    setAllProds(freezerThawData.allProds[1]);
+  };
 
   const calcTotal = (e) => {
-      return (<div>{e.qty * e.packSize}</div>)
-  }
- 
+    return <div>{e.qty * e.packSize}</div>;
+  };
+
+  const footerGroup = (e) => {
+    let total = 0;
+    for (let prod of e) {
+      total += prod.qty*prod.packSize;
+    }
+    return (
+      <ColumnGroup>
+        <Row>
+          <Column></Column>
+          <Column
+            footer="Total:"
+            colSpan={1}
+            footerStyle={{ textAlign: "right" }}
+          />
+          <Column footer={total} />
+        </Row>
+      </ColumnGroup>
+    );
+  };
+
   return (
     <React.Fragment>
       <WholeBox>
         <h1>Freezer Thaw</h1>
 
-        <h2>{convertDatetoBPBDate(delivDate)}</h2>
-        <DataTable value={freezerThaw}   className="p-datatable-sm"
-            >
-        <Column field="custName" header="Customer"></Column>
-          <Column field="prodName" header="Product"></Column>
-          <Column field="qty" header="Qty"></Column>
-          <Column field="packSize" header="Pack Size"></Column>
-          <Column header="Total" body ={e => calcTotal(e)}></Column>
-          
-        </DataTable>
+        {allProds &&
+          allProds.map((all) => (
+            <React.Fragment>
+              <h3>{all}</h3>
+              <DataTable
+                value={freezerThaw.filter((fil) => fil.prodName === all)}
+                className="p-datatable-sm"
+                footerColumnGroup={footerGroup(
+                  freezerThaw.filter((fil) => fil.prodName === all)
+                )}
+              >
+                <Column field="custName" header="Customer"></Column>
+                <Column field="qty" header="Qty"></Column>
+                <Column field="total" header="Total" body={e => calcTotal(e)}></Column>
+              </DataTable>
+            </React.Fragment>
+          ))}
       </WholeBox>
     </React.Fragment>
   );

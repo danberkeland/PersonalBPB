@@ -69,7 +69,7 @@ function RetailBags() {
   return (
     <React.Fragment>
       <WholeBox>
-        <h1>Freezer Thaw</h1>
+        <h1>Freezer Thaw {convertDatetoBPBDate(delivDate)}</h1>
 
         {allProds &&
           allProds.map((all) => (

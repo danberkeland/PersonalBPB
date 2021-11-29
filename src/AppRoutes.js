@@ -32,6 +32,7 @@ import AMPastry from './pages/logistics/AMPastry';
 import NorthLists from './pages/logistics/NorthLists';
 import RetailBags from './pages/logistics/RetailBags';
 import SpecialOrders from './pages/logistics/SpecialOrders';
+import FreezerThaw from './pages/logistics/FreezerThaw';
 import EditDough from './pages/settings/editDough/editDough';
 import DelivOrder from './pages/settings/delivOrder/delivOrder';
 import CustProd from './pages/settings/custProd/custProd';
@@ -56,6 +57,7 @@ function AppRoutes({ authType, userNum }) {
           <Route path="/logistics/NorthLists" component={NorthLists} />
           <Route path="/logistics/RetailBags" component={RetailBags} /> 
           <Route path="/logistics/SpecialOrders" component={SpecialOrders} /> 
+          <Route path="/logistics/FreezerThaw" component={FreezerThaw} /> 
 
 
 

@@ -172,6 +172,12 @@ function Nav() {
           },
         },
         {
+          label: "Freezer Thaw",
+          command: () => {
+            window.location = "/logistics/FreezerThaw";
+          },
+        },
+        {
           label: "Voice",
           command: () => {
             window.location = "/settings/voice";

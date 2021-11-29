@@ -68,6 +68,8 @@ type Product @model @auth(rules: [{allow: public}]) {
   defaultInclude: Boolean
   leadTime: Int
   qbID: String
+  freezerCount: Int
+  sheetMake: Int
 }
 
 type Order @model @auth(rules: [{allow: public}]) {

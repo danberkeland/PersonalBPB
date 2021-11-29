@@ -123,6 +123,8 @@ export const getProduct = /* GraphQL */ `
       defaultInclude
       leadTime
       qbID
+      freezerCount
+      sheetMake
       createdAt
       updatedAt
     }
@@ -172,6 +174,8 @@ export const listProducts = /* GraphQL */ `
         defaultInclude
         leadTime
         qbID
+        freezerCount
+        sheetMake
         createdAt
         updatedAt
       }

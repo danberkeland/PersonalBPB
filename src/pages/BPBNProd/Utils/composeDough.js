@@ -149,7 +149,7 @@ export default class ComposeDough {
           if (item.late < 0) {
             item.late = 0;
           }
-          item.qty = item.qty + item.late;
+          
         }
       }
      
@@ -157,6 +157,7 @@ export default class ComposeDough {
 
     for (let item of pocketsToday){
       item.qtyFixed = item.qty
+      item.carryPocket = 0
     }
     return pocketsToday;
   };

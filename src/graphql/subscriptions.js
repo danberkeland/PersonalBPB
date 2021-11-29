@@ -154,6 +154,8 @@ export const onCreateProduct = /* GraphQL */ `
       defaultInclude
       leadTime
       qbID
+      freezerCount
+      sheetMake
       createdAt
       updatedAt
     }
@@ -198,6 +200,8 @@ export const onUpdateProduct = /* GraphQL */ `
       defaultInclude
       leadTime
       qbID
+      freezerCount
+      sheetMake
       createdAt
       updatedAt
     }
@@ -242,6 +246,8 @@ export const onDeleteProduct = /* GraphQL */ `
       defaultInclude
       leadTime
       qbID
+      freezerCount
+      sheetMake
       createdAt
       updatedAt
     }

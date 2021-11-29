@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 
 import Calendar from "./Parts/Calendar";
 import CurrentOrderInfo from "./Parts/CurrentOrderInfo";
@@ -22,6 +22,9 @@ import styled from "styled-components";
 import { ToggleContext } from "../../dataContexts/ToggleContext";
 import { CurrentDataContext } from "../../dataContexts/CurrentDataContext";
 import { confirmDialog } from "primereact/confirmdialog";
+import { Toast } from 'primereact/toast';
+
+
 
 const { DateTime } = require("luxon");
 
@@ -96,6 +99,12 @@ function Ordering({ authType }) {
   const [width, setWidth] = useState(window.innerWidth);
   const breakpoint = 620;
 
+  const toast = useRef(null);
+
+  const showUpdate = (message) => {
+    toast.current.show({severity:'success', summary: 'INITIALIZING', detail:message, life: 3000});
+  }
+
   useEffect(() => {
     window.addEventListener("resize", () => setWidth(window.innerWidth));
   });
@@ -148,12 +157,14 @@ function Ordering({ authType }) {
     const [products, customers, routes, standing, orders, doughs, altPricing] =
       database;
     console.log("Checking if Orders Have been changed");
+    showUpdate("updating Orders")
     if (ordersHasBeenChanged) {
       let prodsToUpdate = clonedeep(products);
       let doughsToUpdate = clonedeep(doughs);
       let ordersToUpdate = clonedeep(orders);
 
       console.log("Yes they have! deleting old orders");
+      showUpdate("cleaning up database")
       let newYest = convertDatetoBPBDate(yesterday);
       let newWeekAgo = convertDatetoBPBDate(weekAgo);
 
@@ -183,6 +194,7 @@ function Ordering({ authType }) {
       }
 
       console.log("Yes they have!  Updating preshaped numbers");
+      showUpdate("updating preshaped numbers")
       for (let prod of prodsToUpdate) {
         if (prod.updatePreDate !== tomorrow) {
           prod.updatePreDate = today;
@@ -207,7 +219,7 @@ function Ordering({ authType }) {
         }
       }
       console.log("Yes they have!  Updating prepped bucket numbers");
-
+      showUpdate("Updating Prepped Bucket Numbers")
       for (let dgh of doughsToUpdate) {
         if (dgh.updatePreBucket !== tomorrow) {
           dgh.updatePreBucket = today;
@@ -233,6 +245,7 @@ function Ordering({ authType }) {
       }
 
       console.log("Yes they have!  Loading new Square Orders in DB");
+      showUpdate("Loading new orders from Square")
       let ordsToUpdate = clonedeep(orders);
       setDatabase(database);
       let ord = await fetchSq(database);
@@ -276,14 +289,6 @@ function Ordering({ authType }) {
             route: rt,
           };
 
-          // If this update is happening after 12:01 AM -
-          //      If order is for tomorrow -
-          //        If Pastry -
-          //           Deduct qty from back porch bakery item of same prodNick for tomorrow
-          //        If Bread -
-          //            ?
-
-          // Search orders for object, if doesn't exist, add:
           let ind = orders.findIndex(
             (ord) =>
               ord["custName"] === custName && ord["prodName"] === prodName
@@ -294,6 +299,7 @@ function Ordering({ authType }) {
               await API.graphql(
                 graphqlOperation(createOrder, { input: { ...itemToAdd } })
               );
+              showUpdate("New Square Order added")
               ordsToUpdate.push(itemToAdd);
             } catch (error) {
               console.log("error on creating Orders", error);
@@ -337,7 +343,7 @@ function Ordering({ authType }) {
       <BasicContainer>
         <Calendar database={database} />
       </BasicContainer>
-
+      <Toast ref={toast} />
       <BasicContainer>
         {authType === "bpbadmin" ? (
           <OrderCommandLine database={database} setDatabase={setDatabase} />

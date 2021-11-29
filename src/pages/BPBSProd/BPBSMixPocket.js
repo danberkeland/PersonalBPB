@@ -412,6 +412,7 @@ function BPBSMixPocket() {
     return (
       <InputText
         id={e.weight}
+        key={e.weight}
         style={{
           width: "50px",
           backgroundColor: "#E3F2FD",
@@ -431,13 +432,47 @@ function BPBSMixPocket() {
     let ind = copyPockets.findIndex(cop => cop.pocketSize === weight)
     console.log("ind",ind)
     if (ind>-1){
-      copyPockets[ind].qty = copyPockets[ind].qtyFixed - value
-      if (copyPockets[ind].qty<0){
-        copyPockets[ind].qty=0
-      }
+      copyPockets[ind].carryPocket = value
     }
     
     setPockets(copyPockets)
+  }
+
+  const handleExtraInput = (e) => {
+    console.log("firstE",e)
+    let weight = e.pocketSize
+    return (
+      <InputText
+        id={e.weight+"2"}
+        key={e.weight+"2"}
+        style={{
+          width: "50px",
+          backgroundColor: "#E3F2FD",
+          fontWeight: "bold",
+        }}
+        placeholder ={e.late}
+        onKeyUp={(e) => e.code === "Enter" ? handleExtraPockChange(e,weight) : ''}
+        onBlur={(e) => handleExtraPockChange(e,weight)}
+      />
+    );
+  }
+
+  const handleExtraPockChange = (e,weight) => {
+    let value = e.target.value
+    let copyPockets = clonedeep(pockets)
+    let ind = copyPockets.findIndex(cop => cop.pocketSize === weight)
+    console.log("ind",ind)
+    if (ind>-1){
+      copyPockets[ind].late = Number(value)
+     
+    }
+    setPockets(copyPockets)
+  }
+
+  const calcTotal = (e) => {
+    let final = Number(e.qtyFixed)-Number(e.carryPocket)+Number(e.late)
+    e.qty = final
+    return (<div>{final}</div>)
   }
 
   return (
@@ -547,8 +582,14 @@ function BPBSMixPocket() {
             ></Column>
               <Column field="pocketSize" header="Pocket Size"></Column>
               <Column field="prepped" header="Pre Shaped"></Column>
-              <Column field="late" header="Need Early"></Column>
-              <Column field="qty" header="Pocket Today"></Column>
+              <Column
+              className="p-text-center"
+              header="Need Early"
+              field="qty"
+              body={(e) => handleExtraInput(e)}
+            ></Column>
+             
+              <Column field="qty" header="Pocket Today" body={(e) => calcTotal(e)}></Column>
             </DataTable>
           </WholeBox>
       </WholeBox>

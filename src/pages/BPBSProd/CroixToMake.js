@@ -111,19 +111,39 @@ function CroixToMake() {
   };
 
   const modifySheets = (
-    <Button onClick={(e) => Toggle(e, "sheets")}>MODIFY</Button>
+    <Button onClick={(e) => Toggle(e, "sheets")}>
+      {mod && modType === "sheets" ? (
+        <React.Fragment>SUBMIT</React.Fragment>
+      ) : (
+        <React.Fragment>MODIFY</React.Fragment>
+      )}
+    </Button>
   );
   const modifyOpening = (
-    <Button onClick={(e) => Toggle(e, "opening")}>MODIFY</Button>
+    <Button onClick={(e) => Toggle(e, "opening")}>
+      {mod && modType === "opening" ? (
+        <React.Fragment>SUBMIT</React.Fragment>
+      ) : (
+        <React.Fragment>MODIFY</React.Fragment>
+      )}
+    </Button>
   );
   const modifyClosing = (
-    <Button onClick={(e) => Toggle(e, "closing")}>MODIFY</Button>
+    <Button onClick={(e) => Toggle(e, "closing")}>
+      {mod && modType === "closing" ? (
+        <React.Fragment>SUBMIT</React.Fragment>
+      ) : (
+        <React.Fragment>MODIFY</React.Fragment>
+      )}
+    </Button>
   );
 
   const handleInput = (e) => {
+    console.log("e", e);
     return (
       <InputText
         className="p-inputtext-sm"
+        placeholder={e.qty}
         style={{
           width: "50px",
           backgroundColor: "#E3F2FD",
@@ -187,16 +207,18 @@ function CroixToMake() {
                 )}
                 {mod && modType === "sheets" ? (
                   <Column
-                    field="sheet"
+                    field="qty"
                     header="Sheets"
                     id="sheets"
                     body={(e) => handleInput(e, "sheets")}
                   ></Column>
                 ) : (
-                  <Column field="sheet" header="Sheets"></Column>
+                  <Column field="qty" header="Sheets"></Column>
                 )}
 
-                {((!mod && modType === "sheets") || modType!=="sheets") && <Column field="qty" header="Total"></Column>}
+                {((!mod && modType === "sheets") || modType !== "sheets") && (
+                  <Column field="total" header="Total"></Column>
+                )}
               </DataTable>
             </BorderBox>
             <BorderBox>

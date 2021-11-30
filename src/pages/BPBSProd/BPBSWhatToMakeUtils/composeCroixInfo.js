@@ -106,7 +106,7 @@ export default class ComposeCroixInfo {
       if (products[ind].sheetMake>0){
         sheetCount = products[ind].sheetMake
       }
-      let newItem = {"prod":prod, "sheet":sheetCount, "qty":products[ind].sheetMake*products[ind].batchSize}
+      let newItem = {"prod":prod, "qty":sheetCount, "total":products[ind].sheetMake*products[ind].batchSize}
       prodArray.push(newItem)
       }
     prodArray = sortAtoZDataByIndex(prodArray, "prod")

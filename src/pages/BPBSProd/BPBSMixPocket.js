@@ -24,7 +24,7 @@ import styled from "styled-components";
 const WholeBox = styled.div`
   display: flex;
   flex-direction: column;
-  width: 70%;
+  width: 80%;
   margin: auto;
   padding: 0 0 100px 0;
 `;
@@ -116,10 +116,14 @@ function BPBSMixPocket() {
     setDoughComponents(doughData.doughComponents);
     setPockets(doughData.pockets)
     let short = 0
+    console.log("shortage",shortageData)
     for (let data of shortageData){
-      short = (short + (Number(data.pocketWeight)*Number(data.makeTotal))).toFixed(2);
+      console.log("data",data)
+      let shortNum
+      data.short>0 ? shortNum = data.short : shortNum = 0
+      short = (short + (Number(data.pocketWeight)*Number(shortNum)))
     }
-    setShortWeight(short)
+    setShortWeight(short.toFixed(2))
   };
 
   const handleChange = (e) => {
@@ -395,10 +399,29 @@ function BPBSMixPocket() {
       orientation: "l",
     });
     ct = 0.7;
+    
     for (let item of pockets){
+
+      let pan
+    let per
+    let extra
+    if (item.pocketSize < 1.25){
+      per = 16
+    }
+    if (item.pocketSize <= .35){
+      per = 35
+    }
+    if (item.pocketSize <= .25){
+      per = 48
+    }
+    pan = Math.floor(item.qty/per)
+    extra = item.qty%per
+
+
       doc.text(`${item.pocketSize}`, 1.2, ct);
         doc.text(`${item.qty}`, 0.3, ct);
         doc.text(`x.`, 0.8, ct);
+        doc.text(`${"("+per+"/pan) "+pan+" +"+extra}`,1.8,ct)
         ct += 0.24;
     }
   }
@@ -473,6 +496,27 @@ function BPBSMixPocket() {
     let final = Number(e.qtyFixed)-Number(e.carryPocket)+Number(e.late)
     e.qty = final
     return (<div>{final}</div>)
+  }
+
+  const calcPanTotal = (e) => {
+    console.log("epan",e)
+    let final = Number(e.qtyFixed)-Number(e.carryPocket)+Number(e.late)
+    let pan
+    let per
+    let extra
+    if (e.pocketSize < 1.25){
+      per = 16
+    }
+    if (e.pocketSize <= .35){
+      per = 35
+    }
+    if (e.pocketSize <= .25){
+      per = 48
+    }
+    pan = Math.floor(final/per)
+    extra = final%per
+  
+    return (<div>{"("+per+"/pan)  "+pan+"  +"+extra}</div>)
   }
 
   return (
@@ -588,8 +632,10 @@ function BPBSMixPocket() {
               field="qty"
               body={(e) => handleExtraInput(e)}
             ></Column>
+            
              
               <Column field="qty" header="Pocket Today" body={(e) => calcTotal(e)}></Column>
+              <Column field="pan" header="Pan Count" body={(e) => calcPanTotal(e)}></Column>
             </DataTable>
           </WholeBox>
       </WholeBox>

@@ -104,7 +104,6 @@ function BPBSWhatToMake() {
 
     finalY = 10;
 
-    if (youllBeShort.length>0) {
       doc.setFontSize(titleFont);
       
 
@@ -112,8 +111,10 @@ function BPBSWhatToMake() {
         body: youllBeShort,
         margin: pageMargin,
         columns: [
-          { header: "You'll Be Short", dataKey: "pocketWeight" },
-          { header: "Pockets", dataKey: "makeTotal" },
+          { header: "Pocket Size", dataKey: "pocketWeight" },
+          { header: "Available", dataKey: "preshaped" },
+          { header: "Need Today", dataKey: "need" },
+          { header: "Surplus(+)/Short(-)", dataKey: "makeTotal" },
         ],
         startY: finalY +20,
         styles: { fontSize: tableFont },
@@ -121,9 +122,7 @@ function BPBSWhatToMake() {
       });
 
       finalY = doc.previousAutoTable.finalY;
-    } else {
-      finalY = 20
-    }
+    
 
     doc.setFontSize(titleFont);
    
@@ -219,15 +218,17 @@ function BPBSWhatToMake() {
         <h1>BPBS What To Make {convertDatetoBPBDate(delivDate)}</h1>
         <ToolBar delivDate={delivDate} setDelivDate={setDelivDate} />
         <div>{header}</div>
-        {(youllBeShort && youllBeShort.length>0) && (
+        
           <React.Fragment>
-            <h2>You'll Be Short</h2>
+            <h2>Pocket Count</h2>
             <DataTable value={youllBeShort} className="p-datatable-sm">
-              <Column field="pocketWeight" header="Pocket Size"></Column>
-              <Column field="makeTotal" header="Short"></Column>
+            <Column field="pocketWeight" header="Pocket Size"></Column>
+            <Column field="preshaped" header="Available"></Column>
+            <Column field="need" header="Need Today"></Column>
+              <Column field="makeTotal" header="Surplus(+)/Short(-)"></Column>
             </DataTable>
           </React.Fragment>
-        )}
+       
 
         <h2>Send Pockets North</h2>
         <DataTable value={pocketsNorth} className="p-datatable-sm">

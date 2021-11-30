@@ -48,19 +48,21 @@ function RetailBags() {
 
   const footerGroup = (e) => {
     let total = 0;
+    let totalBags = 0;
     for (let prod of e) {
       total += prod.qty*prod.packSize;
+      totalBags += prod.qty
     }
     return (
       <ColumnGroup>
         <Row>
-          <Column></Column>
           <Column
             footer="Total:"
             colSpan={1}
             footerStyle={{ textAlign: "right" }}
           />
-          <Column footer={total} />
+          <Column footer={totalBags + " bags"}/>
+          <Column footer={total + " ea."} />
         </Row>
       </ColumnGroup>
     );

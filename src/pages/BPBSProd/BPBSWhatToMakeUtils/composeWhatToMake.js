@@ -215,10 +215,11 @@ export default class ComposeWhatToMake {
         (prod) =>
           prod.weight === weight.pocketWeight && prod.doughType === "French"
       )].preshaped;
-      weight.makeTotal = Number(weight.makeTotal)-Number(availablePockets)
-      if (weight.makeTotal <= 0){
-        weight.makeTotal = ''
-      }
+      weight.need = weight.makeTotal
+      weight.preshaped = availablePockets
+      weight.short = Number(weight.makeTotal)-Number(availablePockets)
+      weight.makeTotal = -(Number(weight.makeTotal)-Number(availablePockets))
+     
     }
 
     weightList = weightList.filter(weight => weight.makeTotal !== '')

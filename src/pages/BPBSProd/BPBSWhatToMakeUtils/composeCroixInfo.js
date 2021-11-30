@@ -9,6 +9,7 @@ import {
   addPocketsQty,
 } from "./utils";
 import { handleFrenchConundrum } from "./conundrums";
+import { sortAtoZDataByIndex } from "../../../helpers/sortDataHelpers";
 const { DateTime } = require("luxon");
 
 let tomorrow = todayPlus()[1];
@@ -73,28 +74,46 @@ export default class ComposeCroixInfo {
   };
 
   getOpeningCount(database,delivDate){
-    return  [
-      {"prod": "pl", "qty": 15},
-      {"prod": "ch", "qty": 15},
-      {"prod": "pg", "qty": 15},
-      {"prod": "sf", "qty": 15},
-      {"prod": "mb", "qty": 15},
-      {"prod": "mini", "qty": 15}
-      
-    ]
+    const [products, customers, routes, standing, orders] = database;
+    let count = products.filter(prod => prod.doughType === "Croissant" && prod.packGroup==="baked pastries")
+    let prods = Array.from(new Set(count.map(co => co.forBake)))
+    
+    
+    let prodArray = []
+    for (let prod of prods){
+      let ind = products.findIndex(pro => pro.forBake === prod)
+      let newItem = {"prod":prod, "qty":products[ind].freezerCount}
+      prodArray.push(newItem)
+      }
+    prodArray = sortAtoZDataByIndex(prodArray, "prod")
+    return prodArray
+
   }
 
   getMakeCount(database,delivDate){
-    return [
-      {"prod":"pl", "sheet": 5, "qty": 300},
-      {"prod":"ch", "sheet": 6, "qty": 360},
-      {"prod":"pg", "sheet": 0, "qty": 0},
-      {"prod":"sf", "sheet": 6, "qty": 360},
-      {"prod":"mb", "sheet": 3, "qty": 80},
-      {"prod":"mini", "sheet": 3, "qty": 80}
-      
-    ]
+    const [products, customers, routes, standing, orders] = database;
+    let count = products.filter(prod => prod.doughType === "Croissant" && prod.packGroup==="baked pastries")
+    console.log("count",count)
+    let prods = Array.from(new Set(count.map(co => co.forBake)))
+    
+    
+    let prodArray = []
+    for (let prod of prods){
+      console.log("prod",prod)
+      let ind = products.findIndex(pro => pro.forBake === prod)
+      console.log("ind",ind)
+      let sheetCount = 0
+      if (products[ind].sheetMake>0){
+        sheetCount = products[ind].sheetMake
+      }
+      let newItem = {"prod":prod, "sheet":sheetCount, "qty":products[ind].sheetMake*products[ind].batchSize}
+      prodArray.push(newItem)
+      }
+    prodArray = sortAtoZDataByIndex(prodArray, "prod")
+    return prodArray
+
   }
+
 
   getClosingCount(database,delivDate){
     return [
@@ -118,155 +137,5 @@ export default class ComposeCroixInfo {
       {"prod": "mini", "tom": 150, "2day":300, "3day":450, "4day":600}
       
     ]
-  }
-
-  getPocketsNorth(database,delivDate) {
-    const [products, customers, routes, standing, orders] = database;
-    let makePocketsNorth = makeProds(products, this.pocketsNorthFilter);
-    console.log("getPocketsNorth",delivDate)
-    let fullOrdersToday = getFullMakeOrders(delivDate, database);
-    for (let make of makePocketsNorth) {
-      addPocketsQty(make, fullOrdersToday);
-    }
-    return makePocketsNorth;
-  }
-
-  pocketsNorthFilter = (prod) => {
-    let fil =
-      prod.bakedWhere.includes("Mixed") &&
-      Number(prod.readyTime) < 15 &&
-      prod.packGroup !== "frozen pastries" &&
-      prod.packGroup !== "baked pastries" &&
-      prod.freezerThaw !== true;
-    return fil;
-  };
-
-  getFreshProds = (database, delivDate) => {
-    const [products, customers, routes, standing, orders] = database;
-    let makeFreshProds = makeProds(products, this.freshProdFilter);
-    let tom = tomBasedOnDelivDate(delivDate)
-    let fullOrdersToday = getFullMakeOrders(delivDate, database);
-    let fullOrdersTomorrow = getFullMakeOrders(tom, database);
-    for (let make of makeFreshProds) {
-      addFresh(make, fullOrdersToday, fullOrdersTomorrow, products, routes);
-    }
-    return makeFreshProds;
-  };
-
-  freshProdFilter = (prod) => {
-    let fil =
-      !prod.bakedWhere.includes("Carlton") &&
-      Number(prod.readyTime) < 15 &&
-      prod.packGroup !== "frozen pastries" &&
-      prod.packGroup !== "baked pastries";
-    return fil;
-  };
-
-  getShelfProds(database,delivDate) {
-    const [products, customers, routes, standing, orders] = database;
-    let makeShelfProds = makeProds(products, this.shelfProdsFilter);
-    let tom = tomBasedOnDelivDate(delivDate)
-    let fullOrdersToday = getFullMakeOrders(delivDate, database);
-    let fullOrdersTomorrow = getFullProdMakeOrders(tom, database);
-  
-    for (let make of makeShelfProds) {
-      addShelf(make, fullOrdersToday, fullOrdersTomorrow, products, routes);
-      addNeedEarly(make, products);
-    }
-
-    console.log("makeShelfProds",makeShelfProds)
-    makeShelfProds = makeShelfProds.filter(make => (make.makeTotal + make.needEarly + make.qty)>0)
-
-    return makeShelfProds;
-  }
-
-  shelfProdsFilter = (prod) => {
-    let fil =
-      !prod.bakedWhere.includes("Carlton") &&
-      Number(prod.readyTime) >= 15 &&
-      prod.packGroup !== "frozen pastries" &&
-      prod.packGroup !== "baked pastries" &&
-      prod.freezerThaw !== true;
-    return fil;
-  };
-
-  getFreezerProds(database,delivDate) {
-    const [products, customers, routes, standing, orders] = database;
-    let makeFreezerProds = makeProds(products, this.freezerProdsFilter);
-    let tom = tomBasedOnDelivDate(delivDate)
-    let fullOrdersToday = getFullMakeOrders(delivDate, database);
-    let fullOrdersTomorrow = getFullProdMakeOrders(tom, database);
-    for (let make of makeFreezerProds) {
-      addShelf(make, fullOrdersToday, fullOrdersTomorrow, products, routes);
-      addNeedEarly(make, products);
-    }
-    return makeFreezerProds;
-  }
-
-  freezerProdsFilter = (prod) => {
-    let fil =
-      !prod.bakedWhere.includes("Carlton") &&
-      Number(prod.readyTime) >= 15 &&
-      prod.packGroup !== "frozen pastries" &&
-      prod.packGroup !== "baked pastries" &&
-      prod.freezerThaw === true;
-    return fil;
-  };
-
-  getYoullBeShort = (database,delivDate) => {
-    console.log("youllBeShort",delivDate)
-    const [products, customers, routes, standing, orders] = database;
-    let pocketsNorth = this.getPocketsNorth(database,delivDate)
-      .filter((item) => item.doughType === "French")
-      .map((item) => ({
-        pocketWeight: item.weight,
-        makeTotal: item.makeTotal,
-      }));
-    let shelfProds = this.getShelfProds(database,delivDate)
-      .filter((item) => item.doughType === "French")
-      .map((item) => ({
-        pocketWeight: item.weight,
-        makeTotal: item.makeTotal,
-      }));
-    let freshProds = this.getFreshProds(database,delivDate)
-      .filter((item) => item.doughType === "French")
-      .map((item) => ({
-        pocketWeight: item.weight,
-        makeTotal: item.makeTotal,
-      }));
-    let freezerProds = this.getFreezerProds(database,delivDate)
-      .filter((item) => item.doughType === "French")
-      .map((item) => ({
-        pocketWeight: item.weight,
-        makeTotal: item.makeTotal,
-      }));
-
-    let weightStr = pocketsNorth.concat(shelfProds, freshProds, freezerProds);
-   
-    let weightList = Array.from(
-      new Set(weightStr.map((weight) => weight.pocketWeight))
-    ).map((pock) => ({ pocketWeight: pock, makeTotal: 0 }));
-   
-    for (let weight of weightList) {
-      for (let pocket of weightStr) {
-        if (pocket.pocketWeight === weight.pocketWeight) {
-          weight.makeTotal = weight.makeTotal + pocket.makeTotal;
-        }
-      }
-    }
-
-    for (let weight of weightList) {
-      let availablePockets = products[products.findIndex(
-        (prod) =>
-          prod.weight === weight.pocketWeight && prod.doughType === "French"
-      )].preshaped;
-      weight.makeTotal = Number(weight.makeTotal)-Number(availablePockets)
-      if (weight.makeTotal <= 0){
-        weight.makeTotal = ''
-      }
-    }
-
-    weightList = weightList.filter(weight => weight.makeTotal !== '')
-    return weightList;
   }
 }

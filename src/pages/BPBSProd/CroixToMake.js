@@ -12,7 +12,7 @@ import ComposeCroixInfo from "./BPBSWhatToMakeUtils/composeCroixInfo";
 
 import { todayPlus } from "../../helpers/dateTimeHelpers";
 
-import { updateDough } from "../../graphql/mutations";
+import { updateProduct } from "../../graphql/mutations";
 
 import { API, graphqlOperation } from "aws-amplify";
 
@@ -20,6 +20,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 
 import styled from "styled-components";
+import { set } from "lodash";
 
 const WholeBox = styled.div`
   display: flex;
@@ -42,7 +43,7 @@ const ThreeColumnGrid = styled.div`
   grid-template-columns: 1fr 1fr 1fr;
   column-gap: 5px;
   row-gap: 10px;
-  padding: 5px;
+  padding: 0px;
 `;
 
 const BorderBox = styled.div`
@@ -82,6 +83,7 @@ function CroixToMake() {
   const [makeCount, setMakeCount] = useState();
   const [closingCount, setClosingCount] = useState();
   const [projectionCount, setProjectionCount] = useState();
+  const [products, setProducts] = useState();
 
   useEffect(() => {
     promisedData(setIsLoading).then((database) => gatherCroixInfo(database));
@@ -93,6 +95,7 @@ function CroixToMake() {
     setMakeCount(makeData.makeCount);
     setClosingCount(makeData.closingCount);
     setProjectionCount(makeData.projectionCount);
+    setProducts(makeData.products);
   };
   const openingHeader = <div>Opening Freezer</div>;
 
@@ -105,9 +108,74 @@ function CroixToMake() {
   const Toggle = (e, which) => {
     console.log(which);
     let newMod = clonedeep(mod);
+    if (newMod === true) {
+      submitNewNumbers(which);
+    }
     console.log("mod", newMod);
     setMod(!newMod);
     setModType(which);
+  };
+
+  const submitNewNumbers = async (which) => {
+    console.log("Submitting " + which);
+    let prodToMod = clonedeep(products);
+    if (which === "opening") {
+      setIsLoading(true)
+      for (let op of openingCount) {
+        for (let prod of prodToMod) {
+          console.log("op", op);
+          console.log("prod", prod);
+          let itemUpdate;
+          if (op.prod === prod.forBake) {
+            itemUpdate = {
+              id: prod.id,
+              freezerCount: op.qty,
+            };
+
+            try {
+              await API.graphql(
+                graphqlOperation(updateProduct, { input: { ...itemUpdate } })
+              );
+            } catch (error) {
+              console.log("error on updating product", error);
+            }
+          }
+        }
+      }
+      setIsLoading(false)
+    }
+    if (which === "sheets") {
+      setIsLoading(true)
+      for (let op of makeCount) {
+        for (let prod of prodToMod) {
+          console.log("op", op);
+          console.log("prod", prod);
+          let itemUpdate;
+          if (op.prod === prod.forBake) {
+            itemUpdate = {
+              id: prod.id,
+              sheetMake: op.qty,
+            };
+
+            try {
+              await API.graphql(
+                graphqlOperation(updateProduct, { input: { ...itemUpdate } })
+              );
+            } catch (error) {
+              console.log("error on updating product", error);
+            }
+          }
+        }
+      }
+      setIsLoading(false)
+    }
+    if (which === "closing") {
+      for (let op of closingCount) {
+        for (let prod of prodToMod) {
+          // if op.prodName === prod.forBake, prod.freezerCount = op.qty
+        }
+      }
+    }
   };
 
   const modifySheets = (
@@ -138,8 +206,9 @@ function CroixToMake() {
     </Button>
   );
 
-  const handleInput = (e) => {
+  const handleInput = (e,which) => {
     console.log("e", e);
+
     return (
       <InputText
         className="p-inputtext-sm"
@@ -149,9 +218,41 @@ function CroixToMake() {
           backgroundColor: "#E3F2FD",
           fontWeight: "bold",
         }}
+        onKeyUp={(e2) =>
+          e2.code === "Enter" && setInfo(e2,which,e.prod)
+        }
+        onBlur={(e2) => setInfo(e2,which,e.prod)}
       />
     );
   };
+
+  const setInfo = (e,which,prod) => {
+    if (which === "opening"){
+      console.log(e.target.value,which,prod)
+      let cloneOpeningCount = clonedeep(openingCount)
+      for (let op of cloneOpeningCount){
+        if (op.prod === prod){
+          op.qty = e.target.value
+        }
+      }
+      setOpeningCount(cloneOpeningCount)
+        
+      
+    }
+    if (which === "sheets"){
+      console.log(e.target.value,which,prod)
+      let cloneMakeCount = clonedeep(makeCount)
+      for (let op of cloneMakeCount){
+        if (op.prod === prod){
+          op.qty = e.target.value
+        }
+      }
+      setMakeCount(cloneMakeCount)
+    }
+    if (which === "closing"){
+
+    }
+  }
 
   return (
     <React.Fragment>

@@ -37,7 +37,7 @@ const makeProds = (products, filt) => {
 };
 
 const getFullMakeOrders = (delivDate, database) => {
-  console.log("getFullMakeOrder",delivDate)
+  console.log("getFullMakeOrder", delivDate);
   let fullOrder = getFullOrders(delivDate, database);
   fullOrder = addProdAttr(fullOrder, database); // adds forBake, packSize, currentStock
   return fullOrder;
@@ -58,84 +58,124 @@ const tomBasedOnDelivDate = (delivDate) => {
   return tomorrow.toString().split("T")[0];
 };
 export default class ComposeCroixInfo {
-    returnCroixBreakDown = (database,delivDate) => {
-    let openingCount = this.getOpeningCount(database,delivDate);
-    let makeCount = this.getMakeCount(database,delivDate);
-    let closingCount = this.getClosingCount(database,delivDate);
-    let projectionCount = this.getProjectionCount(database,delivDate);
-    
+  returnCroixBreakDown = (database, delivDate) => {
+    let openingCount = this.getOpeningCount(database, delivDate);
+    let makeCount = this.getMakeCount(database, delivDate);
+    let closingCount = this.getClosingCount(database, delivDate);
+    let projectionCount = this.getProjectionCount(database, delivDate);
+    let products = this.getProducts(database);
 
     return {
       openingCount: openingCount,
       makeCount: makeCount,
       closingCount: closingCount,
       projectionCount: projectionCount,
+      products: products,
     };
   };
 
-  getOpeningCount(database,delivDate){
+  getProducts = (database) => {
+    return database[0];
+  };
+
+  getOpeningCount(database, delivDate) {
     const [products, customers, routes, standing, orders] = database;
-    let count = products.filter(prod => prod.doughType === "Croissant" && prod.packGroup==="baked pastries")
-    let prods = Array.from(new Set(count.map(co => co.forBake)))
-    
-    
-    let prodArray = []
-    for (let prod of prods){
-      let ind = products.findIndex(pro => pro.forBake === prod)
-      let newItem = {"prod":prod, "qty":products[ind].freezerCount}
-      prodArray.push(newItem)
-      }
-    prodArray = sortAtoZDataByIndex(prodArray, "prod")
-    return prodArray
+    let count = products.filter(
+      (prod) =>
+        prod.doughType === "Croissant" && prod.packGroup === "baked pastries"
+    );
+    let prods = Array.from(new Set(count.map((co) => co.forBake))).filter(item => item !== "Almond");
 
+    let prodArray = [];
+    for (let prod of prods) {
+      let ind = products.findIndex((pro) => pro.forBake === prod);
+      let newItem = {
+        prod: prod,
+        qty: products[ind].freezerCount ? products[ind].freezerCount : 0,
+      };
+      prodArray.push(newItem);
+    }
+    prodArray = sortAtoZDataByIndex(prodArray, "prod");
+    return prodArray;
   }
 
-  getMakeCount(database,delivDate){
+  getMakeCount(database, delivDate) {
     const [products, customers, routes, standing, orders] = database;
-    let count = products.filter(prod => prod.doughType === "Croissant" && prod.packGroup==="baked pastries")
-    console.log("count",count)
-    let prods = Array.from(new Set(count.map(co => co.forBake)))
-    
-    
-    let prodArray = []
-    for (let prod of prods){
-      console.log("prod",prod)
-      let ind = products.findIndex(pro => pro.forBake === prod)
-      console.log("ind",ind)
-      let sheetCount = 0
-      if (products[ind].sheetMake>0){
-        sheetCount = products[ind].sheetMake
-      }
-      let newItem = {"prod":prod, "qty":sheetCount, "total":products[ind].sheetMake*products[ind].batchSize}
-      prodArray.push(newItem)
-      }
-    prodArray = sortAtoZDataByIndex(prodArray, "prod")
-    return prodArray
+    let count = products.filter(
+      (prod) =>
+        prod.doughType === "Croissant" && prod.packGroup === "baked pastries"
+    );
+    console.log("count", count);
+    let prods = Array.from(new Set(count.map((co) => co.forBake))).filter(item => item !== "Almond");
 
+    let prodArray = [];
+    for (let prod of prods) {
+      console.log("prod", prod);
+      let ind = products.findIndex((pro) => pro.forBake === prod);
+      console.log("ind", ind);
+      let sheetCount = 0;
+      if (products[ind].sheetMake > 0) {
+        sheetCount = products[ind].sheetMake;
+      }
+      let newItem = {
+        prod: prod,
+        qty: sheetCount,
+        total: products[ind].sheetMake * products[ind].batchSize,
+      };
+      prodArray.push(newItem);
+    }
+    prodArray = sortAtoZDataByIndex(prodArray, "prod");
+    return prodArray;
   }
 
+  getClosingCount(database, delivDate) {
+    const [products, customers, routes, standing, orders] = database;
+    let count = products.filter(
+      (prod) =>
+        prod.doughType === "Croissant" && prod.packGroup === "baked pastries"
+    );
+    let prods = Array.from(new Set(count.map((co) => co.forBake))).filter(item => item !== "Almond");
 
-  getClosingCount(database,delivDate){
-    return [
-      {"prod": "pl", "qty": 15},
-      {"prod": "ch", "qty": 15},
-      {"prod": "pg", "qty": 15},
-      {"prod": "sf", "qty": 15},
-      {"prod": "mb", "qty": 15},
-      {"prod": "mini", "qty": 15}
-      
-    ]
+    let prodArray = [];
+
+    for (let prod of prods) {
+      let goingOut = 120
+      let ind = products.findIndex((pro) => pro.forBake === prod);
+      let newItem = {
+        prod: prod,
+        qty:
+          products[ind].freezerCount
+            ? products[ind].freezerCount  - goingOut +
+            (products[ind].sheetMake * products[ind].batchSize)
+            : 0,
+      };
+      prodArray.push(newItem);
+    }
+    prodArray = sortAtoZDataByIndex(prodArray, "prod");
+    return prodArray;
   }
 
-  getProjectionCount(database,delivDate){
-    return [
-      {"prod": "pl", "tom": 150, "2day":300, "3day":450, "4day":600},
-      {"prod": "ch", "tom": 150, "2day":300, "3day":450, "4day":600},
-      {"prod": "pg", "tom": 150, "2day":300, "3day":450, "4day":600},
-      {"prod": "sf", "tom": 150, "2day":300, "3day":450, "4day":600},
-      {"prod": "mb", "tom": 150, "2day":300, "3day":450, "4day":600},
-      {"prod": "mini", "tom": 150, "2day":300, "3day":450, "4day":600}
-      
-    ]
+  getProjectionCount(database, delivDate) {
+    const [products, customers, routes, standing, orders] = database;
+    let count = products.filter(
+      (prod) =>
+        prod.doughType === "Croissant" && prod.packGroup === "baked pastries"
+    );
+    let prods = Array.from(new Set(count.map((co) => co.forBake))).filter(item => item !== "Almond");
+
+    let prodArray = [];
+    for (let prod of prods) {
+      let ind = products.findIndex((pro) => pro.forBake === prod);
+      let newItem = {
+        prod: prod,
+        tom: 150,
+        "2day": 300,
+        "3day": 450,
+        "4day": 600,
+      };
+      prodArray.push(newItem);
+    }
+    prodArray = sortAtoZDataByIndex(prodArray, "prod");
+    return prodArray;
   }
 }

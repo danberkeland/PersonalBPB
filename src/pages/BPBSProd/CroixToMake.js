@@ -228,6 +228,28 @@ function CroixToMake() {
     );
   };
 
+  const numHolder = (e, which, day) => {
+    console.log("e", e);
+    let num = e.qty
+    if (which ==="proj"){
+      num = day
+    }
+    return (
+      <InputText
+        className="p-inputtext-sm"
+        disabled
+        placeholder={num}
+        style={{
+          width: "50px",
+          backgroundColor: "#E3F2FD",
+          fontWeight: "bold",
+        }}
+      />
+    );
+  };
+
+  
+
   const setInfo = (e, which, prod) => {
     if (which === "opening") {
       console.log(e.target.value, which, prod);
@@ -288,6 +310,7 @@ function CroixToMake() {
                   }}
                   field="prod"
                   header="Product"
+                  
                 ></Column>
                 {mod && modType === "opening" ? (
                   <Column
@@ -296,7 +319,7 @@ function CroixToMake() {
                     body={(e) => handleInput(e, "opening")}
                   ></Column>
                 ) : (
-                  <Column field="qty" header="Qty"></Column>
+                  <Column id="qty" header="Qty" body={(e) => numHolder(e, "opening")}></Column>
                 )}
               </DataTable>
             </BorderBox>
@@ -326,7 +349,7 @@ function CroixToMake() {
                     body={(e) => handleInput(e, "sheets")}
                   ></Column>
                 ) : (
-                  <Column field="qty" header="Sheets"></Column>
+                  <Column id="qty" header="Sheets" body={(e) => numHolder(e, "sheets")}></Column>
                 )}
 
                 {((!mod && modType === "sheets") || modType !== "sheets") && (
@@ -360,7 +383,7 @@ function CroixToMake() {
                     body={(e) => handleInput(e, "closing")}
                   ></Column>
                 ) : (
-                  <Column field="qty" header="Qty" id="closing"></Column>
+                  <Column header="Qty" id="closing" body={(e) => numHolder(e, "closing")}></Column>
                 )}
               </DataTable>
             </BorderBox>
@@ -376,10 +399,10 @@ function CroixToMake() {
                 field="prod"
                 header="Product"
               ></Column>
-              <Column field="tom" header="TOM"></Column>
-              <Column field="2day" header="2DAY"></Column>
-              <Column field="3day" header="3DAY"></Column>
-              <Column field="4day" header="4DAY"></Column>
+              <Column header="TOM" body={(e) => numHolder(e, "proj", e.tom)}></Column>
+              <Column header="2DAY" body={(e) => numHolder(e, "proj", e["2day"])}></Column>
+              <Column header="3DAY" body={(e) => numHolder(e, "proj",e["3day"])}></Column>
+              <Column header="4DAY" body={(e) => numHolder(e, "proj",e["4day"])}></Column>
             </DataTable>
           </BorderBox>
         </TwoColumnGrid>

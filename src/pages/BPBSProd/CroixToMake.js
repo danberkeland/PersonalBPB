@@ -9,6 +9,7 @@ import { Column } from "primereact/column";
 
 import { promisedData } from "../../helpers/databaseFetchers";
 import ComposeCroixInfo from "./BPBSWhatToMakeUtils/composeCroixInfo";
+import ComposePastryPrep from "../BPBNProd/Utils/composePastryPrep";
 
 import { todayPlus } from "../../helpers/dateTimeHelpers";
 
@@ -70,6 +71,7 @@ const ButtonStyle = styled.button`
 `;
 
 const compose = new ComposeCroixInfo();
+const composeSetOut = new ComposePastryPrep();
 
 const clonedeep = require("lodash.clonedeep");
 
@@ -84,19 +86,36 @@ function CroixToMake() {
   const [closingCount, setClosingCount] = useState();
   const [projectionCount, setProjectionCount] = useState();
   const [products, setProducts] = useState();
+  const [setOut, setSetOut] = useState();
 
   useEffect(() => {
-    promisedData(setIsLoading).then((database) => gatherCroixInfo(database));
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    promisedData(setIsLoading).then((database) => {
+      if (!setOut) {
+        gatherPastryPrepInfo(database);
+      }
+      gatherCroixInfo(database);
+    });
+  }, [setOut]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const gatherPastryPrepInfo = (database) => {
+    let pastryPrepData = composeSetOut.returnPastryPrepBreakDown(
+      delivDate,
+      database,
+      "Prado"
+    );
+    setSetOut(pastryPrepData.setOut);
+  };
 
   const gatherCroixInfo = (database) => {
-    let makeData = compose.returnCroixBreakDown(database, delivDate);
+    console.log("setOut1", setOut);
+    let makeData = compose.returnCroixBreakDown(database, delivDate, setOut);
     setOpeningCount(makeData.openingCount);
     setMakeCount(makeData.makeCount);
     setClosingCount(makeData.closingCount);
     setProjectionCount(makeData.projectionCount);
     setProducts(makeData.products);
   };
+
   const openingHeader = <div>Opening Freezer</div>;
 
   const makeHeader = <div>MAKE TODAY</div>;
@@ -120,7 +139,7 @@ function CroixToMake() {
     console.log("Submitting " + which);
     let prodToMod = clonedeep(products);
     if (which === "opening") {
-      setIsLoading(true)
+      setIsLoading(true);
       for (let op of openingCount) {
         for (let prod of prodToMod) {
           console.log("op", op);
@@ -142,10 +161,10 @@ function CroixToMake() {
           }
         }
       }
-      setIsLoading(false)
+      setIsLoading(false);
     }
     if (which === "sheets") {
-      setIsLoading(true)
+      setIsLoading(true);
       for (let op of makeCount) {
         for (let prod of prodToMod) {
           console.log("op", op);
@@ -167,7 +186,7 @@ function CroixToMake() {
           }
         }
       }
-      setIsLoading(false)
+      setIsLoading(false);
     }
     if (which === "closing") {
       for (let op of closingCount) {
@@ -206,7 +225,7 @@ function CroixToMake() {
     </Button>
   );
 
-  const handleInput = (e,which) => {
+  const handleInput = (e, which) => {
     console.log("e", e);
 
     return (
@@ -218,41 +237,36 @@ function CroixToMake() {
           backgroundColor: "#E3F2FD",
           fontWeight: "bold",
         }}
-        onKeyUp={(e2) =>
-          e2.code === "Enter" && setInfo(e2,which,e.prod)
-        }
-        onBlur={(e2) => setInfo(e2,which,e.prod)}
+        onKeyUp={(e2) => e2.code === "Enter" && setInfo(e2, which, e.prod)}
+        onBlur={(e2) => setInfo(e2, which, e.prod)}
       />
     );
   };
 
-  const setInfo = (e,which,prod) => {
-    if (which === "opening"){
-      console.log(e.target.value,which,prod)
-      let cloneOpeningCount = clonedeep(openingCount)
-      for (let op of cloneOpeningCount){
-        if (op.prod === prod){
-          op.qty = e.target.value
+  const setInfo = (e, which, prod) => {
+    if (which === "opening") {
+      console.log(e.target.value, which, prod);
+      let cloneOpeningCount = clonedeep(openingCount);
+      for (let op of cloneOpeningCount) {
+        if (op.prod === prod) {
+          op.qty = e.target.value;
         }
       }
-      setOpeningCount(cloneOpeningCount)
-        
-      
+      setOpeningCount(cloneOpeningCount);
     }
-    if (which === "sheets"){
-      console.log(e.target.value,which,prod)
-      let cloneMakeCount = clonedeep(makeCount)
-      for (let op of cloneMakeCount){
-        if (op.prod === prod){
-          op.qty = e.target.value
+    if (which === "sheets") {
+      console.log(e.target.value, which, prod);
+      let cloneMakeCount = clonedeep(makeCount);
+      for (let op of cloneMakeCount) {
+        if (op.prod === prod) {
+          op.qty = e.target.value;
         }
       }
-      setMakeCount(cloneMakeCount)
+      setMakeCount(cloneMakeCount);
     }
-    if (which === "closing"){
-
+    if (which === "closing") {
     }
-  }
+  };
 
   return (
     <React.Fragment>

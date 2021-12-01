@@ -1,68 +1,13 @@
-import { todayPlus } from "../../../helpers/dateTimeHelpers";
-import { getFullOrders } from "../../../helpers/CartBuildingHelpers";
-import { getFullProdOrders } from "../../../helpers/CartBuildingHelpers";
-import {
-  addProdAttr,
-  addFresh,
-  addNeedEarly,
-  addShelf,
-  addPocketsQty,
-} from "./utils";
-import { handleFrenchConundrum } from "./conundrums";
+
 import { sortAtoZDataByIndex } from "../../../helpers/sortDataHelpers";
-const { DateTime } = require("luxon");
 
-let tomorrow = todayPlus()[1];
-let today = todayPlus()[0];
 
-const makeProds = (products, filt) => {
-  let make = Array.from(
-    new Set(
-      products
-        .filter((prod) => filt(prod))
-        .map(
-          (prod) =>
-            prod.forBake + "_" + prod.weight.toString() + "_" + prod.doughType
-        )
-    )
-  ).map((make) => ({
-    forBake: make.split("_")[0],
-    weight: Number(make.split("_")[1]),
-    doughType: make.split("_")[2],
-    qty: 0,
-    makeTotal: 0,
-    bagEOD: 0,
-  }));
-  return make;
-};
-
-const getFullMakeOrders = (delivDate, database) => {
-  console.log("getFullMakeOrder", delivDate);
-  let fullOrder = getFullOrders(delivDate, database);
-  fullOrder = addProdAttr(fullOrder, database); // adds forBake, packSize, currentStock
-  return fullOrder;
-};
-
-const getFullProdMakeOrders = (delivDate, database) => {
-  let fullOrder = getFullProdOrders(delivDate, database);
-  fullOrder = addProdAttr(fullOrder, database); // adds forBake, packSize, currentStock
-  return fullOrder;
-};
-
-const tomBasedOnDelivDate = (delivDate) => {
-  console.log("delivStart", delivDate);
-  let tomorrow = DateTime.fromFormat(delivDate, "yyyy-MM-dd")
-    .setZone("America/Los_Angeles")
-    .plus({ days: 1 });
-
-  return tomorrow.toString().split("T")[0];
-};
 export default class ComposeCroixInfo {
-  returnCroixBreakDown = (database, delivDate) => {
+  returnCroixBreakDown = (database, delivDate,setOut) => {
     let openingCount = this.getOpeningCount(database, delivDate);
     let openingNorthCount = this.getOpeningNorthCount(database, delivDate);
     let makeCount = this.getMakeCount(database, delivDate);
-    let closingCount = this.getClosingCount(database, delivDate);
+    let closingCount = this.getClosingCount(database, delivDate,setOut);
     let closingNorthCount = this.getClosingNorthCount(database, delivDate);
     let projectionCount = this.getProjectionCount(database, delivDate);
     let products = this.getProducts(database);
@@ -153,7 +98,7 @@ export default class ComposeCroixInfo {
     return prodArray;
   }
 
-  getClosingCount(database, delivDate) {
+  getClosingCount(database, delivDate,setOut) {
     const [products, customers, routes, standing, orders] = database;
     let count = products.filter(
       (prod) =>
@@ -164,12 +109,21 @@ export default class ComposeCroixInfo {
     let prodArray = [];
 
     for (let prod of prods) {
-      let goingOut = 120
+      let goingOut = 0
       // calcGoing out
-      //     total setout today
+      console.log("setOut",setOut)
+      
       //     total frozen deliveries today
       //     total frozen going north today
+      let setOutInd
       let ind = products.findIndex((pro) => pro.forBake === prod);
+      if (setOut){
+        setOutInd = setOut.findIndex(set => set.prodNick === products[ind].nickName)
+        goingOut = setOut[setOutInd].qty
+        console.log("goingOut",goingOut)
+        console.log("setOUtInd",setOutInd)
+      }
+      
       let newItem = {
         prod: prod,
         qty:

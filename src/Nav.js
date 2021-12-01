@@ -124,7 +124,7 @@ function Nav() {
             {
               label: "Croix EOD Count",
               command: () => {
-                window.location = "/EODCounts/BPBSCounts";
+                window.location = "/BPBSProd/CroixCount";
               },
             },
           ],

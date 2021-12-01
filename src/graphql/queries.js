@@ -125,6 +125,7 @@ export const getProduct = /* GraphQL */ `
       qbID
       freezerCount
       sheetMake
+      freezerNorth
       createdAt
       updatedAt
     }
@@ -176,6 +177,7 @@ export const listProducts = /* GraphQL */ `
         qbID
         freezerCount
         sheetMake
+        freezerNorth
         createdAt
         updatedAt
       }

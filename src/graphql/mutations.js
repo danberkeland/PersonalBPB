@@ -168,6 +168,7 @@ export const createProduct = /* GraphQL */ `
       qbID
       freezerCount
       sheetMake
+      freezerNorth
       createdAt
       updatedAt
     }
@@ -217,6 +218,7 @@ export const updateProduct = /* GraphQL */ `
       qbID
       freezerCount
       sheetMake
+      freezerNorth
       createdAt
       updatedAt
     }
@@ -266,6 +268,7 @@ export const deleteProduct = /* GraphQL */ `
       qbID
       freezerCount
       sheetMake
+      freezerNorth
       createdAt
       updatedAt
     }

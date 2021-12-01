@@ -70,6 +70,7 @@ type Product @model @auth(rules: [{allow: public}]) {
   qbID: String
   freezerCount: Int
   sheetMake: Int
+  freezerNorth: Int
 }
 
 type Order @model @auth(rules: [{allow: public}]) {

@@ -28,6 +28,7 @@ import DoughCalc from './pages/doughCalc/doughCalc';
 import BPBSWhatToMake from './pages/BPBSProd/BPBSWhatToMake';
 import BPBSMixPocket from './pages/BPBSProd/BPBSMixPocket';
 import CroixToMake from './pages/BPBSProd/CroixToMake';
+import CroixCount from './pages/BPBSProd/CroixCount';
 import AMPastry from './pages/logistics/AMPastry';
 import NorthLists from './pages/logistics/NorthLists';
 import RetailBags from './pages/logistics/RetailBags';
@@ -82,6 +83,7 @@ function AppRoutes({ authType, userNum }) {
           <Route path="/BPBSProd/BPBSWhatToMake" component={BPBSWhatToMake} />
           <Route path="/BPBSProd/BPBSMixPocket" component={BPBSMixPocket} />
           <Route path="/BPBSProd/CroixToMake" component={CroixToMake} />
+          <Route path="/BPBSProd/CroixCount" component={CroixCount} />
           <Route path="/BPBSProd/BPBSSetOut" render={(props)=><BPBNSetOut {...props} loc={'Prado'} />} />
           <Route path="/EODCounts/BPBSCounts" render={(props)=><EODCounts {...props} loc={'Prado'} />} />
           <Route path="/doughCalc/doughCalc" component={DoughCalc} />

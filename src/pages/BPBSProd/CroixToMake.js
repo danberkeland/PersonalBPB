@@ -9,7 +9,6 @@ import { Column } from "primereact/column";
 
 import { promisedData } from "../../helpers/databaseFetchers";
 import ComposeCroixInfo from "./BPBSWhatToMakeUtils/composeCroixInfo";
-import ComposePastryPrep from "../BPBNProd/Utils/composePastryPrep";
 
 import { todayPlus } from "../../helpers/dateTimeHelpers";
 
@@ -17,11 +16,7 @@ import { updateProduct } from "../../graphql/mutations";
 
 import { API, graphqlOperation } from "aws-amplify";
 
-import jsPDF from "jspdf";
-import "jspdf-autotable";
-
 import styled from "styled-components";
-import { set } from "lodash";
 
 const WholeBox = styled.div`
   display: flex;
@@ -53,30 +48,12 @@ const BorderBox = styled.div`
   border-color: grey;
 `;
 
-const ButtonStyle = styled.button`
-  border: 0;
-  background-color: #4caf50;
-  color: white;
-  font-size: 20px;
-  border-radius: 15px;
-  box-shadow: 0 9px #999;
-  &:hover {
-    background-color: #3e8e41;
-  }
-  &:active {
-    background-color: #3e8e41;
-    box-shadow: 0 5px #666;
-    transform: translateY(4px);
-  }
-`;
-
 const compose = new ComposeCroixInfo();
-const composeSetOut = new ComposePastryPrep();
 
 const clonedeep = require("lodash.clonedeep");
 
 function CroixToMake() {
-  const { setIsLoading } = useContext(ToggleContext);
+  const { setIsLoading, setReload } = useContext(ToggleContext);
 
   const [delivDate, setDelivDate] = useState(todayPlus()[0]);
   const [mod, setMod] = useState(false);
@@ -86,29 +63,15 @@ function CroixToMake() {
   const [closingCount, setClosingCount] = useState();
   const [projectionCount, setProjectionCount] = useState();
   const [products, setProducts] = useState();
-  const [setOut, setSetOut] = useState();
 
   useEffect(() => {
     promisedData(setIsLoading).then((database) => {
-      if (!setOut) {
-        gatherPastryPrepInfo(database);
-      }
       gatherCroixInfo(database);
     });
-  }, [setOut]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const gatherPastryPrepInfo = (database) => {
-    let pastryPrepData = composeSetOut.returnPastryPrepBreakDown(
-      delivDate,
-      database,
-      "Prado"
-    );
-    setSetOut(pastryPrepData.setOut);
-  };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const gatherCroixInfo = (database) => {
-    console.log("setOut1", setOut);
-    let makeData = compose.returnCroixBreakDown(database, delivDate, setOut);
+    let makeData = compose.returnCroixBreakDown(database, delivDate);
     setOpeningCount(makeData.openingCount);
     setMakeCount(makeData.makeCount);
     setClosingCount(makeData.closingCount);
@@ -161,6 +124,7 @@ function CroixToMake() {
           }
         }
       }
+      setReload(true);
       setIsLoading(false);
     }
     if (which === "sheets") {
@@ -186,15 +150,36 @@ function CroixToMake() {
           }
         }
       }
+      setReload(true);
       setIsLoading(false);
     }
     if (which === "closing") {
-      for (let op of closingCount) {
-        for (let prod of prodToMod) {
-          // if op.prodName === prod.forBake, prod.freezerCount = op.qty
+    
+        setIsLoading(true);
+        for (let op of openingCount) {
+          for (let prod of prodToMod) {
+          
+            let itemUpdate;
+            if (op.prod === prod.forBake) {
+              itemUpdate = {
+                id: prod.id,
+                freezerCount: op.qty,
+              };
+
+              try {
+                await API.graphql(
+                  graphqlOperation(updateProduct, { input: { ...itemUpdate } })
+                );
+              } catch (error) {
+                console.log("error on updating product", error);
+              }
+            }
+          }
         }
+        setReload(true);
+        setIsLoading(false);
       }
-    }
+    
   };
 
   const modifySheets = (
@@ -265,6 +250,19 @@ function CroixToMake() {
       setMakeCount(cloneMakeCount);
     }
     if (which === "closing") {
+      console.log(e.target.value, which, prod);
+      let cloneOpeningCount = clonedeep(openingCount);
+      let cloneClosingCount = clonedeep(closingCount);
+      console.log("open",cloneOpeningCount)
+      console.log("close",cloneClosingCount)
+      for (let op of cloneOpeningCount) {
+      if (op.prod === prod){
+        let ind = cloneClosingCount.findIndex(cl => cl.prod === op.prod)
+       op.qty = cloneOpeningCount[ind].qty-cloneClosingCount[ind].qty+Number(e.target.value)
+      }
+       
+      }
+      setOpeningCount(cloneOpeningCount);
     }
   };
 

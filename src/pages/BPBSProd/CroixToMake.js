@@ -10,7 +10,7 @@ import { Column } from "primereact/column";
 import { promisedData } from "../../helpers/databaseFetchers";
 import ComposeCroixInfo from "./BPBSWhatToMakeUtils/composeCroixInfo";
 
-import { todayPlus } from "../../helpers/dateTimeHelpers";
+import { convertDatetoBPBDate, todayPlus } from "../../helpers/dateTimeHelpers";
 
 import { updateProduct } from "../../graphql/mutations";
 
@@ -215,9 +215,11 @@ function CroixToMake() {
         className="p-inputtext-sm"
         placeholder={e.qty}
         style={{
-          width: "50px",
+          width: "60px",
           backgroundColor: "#E3F2FD",
           fontWeight: "bold",
+          fontSize: "1.2em"
+
         }}
         onKeyUp={(e2) => e2.code === "Enter" && setInfo(e2, which, e.prod)}
         onBlur={(e2) => setInfo(e2, which, e.prod)}
@@ -237,9 +239,11 @@ function CroixToMake() {
         disabled
         placeholder={num}
         style={{
-          width: "50px",
+          width: "60px",
           backgroundColor: "#E3F2FD",
           fontWeight: "bold",
+          fontSize: "1.2em"
+
         }}
       />
     );
@@ -249,11 +253,16 @@ function CroixToMake() {
     if (which === "opening") {
       console.log(e.target.value, which, prod);
       let cloneOpeningCount = clonedeep(openingCount);
+      let cloneClosingCount = clonedeep(closingCount);
       for (let op of cloneOpeningCount) {
         if (op.prod === prod) {
+          let ind = cloneClosingCount.findIndex((cl) => cl.prod === op.prod);
           op.qty = e.target.value;
+          cloneClosingCount[ind].qty =
+            cloneClosingCount[ind].fixed + Number(e.target.value) - cloneOpeningCount[ind].fixed
         }
       }
+      setClosingCount(cloneClosingCount)
       setOpeningCount(cloneOpeningCount);
     }
     if (which === "sheets") {
@@ -266,7 +275,10 @@ function CroixToMake() {
           let ind = cloneClosingCount.findIndex((cl) => cl.prod === op.prod);
           op.qty = e.target.value;
           cloneClosingCount[ind].qty =
-            cloneClosingCount[ind].fixed + (products[ind2].batchSize*e.target.value) -(products[ind2].batchSize*cloneMakeCount[ind].fixed)
+            cloneClosingCount[ind].fixed +
+            products[ind2].batchSize * Number(e.target.value) -
+            products[ind2].batchSize * cloneMakeCount[ind].fixed;
+          cloneMakeCount[ind].total = products[ind2].batchSize * Number(e.target.value)
         }
       }
       setClosingCount(cloneClosingCount);
@@ -285,8 +297,10 @@ function CroixToMake() {
             cloneOpeningCount[ind].fixed -
             cloneClosingCount[ind].qty +
             Number(e.target.value);
+          cloneClosingCount[ind].qty = Number(e.target.value)
         }
       }
+      setClosingCount(cloneClosingCount)
       setOpeningCount(cloneOpeningCount);
     }
   };
@@ -294,8 +308,7 @@ function CroixToMake() {
   return (
     <React.Fragment>
       <WholeBox>
-        <h1>Croissant Production</h1>
-        <h2>Sunday, June 20, 2021</h2>
+        <h1>Croissant Production {convertDatetoBPBDate(delivDate)}</h1>
         <TwoColumnGrid>
           <ThreeColumnGrid>
             <BorderBox>

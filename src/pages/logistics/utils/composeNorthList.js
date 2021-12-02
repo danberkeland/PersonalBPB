@@ -210,9 +210,6 @@ export default class ComposeNorthList {
     const [products, customers, routes, standing, orders, d, dd, alt, QBInfo] =
       database;
 
-    // for Prado - if difference between now and QBDate is greater than 24 hours, set for 7 am yesterday
-    // for Carlton - if difference between now and QBDate is greater than 24 hours, set for 7 am yesterday
-
     let todayOrders = orders.filter(
       (ord) =>
         (ord.route === "slopick" &&
@@ -369,11 +366,17 @@ export default class ComposeNorthList {
   };
 
   subtractCurrentStock = (products, grid) => {
+  
     for (let gr of grid) {
+      let short = gr.prodNick.substring(2)
       let subQty =
-        products[products.findIndex((prod) => prod.nickName === gr.prodNick)]
-          .currentStock;
+        products[products.findIndex((prod) => prod.nickName === short)]
+          .freezerNorth;
+     
       gr.qty -= subQty;
+      if (gr.qty<0){
+        gr.qty = 0
+      }
     }
     return grid;
   };

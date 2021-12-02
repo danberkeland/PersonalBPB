@@ -154,32 +154,29 @@ function CroixToMake() {
       setIsLoading(false);
     }
     if (which === "closing") {
-    
-        setIsLoading(true);
-        for (let op of openingCount) {
-          for (let prod of prodToMod) {
-          
-            let itemUpdate;
-            if (op.prod === prod.forBake) {
-              itemUpdate = {
-                id: prod.id,
-                freezerCount: op.qty,
-              };
+      setIsLoading(true);
+      for (let op of openingCount) {
+        for (let prod of prodToMod) {
+          let itemUpdate;
+          if (op.prod === prod.forBake) {
+            itemUpdate = {
+              id: prod.id,
+              freezerCount: op.qty,
+            };
 
-              try {
-                await API.graphql(
-                  graphqlOperation(updateProduct, { input: { ...itemUpdate } })
-                );
-              } catch (error) {
-                console.log("error on updating product", error);
-              }
+            try {
+              await API.graphql(
+                graphqlOperation(updateProduct, { input: { ...itemUpdate } })
+              );
+            } catch (error) {
+              console.log("error on updating product", error);
             }
           }
         }
-        setReload(true);
-        setIsLoading(false);
       }
-    
+      setReload(true);
+      setIsLoading(false);
+    }
   };
 
   const modifySheets = (
@@ -230,9 +227,9 @@ function CroixToMake() {
 
   const numHolder = (e, which, day) => {
     console.log("e", e);
-    let num = e.qty
-    if (which ==="proj"){
-      num = day
+    let num = e.qty;
+    if (which === "proj") {
+      num = day;
     }
     return (
       <InputText
@@ -248,8 +245,6 @@ function CroixToMake() {
     );
   };
 
-  
-
   const setInfo = (e, which, prod) => {
     if (which === "opening") {
       console.log(e.target.value, which, prod);
@@ -263,26 +258,34 @@ function CroixToMake() {
     }
     if (which === "sheets") {
       console.log(e.target.value, which, prod);
+      let ind2 = products.findIndex((pro) => pro.forBake === prod);
       let cloneMakeCount = clonedeep(makeCount);
+      let cloneClosingCount = clonedeep(closingCount);
       for (let op of cloneMakeCount) {
         if (op.prod === prod) {
+          let ind = cloneClosingCount.findIndex((cl) => cl.prod === op.prod);
           op.qty = e.target.value;
+          cloneClosingCount[ind].qty =
+            cloneClosingCount[ind].fixed + (products[ind2].batchSize*e.target.value) -(products[ind2].batchSize*cloneMakeCount[ind].fixed)
         }
       }
+      setClosingCount(cloneClosingCount);
       setMakeCount(cloneMakeCount);
     }
     if (which === "closing") {
       console.log(e.target.value, which, prod);
       let cloneOpeningCount = clonedeep(openingCount);
       let cloneClosingCount = clonedeep(closingCount);
-      console.log("open",cloneOpeningCount)
-      console.log("close",cloneClosingCount)
+      console.log("open", cloneOpeningCount);
+      console.log("close", cloneClosingCount);
       for (let op of cloneOpeningCount) {
-      if (op.prod === prod){
-        let ind = cloneClosingCount.findIndex(cl => cl.prod === op.prod)
-       op.qty = cloneOpeningCount[ind].qty-cloneClosingCount[ind].qty+Number(e.target.value)
-      }
-       
+        if (op.prod === prod) {
+          let ind = cloneClosingCount.findIndex((cl) => cl.prod === op.prod);
+          op.qty =
+            cloneOpeningCount[ind].fixed -
+            cloneClosingCount[ind].qty +
+            Number(e.target.value);
+        }
       }
       setOpeningCount(cloneOpeningCount);
     }
@@ -310,7 +313,6 @@ function CroixToMake() {
                   }}
                   field="prod"
                   header="Product"
-                  
                 ></Column>
                 {mod && modType === "opening" ? (
                   <Column
@@ -319,7 +321,11 @@ function CroixToMake() {
                     body={(e) => handleInput(e, "opening")}
                   ></Column>
                 ) : (
-                  <Column id="qty" header="Qty" body={(e) => numHolder(e, "opening")}></Column>
+                  <Column
+                    id="qty"
+                    header="Qty"
+                    body={(e) => numHolder(e, "opening")}
+                  ></Column>
                 )}
               </DataTable>
             </BorderBox>
@@ -349,7 +355,11 @@ function CroixToMake() {
                     body={(e) => handleInput(e, "sheets")}
                   ></Column>
                 ) : (
-                  <Column id="qty" header="Sheets" body={(e) => numHolder(e, "sheets")}></Column>
+                  <Column
+                    id="qty"
+                    header="Sheets"
+                    body={(e) => numHolder(e, "sheets")}
+                  ></Column>
                 )}
 
                 {((!mod && modType === "sheets") || modType !== "sheets") && (
@@ -383,7 +393,11 @@ function CroixToMake() {
                     body={(e) => handleInput(e, "closing")}
                   ></Column>
                 ) : (
-                  <Column header="Qty" id="closing" body={(e) => numHolder(e, "closing")}></Column>
+                  <Column
+                    header="Qty"
+                    id="closing"
+                    body={(e) => numHolder(e, "closing")}
+                  ></Column>
                 )}
               </DataTable>
             </BorderBox>
@@ -399,10 +413,22 @@ function CroixToMake() {
                 field="prod"
                 header="Product"
               ></Column>
-              <Column header="TOM" body={(e) => numHolder(e, "proj", e.tom)}></Column>
-              <Column header="2DAY" body={(e) => numHolder(e, "proj", e["2day"])}></Column>
-              <Column header="3DAY" body={(e) => numHolder(e, "proj",e["3day"])}></Column>
-              <Column header="4DAY" body={(e) => numHolder(e, "proj",e["4day"])}></Column>
+              <Column
+                header="TOM"
+                body={(e) => numHolder(e, "proj", e.tom)}
+              ></Column>
+              <Column
+                header="2DAY"
+                body={(e) => numHolder(e, "proj", e["2day"])}
+              ></Column>
+              <Column
+                header="3DAY"
+                body={(e) => numHolder(e, "proj", e["3day"])}
+              ></Column>
+              <Column
+                header="4DAY"
+                body={(e) => numHolder(e, "proj", e["4day"])}
+              ></Column>
             </DataTable>
           </BorderBox>
         </TwoColumnGrid>

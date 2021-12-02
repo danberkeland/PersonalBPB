@@ -218,6 +218,7 @@ export default class ComposeCroixInfo {
       let ind = products.findIndex((pro) => pro.forBake === prod);
       let newItem = {
         prod: prod,
+        fixed: products[ind].freezerCount ? products[ind].freezerCount : 0,
         qty: products[ind].freezerCount ? products[ind].freezerCount : 0,
       };
       prodArray.push(newItem);
@@ -273,6 +274,7 @@ export default class ComposeCroixInfo {
       let newItem = {
         prod: prod,
         qty: sheetCount,
+        fixed: sheetCount,
         total: products[ind].sheetMake * products[ind].batchSize,
       };
       prodArray.push(newItem);
@@ -330,6 +332,11 @@ export default class ComposeCroixInfo {
 
       let newItem = {
         prod: prod,
+        fixed: products[ind].freezerCount
+        ? products[ind].freezerCount -
+          goingOut +
+          products[ind].sheetMake * products[ind].batchSize
+        : 0,
         qty: products[ind].freezerCount
           ? products[ind].freezerCount -
             goingOut +
@@ -350,6 +357,7 @@ export default class ComposeCroixInfo {
       for (let fr of freezerDelivs){
         if (fr.prodNick === prod.prod){
           prod.qty = prod.qty - fr.qty
+          prod.fixed = prod.fixed - fr.qty
         }
       }
     }

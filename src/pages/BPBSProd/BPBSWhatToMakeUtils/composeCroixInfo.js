@@ -243,6 +243,7 @@ export default class ComposeCroixInfo {
       let ind = products.findIndex((pro) => pro.forBake === prod);
       let newItem = {
         prod: prod,
+        fixed: products[ind].freezerNorth ? products[ind].freezerNorth : 0,
         qty: products[ind].freezerNorth ? products[ind].freezerNorth : 0,
       };
       prodArray.push(newItem);
@@ -397,6 +398,9 @@ export default class ComposeCroixInfo {
       let ind2 = products.findIndex((pro) => pro.forBake === prod);
       let newItem = {
         prod: prod,
+        fixed: products[ind2].freezerNorth
+        ? products[ind2].freezerNorth - goingOut
+        : 0,
         qty: products[ind2].freezerNorth
           ? products[ind2].freezerNorth - goingOut
           : 0,

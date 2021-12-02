@@ -83,7 +83,7 @@ function CroixToMake() {
 
   const makeHeader = <div>MAKE TODAY</div>;
 
-  const closeHeader = <div>Closing EOD</div>;
+  const closeHeader = <div>Closing Freezer</div>;
 
   const projectionHeader = <div>EOD Projections</div>;
 
@@ -124,7 +124,6 @@ function CroixToMake() {
           }
         }
       }
-      setReload(true);
       setIsLoading(false);
     }
     if (which === "sheets") {
@@ -150,7 +149,7 @@ function CroixToMake() {
           }
         }
       }
-      setReload(true);
+    
       setIsLoading(false);
     }
     if (which === "closing") {
@@ -174,7 +173,7 @@ function CroixToMake() {
           }
         }
       }
-      setReload(true);
+      
       setIsLoading(false);
     }
   };

@@ -10,7 +10,7 @@ import { Column } from "primereact/column";
 import { promisedData } from "../../helpers/databaseFetchers";
 import ComposeCroixInfo from "./BPBSWhatToMakeUtils/composeCroixInfo";
 
-import { todayPlus } from "../../helpers/dateTimeHelpers";
+import { convertDatetoBPBDate, todayPlus } from "../../helpers/dateTimeHelpers";
 
 import { updateProduct } from "../../graphql/mutations";
 
@@ -116,9 +116,34 @@ function CroixToMake() {
   };
 
   const submitNewNumbers = async (which) => {
-    
+    console.log("Submitting " + which);
     let prodToMod = clonedeep(products);
     if (which === "opening") {
+      setIsLoading(true);
+      for (let op of openingCount) {
+        for (let prod of prodToMod) {
+          console.log("op", op);
+          console.log("prod", prod);
+          let itemUpdate;
+          if (op.prod === prod.forBake) {
+            itemUpdate = {
+              id: prod.id,
+              freezerCount: op.qty,
+            };
+
+            try {
+              await API.graphql(
+                graphqlOperation(updateProduct, { input: { ...itemUpdate } })
+              );
+            } catch (error) {
+              console.log("error on updating product", error);
+            }
+          }
+        }
+      }
+      setIsLoading(false);
+    }
+    if (which === "closing") {
       setIsLoading(true);
       for (let op of openingCount) {
         for (let prod of prodToMod) {
@@ -139,24 +164,18 @@ function CroixToMake() {
           }
         }
       }
+      
       setIsLoading(false);
-    }
-
-    if (which === "closing") {
-      for (let op of closingCount) {
-        for (let prod of prodToMod) {
-          // if op.prodName === prod.forBake, prod.freezerCount = op.qty
-        }
-      }
     }
 
     if (which === "openingNorth") {
       setIsLoading(true);
       for (let op of openingNorthCount) {
         for (let prod of prodToMod) {
+          console.log("op", op);
+          console.log("prod", prod);
           let itemUpdate;
           if (op.prod === prod.forBake) {
-            console.log("updating "+prod)
             itemUpdate = {
               id: prod.id,
               freezerNorth: op.qty,
@@ -174,13 +193,30 @@ function CroixToMake() {
       }
       setIsLoading(false);
     }
-
+    
     if (which === "closingNorth") {
-      for (let op of closingNorthCount) {
+      setIsLoading(true);
+      for (let op of openingNorthCount) {
         for (let prod of prodToMod) {
-          // if op.prodName === prod.forBake, prod.freezerCount = op.qty
+          let itemUpdate;
+          if (op.prod === prod.forBake) {
+            itemUpdate = {
+              id: prod.id,
+              freezerNorth: op.qty,
+            };
+
+            try {
+              await API.graphql(
+                graphqlOperation(updateProduct, { input: { ...itemUpdate } })
+              );
+            } catch (error) {
+              console.log("error on updating product", error);
+            }
+          }
         }
       }
+      
+      setIsLoading(false);
     }
   };
 
@@ -230,9 +266,11 @@ function CroixToMake() {
         className="p-inputtext-sm"
         placeholder={e.qty}
         style={{
-          width: "50px",
+          width: "60px",
           backgroundColor: "#E3F2FD",
           fontWeight: "bold",
+          fontSize: "1.2em"
+
         }}
         onKeyUp={(e2) => e2.code === "Enter" && setInfo(e2, which, e.prod)}
         onBlur={(e2) => setInfo(e2, which, e.prod)}
@@ -240,38 +278,108 @@ function CroixToMake() {
     );
   };
 
+  const numHolder = (e, which, day) => {
+    console.log("e", e);
+    let num = e.qty;
+    if (which === "proj") {
+      num = day;
+    }
+    return (
+      <InputText
+        className="p-inputtext-sm"
+        disabled
+        placeholder={num}
+        style={{
+          width: "60px",
+          backgroundColor: "#E3F2FD",
+          fontWeight: "bold",
+          fontSize: "1.2em"
+
+        }}
+      />
+    );
+  };
+
   const setInfo = (e, which, prod) => {
     if (which === "opening") {
+      console.log(e.target.value, which, prod);
       let cloneOpeningCount = clonedeep(openingCount);
+      let cloneClosingCount = clonedeep(closingCount);
       for (let op of cloneOpeningCount) {
         if (op.prod === prod) {
+          let ind = cloneClosingCount.findIndex((cl) => cl.prod === op.prod);
           op.qty = e.target.value;
+          cloneClosingCount[ind].qty =
+            cloneClosingCount[ind].fixed + Number(e.target.value) - cloneOpeningCount[ind].fixed
         }
       }
+      setClosingCount(cloneClosingCount)
       setOpeningCount(cloneOpeningCount);
     }
    
     if (which === "closing") {
-    }
-    if (which === "openingNorth") {
-      let cloneOpeningNorthCount = clonedeep(openingNorthCount);
-      for (let op of cloneOpeningNorthCount) {
+      console.log(e.target.value, which, prod);
+      let cloneOpeningCount = clonedeep(openingCount);
+      let cloneClosingCount = clonedeep(closingCount);
+      console.log("open", cloneOpeningCount);
+      console.log("close", cloneClosingCount);
+      for (let op of cloneOpeningCount) {
         if (op.prod === prod) {
-          op.qty = e.target.value;
+          let ind = cloneClosingCount.findIndex((cl) => cl.prod === op.prod);
+          op.qty =
+            cloneOpeningCount[ind].fixed -
+            cloneClosingCount[ind].qty +
+            Number(e.target.value);
+          cloneClosingCount[ind].qty = Number(e.target.value)
         }
       }
+      setClosingCount(cloneClosingCount)
+      setOpeningCount(cloneOpeningCount);
+    }
+
+    if (which === "openingNorth") {
+      console.log(e.target.value, which, prod);
+      let cloneOpeningNorthCount = clonedeep(openingNorthCount);
+      let cloneClosingNorthCount = clonedeep(closingNorthCount);
+      for (let op of cloneOpeningNorthCount) {
+        if (op.prod === prod) {
+          let ind = cloneClosingNorthCount.findIndex((cl) => cl.prod === op.prod);
+          op.qty = e.target.value;
+          cloneClosingNorthCount[ind].qty =
+            cloneClosingNorthCount[ind].fixed + Number(e.target.value) - cloneOpeningNorthCount[ind].fixed
+        }
+      }
+      setClosingNorthCount(cloneClosingNorthCount)
       setOpeningNorthCount(cloneOpeningNorthCount);
     }
+
    
     if (which === "closingNorth") {
+      console.log(e.target.value, which, prod);
+      let cloneOpeningNorthCount = clonedeep(openingNorthCount);
+      let cloneClosingNorthCount = clonedeep(closingNorthCount);
+      console.log("open", cloneOpeningNorthCount);
+      console.log("close", cloneClosingNorthCount);
+      for (let op of cloneOpeningNorthCount) {
+        if (op.prod === prod) {
+          let ind = cloneClosingNorthCount.findIndex((cl) => cl.prod === op.prod);
+          op.qty =
+            cloneOpeningNorthCount[ind].fixed -
+            cloneClosingNorthCount[ind].qty +
+            Number(e.target.value);
+          cloneClosingNorthCount[ind].qty = Number(e.target.value)
+        }
+      }
+      setClosingNorthCount(cloneClosingNorthCount)
+      setOpeningNorthCount(cloneOpeningNorthCount);
     }
   };
 
   return (
     <React.Fragment>
       <WholeBox>
-        <h1>Croissant Freezer Count</h1>
-        <h2>Sunday, June 20, 2021</h2>
+        <h1>Croissant Freezer Count {convertDatetoBPBDate(delivDate)}</h1>
+       
         <TwoColumnGrid>
           <ThreeColumnGrid>
             <BorderBox>
@@ -297,7 +405,7 @@ function CroixToMake() {
                     body={(e) => handleInput(e, "opening")}
                   ></Column>
                 ) : (
-                  <Column field="qty" header="Qty"></Column>
+                  <Column header="Qty" body={(e) => numHolder(e, "opening")}></Column>
                 )}
               </DataTable>
             </BorderBox>
@@ -328,7 +436,7 @@ function CroixToMake() {
                     body={(e) => handleInput(e, "closing")}
                   ></Column>
                 ) : (
-                  <Column field="qty" header="Qty" id="closing"></Column>
+                  <Column header="Qty" id="closing" body={(e) => numHolder(e, "closing")}></Column>
                 )}
               </DataTable>
             </BorderBox>
@@ -357,7 +465,7 @@ function CroixToMake() {
                     body={(e) => handleInput(e, "openingNorth")}
                   ></Column>
                 ) : (
-                  <Column field="qty" header="Qty"></Column>
+                  <Column header="Qty" body={(e) => numHolder(e, "openingNorth")}></Column>
                 )}
               </DataTable>
             </BorderBox>
@@ -388,7 +496,7 @@ function CroixToMake() {
                     body={(e) => handleInput(e, "closingNorth")}
                   ></Column>
                 ) : (
-                  <Column field="qty" header="Qty" id="closingNorth"></Column>
+                  <Column header="Qty" id="closingNorth" body={(e) => numHolder(e, "closingNorth")}></Column>
                 )}
               </DataTable>
             </BorderBox>

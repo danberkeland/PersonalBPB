@@ -426,10 +426,10 @@ export default class ComposeCroixInfo {
       let ind = products.findIndex((pro) => pro.forBake === prod);
       let newItem = {
         prod: prod,
-        tom: 150,
-        "2day": 300,
-        "3day": 450,
-        "4day": 600,
+        tom: 0,
+        "2day": 0,
+        "3day": 0,
+        "4day": 0,
       };
       prodArray.push(newItem);
     }

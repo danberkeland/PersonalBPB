@@ -21,6 +21,7 @@ import "jspdf-autotable";
 
 import styled from "styled-components";
 import { set } from "lodash";
+import ComposeNorthList from "../logistics/utils/composeNorthList";
 
 const WholeBox = styled.div`
   display: flex;
@@ -70,6 +71,7 @@ const ButtonStyle = styled.button`
 `;
 
 const compose = new ComposeCroixInfo();
+const compNorth = new ComposeNorthList();
 
 const clonedeep = require("lodash.clonedeep");
 
@@ -85,19 +87,39 @@ function CroixToMake() {
   const [closingCount, setClosingCount] = useState();
   const [closingNorthCount, setClosingNorthCount] = useState();
   const [products, setProducts] = useState();
+  const [croixNorth,setCroixNorth] = useState();
 
   useEffect(() => {
     promisedData(setIsLoading).then((database) => gatherCroixInfo(database));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const gatherCroixInfo = (database) => {
+ 
+
+  const gatherCroixInfo = async (database) => {
     let makeData = compose.returnCroixBreakDown(database, delivDate);
+    let croixNorth = await compNorth.returnCroixNorth(delivDate, database)
+    let cloneCroixNorth = clonedeep(croixNorth)
+      let cloneClosingNorthCount = clonedeep(makeData.closingNorthCount)
+      for (let cn of cloneClosingNorthCount){
+        console.log("cn",cn)
+        for (let cr of cloneCroixNorth){
+          console.log("cr",cr)
+          if (cn.prod === cr.forBake){
+            console.log("toAdd",cr.qty)
+            cn.qty = Number(cn.qty)+Number(cr.qty)
+            cn.fixed = Number(cn.fixed)+Number(cr.qty)
+          }
+        }
+
+      }
+    setClosingNorthCount(cloneClosingNorthCount)
+    
     setOpeningCount(makeData.openingCount);
     setOpeningNorthCount(makeData.openingNorthCount);
     setMakeCount(makeData.makeCount);
     setClosingCount(makeData.closingCount);
-    setClosingNorthCount(makeData.closingNorthCount);
     setProducts(makeData.products);
+    setCroixNorth(croixNorth)
   };
   const openingHeader = <div>Opening South</div>;
   const closeHeader = <div>Closing South</div>;
@@ -279,7 +301,7 @@ function CroixToMake() {
   };
 
   const numHolder = (e, which, day) => {
-    console.log("e", e);
+   
     let num = e.qty;
     if (which === "proj") {
       num = day;

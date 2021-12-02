@@ -272,6 +272,12 @@ export default class ComposeNorthList {
       combo.baked = sendNorth;
     }
     console.log("Combo", combogrid);
+    for (let co of combogrid){
+      let ind = products.findIndex(pr => pr.nickName === co.prodNick)
+      co.forBake = products[ind].forBake
+    }
+    
+    console.log("Combo", combogrid);
     return combogrid;
   };
 

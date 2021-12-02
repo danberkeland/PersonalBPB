@@ -178,6 +178,8 @@ const returnFreezerDelivs = (database, delivDate) => {
   return frozens;
 };
 
+
+
 export default class ComposeCroixInfo {
   returnCroixBreakDown = (database, delivDate) => {
     let openingCount = this.getOpeningCount(database, delivDate);
@@ -398,16 +400,19 @@ export default class ComposeCroixInfo {
       let ind2 = products.findIndex((pro) => pro.forBake === prod);
       let newItem = {
         prod: prod,
-        fixed: products[ind2].freezerNorth
+        fixed: products
         ? products[ind2].freezerNorth - goingOut
         : 0,
-        qty: products[ind2].freezerNorth
+        qty: products
           ? products[ind2].freezerNorth - goingOut
           : 0,
       };
       prodArray.push(newItem);
     }
     prodArray = sortAtoZDataByIndex(prodArray, "prod");
+    console.log("closing",prodArray)
+    // get takeNorthArray
+    // apply to prodArray
     return prodArray;
   }
 

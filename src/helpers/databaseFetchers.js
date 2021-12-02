@@ -189,6 +189,7 @@ export const notesData = (setIsLoading) => {
   const all = new Promise((resolve, reject) => {
     resolve(fetchNotesData(setIsLoading));
   });
+  setIsLoading(false)
   return all;
 };
 

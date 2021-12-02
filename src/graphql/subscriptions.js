@@ -145,6 +145,7 @@ export const onCreateProduct = /* GraphQL */ `
       preshaped
       prepreshaped
       updatePreDate
+      updateFreezerDate
       backporchbakerypre
       backporchbakery
       bpbextrapre
@@ -192,6 +193,7 @@ export const onUpdateProduct = /* GraphQL */ `
       preshaped
       prepreshaped
       updatePreDate
+      updateFreezerDate
       backporchbakerypre
       backporchbakery
       bpbextrapre
@@ -239,6 +241,7 @@ export const onDeleteProduct = /* GraphQL */ `
       preshaped
       prepreshaped
       updatePreDate
+      updateFreezerDate
       backporchbakerypre
       backporchbakery
       bpbextrapre

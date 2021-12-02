@@ -59,6 +59,7 @@ type Product @model @auth(rules: [{allow: public}]) {
   preshaped: Int
   prepreshaped: Int
   updatePreDate: String
+  updateFreezerDate: String
   backporchbakerypre: Int
   backporchbakery: Int
   bpbextrapre: Int

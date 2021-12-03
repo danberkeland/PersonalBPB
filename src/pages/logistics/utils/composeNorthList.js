@@ -19,6 +19,7 @@ import {
   sortZtoADataByIndex,
   addTwoGrids,
   subtractGridFromGrid,
+  combineTwoGrids
 } from "../../../helpers/sortDataHelpers";
 
 import {
@@ -242,29 +243,42 @@ export default class ComposeNorthList {
       delivDate,
       database
     );
-    
+
     let bakedTodayAtCarlton = this.getBakedTodayAtCarlton(delivDate, database);
-    let currentFrozenNeed = addTwoGrids(frozensLeavingCarlton,bakedTodayAtCarlton)
-    currentFrozenNeed = subtractGridFromGrid(currentFreezerNumbers,currentFrozenNeed)
-    // currentFrozenNeed = adjustForPackSize(currentFrozenNeed)
+    let currentFrozenNeed = addTwoGrids(
+      frozensLeavingCarlton,
+      bakedTodayAtCarlton
+    );
+    currentFrozenNeed = subtractGridFromGrid(
+      currentFreezerNumbers,
+      currentFrozenNeed
+    );
+    currentFrozenNeed = this.adjustForPackSize(currentFrozenNeed);
 
-    console.log("currentFreezerOrders", currentFreezerNumbers);
-    console.log("frozensLeavingCarlton", frozensLeavingCarlton);
-    console.log("bakedTodayAtCarlton", bakedTodayAtCarlton);
-    console.log("currentFrozenNeed", currentFrozenNeed);
-
-    /*
     // Create Baked needed North { prod, qty }
-    let ordersPlacedAfterDeadline = getOrdersPlacedAfterDeadline(delivDate,database)
-    let backPorchBakeryOrders = getBackPorchBakeryOrders(delivDate,database)
-    let bpbExtraOrders = getBpbExtraOrders(delivDate, database)
-    let bakedGoingNorth = createBakedGoingNorth(backPorchBakeryOrders,bpbExtraOrders,ordersPlacedAfterDeadline)
+    let ordersPlacedAfterDeadline = this.getOrdersPlacedAfterDeadline(
+      delivDate,
+      database
+    );
+    let backPorchBakeryOrders = this.getBackPorchBakeryOrders(
+      delivDate,
+      database
+    );
+    let bpbExtraOrders = this.getBpbExtraOrders(delivDate, database);
 
+    let bakedGoingNorth = this.createBakedGoingNorth(
+      backPorchBakeryOrders,
+      bpbExtraOrders,
+      ordersPlacedAfterDeadline
+    );
+    
     // Combine Frozens and Baked { prod, bakedQty, frozenQty }
     let combo = combineTwoGrids(bakedGoingNorth,currentFrozenNeed, "bakedQty","frozenQty")
 
+    console.log("combo",combo)
+    
     return combo
-    */
+    
   };
   /*
   returnCroixNorth = (delivDate, database) => {
@@ -345,7 +359,7 @@ export default class ComposeNorthList {
   */
 
   getCurrentFreezerNumbers = (delivDate, database) => {
-    const products = database[0]
+    const products = database[0];
 
     // create Product List of tomorrow's croissant Bake at Carlton
     let bakedOrdersList = getOrdersList(
@@ -404,13 +418,10 @@ export default class ComposeNorthList {
   getFrozensLeavingCarlton = (delivDate, database) => {
     let frozenToday = getOrdersList(delivDate, database);
     frozenToday = Array.from(
-      new Set(
-        frozenToday
-          .filter((frz) => this.frzNorthFilter(frz))
-      )
+      new Set(frozenToday.filter((frz) => this.frzNorthFilter(frz)))
     );
     frozenToday = this.makeAddFrozenQty(frozenToday);
-    frozenToday = convertFrozenAttrToPlainAttr(frozenToday)
+    frozenToday = convertFrozenAttrToPlainAttr(frozenToday);
     return frozenToday;
   };
 
@@ -425,7 +436,7 @@ export default class ComposeNorthList {
   makeAddFrozenQty = (frozenToday) => {
     let makeList = frozenToday.map((mk) => ({
       prod: mk.forBake,
-      qty: 0
+      qty: 0,
     }));
 
     for (let make of makeList) {
@@ -443,26 +454,23 @@ export default class ComposeNorthList {
     return makeList;
   };
 
-
-  getBakedTodayAtCarlton = (delivDate,database) => {
-    
+  getBakedTodayAtCarlton = (delivDate, database) => {
     let bakedOrdersList = getOrdersList(delivDate, database);
     let bakedToday = bakedOrdersList.filter((frz) =>
       this.NorthCroixBakeFilter(frz)
     );
     bakedToday = this.makeAddQty(bakedToday);
 
-    return bakedToday
-
-  }
+    return bakedToday;
+  };
 
   makeAddQty = (bake) => {
-    let makeList2 = Array.from(
-      new Set(bake.map((prod) => prod.prodNick))
-    ).map((mk) => ({
-      prod: mk,
-      qty: 0,
-    }));
+    let makeList2 = Array.from(new Set(bake.map((prod) => prod.prodNick))).map(
+      (mk) => ({
+        prod: mk,
+        qty: 0,
+      })
+    );
     for (let make of makeList2) {
       make.qty = 1;
 
@@ -478,6 +486,102 @@ export default class ComposeNorthList {
       make.qty = qtyAccToday;
     }
     return makeList2;
+  };
+
+  adjustForPackSize = (data) => {
+    for (let d of data) {
+      d.qty = Math.ceil(d.qty / 12) * 12;
+    }
+    return data;
+  };
+
+  getOrdersPlacedAfterDeadline = (delivDate, database) => {
+    const [products, customers, routes, standing, orders, d, dd, alt, QBInfo] =
+      database;
+    console.log("QBInfo", QBInfo);
+    let qbidS = tomBasedOnDelivDate(delivDate) + "PradosetoutTime";
+    let qbidN = tomBasedOnDelivDate(delivDate) + "CarltonsetoutTime";
+    let southCompare = new Date();
+    let northCompare = new Date();
+    try {
+      southCompare = new Date(
+        QBInfo[QBInfo.findIndex((qb) => qb.id === qbidS)].updatedAt
+      );
+    } catch {}
+    try {
+      northCompare = new Date(
+        QBInfo[QBInfo.findIndex((qb) => qb.id === qbidN)].updatedAt
+      );
+    } catch {}
+
+    let todayOrders = orders.filter(
+      (ord) =>
+        (ord.route === "slopick" &&
+          ord.delivDate === convertDatetoBPBDate(delivDate) &&
+          new Date(ord.updatedAt) > southCompare &&
+          ord.isWhole === false) ||
+        (ord.route === "atownpick" &&
+          ord.delivDate === convertDatetoBPBDate(delivDate) &&
+          new Date(ord.updatedAt) > northCompare &&
+          ord.isWhole === false)
+    );
+    return todayOrders;
+  };
+
+  getBackPorchBakeryOrders = (delivDate, database) => {
+    let BackPorchOrders = getOrdersList(today, database).filter(
+      (ord) =>
+        ord.custName === "Back Porch Bakery" && ord.doughType === "Croissant"
+    );
+    return BackPorchOrders;
+  };
+
+  getBpbExtraOrders = (delivDate, database) => {
+    let BPBExtraOrders = getOrdersList(today, database).filter(
+      (ord) => ord.custName === "BPB Extras" && ord.doughType === "Croissant"
+    );
+    return BPBExtraOrders;
+  };
+
+  createBakedGoingNorth = (
+    backPorchBakeryOrders,
+    bpbExtraOrders,
+    ordersPlacedAfterDeadline
+  ) => {
+    let bakedGoingNorth = [];
+    for (let back of backPorchBakeryOrders) {
+      let qtyback = back.qty;
+      let extraInd = bpbExtraOrders.findIndex(
+        (bpb) => bpb.prodName === back.prodName
+      );
+      let ordersInd = ordersPlacedAfterDeadline.findIndex(
+        (ord) => ord.prodName === back.prodName
+      );
+      let qtyex, qtyord;
+      try {
+        qtyex = Number(bpbExtraOrders[extraInd].qty);
+      } catch {
+        qtyex = 0;
+      }
+      try {
+        qtyord = Number(ordersPlacedAfterDeadline[ordersInd].qty);
+      } catch {
+        qtyord = 0;
+      }
+
+      let factor = 1 - qtyex / qtyback;
+      let start = qtyback - qtyord;
+      let qty = Math.round(start * factor);
+      let qtyFinal = qty - qtyback / 2;
+
+      let item = {
+        prod: back.prodNick,
+        qty: qtyFinal,
+      };
+
+      bakedGoingNorth.push(item);
+    }
+    return bakedGoingNorth;
   };
 
   combineGrids = (obj1, obj2) => {

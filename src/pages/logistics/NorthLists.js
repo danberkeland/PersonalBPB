@@ -164,9 +164,9 @@ function NorthList() {
           right: 80,
         },
       columns: [
-        { header: "Product", dataKey: "prodNick" },
-        { header: "Qty", dataKey: "qty" },
-        { header: "Baked", dataKey: "baked" },
+        { header: "Product", dataKey: "prod" },
+        { header: "Qty", dataKey: "frozenQty" },
+        { header: "Baked", dataKey: "bakedQty" },
       ],
       startY: finalY + titleToNextTable,
       styles: { fontSize: tableFont },
@@ -320,9 +320,9 @@ function NorthList() {
         </DataTable>
         <h3>Frozen and Baked Croix</h3>
         <DataTable value={croixNorth} className="p-datatable-sm">
-          <Column field="prodNick" header="Product"></Column>
-          <Column field="qty" header="Frozen"></Column>
-          <Column field="baked" header="Baked"></Column>
+          <Column field="prod" header="Product"></Column>
+          <Column field="frozenQty" header="Frozen"></Column>
+          <Column field="bakedQty" header="Baked"></Column>
          
         </DataTable>
 

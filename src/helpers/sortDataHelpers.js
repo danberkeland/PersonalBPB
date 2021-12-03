@@ -243,26 +243,45 @@ export const addTwoGrids = (gr1,gr2) => {
 
 }
 
-export const subtractGridFromGrid = (gr1,gr2) => {
-
-  let gr = gr1.concat(gr2)
-  let att1set = Array.from(new Set(gr.map(g => g[Object.keys(g)[0]])))
-  let newArray = []
-  for (let a of att1set){
-    let num = 0
-    let item
-    for (let g of gr){
-      if (a === g[Object.keys(g)[0]]){
-        num += Number(g[Object.keys(g)[1]])
-      }
-      item = {
-        [Object.keys(g)[0]]:a,
-        [Object.keys(g)[1]]:num
+export const subtractGridFromGrid = (gr1, gr2) => {
+  let newArray = [];
+  for (let gra of gr1) {
+    let attr1 = gra[Object.keys(gra)[0]];
+    
+    for (let grb of gr2) {
+      let attr2 = grb[Object.keys(grb)[0]];
+      if (attr1 === attr2) {
+        let num =
+          Number(grb[Object.keys(grb)[1]]) - Number(gra[Object.keys(gra)[1]]);
+       
+        let item = {
+          [Object.keys(gra)[0]]: attr1,
+          [Object.keys(gra)[1]]: num,
+        };
+        newArray.push(item);
       }
     }
-    newArray.push(item)
   }
+  return newArray;
+};
 
-  return newArray
 
+export const combineTwoGrids = (grid1, grid2, att1, att2) => {
+  console.log("keys",Object.keys(grid1[0]))
+  let finalArray = []
+  let prodsgr1 = grid1.map(gr => gr[Object.keys(grid1[0])[0]])
+  let prodsgr2 = grid1.map(gr => gr[Object.keys(grid1[0])[0]])
+  let allprods = Array.from(new Set(prodsgr1.concat(prodsgr2)))
+  for (let all of allprods){
+    let num1 = grid1[grid1.findIndex(gr => gr[Object.keys(grid1[0])[0]] === all)].qty
+    let num2 = grid2[grid2.findIndex(gr => gr[Object.keys(grid2[0])[0]] === all)].qty
+    let item = {
+      [Object.keys(grid1[0])[0]]:all,
+      [att1]: num1,
+      [att2]: num2
+    }
+    finalArray.push(item)
+
+  }
+  return finalArray
 }

@@ -113,7 +113,7 @@ export const fetchQBInfo = async () => {
   let QBInfo = await fetchFromDataBase(
     listInfoQBAuths,
     "listInfoQBAuths",
-    "50"
+    "1000"
   );
   return QBInfo;
 };

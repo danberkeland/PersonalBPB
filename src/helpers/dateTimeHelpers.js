@@ -15,6 +15,30 @@ export const convertDatetoBPBDateMinusYear = (ISODate) => {
   return day + "/" + mo;
 };
 
+export const tomBasedOnDelivDate = (delivDate) => {
+  let tomorrow = DateTime.fromFormat(delivDate, "yyyy-MM-dd")
+    .setZone("America/Los_Angeles")
+    .plus({ days: 1 });
+
+  return tomorrow.toString().split("T")[0];
+};
+
+export const TwodayBasedOnDelivDate = (delivDate) => {
+  let tomorrow = DateTime.fromFormat(delivDate, "yyyy-MM-dd")
+    .setZone("America/Los_Angeles")
+    .plus({ days: 2 });
+
+  return tomorrow.toString().split("T")[0];
+};
+
+export const ThreedayBasedOnDelivDate = (delivDate) => {
+  let tomorrow = DateTime.fromFormat(delivDate, "yyyy-MM-dd")
+    .setZone("America/Los_Angeles")
+    .plus({ days: 3 });
+
+  return tomorrow.toString().split("T")[0];
+};
+
 export const todayPlus = () => {
   let today = DateTime.now().setZone("America/Los_Angeles");
   let todaySend = today.toString().split("T")[0];

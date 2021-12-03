@@ -2,7 +2,12 @@ import { sortAtoZDataByIndex } from "../../../helpers/sortDataHelpers";
 
 import { getOrdersList, addUp } from "../../BPBNProd/Utils/utils";
 
-import { todayPlus } from "../../../helpers/dateTimeHelpers";
+import {
+  todayPlus,
+  tomBasedOnDelivDate,
+  TwodayBasedOnDelivDate,
+  ThreedayBasedOnDelivDate,
+} from "../../../helpers/dateTimeHelpers";
 
 import {
   setOutFilter,
@@ -14,29 +19,7 @@ import {
 import { ceil } from "lodash";
 const { DateTime } = require("luxon");
 
-const tomBasedOnDelivDate = (delivDate) => {
-  let tomorrow = DateTime.fromFormat(delivDate, "yyyy-MM-dd")
-    .setZone("America/Los_Angeles")
-    .plus({ days: 1 });
 
-  return tomorrow.toString().split("T")[0];
-};
-
-const TwodayBasedOnDelivDate = (delivDate) => {
-  let tomorrow = DateTime.fromFormat(delivDate, "yyyy-MM-dd")
-    .setZone("America/Los_Angeles")
-    .plus({ days: 2 });
-
-  return tomorrow.toString().split("T")[0];
-};
-
-const ThreedayBasedOnDelivDate = (delivDate) => {
-  let tomorrow = DateTime.fromFormat(delivDate, "yyyy-MM-dd")
-    .setZone("America/Los_Angeles")
-    .plus({ days: 3 });
-
-  return tomorrow.toString().split("T")[0];
-};
 
 const makeAddQty = (bakedTomorrow, products) => {
   let makeList2 = Array.from(

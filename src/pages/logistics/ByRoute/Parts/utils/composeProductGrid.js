@@ -46,7 +46,7 @@ const addRoutes = (delivDate, prodGrid, database) => {
 
               // Lincoln Market French exception
               if (
-                grd.prodName === "French Stick" && grd.custName === "Lincoln Market"
+                (grd.prodName === "French Stick" || grd.prodName === "Dutch Stick")  && grd.custName === "Lincoln Market"
               ){
                 grd.route = "Lunch";
                 grd.routeDepart = "Prado";

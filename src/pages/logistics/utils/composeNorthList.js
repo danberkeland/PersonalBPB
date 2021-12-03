@@ -1,7 +1,12 @@
 import {
   convertDatetoBPBDate,
   todayPlus,
+  tomBasedOnDelivDate,
+  TwodayBasedOnDelivDate,
+  ThreedayBasedOnDelivDate,
 } from "../../../helpers/dateTimeHelpers";
+
+
 import {
   createColumns,
   zerosDelivFilter,
@@ -10,7 +15,12 @@ import {
 
 import { getFullOrders } from "../../../helpers/CartBuildingHelpers";
 
-import { sortZtoADataByIndex } from "../../../helpers/sortDataHelpers";
+import {
+  sortZtoADataByIndex,
+  addTwoGrids,
+  subtractGridFromGrid,
+} from "../../../helpers/sortDataHelpers";
+
 import {
   calcDayNum,
   routeRunsThatDay,
@@ -25,6 +35,8 @@ let tomorrow = todayPlus()[1];
 let today = todayPlus()[0];
 let convertedToday = convertDatetoBPBDate(today);
 let convertedTomorrow = convertDatetoBPBDate(tomorrow);
+
+
 
 const addRoutes = (delivDate, prodGrid, database) => {
   const [products, customers, routes, standing, orders] = database;
@@ -153,6 +165,21 @@ const addUp = (acc, val) => {
   return acc + val;
 };
 
+const convertFrozenAttrToPlainAttr = (data) => {
+  try {
+    for (let d of data){
+      d.prod = d.prod.substring(2)
+    }
+
+  } catch {
+    for (let d of data){
+      d = d.substring(2)
+    }
+  }
+  
+  return data
+}
+
 export default class ComposeNorthList {
   returnNorthBreakDown = (delivDate, database) => {
     let croixNorth = this.returnCroixNorth(delivDate, database);
@@ -186,7 +213,6 @@ export default class ComposeNorthList {
       database
     );
 
-
     return {
       croixNorth: croixNorth,
       shelfProdsNorth: shelfProdsNorth,
@@ -207,6 +233,41 @@ export default class ComposeNorthList {
   };
 
   returnCroixNorth = (delivDate, database) => {
+    // Create Frozens needed North { prod, qty }
+    let currentFreezerNumbers = this.getCurrentFreezerNumbers(
+      delivDate,
+      database
+    );
+    let frozensLeavingCarlton = this.getFrozensLeavingCarlton(
+      delivDate,
+      database
+    );
+    
+    let bakedTodayAtCarlton = this.getBakedTodayAtCarlton(delivDate, database);
+    let currentFrozenNeed = addTwoGrids(frozensLeavingCarlton,bakedTodayAtCarlton)
+    currentFrozenNeed = subtractGridFromGrid(currentFreezerNumbers,currentFrozenNeed)
+    // currentFrozenNeed = adjustForPackSize(currentFrozenNeed)
+
+    console.log("currentFreezerOrders", currentFreezerNumbers);
+    console.log("frozensLeavingCarlton", frozensLeavingCarlton);
+    console.log("bakedTodayAtCarlton", bakedTodayAtCarlton);
+    console.log("currentFrozenNeed", currentFrozenNeed);
+
+    /*
+    // Create Baked needed North { prod, qty }
+    let ordersPlacedAfterDeadline = getOrdersPlacedAfterDeadline(delivDate,database)
+    let backPorchBakeryOrders = getBackPorchBakeryOrders(delivDate,database)
+    let bpbExtraOrders = getBpbExtraOrders(delivDate, database)
+    let bakedGoingNorth = createBakedGoingNorth(backPorchBakeryOrders,bpbExtraOrders,ordersPlacedAfterDeadline)
+
+    // Combine Frozens and Baked { prod, bakedQty, frozenQty }
+    let combo = combineTwoGrids(bakedGoingNorth,currentFrozenNeed, "bakedQty","frozenQty")
+
+    return combo
+    */
+  };
+  /*
+  returnCroixNorth = (delivDate, database) => {
     const [products, customers, routes, standing, orders, d, dd, alt, QBInfo] =
       database;
 
@@ -221,9 +282,9 @@ export default class ComposeNorthList {
           new Date(ord.updatedAt) > new Date(QBInfo[0].updatedAt) &&
           ord.isWhole === false)
     );
-    
+
     console.log("orders", todayOrders);
-    
+
     console.log("QB", QBInfo);
     let frozensOrdersList = getOrdersList(today, database);
     console.log("ordList", getOrdersList(today, database));
@@ -259,26 +320,98 @@ export default class ComposeNorthList {
         (back) => back.prodNick === combo.prodNick
       )[0].qty;
       console.log("bpbextra", bpbextra);
-      let minusQty = 0
-      for (let ord of todayOrders){
-        if (ord.prodNick === combo.prodNick){
-          minusQty = minusQty+ord.qty
+      let minusQty = 0;
+      for (let ord of todayOrders) {
+        if (ord.prodNick === combo.prodNick) {
+          minusQty = minusQty + ord.qty;
         }
       }
-      let newRetail = backporchbakery - minusQty
+      let newRetail = backporchbakery - minusQty;
       let Nfactor = 1 - bpbextra / backporchbakery;
       let newNorth = Math.round(newRetail * Nfactor);
       let sendNorth = newNorth - backporchbakery / 2;
       combo.baked = sendNorth;
     }
     console.log("Combo", combogrid);
-    for (let co of combogrid){
-      let ind = products.findIndex(pr => pr.nickName === co.prodNick)
-      co.forBake = products[ind].forBake
+    for (let co of combogrid) {
+      let ind = products.findIndex((pr) => pr.nickName === co.prodNick);
+      co.forBake = products[ind].forBake;
     }
-    
+
     console.log("Combo", combogrid);
     return combogrid;
+  };
+
+  */
+
+  getCurrentFreezerNumbers = (delivDate, database) => {
+    const products = database[0]
+
+    // create Product List of tomorrow's croissant Bake at Carlton
+    let bakedOrdersList = getOrdersList(
+      tomBasedOnDelivDate(delivDate),
+      database
+    );
+    bakedOrdersList = Array.from(
+      new Set(
+        bakedOrdersList
+          .filter((frz) => this.NorthCroixBakeFilter(frz))
+          .map((pr) => pr.forBake)
+      )
+    );
+
+    // create Product List of frozen croissant deliveries leaving Carlton
+    let frozenToday = getOrdersList(delivDate, database);
+    frozenToday = Array.from(
+      new Set(
+        frozenToday
+          .filter((frz) => this.frzNorthFilter(frz))
+          .map((pr) => pr.forBake)
+      )
+    );
+
+    // need to remove the 'fr' so that it matches bakedOrder attribute
+    frozenToday = convertFrozenAttrToPlainAttr(frozenToday);
+
+    // combine product lists
+    frozenToday = frozenToday.concat(bakedOrdersList);
+
+    // create array { prod, qty }
+    let frozenArray = [];
+    for (let fr of frozenToday) {
+      let ind = products.findIndex((prod) => prod.forBake === fr);
+      let qty = products[ind].freezerNorth;
+      let prod = products[ind].nickName;
+      let item = {
+        prod: prod,
+        qty: qty ? qty : 0,
+      };
+      frozenArray.push(item);
+    }
+
+    return frozenArray;
+  };
+
+  NorthCroixBakeFilter = (ord) => {
+    return (
+      ord.where.includes("Mixed") &&
+      ord.packGroup === "baked pastries" &&
+      ord.doughType === "Croissant" &&
+      (ord.route === "Pick up Carlton" || ord.routeDepart === "Carlton")
+    );
+  };
+
+  getFrozensLeavingCarlton = (delivDate, database) => {
+    let frozenToday = getOrdersList(delivDate, database);
+    frozenToday = Array.from(
+      new Set(
+        frozenToday
+          .filter((frz) => this.frzNorthFilter(frz))
+      )
+    );
+    frozenToday = this.makeAddFrozenQty(frozenToday);
+    frozenToday = convertFrozenAttrToPlainAttr(frozenToday)
+    return frozenToday;
   };
 
   frzNorthFilter = (ord) => {
@@ -289,30 +422,16 @@ export default class ComposeNorthList {
     );
   };
 
-  tomBakeFilter = (ord) => {
-    return (
-      ord.where.includes("Mixed") &&
-      ord.packGroup === "baked pastries" &&
-      ord.doughType === "Croissant" &&
-      (ord.route === "Pick up Carlton" || ord.routeDepart === "Carlton")
-    );
-  };
-
   makeAddFrozenQty = (frozenToday) => {
-    let makeList = frozenToday.map((frz) => frz.prodNick);
-    makeList = new Set(makeList);
-    makeList = Array.from(makeList);
-    makeList = makeList.map((mk) => ({
-      prodNick: mk.substring(2),
-      qty: 0,
+    let makeList = frozenToday.map((mk) => ({
+      prod: mk.forBake,
+      qty: 0
     }));
+
     for (let make of makeList) {
-      make.qty = 1;
-
       let qtyAccToday = 0;
-
       let qtyToday = frozenToday
-        .filter((frz) => make.prodNick === frz.prodNick.substring(2))
+        .filter((frz) => make.prod === frz.forBake)
         .map((ord) => ord.qty);
 
       if (qtyToday.length > 0) {
@@ -320,14 +439,28 @@ export default class ComposeNorthList {
       }
       make.qty = qtyAccToday;
     }
+
     return makeList;
   };
 
-  makeAddQty = (bakedTomorrow) => {
+
+  getBakedTodayAtCarlton = (delivDate,database) => {
+    
+    let bakedOrdersList = getOrdersList(delivDate, database);
+    let bakedToday = bakedOrdersList.filter((frz) =>
+      this.NorthCroixBakeFilter(frz)
+    );
+    bakedToday = this.makeAddQty(bakedToday);
+
+    return bakedToday
+
+  }
+
+  makeAddQty = (bake) => {
     let makeList2 = Array.from(
-      new Set(bakedTomorrow.map((prod) => prod.prodNick))
+      new Set(bake.map((prod) => prod.prodNick))
     ).map((mk) => ({
-      prodNick: mk,
+      prod: mk,
       qty: 0,
     }));
     for (let make of makeList2) {
@@ -335,8 +468,8 @@ export default class ComposeNorthList {
 
       let qtyAccToday = 0;
 
-      let qtyToday = bakedTomorrow
-        .filter((frz) => make.prodNick === frz.prodNick)
+      let qtyToday = bake
+        .filter((frz) => make.prod === frz.prodNick)
         .map((ord) => ord.qty);
 
       if (qtyToday.length > 0) {
@@ -372,16 +505,15 @@ export default class ComposeNorthList {
   };
 
   subtractCurrentStock = (products, grid) => {
-  
     for (let gr of grid) {
-      let short = gr.prodNick.substring(2)
+      let short = gr.prodNick.substring(2);
       let subQty =
         products[products.findIndex((prod) => prod.nickName === short)]
           .freezerNorth;
-     
+
       gr.qty -= subQty;
-      if (gr.qty<0){
-        gr.qty = 0
+      if (gr.qty < 0) {
+        gr.qty = 0;
       }
     }
     return grid;

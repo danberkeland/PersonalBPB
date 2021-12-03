@@ -97,8 +97,10 @@ function CroixToMake() {
 
   const gatherCroixInfo = async (database) => {
     let makeData = compose.returnCroixBreakDown(database, delivDate);
-    let croixNorth = await compNorth.returnCroixNorth(delivDate, database)
-    let cloneCroixNorth = clonedeep(croixNorth)
+    let croixNorth1 = await compNorth.returnCroixNorth(delivDate, database)
+    let cloneCroixNorth = clonedeep(croixNorth1)
+    setCroixNorth(croixNorth1)
+    
       let cloneClosingNorthCount = clonedeep(makeData.closingNorthCount)
       for (let cn of cloneClosingNorthCount){
         console.log("cn",cn)

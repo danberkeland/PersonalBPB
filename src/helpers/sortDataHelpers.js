@@ -218,3 +218,51 @@ export const createStandHoldClip = (orders, originalOrders) => {
   }));
   return timeStampedData;
 };
+
+export const addTwoGrids = (gr1,gr2) => {
+
+  let gr = gr1.concat(gr2)
+  let att1set = Array.from(new Set(gr.map(g => g[Object.keys(g)[0]])))
+  let newArray = []
+  for (let a of att1set){
+    let num = 0
+    let item
+    for (let g of gr){
+      if (a === g[Object.keys(g)[0]]){
+        num += Number(g[Object.keys(g)[1]])
+      }
+      item = {
+        [Object.keys(g)[0]]:a,
+        [Object.keys(g)[1]]:num
+      }
+    }
+    newArray.push(item)
+  }
+  
+  return newArray
+
+}
+
+export const subtractGridFromGrid = (gr1,gr2) => {
+
+  let gr = gr1.concat(gr2)
+  let att1set = Array.from(new Set(gr.map(g => g[Object.keys(g)[0]])))
+  let newArray = []
+  for (let a of att1set){
+    let num = 0
+    let item
+    for (let g of gr){
+      if (a === g[Object.keys(g)[0]]){
+        num += Number(g[Object.keys(g)[1]])
+      }
+      item = {
+        [Object.keys(g)[0]]:a,
+        [Object.keys(g)[1]]:num
+      }
+    }
+    newArray.push(item)
+  }
+
+  return newArray
+
+}

@@ -123,35 +123,53 @@ function NorthList() {
 
   const exportNorthListPdf = () => {
     let finalY;
-    let pageMargin = 40;
-    let tableToNextTitle = 12;
+    let pageMargin = 20;
+    let tableToNextTitle = 18;
     let titleToNextTable = tableToNextTitle + 4;
-    let tableFont = 11;
-    let titleFont = 14;
+    let tableFont = 13;
+    let titleFont = 15;
 
     const doc = new jsPDF("p", "mm", "a4");
     doc.setFontSize(20);
     doc.text(pageMargin, 20, `North Driver ${convertDatetoBPBDate(delivDate)}`);
 
-    finalY = 20;
+    finalY = 25;
+
     doc.setFontSize(titleFont);
-    doc.text(pageMargin, finalY + tableToNextTitle, `Driver Notes`);
+    doc.text(100, 43, `Driver Notes`);
 
     doc.autoTable({
       body: notes,
       theme: 'grid',
         margin: {
-          left: 40,
-          right: 40,
+          left: 100,
+          right: 20,
         },
       columns: [
-        { header: "Date", dataKey: "when" },
-        { header: "Note", dataKey: "note" },
+        
+        { header: "Note", dataKey: "note" }
       ],
       startY: finalY + titleToNextTable,
       styles: { fontSize: tableFont },
     });
 
+      doc.setFontSize(titleFont);
+      doc.text(pageMargin, 43, `Pockets North`);
+
+      doc.autoTable({
+        body: pocketsNorth,
+        theme: 'grid',
+        margin: {
+          left: 20,
+          right: 120,
+        },
+        columns: columnsPocketsNorth,
+        startY: finalY + titleToNextTable,
+        styles: { fontSize: tableFont },
+      });
+    
+    
+    
     finalY = doc.previousAutoTable.finalY;
     doc.setFontSize(titleFont);
     doc.text(pageMargin, finalY + tableToNextTitle, `Frozen and Baked Croix`);
@@ -160,35 +178,18 @@ function NorthList() {
       body: croixNorth,
       theme: 'grid',
         margin: {
-          left: 40,
-          right: 80,
+          left: 20,
+          right: 120,
         },
       columns: [
         { header: "Product", dataKey: "prod" },
-        { header: "Qty", dataKey: "frozenQty" },
+        { header: "Frozen", dataKey: "frozenQty" },
         { header: "Baked", dataKey: "bakedQty" },
       ],
       startY: finalY + titleToNextTable,
       styles: { fontSize: tableFont },
     });
-    if (columnsPocketsNorth.length > 0) {
-      finalY = doc.previousAutoTable.finalY;
-
-      doc.setFontSize(titleFont);
-      doc.text(pageMargin, finalY + tableToNextTitle, `Pockets North`);
-
-      doc.autoTable({
-        body: pocketsNorth,
-        theme: 'grid',
-        margin: {
-          left: 40,
-          right: 60,
-        },
-        columns: columnsPocketsNorth,
-        startY: finalY + titleToNextTable,
-        styles: { fontSize: tableFont },
-      });
-    }
+  
     if (columnsShelfProdsNorth.length > 0) {
       finalY = doc.previousAutoTable.finalY;
 
@@ -198,6 +199,10 @@ function NorthList() {
       doc.autoTable({
         body: shelfProdsNorth,
         theme: 'grid',
+        margin: {
+          left: 20,
+          right: 20,
+        },
         columns: columnsShelfProdsNorth,
         startY: finalY + titleToNextTable,
         styles: { fontSize: tableFont },
@@ -218,7 +223,7 @@ function NorthList() {
         styles: { fontSize: tableFont },
       });
     }
-
+    
     doc.save(`LongDriverNorth${delivDate}.pdf`);
   };
 
@@ -279,7 +284,7 @@ function NorthList() {
     }
 
     finalY = doc.previousAutoTable.finalY;
-
+    
     doc.save(`LongDriverSouth${delivDate}.pdf`);
   };
 

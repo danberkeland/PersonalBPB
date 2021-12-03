@@ -6,7 +6,6 @@ import {
   ThreedayBasedOnDelivDate,
 } from "../../../helpers/dateTimeHelpers";
 
-
 import {
   createColumns,
   zerosDelivFilter,
@@ -19,7 +18,7 @@ import {
   sortZtoADataByIndex,
   addTwoGrids,
   subtractGridFromGrid,
-  combineTwoGrids
+  combineTwoGrids,
 } from "../../../helpers/sortDataHelpers";
 
 import {
@@ -30,14 +29,11 @@ import {
   customerIsOpen,
 } from "../ByRoute/Parts/utils/utils";
 
-
 const clonedeep = require("lodash.clonedeep");
 let tomorrow = todayPlus()[1];
 let today = todayPlus()[0];
 let convertedToday = convertDatetoBPBDate(today);
 let convertedTomorrow = convertDatetoBPBDate(tomorrow);
-
-
 
 const addRoutes = (delivDate, prodGrid, database) => {
   const [products, customers, routes, standing, orders] = database;
@@ -168,18 +164,17 @@ const addUp = (acc, val) => {
 
 const convertFrozenAttrToPlainAttr = (data) => {
   try {
-    for (let d of data){
-      d.prod = d.prod.substring(2)
+    for (let d of data) {
+      d.prod = d.prod.substring(2);
     }
-
   } catch {
-    for (let d of data){
-      d = d.substring(2)
+    for (let d of data) {
+      d = d.substring(2);
     }
   }
-  
-  return data
-}
+
+  return data;
+};
 
 export default class ComposeNorthList {
   returnNorthBreakDown = (delivDate, database) => {
@@ -271,92 +266,17 @@ export default class ComposeNorthList {
       bpbExtraOrders,
       ordersPlacedAfterDeadline
     );
-    
+
     // Combine Frozens and Baked { prod, bakedQty, frozenQty }
-    let combo = combineTwoGrids(bakedGoingNorth,currentFrozenNeed, "bakedQty","frozenQty")
+    let combo = combineTwoGrids(
+      bakedGoingNorth,
+      currentFrozenNeed,
+      "bakedQty",
+      "frozenQty"
+    );
 
-    console.log("combo",combo)
-    
-    return combo
-    
+    return combo;
   };
-  /*
-  returnCroixNorth = (delivDate, database) => {
-    const [products, customers, routes, standing, orders, d, dd, alt, QBInfo] =
-      database;
-
-    let todayOrders = orders.filter(
-      (ord) =>
-        (ord.route === "slopick" &&
-          ord.delivDate === convertDatetoBPBDate(today) &&
-          new Date(ord.updatedAt) > new Date(QBInfo[1].updatedAt) &&
-          ord.isWhole === false) ||
-        (ord.route === "atownpick" &&
-          ord.delivDate === convertDatetoBPBDate(today) &&
-          new Date(ord.updatedAt) > new Date(QBInfo[0].updatedAt) &&
-          ord.isWhole === false)
-    );
-
-    console.log("orders", todayOrders);
-
-    console.log("QB", QBInfo);
-    let frozensOrdersList = getOrdersList(today, database);
-    console.log("ordList", getOrdersList(today, database));
-    let frozenToday = frozensOrdersList.filter((frz) =>
-      this.frzNorthFilter(frz)
-    );
-    frozenToday = this.makeAddFrozenQty(frozenToday);
-
-    let bakedOrdersList = getOrdersList(tomorrow, database);
-    let bakedTomorrow = bakedOrdersList.filter((frz) =>
-      this.tomBakeFilter(frz)
-    );
-    bakedTomorrow = this.makeAddQty(bakedTomorrow);
-
-    let combogrid = this.combineGrids(frozenToday, bakedTomorrow);
-    combogrid = this.subtractCurrentStock(products, combogrid);
-    combogrid = this.adjustForPackSize(combogrid);
-
-    for (let combo of combogrid) {
-      console.log("combo", combo);
-      combo.prodNick = combo.prodNick.substring(2);
-      let BackPorchOrders = getOrdersList(today, database).filter(
-        (ord) => ord.custName === "Back Porch Bakery"
-      );
-      let backporchbakery = BackPorchOrders.filter(
-        (back) => back.prodNick === combo.prodNick
-      )[0].qty;
-      console.log("backporchbakery", backporchbakery);
-      let BPBExtraOrders = getOrdersList(today, database).filter(
-        (ord) => ord.custName === "BPB Extras"
-      );
-      let bpbextra = BPBExtraOrders.filter(
-        (back) => back.prodNick === combo.prodNick
-      )[0].qty;
-      console.log("bpbextra", bpbextra);
-      let minusQty = 0;
-      for (let ord of todayOrders) {
-        if (ord.prodNick === combo.prodNick) {
-          minusQty = minusQty + ord.qty;
-        }
-      }
-      let newRetail = backporchbakery - minusQty;
-      let Nfactor = 1 - bpbextra / backporchbakery;
-      let newNorth = Math.round(newRetail * Nfactor);
-      let sendNorth = newNorth - backporchbakery / 2;
-      combo.baked = sendNorth;
-    }
-    console.log("Combo", combogrid);
-    for (let co of combogrid) {
-      let ind = products.findIndex((pr) => pr.nickName === co.prodNick);
-      co.forBake = products[ind].forBake;
-    }
-
-    console.log("Combo", combogrid);
-    return combogrid;
-  };
-
-  */
 
   getCurrentFreezerNumbers = (delivDate, database) => {
     const products = database[0];

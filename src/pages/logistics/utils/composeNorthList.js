@@ -244,6 +244,7 @@ export default class ComposeNorthList {
       frozensLeavingCarlton,
       bakedTodayAtCarlton
     );
+
     currentFrozenNeed = subtractGridFromGrid(
       currentFreezerNumbers,
       currentFrozenNeed
@@ -410,7 +411,7 @@ export default class ComposeNorthList {
 
   adjustForPackSize = (data) => {
     for (let d of data) {
-      d.qty = Math.ceil(d.qty / 12) * 12;
+      d.qty = (Math.ceil(d.qty / 12) * 12)+12;
     }
     return data;
   };

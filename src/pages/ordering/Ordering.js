@@ -24,7 +24,10 @@ import { CurrentDataContext } from "../../dataContexts/CurrentDataContext";
 import { confirmDialog } from "primereact/confirmdialog";
 import { Toast } from 'primereact/toast';
 
+import ComposeNorthList from "../logistics/utils/composeNorthList";
+import { ConsoleLogger } from "@aws-amplify/core";
 
+const compose = new ComposeNorthList();
 
 const { DateTime } = require("luxon");
 
@@ -193,6 +196,68 @@ function Ordering({ authType }) {
         }
       }
 
+      console.log("Yes they have!  Updating freezerNorth numbers");
+      showUpdate("updating preshaped numbers")
+      
+        for (let prod of prodsToUpdate) {
+          console.log("prod",prod)
+          if (prod.freezerNorthFlag !== tomorrow) {
+            prod.freezerNorthFlag = today;
+          }
+          
+          if (prod.freezerNorthFlag === today) {
+            prod.freezerNorth = prod.freezerNorthClosing;
+            
+            let frozenDelivsArray = compose.getFrozensLeavingCarlton(
+              delivDate,
+              database
+            );
+            let frozenDeliv
+            try{
+              frozenDeliv = frozenDelivsArray[frozenDelivsArray.findIndex(fr => fr.prod === prod.nickName)].qty
+            } catch{
+              frozenDeliv = 0
+            }
+            let setOutArray = compose.getBakedTodayAtCarlton(delivDate, database);
+            let setOut
+            try{
+              setOut = setOutArray[setOutArray.findIndex(set => set.prod === prod.nickName)].qty
+  
+            } catch{
+              setOut = 0
+            }
+           
+            console.log("freezerNorth",prod.freezerNorth)
+            console.log("setOut",setOut)
+            console.log("frozen",frozenDeliv)
+            prod.freezerNorthClosing = 
+                   prod.freezerNorth + 
+                    (Math.round((setOut + frozenDeliv - prod.freezerNorth)/12)*12) - 
+                    setOut - frozenDeliv +12
+  
+  
+            prod.freezerNorthFlag = tomorrow;
+            let prodToUpdate = {
+              id: prod.id,
+              freezerNorth: prod.freezerNorth,
+              freezerNorthClosing: prod.freezerNorthClosing,
+              freezerNorthFlag: prod.freezerNorthFlag,
+            };
+            try {
+              await API.graphql(
+                graphqlOperation(updateProduct, { input: { ...prodToUpdate } })
+              );
+            } catch (error) {
+              console.log("error on creating Orders", error);
+              setIsLoading(false);
+            }
+          }
+        }
+  
+      
+
+
+
       console.log("Yes they have!  Updating preshaped numbers");
       showUpdate("updating preshaped numbers")
       for (let prod of prodsToUpdate) {
@@ -218,6 +283,7 @@ function Ordering({ authType }) {
           }
         }
       }
+
       console.log("Yes they have!  Updating prepped bucket numbers");
       showUpdate("Updating Prepped Bucket Numbers")
       for (let dgh of doughsToUpdate) {

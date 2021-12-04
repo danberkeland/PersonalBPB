@@ -127,6 +127,8 @@ export const getProduct = /* GraphQL */ `
       freezerCount
       sheetMake
       freezerNorth
+      freezerNorthClosing
+      freezerNorthFlag
       createdAt
       updatedAt
     }
@@ -180,6 +182,8 @@ export const listProducts = /* GraphQL */ `
         freezerCount
         sheetMake
         freezerNorth
+        freezerNorthClosing
+        freezerNorthFlag
         createdAt
         updatedAt
       }

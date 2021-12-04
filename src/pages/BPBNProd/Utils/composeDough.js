@@ -15,6 +15,7 @@ import {
   baker1PocketFilter,
   baguette,
   noBaguette,
+  bag
 } from "./filters";
 
 let twoDay = todayPlus()[2];
@@ -24,7 +25,7 @@ let today = todayPlus()[0];
 
 export default class ComposeDough {
   returnDoughBreakDown = (database, loc) => {
-    let doughs = this.returnDoughs(noBaguette, database, loc);
+    let doughs = this.returnDoughs(bag, database, loc);
     let doughComponents = this.returnDoughComponents(database);
     let pockets = this.returnPockets(database, loc);
     let Baker1Dough = this.returnDoughs(baguette, database, loc);

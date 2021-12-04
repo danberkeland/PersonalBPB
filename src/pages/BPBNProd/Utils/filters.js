@@ -33,6 +33,10 @@ export const baguette = (ord, loc) => {
   return ord.mixedWhere === loc && ord.doughName === "Baguette";
 };
 
+export const bag = (ord, loc) => {
+  return ord.mixedWhere === loc;
+};
+
 export const noBaguette = (ord, loc) => {
   return ord.mixedWhere === loc && ord.doughName !== "Baguette";
 };

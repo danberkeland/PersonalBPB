@@ -270,6 +270,7 @@ export default class ComposeCroixInfo {
   }
 
   getClosingCount = (database, delivDate, setOut, setOutNorthTom) => {
+
     const [products, customers, routes, standing, orders] = database;
     let freezerDelivs = returnFreezerDelivs(database,todayPlus()[0])
     
@@ -350,9 +351,35 @@ export default class ComposeCroixInfo {
    
     console.log("final",prodArray)
     return prodArray;
+  
   }
 
   getClosingNorthCount = (database, delivDate) => {
+    const [products, customers, routes, standing, orders] = database;
+    let count = products.filter(
+      (prod) =>
+        prod.doughType === "Croissant" && prod.packGroup === "baked pastries"
+    );
+    let prods = Array.from(new Set(count.map((co) => co.forBake))).filter(
+      (item) => item !== "Almond"
+    );
+
+    let prodArray = [];
+    for (let prod of prods) {
+      let ind = products.findIndex((pro) => pro.forBake === prod);
+      let newItem = {
+        prod: prod,
+        fixed: products[ind].freezerNorthClosing ? products[ind].freezerNorthClosing : 0,
+        qty: products[ind].freezerNorthClosing ? products[ind].freezerNorthClosing : 0,
+      };
+      prodArray.push(newItem);
+    }
+    prodArray = sortAtoZDataByIndex(prodArray, "prod");
+    return prodArray;
+
+
+
+    /*
     const [products, customers, routes, standing, orders] = database;
     let count = products.filter(
       (prod) =>
@@ -397,6 +424,7 @@ export default class ComposeCroixInfo {
     // get takeNorthArray
     // apply to prodArray
     return prodArray;
+    */
   }
 
   getProjectionCount(database, delivDate) {
@@ -423,5 +451,7 @@ export default class ComposeCroixInfo {
     }
     prodArray = sortAtoZDataByIndex(prodArray, "prod");
     return prodArray;
+    
   }
+  
 }

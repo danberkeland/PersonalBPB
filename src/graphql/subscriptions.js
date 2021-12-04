@@ -158,6 +158,8 @@ export const onCreateProduct = /* GraphQL */ `
       freezerCount
       sheetMake
       freezerNorth
+      freezerNorthClosing
+      freezerNorthFlag
       createdAt
       updatedAt
     }
@@ -206,6 +208,8 @@ export const onUpdateProduct = /* GraphQL */ `
       freezerCount
       sheetMake
       freezerNorth
+      freezerNorthClosing
+      freezerNorthFlag
       createdAt
       updatedAt
     }
@@ -254,6 +258,8 @@ export const onDeleteProduct = /* GraphQL */ `
       freezerCount
       sheetMake
       freezerNorth
+      freezerNorthClosing
+      freezerNorthFlag
       createdAt
       updatedAt
     }

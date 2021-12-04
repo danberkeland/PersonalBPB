@@ -93,7 +93,7 @@ function CroixToMake() {
 
   const gatherCroixInfo = async (database) => {
     let makeData = compose.returnCroixBreakDown(database, delivDate);
-    
+
     setOpeningCount(makeData.openingCount);
     setClosingCount(makeData.closingCount);
     setOpeningNorthCount(makeData.openingNorthCount);
@@ -223,7 +223,14 @@ function CroixToMake() {
   };
 
   const modifyOpening = (
-    <Button onClick={(e) => Toggle(e, "opening")}>
+    <Button
+      onClick={(e) => Toggle(e, "opening")}
+      className={
+        mod && modType === "opening"
+          ? "p-button-raised p-button-rounded p-button-danger"
+          : "p-button-raised p-button-rounded p-button-success"
+      }
+    >
       {mod && modType === "opening" ? (
         <React.Fragment>SUBMIT</React.Fragment>
       ) : (
@@ -232,7 +239,12 @@ function CroixToMake() {
     </Button>
   );
   const modifyClosing = (
-    <Button onClick={(e) => Toggle(e, "closing")}>
+    <Button onClick={(e) => Toggle(e, "closing")}
+    className={
+      mod && modType === "closing"
+        ? "p-button-raised p-button-rounded p-button-danger"
+        : "p-button-raised p-button-rounded p-button-success"
+    }>
       {mod && modType === "closing" ? (
         <React.Fragment>SUBMIT</React.Fragment>
       ) : (
@@ -241,17 +253,14 @@ function CroixToMake() {
     </Button>
   );
 
-  const modifyNorthOpening = (
-    <Button onClick={(e) => Toggle(e, "openingNorth")}>
-      {mod && modType === "openingNorth" ? (
-        <React.Fragment>SUBMIT</React.Fragment>
-      ) : (
-        <React.Fragment>MODIFY</React.Fragment>
-      )}
-    </Button>
-  );
   const modifyNorthClosing = (
-    <Button onClick={(e) => Toggle(e, "closingNorth")}>
+    <Button onClick={(e) => Toggle(e, "closingNorth")}
+    className={
+      mod && modType === "closingNorth"
+        ? "p-button-raised p-button-rounded p-button-danger"
+        : "p-button-raised p-button-rounded p-button-success"
+    }
+    >
       {mod && modType === "closingNorth" ? (
         <React.Fragment>SUBMIT</React.Fragment>
       ) : (
@@ -455,7 +464,6 @@ function CroixToMake() {
                 id="openingNorthCount"
                 value={openingNorthCount}
                 header={openingNorthHeader}
-                
               >
                 <Column
                   style={{
@@ -466,12 +474,11 @@ function CroixToMake() {
                   field="prod"
                   header="Product"
                 ></Column>
-               
-                  <Column
-                    header="Qty"
-                    body={(e) => numHolder(e, "openingNorth")}
-                  ></Column>
-                
+
+                <Column
+                  header="Qty"
+                  body={(e) => numHolder(e, "openingNorth")}
+                ></Column>
               </DataTable>
             </BorderBox>
 

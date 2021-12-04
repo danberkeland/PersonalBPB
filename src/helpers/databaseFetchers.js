@@ -185,16 +185,16 @@ const fetchData = async (setIsLoading) => {
   return data;
 };
 
-export const notesData = (setIsLoading) => {
+export const notesData = () => {
   const all = new Promise((resolve, reject) => {
-    resolve(fetchNotesData(setIsLoading));
+    resolve(fetchNotesData());
   });
-  setIsLoading(false)
+  
   return all;
 };
 
-const fetchNotesData = async (setIsLoading) => {
-  setIsLoading(true);
+const fetchNotesData = async () => {
+
   let notes = await fetchNotes();
  
   if (!notes) {

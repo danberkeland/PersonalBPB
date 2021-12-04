@@ -94,7 +94,7 @@ function NorthList() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    notesData(setIsLoading).then((notes) =>
+    notesData().then((notes) =>
       setNotes(notes.filter(note => note.when === convertDatetoBPBDate(delivDate)))
     );
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -103,6 +103,7 @@ function NorthList() {
   
 
   const gatherMakeInfo = (database) => {
+    
     let northData = compose.returnNorthBreakDown(delivDate, database);
     setCroixNorth(northData.croixNorth);
     setShelfProdsNorth(northData.shelfProdsNorth);

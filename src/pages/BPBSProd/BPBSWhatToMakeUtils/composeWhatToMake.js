@@ -1,4 +1,4 @@
-import { todayPlus } from "../../../helpers/dateTimeHelpers";
+import { todayPlus,tomBasedOnDelivDate } from "../../../helpers/dateTimeHelpers";
 import { getFullOrders } from "../../../helpers/CartBuildingHelpers";
 import { getFullProdOrders } from "../../../helpers/CartBuildingHelpers";
 import {
@@ -48,14 +48,6 @@ const getFullProdMakeOrders = (delivDate, database) => {
   return fullOrder;
 };
 
-const tomBasedOnDelivDate = (delivDate) => {
-  console.log("delivStart", delivDate);
-  let tomorrow = DateTime.fromFormat(delivDate, "yyyy-MM-dd")
-    .setZone("America/Los_Angeles")
-    .plus({ days: 1 });
-
-  return tomorrow.toString().split("T")[0];
-};
 export default class ComposeWhatToMake {
   returnMakeBreakDown = (database,delivDate) => {
     let pocketsNorth = this.getPocketsNorth(database,delivDate);
@@ -64,7 +56,7 @@ export default class ComposeWhatToMake {
     let freezerProds = this.getFreezerProds(database,delivDate);
     let youllBeShort = this.getYoullBeShort(database,delivDate);
 
-    [freshProds, shelfProds] = handleFrenchConundrum(freshProds, shelfProds);
+    [freshProds, shelfProds] = handleFrenchConundrum(freshProds, shelfProds,database);
 
     return {
       pocketsNorth: pocketsNorth,

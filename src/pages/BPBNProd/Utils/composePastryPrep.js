@@ -1,4 +1,9 @@
-import { todayPlus } from "../../../helpers/dateTimeHelpers";
+import {
+  todayPlus,
+  tomBasedOnDelivDate,
+  TwodayBasedOnDelivDate,
+  ThreedayBasedOnDelivDate,
+} from "../../../helpers/dateTimeHelpers";
 
 import { getOrdersList, addUp } from "./utils";
 
@@ -13,30 +18,6 @@ import {
 } from "./filters";
 import { ceil } from "lodash";
 const { DateTime } = require("luxon");
-
-const tomBasedOnDelivDate = (delivDate) => {
-  let tomorrow = DateTime.fromFormat(delivDate, "yyyy-MM-dd")
-    .setZone("America/Los_Angeles")
-    .plus({ days: 1 });
-
-  return tomorrow.toString().split("T")[0];
-};
-
-const TwodayBasedOnDelivDate = (delivDate) => {
-  let tomorrow = DateTime.fromFormat(delivDate, "yyyy-MM-dd")
-    .setZone("America/Los_Angeles")
-    .plus({ days: 2 });
-
-  return tomorrow.toString().split("T")[0];
-};
-
-const ThreedayBasedOnDelivDate = (delivDate) => {
-  let tomorrow = DateTime.fromFormat(delivDate, "yyyy-MM-dd")
-    .setZone("America/Los_Angeles")
-    .plus({ days: 3 });
-
-  return tomorrow.toString().split("T")[0];
-};
 
 export default class ComposePastryPrep {
   returnPastryPrepBreakDown = (delivDate, database, loc) => {
@@ -60,9 +41,9 @@ export default class ComposePastryPrep {
     let setOutForAlmonds = getOrdersList(twoday, database, true);
     let twoDayList = getOrdersList(twoday, database, true);
     let threeDayList = getOrdersList(threeday, database, true);
-    
+
     let setOutToday = setOutList.filter((set) => setOutFilter(set, loc));
-    console.log("setouttoday", setOutToday)
+    console.log("setouttoday", setOutToday);
 
     let almondSetOut = setOutForAlmonds.filter((set) =>
       setOutPlainsForAlmondsFilter(set, loc)
@@ -116,11 +97,12 @@ export default class ComposePastryPrep {
     } catch {
       almondSet = 0;
     }
-    console.log(setOutToday[setOutToday.findIndex((set) => set.prodNick === "pl")].qty)
-    console.log("almonds",almondSet)
-    console.log("twoDay",twoDayFreeze)
-    console.log("threeDay",threeDayFreeze)
-   
+    console.log(
+      setOutToday[setOutToday.findIndex((set) => set.prodNick === "pl")].qty
+    );
+    console.log("almonds", almondSet);
+    console.log("twoDay", twoDayFreeze);
+    console.log("threeDay", threeDayFreeze);
 
     if (loc === "Prado") {
       setOutToday[setOutToday.findIndex((set) => set.prodNick === "pl")].qty +=
@@ -131,16 +113,15 @@ export default class ComposePastryPrep {
     let mbInd = setOutToday.findIndex((ind) => ind.prodNick === "mb");
 
     // Find index of 'unmb'
-    try{
+    try {
       let unmbInd = setOutToday.findIndex((ind) => ind.prodNick === "unmb");
 
-    // Add unmb.qty to mb.qty
-    setOutToday[mbInd].qty += setOutToday[unmbInd].qty;
+      // Add unmb.qty to mb.qty
+      setOutToday[mbInd].qty += setOutToday[unmbInd].qty;
 
-    // Remove 'unmb'
-    setOutToday = setOutToday.filter((ind) => ind.prodNick !== "unmb");
+      // Remove 'unmb'
+      setOutToday = setOutToday.filter((ind) => ind.prodNick !== "unmb");
     } catch {}
-    
 
     return setOutToday;
   };
@@ -162,9 +143,9 @@ export default class ComposePastryPrep {
 
     const products = database[0];
     let setOutList = getOrdersList(tom, database, true);
-    console.log("bakedNorthTwo",getOrdersList(twoday, database, true))
+    console.log("bakedNorthTwo", getOrdersList(twoday, database, true));
     let bakedNorthTwoDayList = getOrdersList(twoday, database, true);
-    console.log("bakedNorth",bakedNorthTwoDayList)
+    console.log("bakedNorth", bakedNorthTwoDayList);
 
     let deliveredFrozenTomorrow = setOutList.filter((set) =>
       frozenAlmondFilter(set, loc)
@@ -176,7 +157,6 @@ export default class ComposePastryPrep {
       almondPrepFilter(set, "Carlton")
     );
 
-
     for (let setout of setOutToday) {
       if (setout.custName === "Back Porch Bakery") {
         setout.qty /= 2;
@@ -187,13 +167,13 @@ export default class ComposePastryPrep {
       deliveredFrozenTomorrow,
       products
     );
-    console.log("preSplit",bakedNorthTwoDayList)
+    console.log("preSplit", bakedNorthTwoDayList);
     for (let baked of bakedNorthTwoDayList) {
       if (baked.custName === "Back Porch Bakery") {
         baked.qty /= 2;
       }
     }
-    console.log("bakedNorth2Day",bakedNorthTwoDayList)
+    console.log("bakedNorth2Day", bakedNorthTwoDayList);
     bakedNorthTwoDayList = this.makeAddQty(bakedNorthTwoDayList, products);
 
     let bakedNorth2Day;
@@ -210,8 +190,8 @@ export default class ComposePastryPrep {
     } catch {
       delFrozenTom = 0;
     }
-    console.log("delFrozenTomorrow",delFrozenTom)
-    console.log("bakedNorth2Day",bakedNorth2Day)
+    console.log("delFrozenTomorrow", delFrozenTom);
+    console.log("bakedNorth2Day", bakedNorth2Day);
 
     let freezerAmt = delFrozenTom + bakedNorth2Day;
 

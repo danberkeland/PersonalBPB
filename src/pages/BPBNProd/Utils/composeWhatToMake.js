@@ -1,25 +1,8 @@
-import { todayPlus } from "../../../helpers/dateTimeHelpers";
+import { todayPlus, tomBasedOnDelivDate,TwodayBasedOnDelivDate } from "../../../helpers/dateTimeHelpers";
 
 import { DayOneFilter, DayTwoFilter, getOrdersList, addUp } from "./utils";
 const { DateTime } = require("luxon");
 
-const tomBasedOnDelivDate = (delivDate) => {
-  console.log("delivStart", delivDate);
-  let tomorrow = DateTime.fromFormat(delivDate, "yyyy-MM-dd")
-    .setZone("America/Los_Angeles")
-    .plus({ days: 1 });
-
-  return tomorrow.toString().split("T")[0];
-}
-
-const TwodayBasedOnDelivDate = (delivDate) => {
-  console.log("delivStart", delivDate);
-  let tomorrow = DateTime.fromFormat(delivDate, "yyyy-MM-dd")
-    .setZone("America/Los_Angeles")
-    .plus({ days: 2 });
-
-  return tomorrow.toString().split("T")[0];
-}
 
 export default class ComposeWhatToMake {
   returnWhatToMakeBreakDown = (database,delivDate) => {

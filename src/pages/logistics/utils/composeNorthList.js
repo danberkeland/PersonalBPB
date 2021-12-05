@@ -246,14 +246,24 @@ export default class ComposeNorthList {
       bakedTomorrowAtCarlton
     );
     console.log("bakedTodayAtCarlton",bakedTomorrowAtCarlton)
-
+    let clone = clonedeep(currentFrozenNeed)
+    console.log("currentFrozenNeedFirst",clone)
+    let almondQty = 0
+    try{
+      almondQty = clone[clone.findIndex(cl => cl.prod ==="al")].qty
+    }catch{}
+    
     currentFrozenNeed = subtractGridFromGrid(
       currentFreezerNumbers,
       currentFrozenNeed
     );
-    let clone = clonedeep(currentFrozenNeed)
-    console.log("currentFrozenNeed",clone)
+    
     currentFrozenNeed = this.adjustForPackSize(currentFrozenNeed);
+    try {
+      let almondInd = currentFrozenNeed.findIndex(cu => cu.prod === "al")
+    currentFrozenNeed[almondInd].qty = almondQty
+    }catch{}
+    
     console.log("currentFrozenNeed",currentFrozenNeed)
 
     // Create Baked needed North { prod, qty }

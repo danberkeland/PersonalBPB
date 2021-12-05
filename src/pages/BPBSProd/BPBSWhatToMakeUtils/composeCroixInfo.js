@@ -354,6 +354,15 @@ export default class ComposeCroixInfo {
   
   }
 
+  NorthCroixBakeFilter = (ord) => {
+    return (
+      ord.where.includes("Mixed") &&
+      ord.packGroup === "baked pastries" &&
+      ord.doughType === "Croissant" &&
+      (ord.route === "Pick up Carlton" || ord.routeDepart === "Carlton")
+    );
+  };
+
   getClosingNorthCount = (database, delivDate) => {
     const [products, customers, routes, standing, orders] = database;
     let count = products.filter(

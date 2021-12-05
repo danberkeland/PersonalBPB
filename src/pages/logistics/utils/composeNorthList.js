@@ -234,22 +234,27 @@ export default class ComposeNorthList {
       delivDate,
       database
     );
+    console.log("currentFreezerNumbers",currentFreezerNumbers)
     let frozensLeavingCarlton = this.getFrozensLeavingCarlton(
       delivDate,
       database
     );
-
-    let bakedTodayAtCarlton = this.getBakedTodayAtCarlton(delivDate, database);
+    console.log("frozensLeavingCarlton",frozensLeavingCarlton)
+    let bakedTomorrowAtCarlton = this.getBakedTomorrowAtCarlton(delivDate, database);
     let currentFrozenNeed = addTwoGrids(
       frozensLeavingCarlton,
-      bakedTodayAtCarlton
+      bakedTomorrowAtCarlton
     );
+    console.log("bakedTodayAtCarlton",bakedTomorrowAtCarlton)
 
     currentFrozenNeed = subtractGridFromGrid(
       currentFreezerNumbers,
       currentFrozenNeed
     );
+    let clone = clonedeep(currentFrozenNeed)
+    console.log("currentFrozenNeed",clone)
     currentFrozenNeed = this.adjustForPackSize(currentFrozenNeed);
+    console.log("currentFrozenNeed",currentFrozenNeed)
 
     // Create Baked needed North { prod, qty }
     let ordersPlacedAfterDeadline = this.getOrdersPlacedAfterDeadline(
@@ -375,14 +380,14 @@ export default class ComposeNorthList {
     return makeList;
   };
 
-  getBakedTodayAtCarlton = (delivDate, database) => {
-    let bakedOrdersList = getOrdersList(delivDate, database);
-    let bakedToday = bakedOrdersList.filter((frz) =>
+  getBakedTomorrowAtCarlton = (delivDate, database) => {
+    let bakedOrdersList = getOrdersList(tomBasedOnDelivDate(delivDate), database);
+    let bakedTomorrow = bakedOrdersList.filter((frz) =>
       this.NorthCroixBakeFilter(frz)
     );
-    bakedToday = this.makeAddQty(bakedToday);
+    bakedTomorrow = this.makeAddQty(bakedTomorrow);
 
-    return bakedToday;
+    return bakedTomorrow;
   };
 
   makeAddQty = (bake) => {
@@ -410,9 +415,14 @@ export default class ComposeNorthList {
   };
 
   adjustForPackSize = (data) => {
+    console.log("data",data)
     for (let d of data) {
       d.qty = (Math.ceil(d.qty / 12) * 12)+12;
+      if (d.qty < 0){
+        d.qty=0
+      }
     }
+    
     return data;
   };
 
@@ -544,12 +554,6 @@ export default class ComposeNorthList {
     return grid;
   };
 
-  adjustForPackSize = (grid) => {
-    for (let gr of grid) {
-      gr.qty = Math.ceil(gr.qty / 12) * 12;
-    }
-    return grid;
-  };
 
   returnPocketsNorth = (database) => {
     let shelfProds = makeOrders(today, database, this.pocketsNorthFilter);

@@ -25,7 +25,9 @@ import { confirmDialog } from "primereact/confirmdialog";
 import { Toast } from 'primereact/toast';
 
 import ComposeNorthList from "../logistics/utils/composeNorthList";
-import { ConsoleLogger } from "@aws-amplify/core";
+
+import { getOrdersList } from "../BPBNProd/Utils/utils";
+import { tomBasedOnDelivDate } from "../../helpers/dateTimeHelpers";
 
 const compose = new ComposeNorthList();
 
@@ -155,6 +157,15 @@ function Ordering({ authType }) {
     } catch (error) {}
   }, [authType]);
 
+  const NorthCroixBakeFilter = (ord) => {
+    return (
+      ord.where.includes("Mixed") &&
+      ord.packGroup === "baked pastries" &&
+      ord.doughType === "Croissant" &&
+      (ord.route === "Pick up Carlton" || ord.routeDepart === "Carlton")
+    );
+  };
+
   const loadDatabase = async (database) => {
     setIsLoading(true);
     const [products, customers, routes, standing, orders, doughs, altPricing] =
@@ -199,7 +210,20 @@ function Ordering({ authType }) {
       console.log("Yes they have!  Updating freezerNorth numbers");
       showUpdate("updating preshaped numbers")
       try{
-        for (let prod of prodsToUpdate) {
+        //prods should only be for bake prods
+        let bakedOrdersList = getOrdersList(
+          tomBasedOnDelivDate(delivDate),
+          database
+        );
+        bakedOrdersList = 
+            bakedOrdersList
+              .filter((frz) => NorthCroixBakeFilter(frz))
+              
+          
+        
+
+
+        for (let prod of bakedOrdersList) {
           console.log("prod",prod)
           if (prod.freezerNorthFlag !== tomorrow) {
             prod.freezerNorthFlag = today;
@@ -218,7 +242,7 @@ function Ordering({ authType }) {
             } catch{
               frozenDeliv = 0
             }
-            let setOutArray = compose.getBakedTodayAtCarlton(delivDate, database);
+            let setOutArray = compose.getBakedTomorrowAtCarlton(delivDate, database);
             let setOut
             try{
               setOut = setOutArray[setOutArray.findIndex(set => set.prod === prod.nickName)].qty
@@ -232,7 +256,7 @@ function Ordering({ authType }) {
             console.log("frozen",frozenDeliv)
             prod.freezerNorthClosing = 
                    prod.freezerNorth + 
-                    (Math.round((setOut + frozenDeliv - prod.freezerNorth)/12)*12) - 
+                    (Math.ceil((setOut + frozenDeliv - prod.freezerNorth)/12)*12) - 
                     setOut - frozenDeliv +12
   
   

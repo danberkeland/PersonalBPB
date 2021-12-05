@@ -198,7 +198,7 @@ function Ordering({ authType }) {
 
       console.log("Yes they have!  Updating freezerNorth numbers");
       showUpdate("updating preshaped numbers")
-      
+      try{
         for (let prod of prodsToUpdate) {
           console.log("prod",prod)
           if (prod.freezerNorthFlag !== tomorrow) {
@@ -254,6 +254,8 @@ function Ordering({ authType }) {
           }
         }
   
+      }catch{}
+        
       
 
 

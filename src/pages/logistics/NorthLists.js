@@ -230,10 +230,10 @@ function NorthList() {
 
   const exportSouthListPdf = () => {
     let finalY;
-    let pageMargin = 10;
-    let tableToNextTitle = 12;
-    let titleToNextTable = tableToNextTitle + 4;
-    let tableFont = 11;
+    let pageMargin = 15;
+    let tableToNextTitle = 4;
+    let titleToNextTable = tableToNextTitle;
+    let tableFont = 12;
 
     const doc = new jsPDF("p", "mm", "a4");
     doc.setFontSize(20);
@@ -243,6 +243,10 @@ function NorthList() {
     if (columnsBaguettes.length > 0) {
       doc.autoTable({
         body: Baguettes,
+        margin: {
+          left: pageMargin,
+          right: 100,
+        },
         theme: 'grid',
         columns: columnsBaguettes,
         startY: finalY + titleToNextTable,

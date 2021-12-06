@@ -320,6 +320,7 @@ function Ordering({ authType }) {
           dgh.updatePreBucket = today;
         }
         if (dgh.updatePreBucket === today) {
+          //  need to update correct prebucket set number
           dgh.bucketSets = dgh.preBucketSets;
           dgh.updatePreBucket = tomorrow;
           let doughToUpdate = {

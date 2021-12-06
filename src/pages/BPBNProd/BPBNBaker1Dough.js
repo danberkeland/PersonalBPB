@@ -177,6 +177,19 @@ function BPBNBaker1Dough({
                 <span className="p-inputgroup-addon">lb.</span>
               </div>
             </TwoColumnGrid>
+            <TwoColumnGrid key={dough.id + "_third2Col"}>
+              <span>Actual Bucket Sets:</span>
+              <div className="p-inputgroup">
+                <InputText
+                  key={dough.id + "_bucketSets"}
+                  id={dough.id + "_bucketSets"}
+                  placeholder={dough.bucketSets}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                <span className="p-inputgroup-addon">sets</span>
+              </div>
+            </TwoColumnGrid>
           </div>
         </TwoColumnGrid>
 

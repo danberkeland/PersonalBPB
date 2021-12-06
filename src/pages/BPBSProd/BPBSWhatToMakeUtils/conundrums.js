@@ -10,6 +10,9 @@
 
 export const handleFrenchConundrum = (freshProds, shelfProds,database) => {
     const [products, customers, routes, standing, orders] = database;
+
+    // get all tomorrows french orders
+
     let highInd = freshProds.findIndex(fresh => fresh.forBake==="High French") 
     let frenchInd = shelfProds.findIndex(fr => fr.forBake==="French")
     let highqty = freshProds[highInd].qty

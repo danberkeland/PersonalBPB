@@ -221,7 +221,7 @@ function Ordering({ authType }) {
               
           
         
-
+        console.log("bakedOrdersList",bakedOrdersList)
 
         for (let prod of bakedOrdersList) {
           console.log("prod",prod)
@@ -255,18 +255,19 @@ function Ordering({ authType }) {
             console.log("setOut",setOut)
             console.log("frozen",frozenDeliv)
             prod.freezerNorthClosing = 
-                   prod.freezerNorth + 
-                    (Math.ceil((setOut + frozenDeliv - prod.freezerNorth)/12)*12) - 
+            prod.freezerNorthClosing + 
+                    (Math.ceil((setOut + frozenDeliv - prod.freezerNorthClosing)/12)*12) - 
                     setOut - frozenDeliv +12
   
   
             prod.freezerNorthFlag = tomorrow;
             let prodToUpdate = {
-              id: prod.id,
+              id: prod.prodID,
               freezerNorth: prod.freezerNorth,
               freezerNorthClosing: prod.freezerNorthClosing,
               freezerNorthFlag: prod.freezerNorthFlag,
             };
+            console.log("prodToUpdate",prodToUpdate)
             try {
               await API.graphql(
                 graphqlOperation(updateProduct, { input: { ...prodToUpdate } })
@@ -279,6 +280,8 @@ function Ordering({ authType }) {
         }
   
       }catch{}
+        
+      
         
       
 

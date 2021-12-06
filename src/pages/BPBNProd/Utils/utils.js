@@ -120,6 +120,8 @@ const update = (order, products, customers) => {
 
   let toAdd = {
     forBake: ind.forBake,
+    freezerNorth: ind.freezerNorth,
+    freezerNorthCLosing: ind.freezerNorthClosing,
     packSize: ind.packSize,
     currentStock: ind.currentStock,
     batchSize: ind.batchSize,

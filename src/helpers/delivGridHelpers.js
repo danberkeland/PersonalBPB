@@ -148,6 +148,18 @@ export const buildGridOrderArray = (filterServe, database) => {
       products[
         products.findIndex((prod) => prod["prodName"] === ord["prodName"])
       ].packGroup,
+      freezerNorth:
+      products[
+        products.findIndex((prod) => prod["prodName"] === ord["prodName"])
+      ].freezerNorth,
+      freezerNorthClosing:
+      products[
+        products.findIndex((prod) => prod["prodName"] === ord["prodName"])
+      ].freezerNorthClosing,
+      freezerNorthFlag:
+      products[
+        products.findIndex((prod) => prod["prodName"] === ord["prodName"])
+      ].freezerNorthFlag,
   }));
   
   return gridOrderArray;

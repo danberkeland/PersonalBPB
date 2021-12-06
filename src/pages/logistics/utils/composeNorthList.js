@@ -241,6 +241,7 @@ export default class ComposeNorthList {
     );
     console.log("frozensLeavingCarlton",frozensLeavingCarlton)
     let bakedTomorrowAtCarlton = this.getBakedTomorrowAtCarlton(delivDate, database);
+    console.log("bakedTomorrowAtCarlton",bakedTomorrowAtCarlton)
     let currentFrozenNeed = addTwoGrids(
       frozensLeavingCarlton,
       bakedTomorrowAtCarlton
@@ -262,9 +263,10 @@ export default class ComposeNorthList {
     try {
       let almondInd = currentFrozenNeed.findIndex(cu => cu.prod === "al")
     currentFrozenNeed[almondInd].qty = almondQty
+      console.log("currentFrozenClone",clone)
     }catch{}
     
-    console.log("currentFrozenNeed",currentFrozenNeed)
+    console.log("currentFrozenNeed",clone)
 
     // Create Baked needed North { prod, qty }
     let ordersPlacedAfterDeadline = this.getOrdersPlacedAfterDeadline(
@@ -395,6 +397,11 @@ export default class ComposeNorthList {
     let bakedTomorrow = bakedOrdersList.filter((frz) =>
       this.NorthCroixBakeFilter(frz)
     );
+    console.log("bakedTomorrow",bakedTomorrow)
+    let ind = bakedTomorrow.findIndex(ba => ba.custName==="Back Porch Bakery" && ba.prodNick==="al")
+    if (ind>-1){
+      bakedTomorrow[ind].qty = bakedTomorrow[ind].qty/2
+    }
     bakedTomorrow = this.makeAddQty(bakedTomorrow);
 
     return bakedTomorrow;

@@ -140,23 +140,34 @@ export const frozenAlmondFilter = (ord, loc) => {
 
 export const whatToPrepFilter = (ord, loc) => {
   return (
-    (ord.where.includes("Carlton") || ord.where.includes("Mixed")) &&
+    ((ord.where.includes("Carlton") || ord.where.includes("Mixed")) &&
     ord.packGroup !== "rustic breads" &&
     ord.doughType !== "Croissant" &&
     ord.packGroup !== "retail" &&
     ord.packGroup !== "cafe menu" &&
     (ord.routeDepart === "Carlton" || ord.route === "Pick up Carlton") &&
-    ord.when < 14
+    ord.when < 14) ||
+    ((ord.where.includes("Carlton"))&&
+    ord.packGroup !== "rustic breads" &&
+    ord.doughType !== "Croissant" &&
+    ord.packGroup !== "retail" &&
+    ord.packGroup !== "cafe menu" &&
+    ord.when < 14)
   );
 };
 
 export const whatToPrepTomFilter = (ord, loc) => {
   return (
-    (ord.where.includes("Carlton") || ord.where.includes("Mixed")) &&
+    ((ord.where.includes("Carlton") || ord.where.includes("Mixed")) &&
     ord.packGroup !== "rustic breads" &&
     ord.doughType !== "Croissant" &&
     ord.packGroup !== "retail" &&
-    ord.routeDepart === "Carlton" &&
-    ord.when > 14
+    (ord.routeDepart === "Carlton" || ord.route === "Pick up Carlton") &&
+    ord.when > 14) ||
+    ((ord.where.includes("Carlton")) &&
+    ord.packGroup !== "rustic breads" &&
+    ord.doughType !== "Croissant" &&
+    ord.packGroup !== "retail" &&
+    ord.when > 14)
   );
 };

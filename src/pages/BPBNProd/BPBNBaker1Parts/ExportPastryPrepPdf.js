@@ -35,6 +35,7 @@ const buildTable = (title, doc, body, col) => {
 export const ExportPastryPrepPdf = async (delivDate, doughs, infoWrap) => {
   
   for (let dgh of doughs) {
+    console.log("dgh",dgh)
     let addDetails = {
       id: dgh.id,
       preBucketSets: bucketAmount(doughs, infoWrap)[0].amount,

@@ -178,6 +178,7 @@ type Dough @model @auth(rules: [{allow: public}]) {
   bucketSets: Int
   preBucketSets: Int
   updatePreBucket: String
+ 
 }
 
 type DoughComponent @model @auth(rules: [{allow: public}]) {

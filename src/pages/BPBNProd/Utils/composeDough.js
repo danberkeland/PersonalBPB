@@ -175,6 +175,8 @@ export default class ComposeDough {
         doughs[doughs.findIndex((d) => d.doughName === dgh.doughName)];
       dgh.id = doughInd.id;
       dgh.bucketSets = doughInd.bucketSets;
+      dgh.preBucketSets = doughInd.preBucketSets
+      dgh.updatePreBucket = doughInd.updatePreBucket
       dgh.hydration = doughInd.hydration;
       dgh.oldDough = doughInd.oldDough;
       dgh.buffer = doughInd.buffer;

@@ -212,7 +212,7 @@ function Ordering({ authType }) {
       try{
         //prods should only be for bake prods
         let bakedOrdersList = getOrdersList(
-          tomBasedOnDelivDate(delivDate),
+          tomBasedOnDelivDate(today),
           database
         );
         bakedOrdersList = 
@@ -233,19 +233,21 @@ function Ordering({ authType }) {
             prod.freezerNorth = prod.freezerNorthClosing;
             
             let frozenDelivsArray = compose.getFrozensLeavingCarlton(
-              delivDate,
+              today,
               database
             );
+            console.log("frozenDelivsArray",frozenDelivsArray)
             let frozenDeliv
             try{
-              frozenDeliv = frozenDelivsArray[frozenDelivsArray.findIndex(fr => fr.prod === prod.nickName)].qty
+              frozenDeliv = frozenDelivsArray[frozenDelivsArray.findIndex(fr => fr.prod === prod.prodNick)].qty
             } catch{
               frozenDeliv = 0
             }
-            let setOutArray = compose.getBakedTomorrowAtCarlton(delivDate, database);
+            let setOutArray = compose.getBakedTomorrowAtCarlton(today, database);
             let setOut
+            console.log("setOUtArray",setOutArray)
             try{
-              setOut = setOutArray[setOutArray.findIndex(set => set.prod === prod.nickName)].qty
+              setOut = setOutArray[setOutArray.findIndex(set => set.prod === prod.prodNick)].qty
   
             } catch{
               setOut = 0
@@ -254,6 +256,8 @@ function Ordering({ authType }) {
             console.log("freezerNorth",prod.freezerNorth)
             console.log("setOut",setOut)
             console.log("frozen",frozenDeliv)
+            console.log("frozenDelivsArray",frozenDelivsArray)
+            console.log("setOUtArray",setOutArray)
             prod.freezerNorthClosing = 
             prod.freezerNorthClosing + 
                     (Math.ceil((setOut + frozenDeliv - prod.freezerNorthClosing)/12)*12) - 

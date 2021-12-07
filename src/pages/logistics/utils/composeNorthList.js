@@ -258,6 +258,9 @@ export default class ComposeNorthList {
       currentFreezerNumbers,
       currentFrozenNeed
     );
+    let clone2 = clonedeep(currentFrozenNeed)
+    console.log("currentFrozenNeedSecond",clone2)
+    
     
     currentFrozenNeed = this.adjustForPackSize(currentFrozenNeed);
     try {
@@ -355,6 +358,8 @@ export default class ComposeNorthList {
 
   getFrozensLeavingCarlton = (delivDate, database) => {
     let frozenToday = getOrdersList(delivDate, database);
+    let fr = clonedeep(frozenToday)
+    console.log("clonefr",fr)
     frozenToday = Array.from(
       new Set(frozenToday.filter((frz) => this.frzNorthFilter(frz)))
     );
@@ -374,10 +379,13 @@ export default class ComposeNorthList {
   makeAddFrozenQty = (frozenToday) => {
     let makeList = frozenToday.map((mk) => ({
       prod: mk.forBake,
+      nick: mk.prodNick,
       qty: 0,
     }));
 
     for (let make of makeList) {
+      console.log("frozenToday",frozenToday)
+      console.log("make",make)
       let qtyAccToday = 0;
       let qtyToday = frozenToday
         .filter((frz) => make.prod === frz.forBake)
@@ -387,6 +395,14 @@ export default class ComposeNorthList {
         qtyAccToday = qtyToday.reduce(addUp);
       }
       make.qty = qtyAccToday;
+    }
+
+    for (let make of makeList){
+      make.prod = make.nick
+      if (make.nick.substring(0,2)==="fr"){
+        make.nick = make.nick.substring(2)
+      }
+      delete make.nick
     }
 
     return makeList;

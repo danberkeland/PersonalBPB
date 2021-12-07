@@ -20,7 +20,7 @@ export const handleFrenchConundrum = (freshProds, shelfProds,database,delivDate)
     //let fullTomOrders = getFullProdOrders(tomBasedOnDelivDate(delivDate),database)
 
     let fullTomOrders = getFullProdOrders(tomBasedOnDelivDate(delivDate),database)
-    fullTomOrders = fullTomOrders.filter(fu => fu.prodName==="French Stick" || fu.prodName==="French Stick (Retail").map(f => f.qty)
+    fullTomOrders = fullTomOrders.filter(fu => fu.prodName==="French Stick" || fu.prodName==="French Stick (Retail)").map(f => f.qty)
     let fullTom = fullTomOrders.reduce(addUp)
 
     let highInd = freshProds.findIndex(fresh => fresh.forBake==="High French") 

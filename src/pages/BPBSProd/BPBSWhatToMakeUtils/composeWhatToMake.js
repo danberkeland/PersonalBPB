@@ -44,6 +44,7 @@ const getFullMakeOrders = (delivDate, database) => {
 
 const getFullProdMakeOrders = (delivDate, database) => {
   let fullOrder = getFullProdOrders(delivDate, database);
+  
   fullOrder = addProdAttr(fullOrder, database); // adds forBake, packSize, currentStock
   return fullOrder;
 };
@@ -56,7 +57,7 @@ export default class ComposeWhatToMake {
     let freezerProds = this.getFreezerProds(database,delivDate);
     let youllBeShort = this.getYoullBeShort(database,delivDate);
 
-    [freshProds, shelfProds] = handleFrenchConundrum(freshProds, shelfProds,database);
+    [freshProds, shelfProds] = handleFrenchConundrum(freshProds,shelfProds,database,delivDate);
 
     return {
       pocketsNorth: pocketsNorth,

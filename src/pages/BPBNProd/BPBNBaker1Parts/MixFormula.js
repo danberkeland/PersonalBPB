@@ -16,10 +16,7 @@ export const mixFormula = (doughs, infoWrap, multi) => {
     ).toFixed(2);
 
 
-    bucketSets = dough.bucketSets
-    if(multi === 0 && bucketSets>2){
-      bucketSets = 2
-    }
+    
     let OldDough = dough.oldDough
     
     if(multi === 0 && (Number(OldDough

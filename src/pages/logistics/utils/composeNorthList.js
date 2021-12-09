@@ -132,6 +132,7 @@ const makeOrders = (delivDate, database, filter) => {
   fullOrder = zerosDelivFilter(fullOrder, delivDate, database);
   fullOrder = buildGridOrderArray(fullOrder, database);
   fullOrder = addRoutes(delivDate, fullOrder, database);
+  console.log("order", fullOrder);
 
   let orderArray = [];
   for (let cust of custNames) {
@@ -234,42 +235,44 @@ export default class ComposeNorthList {
       delivDate,
       database
     );
-    console.log("currentFreezerNumbers",currentFreezerNumbers)
+    console.log("currentFreezerNumbers", currentFreezerNumbers);
     let frozensLeavingCarlton = this.getFrozensLeavingCarlton(
       delivDate,
       database
     );
-    console.log("frozensLeavingCarlton",frozensLeavingCarlton)
-    let bakedTomorrowAtCarlton = this.getBakedTomorrowAtCarlton(delivDate, database);
-    console.log("bakedTomorrowAtCarlton",bakedTomorrowAtCarlton)
+    console.log("frozensLeavingCarlton", frozensLeavingCarlton);
+    let bakedTomorrowAtCarlton = this.getBakedTomorrowAtCarlton(
+      delivDate,
+      database
+    );
+    console.log("bakedTomorrowAtCarlton", bakedTomorrowAtCarlton);
     let currentFrozenNeed = addTwoGrids(
       frozensLeavingCarlton,
       bakedTomorrowAtCarlton
     );
-    console.log("bakedTodayAtCarlton",bakedTomorrowAtCarlton)
-    let clone = clonedeep(currentFrozenNeed)
-    console.log("currentFrozenNeedFirst",clone)
-    let almondQty = 0
-    try{
-      almondQty = clone[clone.findIndex(cl => cl.prod ==="al")].qty
-    }catch{}
-    
+    console.log("bakedTodayAtCarlton", bakedTomorrowAtCarlton);
+    let clone = clonedeep(currentFrozenNeed);
+    console.log("currentFrozenNeedFirst", clone);
+    let almondQty = 0;
+    try {
+      almondQty = clone[clone.findIndex((cl) => cl.prod === "al")].qty;
+    } catch {}
+
     currentFrozenNeed = subtractGridFromGrid(
       currentFreezerNumbers,
       currentFrozenNeed
     );
-    let clone2 = clonedeep(currentFrozenNeed)
-    console.log("currentFrozenNeedSecond",clone2)
-    
-    
+    let clone2 = clonedeep(currentFrozenNeed);
+    console.log("currentFrozenNeedSecond", clone2);
+
     currentFrozenNeed = this.adjustForPackSize(currentFrozenNeed);
     try {
-      let almondInd = currentFrozenNeed.findIndex(cu => cu.prod === "al")
-    currentFrozenNeed[almondInd].qty = almondQty
-      console.log("currentFrozenClone",clone)
-    }catch{}
-    
-    console.log("currentFrozenNeed",clone)
+      let almondInd = currentFrozenNeed.findIndex((cu) => cu.prod === "al");
+      currentFrozenNeed[almondInd].qty = almondQty;
+      console.log("currentFrozenClone", clone);
+    } catch {}
+
+    console.log("currentFrozenNeed", clone);
 
     // Create Baked needed North { prod, qty }
     let ordersPlacedAfterDeadline = this.getOrdersPlacedAfterDeadline(
@@ -358,8 +361,8 @@ export default class ComposeNorthList {
 
   getFrozensLeavingCarlton = (delivDate, database) => {
     let frozenToday = getOrdersList(delivDate, database);
-    let fr = clonedeep(frozenToday)
-    console.log("clonefr",fr)
+    let fr = clonedeep(frozenToday);
+    console.log("clonefr", fr);
     frozenToday = Array.from(
       new Set(frozenToday.filter((frz) => this.frzNorthFilter(frz)))
     );
@@ -384,8 +387,8 @@ export default class ComposeNorthList {
     }));
 
     for (let make of makeList) {
-      console.log("frozenToday",frozenToday)
-      console.log("make",make)
+      console.log("frozenToday", frozenToday);
+      console.log("make", make);
       let qtyAccToday = 0;
       let qtyToday = frozenToday
         .filter((frz) => make.prod === frz.forBake)
@@ -397,26 +400,31 @@ export default class ComposeNorthList {
       make.qty = qtyAccToday;
     }
 
-    for (let make of makeList){
-      make.prod = make.nick
-      if (make.nick.substring(0,2)==="fr"){
-        make.nick = make.nick.substring(2)
+    for (let make of makeList) {
+      make.prod = make.nick;
+      if (make.nick.substring(0, 2) === "fr") {
+        make.nick = make.nick.substring(2);
       }
-      delete make.nick
+      delete make.nick;
     }
 
     return makeList;
   };
 
   getBakedTomorrowAtCarlton = (delivDate, database) => {
-    let bakedOrdersList = getOrdersList(tomBasedOnDelivDate(delivDate), database);
+    let bakedOrdersList = getOrdersList(
+      tomBasedOnDelivDate(delivDate),
+      database
+    );
     let bakedTomorrow = bakedOrdersList.filter((frz) =>
       this.NorthCroixBakeFilter(frz)
     );
-    console.log("bakedTomorrow",bakedTomorrow)
-    let ind = bakedTomorrow.findIndex(ba => ba.custName==="Back Porch Bakery" && ba.prodNick==="al")
-    if (ind>-1){
-      bakedTomorrow[ind].qty = bakedTomorrow[ind].qty/2
+    console.log("bakedTomorrow", bakedTomorrow);
+    let ind = bakedTomorrow.findIndex(
+      (ba) => ba.custName === "Back Porch Bakery" && ba.prodNick === "al"
+    );
+    if (ind > -1) {
+      bakedTomorrow[ind].qty = bakedTomorrow[ind].qty / 2;
     }
     bakedTomorrow = this.makeAddQty(bakedTomorrow);
 
@@ -448,14 +456,14 @@ export default class ComposeNorthList {
   };
 
   adjustForPackSize = (data) => {
-    console.log("data",data)
+    console.log("data", data);
     for (let d of data) {
-      d.qty = (Math.ceil(d.qty / 12) * 12)+12;
-      if (d.qty < 0){
-        d.qty=0
+      d.qty = Math.ceil(d.qty / 12) * 12 + 12;
+      if (d.qty < 0) {
+        d.qty = 0;
       }
     }
-    
+
     return data;
   };
 
@@ -587,7 +595,6 @@ export default class ComposeNorthList {
     return grid;
   };
 
-
   returnPocketsNorth = (database) => {
     let shelfProds = makeOrders(today, database, this.pocketsNorthFilter);
     return shelfProds;
@@ -634,8 +641,9 @@ export default class ComposeNorthList {
   BaguettesFilter = (ord) => {
     return (
       ord.prodName === "Baguette" &&
-      ord.routeDepart !== "Carlton" &&
-      ord.routeArrive !== "Carlton"
+      ((ord.routeDepart === "Prado" && ord.routeStart > 8) ||
+        (ord.routeDepart === "Carlton" && ord.routeArrive === "Prado") ||
+        ord.route === "Pick up SLO")
     );
   };
 
@@ -646,11 +654,14 @@ export default class ComposeNorthList {
 
   otherRusticsFilter = (ord) => {
     return (
-      ord.prodName !== "Baguette" &&
+      (ord.prodName !== "Baguette" &&
       ord.packGroup !== "retail" &&
       ord.where.includes("Carlton") &&
-      ord.routeDepart === "Prado" &&
-      (ord.routeStart > 8 || ord.route === "Pick up SLO")
+      ((ord.routeDepart === "Prado" && ord.routeStart > 8) ||
+        (ord.routeDepart === "Carlton" && ord.routeArrive === "Prado") ||
+        ord.route === "Pick up SLO")) ||
+      ((ord.routeDepart === "Carlton" && ord.routeArrive === "Prado") &&
+      ord.packGroup !== "retail")
     );
   };
 
@@ -660,7 +671,10 @@ export default class ComposeNorthList {
   };
 
   retailStuffFilter = (ord) => {
-    return ord.packGroup === "retail" && ord.routeDepart === "Prado";
+    return ord.packGroup === "retail"  &&
+    ((ord.routeDepart === "Prado" && ord.routeStart > 8) ||
+      (ord.routeDepart === "Carlton" && ord.routeArrive === "Prado") ||
+      ord.route === "Pick up SLO");
   };
 
   returnEarlyDeliveries = (database) => {

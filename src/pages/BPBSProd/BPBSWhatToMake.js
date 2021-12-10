@@ -118,7 +118,8 @@ function BPBSWhatToMake() {
         ],
         startY: finalY +20,
         styles: { fontSize: tableFont },
-        theme: "grid"
+        theme: "grid",
+        headStyles: {fillColor: "#dddddd", textColor: "#111111"},
       });
 
       finalY = doc.previousAutoTable.finalY;
@@ -136,7 +137,8 @@ function BPBSWhatToMake() {
       ],
       startY: finalY + titleToNextTable,
       styles: { fontSize: tableFont },
-      theme: "grid"
+      theme: "grid",
+      headStyles: {fillColor: "#dddddd", textColor: "#111111"},
     });
 
     finalY = doc.previousAutoTable.finalY;
@@ -155,7 +157,8 @@ function BPBSWhatToMake() {
       ],
       startY: finalY + titleToNextTable,
       styles: { fontSize: tableFont },
-      theme: "grid"
+      theme: "grid",
+      headStyles: {fillColor: "#dddddd", textColor: "#111111"},
     });
 
     finalY = doc.previousAutoTable.finalY;
@@ -173,7 +176,8 @@ function BPBSWhatToMake() {
       ],
       startY: finalY + titleToNextTable,
       styles: { fontSize: tableFont },
-      theme: "grid"
+      theme: "grid",
+      headStyles: {fillColor: "#dddddd", textColor: "#111111"},
     });
 
     finalY = doc.previousAutoTable.finalY;
@@ -191,7 +195,8 @@ function BPBSWhatToMake() {
       ],
       startY: finalY + titleToNextTable,
       styles: { fontSize: tableFont },
-      theme: "grid"
+      theme: "grid",
+      headStyles: {fillColor: "#dddddd", textColor: "#111111"},
     });
 
     doc.save(`WhatToMake${delivDate}.pdf`);

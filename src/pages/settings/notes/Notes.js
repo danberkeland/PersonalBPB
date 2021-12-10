@@ -43,9 +43,12 @@ function Notes() {
   const [ notes, setNotes ] = useState([])
 
   useEffect(() => {
-    notesData(setIsLoading).then((notes) =>
+    
+    notesData().then((notes) =>
       setNotes(notes)
+      
     );
+    setIsLoading(false)
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 

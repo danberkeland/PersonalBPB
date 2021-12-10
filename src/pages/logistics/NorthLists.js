@@ -200,10 +200,36 @@ function NorthList() {
       doc.setFontSize(titleFont);
       doc.text(pageMargin, finalY + tableToNextTitle, `Shelf Products`);
 
+     console.log("columnsShelf",columnsShelfProdsNorth)
+     console.log("shelfProds",shelfProdsNorth)
+      let footStyle = ['TOTAL']
+      for (let prod of columnsShelfProdsNorth){
+        let comp = prod.field
+        console.log("comp",comp)
+        let tot=0
+        for (let sh of shelfProdsNorth){
+          if (sh[comp] && sh[comp]!=='customer'){
+            console.log(sh[comp])
+            tot = tot + Number(sh[comp])
+
+          }
+          
+        }
+      if (prod.field!=="customer"){
+        footStyle.push(tot)
+      }
+      
+      }
+      
+
+
       doc.autoTable({
         body: shelfProdsNorth,
         theme: 'grid',
         headStyles: {fillColor: "#dddddd", textColor: "#111111"},
+        foot: [footStyle],
+        footStyles: {fillColor: "#dddddd", textColor: "#111111"},
+
         margin: {
           left: 20,
           right: 20,

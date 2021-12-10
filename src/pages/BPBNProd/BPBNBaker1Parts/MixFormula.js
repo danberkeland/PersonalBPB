@@ -24,8 +24,13 @@ export const mixFormula = (doughs, infoWrap, multi) => {
       OldDough = stickerAmount*.2
       
     }
+
+    bucketSets = 4
   
     let Mix1BucketSets = Math.round(bucketSets * multiple[multi]);
+    
+    console.log("bucketSets",bucketSets)
+    console.log("multiple",multiple[multi])
     
     let Mix1OldDough = (OldDough * multiple[multi]).toFixed(2);
     let Mix150lbFlour = Math.floor(

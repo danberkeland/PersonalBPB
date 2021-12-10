@@ -15,7 +15,7 @@ export const mixFormula = (doughs, infoWrap, multi) => {
       Number(dough.short)
     ).toFixed(2);
 
-    bucketSets = 3
+    bucketSets = dough.bucketSets
     
     let OldDough = dough.oldDough
     

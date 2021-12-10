@@ -5,6 +5,7 @@ import { ToggleContext } from "../../dataContexts/ToggleContext";
 import { InputText } from "primereact/inputtext";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
+import { confirmDialog } from "primereact/confirmdialog";
 
 import { promisedData } from "../../helpers/databaseFetchers";
 import ComposeDough from "./Utils/composeDough";
@@ -102,11 +103,25 @@ function BPBNBaker1Dough({
   const handleChange = (e) => {
     if (e.code === "Enter") {
       updateDoughDB(e);
+      confirmDialog({
+        message:
+        "You will need to refresh page to fully recalculate dough.  Got it?",
+      header: "Confirmation",
+        icon: "pi pi-exclamation-triangle",
+       
+      });
     }
   };
 
   const handleBlur = (e) => {
     updateDoughDB(e);
+    confirmDialog({
+      message:
+        "You will need to refresh page to fully recalculate dough.  Got it?",
+      header: "Confirmation",
+      icon: "pi pi-exclamation-triangle",
+      
+    });
   };
 
   const updateDoughDB = async (e) => {

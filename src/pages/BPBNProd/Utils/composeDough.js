@@ -17,6 +17,7 @@ import {
   noBaguette,
   bag
 } from "./filters";
+import { sortAtoZDataByIndex } from "../../../helpers/sortDataHelpers";
 
 let twoDay = todayPlus()[2];
 let oneDay = todayPlus()[1];
@@ -138,7 +139,7 @@ export default class ComposeDough {
     for (let item of pocketsToday) {
       for (let otherItem of pocketsTodayLate) {
         if (item.pocketSize === otherItem.weight) {
-          item.prepped = otherItem.prepreshaped;
+          item.prepped = otherItem.preshaped;
         }
       }
     }
@@ -160,6 +161,8 @@ export default class ComposeDough {
       item.qtyFixed = item.qty
       item.carryPocket = 0
     }
+
+    pocketsToday = sortAtoZDataByIndex(pocketsToday,"pocketSize")
     return pocketsToday;
   };
 

@@ -30,6 +30,7 @@ import {
 import { API, graphqlOperation } from "aws-amplify";
 
 import styled from "styled-components";
+import { sortAtoZDataByIndex } from "../../helpers/sortDataHelpers";
 
 
 const BasicContainer = styled.div`
@@ -100,6 +101,8 @@ function EODCounts({ loc }) {
     let pocketsToMap = products.filter(
       (prod) => prod.bakedWhere[0] === loc && prod.doughType === "French"
     );
+    pocketsToMap = sortAtoZDataByIndex(pocketsToMap,"weight")
+    
     setPocketsToMap(pocketsToMap);
   }, [products]);
 
@@ -277,6 +280,18 @@ function EODCounts({ loc }) {
     return <React.Fragment>{e.currentStock * e.packSize}</React.Fragment>;
   };
 
+  const pocketValues = () => {
+    let pocks = pocketsToMap.map(pock => pock.weight)
+    pocks = sortAtoZDataByIndex(pocks,"weight")
+    console.log("pocks",pocks)
+    let newArray = Array.from(new Set(sortAtoZDataByIndex(pocketsToMap.map(pock => pock.weight),"weight"))).map(arr => ({weight:arr+" lb.",
+    currentStock: products[products.findIndex(prod => prod.weight === arr && prod.doughType==="French" )].prepreshaped,
+    updatedAt: products[products.findIndex(prod => prod.weight === arr && prod.doughType==="French" )].updatedAt,
+    whoCountedLast: products[products.findIndex(prod => prod.weight === arr && prod.doughType==="French" )].whoCountedLast}))
+    return []
+    
+  }
+
   const lastCount = (e) => {
    
     let updated = e.updatedAt
@@ -420,9 +435,9 @@ function EODCounts({ loc }) {
 {pocketCount && (
           <DataTable
             value={Array.from(new Set(pocketsToMap.map(pock => pock.weight))).map(arr => ({weight:arr+" lb.",
-          currentStock: products[products.findIndex(prod => prod.weight === arr && prod.doughType==="French" )].prepreshaped,
-          updatedAt: products[products.findIndex(prod => prod.weight === arr && prod.doughType==="French" )].updatedAt,
-          whoCountedLast: products[products.findIndex(prod => prod.weight === arr && prod.doughType==="French" )].whoCountedLast}))}
+            currentStock: products[products.findIndex(prod => prod.weight === arr && prod.doughType==="French" )].prepreshaped,
+            updatedAt: products[products.findIndex(prod => prod.weight === arr && prod.doughType==="French" )].updatedAt,
+            whoCountedLast: products[products.findIndex(prod => prod.weight === arr && prod.doughType==="French" )].whoCountedLast}))}
             className="p-datatable-sm"
           >
             <Column field="weight" header="Pocket Weight"></Column>

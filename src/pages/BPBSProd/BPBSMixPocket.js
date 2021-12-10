@@ -519,6 +519,16 @@ function BPBSMixPocket() {
     return (<div>{"("+per+"/pan)  "+pan+"  +"+extra}</div>)
   }
 
+  const handleShortChange = (e) => {
+    if (e.code === "Enter") {
+      setShortWeight(Number(e.target.value));
+    }
+  };
+
+  const handleShortBlur = (e) => {
+    setShortWeight(Number(e.target.value));
+  };
+
   return (
     <React.Fragment>
       <WholeBox>
@@ -531,6 +541,19 @@ function BPBSMixPocket() {
             </h3>
             <ThreeColumnGrid key={dough.id + "_first2Col"}>
               <div>
+              <TwoColumnGrid key={dough.id + "_second2Col"}>
+                  <span>Shortage:</span>
+                  <div className="p-inputgroup">
+                    <InputText
+                      key={dough.id + "_oldDough"}
+                      id={dough.id + "_oldDough"}
+                      placeholder={shortWeight}
+                      onChange={handleShortChange}
+                      onBlur={handleShortBlur}
+                    />
+                    <span className="p-inputgroup-addon">lb.</span>
+                  </div>
+                </TwoColumnGrid>
                 <TwoColumnGrid key={dough.id + "_second2Col"}>
                   <span>Old BULK Dough (to be thrown in mix):</span>
                   <div className="p-inputgroup">

@@ -132,8 +132,7 @@ const makeOrders = (delivDate, database, filter) => {
   fullOrder = zerosDelivFilter(fullOrder, delivDate, database);
   fullOrder = buildGridOrderArray(fullOrder, database);
   fullOrder = addRoutes(delivDate, fullOrder, database);
-  console.log("order", fullOrder);
-
+  
   let orderArray = [];
   for (let cust of custNames) {
     let custItem = {};
@@ -416,6 +415,7 @@ export default class ComposeNorthList {
       tomBasedOnDelivDate(delivDate),
       database
     );
+    console.log("bakedCarlton", bakedOrdersList)
     let bakedTomorrow = bakedOrdersList.filter((frz) =>
       this.NorthCroixBakeFilter(frz)
     );

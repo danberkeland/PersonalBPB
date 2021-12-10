@@ -24,6 +24,7 @@ const buildTable = (title, doc, body, col) => {
   doc.text(pageMargin, finalY + tableToNextTitle, title);
   doc.autoTable({
     theme: "grid",
+    headStyles: {fillColor: "#dddddd", textColor: "#111111"},
     body: body,
     margin: pageMargin,
     columns: col,

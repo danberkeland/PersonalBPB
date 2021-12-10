@@ -196,7 +196,7 @@ export const notesData = (setIsLoading) => {
 const fetchNotesData = async (setIsLoading) => {
 
   let notes = await fetchNotes();
-  setIsLoading(false)
+  
   if (!notes) {
     return [];
   } else {

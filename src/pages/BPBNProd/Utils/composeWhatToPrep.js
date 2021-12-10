@@ -28,6 +28,7 @@ export default class ComposeWhatToMake {
     let whatToMakeTom = this.makeAddQty(whatToMakeTomorrow);
 
     whatToMake = whatToMake.concat(whatToMakeTom);
+    whatToMake = whatToMake.filter(wh => wh.qty>0)
     return whatToMake;
   };
 

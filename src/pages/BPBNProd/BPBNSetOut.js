@@ -169,7 +169,8 @@ function BPBNSetOut({ loc }) {
       ],
       startY: finalY + titleToNextTable,
       styles: { fontSize: tableFont },
-      theme: "grid"
+      theme: "grid",
+      headStyles: {fillColor: "#dddddd", textColor: "#111111"},
     });
 
     finalY = doc.previousAutoTable.finalY;
@@ -183,7 +184,8 @@ function BPBNSetOut({ loc }) {
       ],
       startY: finalY + titleToNextTable,
       styles: { fontSize: tableFont },
-      theme: "grid"
+      theme: "grid",
+      headStyles: {fillColor: "#dddddd", textColor: "#111111"},
     });
 
     if (loc === "Prado") {
@@ -198,7 +200,8 @@ function BPBNSetOut({ loc }) {
         ],
         startY: finalY + titleToNextTable,
         styles: { fontSize: tableFont },
-        theme: "grid"
+        theme: "grid",
+        headStyles: {fillColor: "#dddddd", textColor: "#111111"},
       });
     }
 

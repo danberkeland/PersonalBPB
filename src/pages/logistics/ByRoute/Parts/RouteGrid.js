@@ -137,6 +137,7 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
     doc.text(10, 20, "Delivery Sheet");
     doc.autoTable({
       theme: 'grid',
+      headStyles: {fillColor: "#dddddd", textColor: "#111111"},
       columns: exportColumns,
       body: data,
       margin: { top: 26 },
@@ -312,6 +313,7 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
       doc.text(10, 20, rt+" "+convertDatetoBPBDate(delivDate));
       doc.autoTable({
         theme: 'grid',
+        headStyles: {fillColor: "#dddddd", textColor: "#111111"},
         columns: columns,
         body: qtyGrid,
         margin: { top: 26 },

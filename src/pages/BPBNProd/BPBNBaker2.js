@@ -65,6 +65,7 @@ const buildTable = (title, doc, body, col) => {
   
   doc.autoTable({
     theme: "grid",
+    headStyles: {fillColor: "#dddddd", textColor: "#111111"},
     body: body,
     margin: pageMargin+25,
     columns: col,
@@ -197,6 +198,7 @@ function BPBNBaker2() {
    
     doc.autoTable({
       theme: 'grid',
+      headStyles: {fillColor: "#dddddd", textColor: "#111111"},
       body: whatToMake,
       margin: pageMargin,
       columns: [
@@ -228,7 +230,8 @@ function BPBNBaker2() {
       ],
       startY: finalY + titleToNextTable,
       styles: { fontSize: tableFont },
-      theme: "grid"
+      theme: "grid",
+      headStyles: {fillColor: "#dddddd", textColor: "#111111"},
     });
     /*
     finalY = doc.previousAutoTable.finalY;

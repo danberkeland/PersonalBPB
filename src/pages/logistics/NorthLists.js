@@ -142,6 +142,7 @@ function NorthList() {
     doc.autoTable({
       body: notes,
       theme: 'grid',
+      headStyles: {fillColor: "#dddddd", textColor: "#111111"},
         margin: {
           left: 100,
           right: 20,
@@ -160,6 +161,7 @@ function NorthList() {
       doc.autoTable({
         body: pocketsNorth,
         theme: 'grid',
+        headStyles: {fillColor: "#dddddd", textColor: "#111111"},
         margin: {
           left: 20,
           right: 120,
@@ -178,6 +180,7 @@ function NorthList() {
     doc.autoTable({
       body: croixNorth,
       theme: 'grid',
+      headStyles: {fillColor: "#dddddd", textColor: "#111111"},
         margin: {
           left: 20,
           right: 120,
@@ -200,6 +203,7 @@ function NorthList() {
       doc.autoTable({
         body: shelfProdsNorth,
         theme: 'grid',
+        headStyles: {fillColor: "#dddddd", textColor: "#111111"},
         margin: {
           left: 20,
           right: 20,
@@ -219,6 +223,7 @@ function NorthList() {
       doc.autoTable({
         body: CarltonToPrado,
         theme: 'grid',
+        headStyles: {fillColor: "#dddddd", textColor: "#111111"},
         columns: columnsCarltonToPrado,
         startY: finalY + titleToNextTable,
         styles: { fontSize: tableFont },
@@ -248,6 +253,7 @@ function NorthList() {
           right: 100,
         },
         theme: 'grid',
+        headStyles: {fillColor: "#dddddd", textColor: "#111111"},
         columns: columnsBaguettes,
         startY: finalY + titleToNextTable,
         styles: { fontSize: tableFont },
@@ -259,6 +265,7 @@ function NorthList() {
       doc.autoTable({
         pageBreak: "avoid",
         theme: 'grid',
+        headStyles: {fillColor: "#dddddd", textColor: "#111111"},
         body: otherRustics,
         columns: columnsOtherRustics,
         startY: finalY + titleToNextTable,
@@ -271,6 +278,7 @@ function NorthList() {
       doc.autoTable({
         body: retailStuff,
         theme: 'grid',
+        headStyles: {fillColor: "#dddddd", textColor: "#111111"},
         columns: columnsRetailStuff,
         startY: finalY + titleToNextTable,
         styles: { fontSize: tableFont },
@@ -282,6 +290,7 @@ function NorthList() {
       doc.autoTable({
         body: earlyDeliveries,
         theme: 'grid',
+        headStyles: {fillColor: "#dddddd", textColor: "#111111"},
         columns: columnsEarlyDeliveries,
         startY: finalY + titleToNextTable,
         styles: { fontSize: tableFont },

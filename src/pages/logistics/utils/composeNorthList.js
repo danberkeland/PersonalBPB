@@ -140,15 +140,16 @@ const makeOrders = (delivDate, database, filter) => {
       customer: cust,
     };
     for (let prod of prodNames) {
+      let pro = products[products.findIndex((pr) => pr.nickName === prod)]
       let prodFullName =
-        products[products.findIndex((pr) => pr.nickName === prod)].prodName;
+        pro.prodName;
       try {
         custItem[prod] =
           fullOrder[
             fullOrder.findIndex(
               (ord) => ord.prodName === prodFullName && ord.custName === cust
             )
-          ].qty;
+          ].qty * pro.packSize;
       } catch {
         custItem[prod] = null;
       }
@@ -419,13 +420,13 @@ export default class ComposeNorthList {
     let bakedTomorrow = bakedOrdersList.filter((frz) =>
       this.NorthCroixBakeFilter(frz)
     );
-    console.log("bakedTomorrow", bakedTomorrow);
-    let ind = bakedTomorrow.findIndex(
-      (ba) => ba.custName === "Back Porch Bakery" && ba.prodNick === "al"
-    );
-    if (ind > -1) {
-      bakedTomorrow[ind].qty = bakedTomorrow[ind].qty / 2;
+
+    for (let baked of bakedTomorrow){
+      if (baked.custName === "Back Porch Bakery"){
+        baked.qty = baked.qty/2
+      }
     }
+   
     bakedTomorrow = this.makeAddQty(bakedTomorrow);
 
     return bakedTomorrow;
@@ -659,9 +660,7 @@ export default class ComposeNorthList {
       ord.where.includes("Carlton") &&
       ((ord.routeDepart === "Prado" && ord.routeStart > 8) ||
         (ord.routeDepart === "Carlton" && ord.routeArrive === "Prado") ||
-        ord.route === "Pick up SLO")) ||
-      ((ord.routeDepart === "Carlton" && ord.routeArrive === "Prado") &&
-      ord.packGroup !== "retail")
+        ord.route === "Pick up SLO"))
     );
   };
 

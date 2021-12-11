@@ -332,6 +332,7 @@ export default class ComposeCroixInfo {
       };
       prodArray.push(newItem);
     }
+    
     prodArray = sortAtoZDataByIndex(prodArray, "prod");
     
     console.log("prodArray",prodArray)
@@ -384,6 +385,7 @@ export default class ComposeCroixInfo {
       prodArray.push(newItem);
     }
     prodArray = sortAtoZDataByIndex(prodArray, "prod");
+    console.log("prodArray",prodArray)
     return prodArray;
 
 

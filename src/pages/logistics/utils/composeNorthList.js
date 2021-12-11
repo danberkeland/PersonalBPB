@@ -423,7 +423,7 @@ export default class ComposeNorthList {
 
     for (let baked of bakedTomorrow){
       if (baked.custName === "Back Porch Bakery"){
-        baked.qty = baked.qty/2
+        baked.qty = Math.ceil(baked.qty/2)
       }
     }
    

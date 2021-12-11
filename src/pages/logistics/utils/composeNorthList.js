@@ -544,8 +544,8 @@ export default class ComposeNorthList {
 
       let factor = 1 - qtyex / qtyback;
       let start = qtyback - qtyord;
-      let qty = Math.round(start * factor);
-      let qtyFinal = qty - qtyback / 2;
+      let qty = start * factor;
+      let qtyFinal = Math.round(qty - qtyback / 2);
 
       let item = {
         prod: back.prodNick,

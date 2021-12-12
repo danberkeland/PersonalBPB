@@ -46,7 +46,7 @@ export const pocketFilterToday = (ord, loc) => {
 };
 
 export const pocketFilterTwoDay = (ord, loc) => {
-  return ord.doughType === "French" && ord.when===15;
+  return ord.doughType === "French" && ord.when>=15;
 };
 
 export const whatToMakeFilter = (ord, loc) => {

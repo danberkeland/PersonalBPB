@@ -19,6 +19,9 @@ import {
 } from "./filters";
 import { sortAtoZDataByIndex } from "../../../helpers/sortDataHelpers";
 
+
+const clonedeep = require("lodash.clonedeep");
+
 let twoDay = todayPlus()[2];
 let oneDay = todayPlus()[1];
 let tomorrow = todayPlus()[1];
@@ -104,37 +107,42 @@ export default class ComposeDough {
         }
       }
     }
+    let clone1 = clonedeep(pocketsToday)
+    console.log("pocketsTodayClone1", clone1)
 
     let pocketsTodayLate = getOrdersList(today, database, false).filter((set) =>
       pocketFilterToday(set, loc)
     );
-    console.log("pocketsTodayLate",pocketsTodayLate)
-
+  
     let pocketsLateToday = makePocketQty(pocketsTodayLate);
     let pocketsTomLate = getOrdersList(tomorrow, database, true).filter((set) =>
       pocketFilterTwoDay(set, loc)
     );
-    console.log("pocketsTomLate",pocketsTomLate)
 
     let pocketsLateTom = makePocketQty(pocketsTomLate);
-    console.log("pocketsLateTom",pocketsLateTom)
 
     for (let item of pocketsLateToday) {
       for (let otherItem of pocketsLateTom) {
         if (item.pocketSize === otherItem.pocketSize) {
           item.qty = item.qty + otherItem.qty;
-          console.log(item.qty)
         }
       }
     }
+    let clone2 = clonedeep(pocketsLateToday)
+    console.log("pocketsLateTodayClone2",clone2)
 
     for (let item of pocketsToday) {
+      console.log("item",item)
       for (let otherItem of pocketsLateToday) {
+        console.log("otherItem",otherItem)
         if (item.pocketSize === otherItem.pocketSize) {
           item.late = otherItem.qty;
         }
       }
     }
+
+    let clone3 = clonedeep(pocketsToday)
+    console.log("clone3",clone3)
 
     for (let item of pocketsToday) {
       for (let otherItem of pocketsTodayLate) {

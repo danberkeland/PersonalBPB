@@ -3,11 +3,13 @@ import React, { useEffect, useState, useContext } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
-import { confirmDialog } from 'primereact/confirmdialog'
+import { confirmDialog } from "primereact/confirmdialog";
+import { InputText } from "primereact/inputtext";
 
 import { ToggleContext } from "../../dataContexts/ToggleContext";
-import ToolBar from "../logistics/ByRoute/Parts/ToolBar"
+import ToolBar from "../logistics/ByRoute/Parts/ToolBar";
 
+import { updateProduct } from "../../graphql/mutations";
 
 import jsPDF from "jspdf";
 import "jspdf-autotable";
@@ -17,7 +19,9 @@ import { promisedData } from "../../helpers/databaseFetchers";
 import ComposeWhatToMake from "./BPBSWhatToMakeUtils/composeWhatToMake";
 
 import styled from "styled-components";
-import react from "react";
+import { ProductsContext } from "../../dataContexts/ProductsContext";
+
+import { API, graphqlOperation } from "aws-amplify";
 
 const WholeBox = styled.div`
   display: flex;
@@ -48,10 +52,15 @@ const ButtonWrapper = styled.div`
 
 let today = todayPlus()[0];
 
+const clonedeep = require("lodash.clonedeep");
+
+const { DateTime } = require("luxon");
+
 const compose = new ComposeWhatToMake();
 
 function BPBSWhatToMake() {
   const { setIsLoading } = useContext(ToggleContext);
+  const { products, setProducts } = useContext(ProductsContext);
   const [youllBeShort, setYoullBeShort] = useState();
   const [freshProds, setFreshProds] = useState();
   const [delivDate, setDelivDate] = useState(todayPlus()[0]);
@@ -59,22 +68,19 @@ function BPBSWhatToMake() {
   const [freezerProds, setFreezerProds] = useState();
   const [pocketsNorth, setPocketsNorth] = useState();
 
-  
-
   useEffect(() => {
     promisedData(setIsLoading).then((database) => gatherMakeInfo(database));
   }, [delivDate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const gatherMakeInfo = (database) => {
-    let makeData = compose.returnMakeBreakDown(database,delivDate);
+    let makeData = compose.returnMakeBreakDown(database, delivDate);
     setYoullBeShort(makeData.youllBeShort);
     setPocketsNorth(makeData.pocketsNorth);
     setFreshProds(makeData.freshProds);
     setShelfProds(makeData.shelfProds);
     setFreezerProds(makeData.freezerProds);
+    setProducts(database[0])
   };
-
-  
 
   const checkDateAlert = (delivDate) => {
     if (delivDate !== today) {
@@ -104,29 +110,26 @@ function BPBSWhatToMake() {
 
     finalY = 10;
 
-      doc.setFontSize(titleFont);
-      
+    doc.setFontSize(titleFont);
 
-      doc.autoTable({
-        body: youllBeShort,
-        margin: pageMargin,
-        columns: [
-          { header: "Pocket Size", dataKey: "pocketWeight" },
-          { header: "Available", dataKey: "preshaped" },
-          { header: "Need Today", dataKey: "need" },
-          { header: "Surplus(+)/Short(-)", dataKey: "makeTotal" },
-        ],
-        startY: finalY +20,
-        styles: { fontSize: tableFont },
-        theme: "grid",
-        headStyles: {fillColor: "#dddddd", textColor: "#111111"},
-      });
+    doc.autoTable({
+      body: youllBeShort,
+      margin: pageMargin,
+      columns: [
+        { header: "Pocket Size", dataKey: "pocketWeight" },
+        { header: "Available", dataKey: "preshaped" },
+        { header: "Need Today", dataKey: "need" },
+        { header: "Surplus(+)/Short(-)", dataKey: "makeTotal" },
+      ],
+      startY: finalY + 20,
+      styles: { fontSize: tableFont },
+      theme: "grid",
+      headStyles: { fillColor: "#dddddd", textColor: "#111111" },
+    });
 
-      finalY = doc.previousAutoTable.finalY;
-    
+    finalY = doc.previousAutoTable.finalY;
 
     doc.setFontSize(titleFont);
-   
 
     doc.autoTable({
       body: pocketsNorth,
@@ -138,13 +141,12 @@ function BPBSWhatToMake() {
       startY: finalY + titleToNextTable,
       styles: { fontSize: tableFont },
       theme: "grid",
-      headStyles: {fillColor: "#dddddd", textColor: "#111111"},
+      headStyles: { fillColor: "#dddddd", textColor: "#111111" },
     });
 
     finalY = doc.previousAutoTable.finalY;
 
     doc.setFontSize(titleFont);
-    
 
     doc.autoTable({
       body: freshProds,
@@ -158,13 +160,13 @@ function BPBSWhatToMake() {
       startY: finalY + titleToNextTable,
       styles: { fontSize: tableFont },
       theme: "grid",
-      headStyles: {fillColor: "#dddddd", textColor: "#111111"},
+      headStyles: { fillColor: "#dddddd", textColor: "#111111" },
     });
 
     finalY = doc.previousAutoTable.finalY;
 
     doc.setFontSize(titleFont);
-    
+
     doc.autoTable({
       body: shelfProds,
       margin: pageMargin,
@@ -177,13 +179,13 @@ function BPBSWhatToMake() {
       startY: finalY + titleToNextTable,
       styles: { fontSize: tableFont },
       theme: "grid",
-      headStyles: {fillColor: "#dddddd", textColor: "#111111"},
+      headStyles: { fillColor: "#dddddd", textColor: "#111111" },
     });
 
     finalY = doc.previousAutoTable.finalY;
 
     doc.setFontSize(titleFont);
-   
+
     doc.autoTable({
       body: freezerProds,
       margin: pageMargin,
@@ -196,7 +198,7 @@ function BPBSWhatToMake() {
       startY: finalY + titleToNextTable,
       styles: { fontSize: tableFont },
       theme: "grid",
-      headStyles: {fillColor: "#dddddd", textColor: "#111111"},
+      headStyles: { fillColor: "#dddddd", textColor: "#111111" },
     });
 
     doc.save(`WhatToMake${delivDate}.pdf`);
@@ -207,7 +209,7 @@ function BPBSWhatToMake() {
       <ButtonWrapper>
         <Button
           type="button"
-          onClick={e => checkDateAlert(delivDate)}
+          onClick={(e) => checkDateAlert(delivDate)}
           className="p-button-success"
           data-pr-tooltip="PDF"
         >
@@ -217,23 +219,80 @@ function BPBSWhatToMake() {
     </ButtonContainer>
   );
 
+  const handlePockChange = async (e2,e) => {
+   
+    let prodsToMod = clonedeep(products);
+    let YoullBeCopy = clonedeep(youllBeShort)
+    
+    let ind = YoullBeCopy.findIndex(yo => yo.pocketWeight === e.pocketWeight)
+    YoullBeCopy[ind].makeTotal = Number(e2.target.value)
+    YoullBeCopy[ind].short = 0 - Number(e2.target.value) 
+    YoullBeCopy[ind].preshaped = YoullBeCopy[ind].need + Number(e2.target.value)
+    console.log(YoullBeCopy)
+    setYoullBeShort(YoullBeCopy)
+
+    for (let prod of prodsToMod) {
+      let weight = e.pocketWeight
+     
+      if (
+        Number(prod.weight) === Number(weight) &&
+        prod.doughType === "French"
+      ) {
+        
+        let itemUpdate = {
+          id: prod.id,
+          preshaped: YoullBeCopy[ind].preshaped
+        };
+
+        try {
+          await API.graphql(
+            graphqlOperation(updateProduct, { input: { ...itemUpdate } })
+          );
+        } catch (error) {
+          console.log("error on updating product", error);
+        }
+      }
+    }
+    setProducts(prodsToMod);
+  };
+
+  const handlePocketInput = (e) => {
+    
+    return (
+      <InputText
+        id={e.pocketWeight}
+        style={{
+          width: "50px",
+          backgroundColor: "#E3F2FD",
+          fontWeight: "bold",
+        }}
+        placeholder={e.makeTotal}
+        onKeyUp={(e2) => (e2.code === "Enter" ? handlePockChange(e2,e) : "")}
+        onBlur={(e2) => handlePockChange(e2,e)}
+      />
+    );
+  };
+
   return (
     <React.Fragment>
       <WholeBox>
         <h1>BPBS What To Make {convertDatetoBPBDate(delivDate)}</h1>
         <ToolBar delivDate={delivDate} setDelivDate={setDelivDate} />
         <div>{header}</div>
-        
-          <React.Fragment>
-            <h2>Pocket Count</h2>
-            <DataTable value={youllBeShort} className="p-datatable-sm">
+
+        <React.Fragment>
+          <h2>Pocket Count</h2>
+          <DataTable value={youllBeShort} className="p-datatable-sm">
             <Column field="pocketWeight" header="Pocket Size"></Column>
-            <Column field="preshaped" header="Available"></Column>
+            <Column
+              field="preshaped"
+              header="Available"
+              
+            ></Column>
             <Column field="need" header="Need Today"></Column>
-              <Column field="makeTotal" header="Surplus(+)/Short(-)"></Column>
-            </DataTable>
-          </React.Fragment>
-       
+            <Column field="makeTotal" header="Surplus(+)/Short(-)" body={(e) => handlePocketInput(e)}></Column>
+          </DataTable>
+        </React.Fragment>
 
         <h2>Send Pockets North</h2>
         <DataTable value={pocketsNorth} className="p-datatable-sm">

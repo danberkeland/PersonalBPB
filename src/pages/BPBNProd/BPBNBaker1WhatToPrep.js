@@ -29,7 +29,7 @@ const WholeBoxPhone = styled.div`
 
 const compose = new ComposeWhatToPrep();
 
-function BPBNBaker1WhatToPrep({ whatToPrep, setWhatToPrep }) {
+function BPBNBaker1WhatToPrep({ whatToPrep, setWhatToPrep, deliv }) {
   const { setIsLoading } = useContext(ToggleContext);
 
   const [width, setWidth] = useState(window.innerWidth);
@@ -39,7 +39,7 @@ function BPBNBaker1WhatToPrep({ whatToPrep, setWhatToPrep }) {
     window.addEventListener("resize", () => setWidth(window.innerWidth));
   });
 
-  let delivDate = todayPlus()[0];
+  let delivDate = deliv
 
   useEffect(() => {
     promisedData(setIsLoading).then((database) =>

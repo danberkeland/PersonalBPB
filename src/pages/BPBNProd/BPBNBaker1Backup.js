@@ -9,7 +9,7 @@ import { ToggleContext } from "../../dataContexts/ToggleContext";
 
 import { convertDatetoBPBDate, todayPlus } from "../../helpers/dateTimeHelpers";
 import { promisedData } from "../../helpers/databaseFetchers";
-import ComposeWhatToBake from "./Utils/composeWhatToBake";
+import ComposeWhatToBakeBackup from "./Utils/composeWhatToBakeBackup";
 
 import BPBNBaker1Dough from "./BPBNBaker1Dough";
 import BPBNBaker1WhatToPrep from "./BPBNBaker1WhatToPrep.js";
@@ -53,10 +53,10 @@ const ButtonWrapper = styled.div`
   background: #ffffff;
 `;
 
-const compose = new ComposeWhatToBake();
+const compose = new ComposeWhatToBakeBackup();
 
-function BPBNBaker1() {
-  const [delivDate, setDelivDate] = useState(todayPlus()[0]);
+function BPBNBaker1Backup() {
+  const [delivDate, setDelivDate] = useState(todayPlus()[1]);
   const { setIsLoading } = useContext(ToggleContext);
   const [whatToMake, setWhatToMake] = useState();
   const [whatToPrep, setWhatToPrep] = useState();
@@ -151,7 +151,7 @@ function BPBNBaker1() {
       <BPBNBaker1WhatToPrep
         whatToPrep={whatToPrep}
         setWhatToPrep={setWhatToPrep}
-        deliv = {delivDate}
+        deliv={delivDate}
       />
       <BPBNBaker1Dough
         doughs={doughs}
@@ -169,4 +169,4 @@ function BPBNBaker1() {
   );
 }
 
-export default BPBNBaker1;
+export default BPBNBaker1Backup;

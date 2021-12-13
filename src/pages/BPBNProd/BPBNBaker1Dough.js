@@ -60,6 +60,7 @@ function BPBNBaker1Dough({
   setOliveCount,
   setBcCount,
   setBagDoughTwoDays,
+  deliv
 }) {
   const { setIsLoading } = useContext(ToggleContext);
 
@@ -76,11 +77,12 @@ function BPBNBaker1Dough({
   });
 
   useEffect(() => {
-    promisedData(setIsLoading).then((database) => gatherDoughInfo(database));
+    promisedData(setIsLoading).then((database) => gatherDoughInfo(database,deliv));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const gatherDoughInfo = (database) => {
-    let doughData = compose.returnDoughBreakDown(database, "Carlton");
+  const gatherDoughInfo = (database,deliv) => {
+    console.log("deliv1",deliv)
+    let doughData = compose.returnDoughBreakDown(database, "Carlton",deliv);
     setDoughs(doughData.Baker1Dough);
     setDoughComponents(doughData.Baker1DoughComponents);
     setBagAndEpiCount(doughData.bagAndEpiCount);
@@ -98,8 +100,7 @@ function BPBNBaker1Dough({
     }
   }, [doughs, infoWrap]);
 
-  let tomorrow = todayPlus()[1];
-
+  
   const handleChange = (e) => {
     if (e.code === "Enter") {
       updateDoughDB(e);

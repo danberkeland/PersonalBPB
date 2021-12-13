@@ -18,7 +18,9 @@ import Billing from './pages/billing/Billing'
 
 import Loader from './Loader'
 import BPBNBaker1 from './pages/BPBNProd/BPBNBaker1';
+import BPBNBaker1Backup from './pages/BPBNProd/BPBNBaker1Backup';
 import BPBNBaker2 from './pages/BPBNProd/BPBNBaker2';
+import BPBNBaker2Backup from './pages/BPBNProd/BPBNBaker2Backup';
 import BPBNBuckets from './pages/BPBNProd/BPBNBuckets';
 import BPBNSetOut from './pages/BPBNProd/BPBNSetOut';
 import WhoBake from './pages/BPBNProd/WhoBake';
@@ -26,6 +28,7 @@ import WhoShape from './pages/BPBNProd/WhoShape';
 import EODCounts from './pages/EODCounts/EODCounts';
 import DoughCalc from './pages/doughCalc/doughCalc';
 import BPBSWhatToMake from './pages/BPBSProd/BPBSWhatToMake';
+import BPBSWhatToMakeBackup from './pages/BPBSProd/BPBSWhatToMakeBackup';
 import BPBSMixPocket from './pages/BPBSProd/BPBSMixPocket';
 import CroixToMake from './pages/BPBSProd/CroixToMake';
 import CroixCount from './pages/BPBSProd/CroixCount';
@@ -73,7 +76,9 @@ function AppRoutes({ authType, userNum }) {
         
 
           <Route path="/BPBNProd/BPBNBaker1" component={BPBNBaker1} />
+          <Route path="/BPBNProd/BPBNBaker1Backup" component={BPBNBaker1Backup} />
           <Route path="/BPBNProd/BPBNBaker2" component={BPBNBaker2} />
+          <Route path="/BPBNProd/BPBNBaker2Backup" component={BPBNBaker2Backup} />
           <Route path="/BPBNProd/Buckets" component={BPBNBuckets} />
           <Route path="/BPBNProd/WhoBake" component={WhoBake} />
           <Route path="/BPBNProd/WhoShape" component={WhoShape} />
@@ -81,6 +86,7 @@ function AppRoutes({ authType, userNum }) {
           <Route path="/BPBNProd/BPBNSetOut" render={(props)=><BPBNSetOut {...props} loc={'Carlton'} />} />
 
           <Route path="/BPBSProd/BPBSWhatToMake" component={BPBSWhatToMake} />
+          <Route path="/BPBSProd/BPBSWhatToMakeBackup" component={BPBSWhatToMakeBackup} />
           <Route path="/BPBSProd/BPBSMixPocket" component={BPBSMixPocket} />
           <Route path="/BPBSProd/CroixToMake" component={CroixToMake} />
           <Route path="/BPBSProd/CroixCount" component={CroixCount} />

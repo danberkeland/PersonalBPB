@@ -1,4 +1,4 @@
-import { todayPlus } from "../../../helpers/dateTimeHelpers";
+import { todayPlus, tomBasedOnDelivDate, TwodayBasedOnDelivDate } from "../../../helpers/dateTimeHelpers";
 
 import {
   getOrdersList,
@@ -22,18 +22,20 @@ import { sortAtoZDataByIndex } from "../../../helpers/sortDataHelpers";
 
 const clonedeep = require("lodash.clonedeep");
 
-let twoDay = todayPlus()[2];
-let oneDay = todayPlus()[1];
-let tomorrow = todayPlus()[1];
-let today = todayPlus()[0];
 
 export default class ComposeDough {
-  returnDoughBreakDown = (database, loc) => {
-    let doughs = this.returnDoughs(bag, database, loc);
+  returnDoughBreakDown = (database, loc,deliv) => {
+    let twoDay = TwodayBasedOnDelivDate(deliv)
+    let oneDay = tomBasedOnDelivDate(deliv)
+    let tomorrow = tomBasedOnDelivDate(deliv)
+    console.log("delivtomorrow",tomorrow)
+    let today = deliv
+    console.log("delivToday",today)
+    let doughs = this.returnDoughs(bag, database, loc, tomorrow, twoDay);
     let doughComponents = this.returnDoughComponents(database);
-    let pockets = this.returnPockets(database, loc);
-    let Baker1Dough = this.returnDoughs(baguette, database, loc);
-    let Baker1Pockets = this.returnBaker1Pockets(database, loc);
+    let pockets = this.returnPockets(database, loc,today, tomorrow,twoDay);
+    let Baker1Dough = this.returnDoughs(baguette, database, loc, tomorrow, twoDay);
+    let Baker1Pockets = this.returnBaker1Pockets(database, loc, tomorrow);
     let bagAndEpiCount = this.returnbagAndEpiCount(tomorrow, database, loc);
     let oliveCount = this.returnoliveCount(tomorrow, database, loc);
     let bcCount = this.returnbcCount(tomorrow, database, loc);
@@ -88,7 +90,7 @@ export default class ComposeDough {
     return Math.round(qty / 82);
   };
 
-  returnPockets = (database, loc) => {
+  returnPockets = (database, loc,today, tomorrow, twoDay) => {
     let pocketsTodayPrep = getOrdersList(tomorrow, database, true).filter(
       (set) => pocketFilterToday(set, loc)
     );
@@ -174,10 +176,10 @@ export default class ComposeDough {
     return pocketsToday;
   };
 
-  returnDoughs = (filt, database, loc) => {
+  returnDoughs = (filt, database, loc, tomorrow, twoDay) => {
     const doughs = database[5];
     let twoDayOrderList = getOrdersList(twoDay, database, true);
-    let oneDayOrderList = getOrdersList(oneDay, database, true);
+    let oneDayOrderList = getOrdersList(tomorrow, database, true);
 
     let doughList = doughListComp(doughs, filt, loc);
 
@@ -252,7 +254,7 @@ export default class ComposeDough {
     return qtyAccToday;
   };
 
-  returnBaker1Pockets = (database, loc) => {
+  returnBaker1Pockets = (database, loc, tomorrow) => {
     let pocketList = getOrdersList(tomorrow, database, true);
     let pocketsToday = pocketList.filter((set) => baker1PocketFilter(set, loc));
     pocketsToday = makePocketQty(pocketsToday);

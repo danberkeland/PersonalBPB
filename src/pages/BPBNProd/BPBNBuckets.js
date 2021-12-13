@@ -15,6 +15,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 
 import styled from "styled-components";
+import { todayPlus } from "../../helpers/dateTimeHelpers";
 
 const WholeBox = styled.div`
   display: flex;
@@ -67,7 +68,7 @@ const compose = new ComposeDough();
 
 function BPBNBuckets() {
   const { setIsLoading } = useContext(ToggleContext);
-
+  const [delivDate, setDelivDate] = useState(todayPlus()[0]);
   const [doughs, setDoughs] = useState([]);
   const [doughComponents, setDoughComponents] = useState([]);
 
@@ -76,7 +77,7 @@ function BPBNBuckets() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const gatherDoughInfo = (database) => {
-    let doughData = compose.returnDoughBreakDown(database, "Carlton");
+    let doughData = compose.returnDoughBreakDown(database, "Carlton",delivDate);
     setDoughs(doughData.doughs);
     setDoughComponents(doughData.doughComponents);
   };

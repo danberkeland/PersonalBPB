@@ -109,7 +109,7 @@ function BPBSMixPocket() {
 
   
   const gatherDoughInfo = (database,delivDate) => {
-    let doughData = compose.returnDoughBreakDown(database, "Prado");
+    let doughData = compose.returnDoughBreakDown(database, "Prado",delivDate);
     let shortageData = shortage.getYoullBeShort(database,delivDate)
     setDoughs(doughData.doughs);
     console.log("doughs",doughData)

@@ -92,7 +92,7 @@ function EODCounts({ loc }) {
 
   useEffect(() => {
     let prodsToMap = products.filter(
-      (prod) => prod.bakedWhere[0] === loc && prod.eodCount === true
+      (prod) => (prod.bakedWhere[0] === loc || prod.bakedWhere[0] === "Mixed")&& prod.eodCount === true
     );
     setEODProds(prodsToMap);
   }, [products]);

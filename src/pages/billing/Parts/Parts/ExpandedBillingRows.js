@@ -34,6 +34,7 @@ export const ExpandedBillingRows = ({
 
 
   const deleteItem = (data, invNum) => {
+    setModifications(true);
     let invToModify = clonedeep(dailyInvoices);
     let ind = invToModify.findIndex((inv) => inv["invNum"] === invNum);
     let prodInd = invToModify[ind].orders.findIndex(
@@ -44,6 +45,7 @@ export const ExpandedBillingRows = ({
   };
 
   const deleteTemplate = (data, invNum) => {
+
     return (
       <Button
         icon="pi pi-times-circle"

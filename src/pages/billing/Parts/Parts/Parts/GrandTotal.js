@@ -100,9 +100,11 @@ export const GrandTotal = ({
   };
 
   const handleSaveChanges = async (e, invNum) => {
-   
+    
     // loop through orders
     let custInd = dailyInvoices.findIndex(daily => daily.invNum === invNum)
+    let invClone = clonedeep(dailyInvoices[custInd])
+    console.log("cloneInv",invClone)
     let parsedOrders = dailyInvoices[custInd].orders.filter(daily => daily.prodName !== "DELIVERY");
    
     let custName=dailyInvoices[custInd].custName;
@@ -110,6 +112,7 @@ export const GrandTotal = ({
     console.log("filteredOrders",filteredOrders)
 
     for (let ord of parsedOrders) {
+      console.log("ordCheck",ord)
       let id
       let ind = filteredOrders.findIndex(filt => filt.prodName === ord.prodName)
       ind<0 ? id = null : id = filteredOrders[ind].id
@@ -119,6 +122,8 @@ export const GrandTotal = ({
         qty: ord.qty,
         prodName: ord.prodName,
         custName: custName,
+        isWhole: true,
+        route: "deliv",
         rate: ord.rate,
         SO: ord.qty,
         delivDate: convertDatetoBPBDate(delivDate)

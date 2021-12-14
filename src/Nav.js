@@ -177,12 +177,14 @@ function Nav() {
             window.location = "/logistics/FreezerThaw";
           },
         },
+        /*
         {
           label: "Voice",
           command: () => {
             window.location = "/settings/voice";
           },
         },
+        */
       ],
     },
     {
@@ -203,6 +205,7 @@ function Nav() {
         },
       ],
     },
+    /*
     {
       label: "Dough Calc",
       icon: "pi pi-fw pi-map",
@@ -210,6 +213,7 @@ function Nav() {
         window.location = "/doughCalc/doughCalc";
       },
     },
+    */
     {
       label: "Ordering",
       icon: "pi pi-fw pi-shopping-cart",

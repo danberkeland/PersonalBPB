@@ -81,6 +81,7 @@ export const attachInvoiceOrders = (
 
       let pushBit = {
         prodName: ord["prodName"],
+        
         qty: Number(ord["qty"]),
         rate: ratePull,
       };

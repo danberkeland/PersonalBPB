@@ -101,6 +101,24 @@ export const createQBInvItem = (count, ord, qbID, delivDate) => {
     return invID
   }
 
+  
+
+  export const deleteQBInvoice = async (access, custSetup) => {
+    let invID
+    try {
+        invID = await axios.post(
+          "https://63m47lgp1b.execute-api.us-east-2.amazonaws.com/done",
+          {
+            accessCode: "Bearer " + access,
+            invInfo: custSetup,
+          }
+        );
+      } catch {
+        console.log("Error creating Invoice " + custSetup.CustomerRef.name);
+      }
+    return invID
+  }
+
 
   export const createQBCustomer = async (access, QBDetails) => {
     let cust

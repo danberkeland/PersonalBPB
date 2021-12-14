@@ -279,7 +279,7 @@ const SelectDate = ({ database, dailyInvoices }) => {
     for (let inv of dailyInvoices) {
       let DocNum = inv.invNum;
       let invID = await getQBInvIDandSyncToken(access, DocNum);
-      console.log(DocNum,invID.data.Id)
+      console.log(DocNum,invID.data)
       if (Number(invID.data.Id) > 0) {
         invID = invID.data.Id;
         let custo =

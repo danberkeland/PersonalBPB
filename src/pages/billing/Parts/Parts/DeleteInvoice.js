@@ -8,6 +8,7 @@ import { convertDatetoBPBDate } from "../../../../helpers/dateTimeHelpers";
 import { API, graphqlOperation } from "aws-amplify";
 
 import { updateOrder, createOrder } from "../../../../graphql/mutations";
+import { checkQBValidation, createQBInvoice, deleteQBInvoice, getQBInvIDandSyncToken } from "../../../../helpers/QBHelpers";
 
 const clonedeep = require("lodash.clonedeep");
 
@@ -43,8 +44,29 @@ export const DeleteInvoice = (
     setIsLoading(true)
     let invToModify = clonedeep(dailyInvoices);
     invToModify = invToModify.filter((inv) => inv["invNum"] !== invNum);
-    setDailyInvoices(invToModify);
+   
+    let access = await checkQBValidation();
+    let invID = await getQBInvIDandSyncToken(access, invNum);
 
+    
+    let qbID = invID.data.Id
+    let sync = invID.data.SyncToken
+    if (qbID){
+      let custSetup = {
+        Id: qbID,
+        SyncToken: sync,
+        
+      };
+      console.log("qbID",qbID)
+      console.log("SyncToken",sync)
+      
+      deleteQBInvoice(access, custSetup);
+      console.log("I think it worked")
+    } else {
+      console.log("No invoice to delete")
+    }
+    
+   
     let dailyParsedInvoices = dailyInvoices.filter(
       (daily) => daily.invNum === invNum
     );
@@ -101,6 +123,7 @@ export const DeleteInvoice = (
         }
       }
     }
+  
     setReload(!reload)
     setIsLoading(false)
   };

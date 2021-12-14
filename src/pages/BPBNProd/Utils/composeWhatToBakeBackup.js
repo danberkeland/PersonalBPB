@@ -52,13 +52,13 @@ export default class ComposeWhatToMake {
 
       let pocketsAccToday = 0;
 
-      let pocketsToday = bakeInd.map((ord) => ord.preshaped);
+      let pocketsToday = bakeInd.map((ord) => ord.prepreshaped);
 
       if (pocketsToday.length > 0) {
         pocketsAccToday = qtyAccToday - pocketsToday[0];
       }
 
-      let shapedSum = bakeInd.map((ord) => ord.preshaped);
+      let shapedSum = bakeInd.map((ord) => ord.prepreshaped);
 
       if (shapedSum.length > 0) {
         make.shaped = shapedSum[0];

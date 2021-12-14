@@ -7,13 +7,13 @@ import { Column } from "primereact/column";
 import {mixFormula} from './MixFormula'
 
 
-export const BagMixesScreen = ({ mixes, doughs, infoWrap }) => {
+export const BagMixesScreen = ({ mixes, doughs, infoWrap, deliv }) => {
 
   return (
     <React.Fragment>
       <h2>Baguette Mix #1</h2>
       <DataTable
-        value={mixFormula(doughs, infoWrap, 0)}
+        value={mixFormula(doughs, infoWrap, 0, deliv)}
         className="p-datatable-sm"
       >
         <Column field="title" header="Ingredient"></Column>
@@ -24,7 +24,7 @@ export const BagMixesScreen = ({ mixes, doughs, infoWrap }) => {
         <React.Fragment>
           <h2>Baguette Mix #2</h2>
           <DataTable
-            value={mixFormula(doughs, infoWrap, 1)}
+            value={mixFormula(doughs, infoWrap, 1, deliv)}
             className="p-datatable-sm"
           >
             <Column field="title" header="Ingredient"></Column>
@@ -36,7 +36,7 @@ export const BagMixesScreen = ({ mixes, doughs, infoWrap }) => {
         <React.Fragment>
           <h2>Baguette Mix #3</h2>
           <DataTable
-            value={mixFormula(doughs, infoWrap, 2)}
+            value={mixFormula(doughs, infoWrap, 2, deliv)}
             className="p-datatable-sm"
           >
             <Column field="title" header="Ingredient"></Column>

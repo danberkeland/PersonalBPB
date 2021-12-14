@@ -209,7 +209,7 @@ function BPBNBaker1Dough({
           </div>
         </TwoColumnGrid>
 
-        <BagMixesScreen mixes={mixes} doughs={doughs} infoWrap={infoWrap} />
+        <BagMixesScreen mixes={mixes} doughs={doughs} infoWrap={infoWrap} deliv={deliv}/>
       </React.Fragment>
     );
   };

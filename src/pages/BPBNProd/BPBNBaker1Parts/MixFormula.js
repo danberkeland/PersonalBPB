@@ -1,6 +1,9 @@
+import { todayPlus } from '../../../helpers/dateTimeHelpers';
 import { getMixInfo } from './GetMixInfo'
 
-export const mixFormula = (doughs, infoWrap, multi) => {
+let tomorrow = todayPlus()[1]
+
+export const mixFormula = (doughs, infoWrap, multi, deliv) => {
     //  Set up Mix 1
 
     console.log("infoWrap",infoWrap)
@@ -16,6 +19,10 @@ export const mixFormula = (doughs, infoWrap, multi) => {
     ).toFixed(2);
 
     bucketSets = dough.bucketSets
+    if (deliv===tomorrow){
+      console.log("using preBucketSets")
+      bucketSets = dough.preBucketSets
+    }
     
     let OldDough = dough.oldDough
     

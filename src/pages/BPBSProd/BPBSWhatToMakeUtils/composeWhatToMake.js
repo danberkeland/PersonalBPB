@@ -208,10 +208,16 @@ export default class ComposeWhatToMake {
         (prod) =>
           prod.weight === weight.pocketWeight && prod.doughType === "French"
       )].preshaped;
+      let preAvailablePockets = products[products.findIndex(
+        (prod) =>
+          prod.weight === weight.pocketWeight && prod.doughType === "French"
+      )].prepreshaped;
       weight.need = weight.makeTotal
       weight.preshaped = availablePockets
+      weight.prepreshaped = preAvailablePockets
       weight.short = Number(weight.makeTotal)-Number(availablePockets)
       weight.makeTotal = -(Number(weight.makeTotal)-Number(availablePockets))
+      weight.preMakeTotal = -(Number(weight.makeTotal)-Number(preAvailablePockets))
      
     }
 

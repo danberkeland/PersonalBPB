@@ -108,5 +108,5 @@ export const ExportPastryPrepPdf = async (delivDate, doughs, infoWrap) => {
   buildTable(`Buckets`, doc, bucketAmount(doughs, infoWrap), col);
   finalY = doc.previousAutoTable.finalY + tableToNextTitle;
 
-  doc.save(`WhatToShape${delivDate}.pdf`);
+  doc.save(`BPBN_Baker1_${delivDate}.pdf`);
 };

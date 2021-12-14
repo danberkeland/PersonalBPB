@@ -117,9 +117,9 @@ function BPBSWhatToMake() {
       margin: pageMargin,
       columns: [
         { header: "Pocket Size", dataKey: "pocketWeight" },
-        { header: "Available", dataKey: "preshaped" },
+        { header: "Available", dataKey: "prepreshaped" },
         { header: "Need Today", dataKey: "need" },
-        { header: "Surplus(+)/Short(-)", dataKey: "makeTotal" },
+        
       ],
       startY: finalY + 20,
       styles: { fontSize: tableFont },
@@ -201,7 +201,7 @@ function BPBSWhatToMake() {
       headStyles: { fillColor: "#dddddd", textColor: "#111111" },
     });
 
-    doc.save(`WhatToMake${delivDate}.pdf`);
+    doc.save(`BPBS_Baker1_${delivDate}.pdf`);
   };
 
   const header = (
@@ -285,12 +285,12 @@ function BPBSWhatToMake() {
           <DataTable value={youllBeShort} className="p-datatable-sm">
             <Column field="pocketWeight" header="Pocket Size"></Column>
             <Column
-              field="preshaped"
+              field="prepreshaped"
               header="Available"
               
             ></Column>
             <Column field="need" header="Need Today"></Column>
-            <Column field="makeTotal" header="Surplus(+)/Short(-)" body={(e) => handlePocketInput(e)}></Column>
+            <Column field="preMakeTotal" header="Surplus(+)/Short(-)" body={(e) => handlePocketInput(e)}></Column>
           </DataTable>
         </React.Fragment>
 

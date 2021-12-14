@@ -1,10 +1,10 @@
-import { todayPlus } from "../../../helpers/dateTimeHelpers";
+import { todayPlus, tomBasedOnDelivDate } from "../../../helpers/dateTimeHelpers";
 
 import { getOrdersList, addUp } from "./utils";
 
 import { whatToPrepFilter, whatToPrepTomFilter } from "./filters";
 
-let tomorrow = todayPlus()[1];
+
 
 export default class ComposeWhatToMake {
   returnWhatToPrepBreakDown = (delivDate, database) => {
@@ -17,6 +17,7 @@ export default class ComposeWhatToMake {
 
   returnWhatToPrep = (delivDate, database) => {
     let whatToPrepList = getOrdersList(delivDate, database);
+    let tomorrow = tomBasedOnDelivDate(delivDate)
   
     let whatToPrepListTom = getOrdersList(tomorrow, database);
     let whatToMakeToday = whatToPrepList.filter((set) => whatToPrepFilter(set));

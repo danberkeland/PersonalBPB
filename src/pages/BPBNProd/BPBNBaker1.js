@@ -55,6 +55,11 @@ const ButtonWrapper = styled.div`
 
 const compose = new ComposeWhatToBake();
 
+const doobieStuff = [
+  { Prod: "Doobie Buns", Bucket: "DONE", Mix: "YES", Bake: "NO" },
+  { Prod: "Siciliano", Bucket: "YES", Mix: "NO", Bake: "YES" },
+];
+
 function BPBNBaker1() {
   const [delivDate, setDelivDate] = useState(todayPlus()[0]);
   const { setIsLoading } = useContext(ToggleContext);
@@ -106,7 +111,7 @@ function BPBNBaker1() {
   };
 
   const handlePrint = () => {
-    ExportPastryPrepPdf(delivDate, doughs, infoWrap);
+    ExportPastryPrepPdf(delivDate, doughs, infoWrap, doobieStuff);
   };
 
   const header = (
@@ -152,6 +157,7 @@ function BPBNBaker1() {
         whatToPrep={whatToPrep}
         setWhatToPrep={setWhatToPrep}
         deliv = {delivDate}
+        doobieStuff = {doobieStuff}
       />
       <BPBNBaker1Dough
         doughs={doughs}

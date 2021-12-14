@@ -33,7 +33,7 @@ const buildTable = (title, doc, body, col) => {
   });
 };
 
-export const ExportPastryPrepPdf = async (delivDate, doughs, infoWrap) => {
+export const ExportPastryPrepPdf = async (delivDate, doughs, infoWrap, doobieStuff) => {
   
   for (let dgh of doughs) {
     console.log("dgh",dgh)
@@ -66,6 +66,16 @@ export const ExportPastryPrepPdf = async (delivDate, doughs, infoWrap) => {
     { header: "Need Early", dataKey: "needEarly" },
   ];
   buildTable(`Bake List`, doc, infoWrap.whatToMake, col);
+
+  finalY = doc.previousAutoTable.finalY + tableToNextTitle;
+
+  col = [
+    { header: "Product", dataKey: "Prod" },
+    { header: "Bucket", dataKey: "Bucket" },
+    { header: "Mix", dataKey: "Mix" },
+    { header: "Bake", dataKey: "Bake" },
+  ];
+  buildTable(`Doobie Stuff`, doc, doobieStuff, col);
 
   finalY = doc.previousAutoTable.finalY + tableToNextTitle;
 

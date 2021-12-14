@@ -29,11 +29,13 @@ const WholeBoxPhone = styled.div`
 
 const compose = new ComposeWhatToPrep();
 
-function BPBNBaker1WhatToPrep({ whatToPrep, setWhatToPrep, deliv }) {
+function BPBNBaker1WhatToPrep({ whatToPrep, setWhatToPrep, deliv, doobieStuff }) {
   const { setIsLoading } = useContext(ToggleContext);
 
   const [width, setWidth] = useState(window.innerWidth);
   const breakpoint = 620;
+
+  
 
   useEffect(() => {
     window.addEventListener("resize", () => setWidth(window.innerWidth));
@@ -56,6 +58,14 @@ function BPBNBaker1WhatToPrep({ whatToPrep, setWhatToPrep, deliv }) {
     <React.Fragment>
       <h1>What To Prep {convertDatetoBPBDate(delivDate)}</h1>
 
+      <DataTable value={doobieStuff} className="p-datatable-sm">
+        <Column field="Prod" header="Product"></Column>
+        <Column field="Bucket" header="Bucket"></Column>
+        <Column field="Mix" header="Mix"></Column>
+        <Column field="Bake" header="Bake"></Column>
+      </DataTable>
+      <br/>
+
       <DataTable value={whatToPrep} className="p-datatable-sm">
         <Column field="prodName" header="Product"></Column>
         <Column field="qty" header="Qty"></Column>
@@ -66,7 +76,9 @@ function BPBNBaker1WhatToPrep({ whatToPrep, setWhatToPrep, deliv }) {
   return (
     <React.Fragment>
       {width > breakpoint ? (
-        <WholeBox>{innards}</WholeBox>
+        <WholeBox>
+
+          {innards}</WholeBox>
       ) : (
         <WholeBoxPhone>{innards}</WholeBoxPhone>
       )}

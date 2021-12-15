@@ -53,6 +53,11 @@ const ButtonWrapper = styled.div`
   background: #ffffff;
 `;
 
+const doobieStuff = [
+  { Prod: "Doobie Buns", Bucket: "DONE", Mix: "YES", Bake: "NO" },
+  { Prod: "Siciliano", Bucket: "YES", Mix: "NO", Bake: "YES" },
+];
+
 const compose = new ComposeWhatToBakeBackup();
 
 function BPBNBaker1Backup() {
@@ -106,7 +111,7 @@ function BPBNBaker1Backup() {
   };
 
   const handlePrint = () => {
-    ExportPastryPrepPdf(delivDate, doughs, infoWrap);
+    ExportPastryPrepPdf(delivDate, doughs, infoWrap,doobieStuff);
   };
 
   const header = (
@@ -152,6 +157,7 @@ function BPBNBaker1Backup() {
         whatToPrep={whatToPrep}
         setWhatToPrep={setWhatToPrep}
         deliv={delivDate}
+        doobieStuff = {doobieStuff}
       />
       <BPBNBaker1Dough
         doughs={doughs}

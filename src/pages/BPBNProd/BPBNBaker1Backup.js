@@ -54,8 +54,8 @@ const ButtonWrapper = styled.div`
 `;
 
 const doobieStuff = [
-  { Prod: "Doobie Buns", Bucket: "DONE", Mix: "NO", Bake: "YES" },
-  { Prod: "Siciliano", Bucket: "YES", Mix: "YES", Bake: "NO" },
+  { Prod: "Doobie Buns", Bucket: "DONE", Mix: "NO", Bake: "NO" },
+  { Prod: "Siciliano", Bucket: "DONE", Mix: "DONE", Bake: "NO" },
 ];
 
 const compose = new ComposeWhatToBakeBackup();

@@ -57,7 +57,7 @@ const compose = new ComposeWhatToBake();
 
 const doobieStuff = [
   { Prod: "Doobie Buns", Bucket: "DONE", Mix: "NO", Bake: "NO" },
-  { Prod: "Siciliano", Bucket: "DONE", Mix: "DONE", Bake: "NO" },
+  { Prod: "Siciliano", Bucket: "DONE", Mix: "NO", Bake: "YES" },
 ];
 
 function BPBNBaker1() {

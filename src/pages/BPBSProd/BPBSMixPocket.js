@@ -159,9 +159,20 @@ function BPBSMixPocket() {
     }
   };
 
-  const handleClick = (e, amt, mixNumber) => {
-   
+  const handleClick = (e, amt, mixNumber, oldDough, neededDough) => {
+    let oldStuff
+    console.log("oldDough",oldDough)
+    console.log("amt",amt*.2)
+    if (oldDough<(amt*.2)){
+      oldStuff = oldDough
+    } else {
+      oldStuff = amt*.2
+    }
+    console.log("oldStuff",oldStuff)
+    amt = amt - oldStuff
     amt = amt/mixNumber
+    let oldStuffDiv = oldStuff/mixNumber
+    console.log("oldStuffDiv",oldStuffDiv)
     let doughName = e.target.id.split("_")[0];
     let components = doughComponents.filter((dgh) => dgh.dough === doughName);
     let wetWeight = Number(
@@ -374,13 +385,16 @@ function BPBSMixPocket() {
         (dgh.componentName === "Salt" ||
         dgh.componentName === "Yeast")
     );
+
+    
+    console.log("salty",saltyeastFilt)
     if (saltyeastFilt.length > 0) {
       doc.addPage({
         format: [2, 4],
         orientation: "l",
       });
       doc.setFontSize(14);
-      doc.text(`${doughName} - Salt & Yeast`, 0.2, 0.36);
+      doc.text(`${doughName} (Old Dough ${oldStuffDiv.toFixed(0)} lb.)`, 0.2, 0.36);
       doc.setFontSize(10)
       doc.text(`${mixNumber} x ${amt.toFixed(2)} lb. Batch`,2.6,.36)
 
@@ -529,6 +543,7 @@ function BPBSMixPocket() {
     setShortWeight(Number(e.target.value));
   };
 
+
   return (
     <React.Fragment>
       <WholeBox>
@@ -588,9 +603,9 @@ function BPBSMixPocket() {
                   handleClick(
                     e,
                     Number(dough.buffer) +
-                      Number(dough.needed) + Number(shortWeight) -
-                      Number(dough.oldDough),
-                      1
+                      Number(dough.needed) + Number(shortWeight),
+                      1,
+                      Number(dough.oldDough)
                   )
                 }
                 label="Print 1x Set"
@@ -606,9 +621,11 @@ function BPBSMixPocket() {
                   handleClick(
                     e,
                     Number(dough.buffer) +
-                      Number(dough.needed) + Number(shortWeight) -
-                      Number(dough.oldDough),
-                      2
+                      Number(dough.needed) + Number(shortWeight),
+                     
+                      2,
+                      Number(dough.oldDough)
+                      
                   )
                 }
                 label="Print 2x Set"
@@ -624,9 +641,9 @@ function BPBSMixPocket() {
                   handleClick(
                     e,
                     Number(dough.buffer) +
-                      Number(dough.needed) + Number(shortWeight) -
-                      Number(dough.oldDough),
-                      3
+                      Number(dough.needed) + Number(shortWeight),
+                      3,
+                      Number(dough.oldDough)
                   )
                 }
                 label="Print 3x Set"

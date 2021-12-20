@@ -521,6 +521,7 @@ export const getDough = /* GraphQL */ `
       bucketSets
       preBucketSets
       updatePreBucket
+      saltInDry
       createdAt
       updatedAt
     }
@@ -547,6 +548,7 @@ export const listDoughs = /* GraphQL */ `
         bucketSets
         preBucketSets
         updatePreBucket
+        saltInDry
         createdAt
         updatedAt
       }

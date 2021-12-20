@@ -38,6 +38,7 @@ const DoughInfo = ({ selectedDough, setSelectedDough, setIsModified }) => {
   };
 
   const onExit = (e) => {
+    console.log("choices",e,selectedDough,e.target.id)
     setSelectedDough(fixValue(e, selectedDough));
     setIsModified(true);
   };
@@ -60,6 +61,11 @@ const DoughInfo = ({ selectedDough, setSelectedDough, setIsModified }) => {
 ];
 
 const isBakeReady = [
+  {label: 'yes', value: true},
+  {label: 'no', value: false},
+];
+
+const saltInDry = [
   {label: 'yes', value: true},
   {label: 'no', value: false},
 ];
@@ -91,6 +97,10 @@ const isBakeReady = [
         <div className="p-col">
           <label htmlFor="isBakeReady">One Day from scale to bake?</label>
           <InfoDrop id="isBakeReady" options={isBakeReady}/>
+        </div>
+        <div className="p-col">
+          <label htmlFor="saltInDry">Include Salt with Dry?</label>
+          <InfoDrop id="saltInDry" options={saltInDry}/>
         </div>
       </InfoBoxes>
       <InfoBoxes>

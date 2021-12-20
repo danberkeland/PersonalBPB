@@ -133,8 +133,9 @@ function BPBNBuckets({ loc }) {
     
     let doughName = e.target.id.split("_")[0];
     let components = doughComponents.filter((dgh) => dgh.dough === doughName);
+    let dough = doughs[doughs.findIndex((dgh) => dgh.doughName === doughName)]
     let wetWeight = Number(
-      doughs[doughs.findIndex((dgh) => dgh.doughName === doughName)].hydration
+      dough.hydration
     );
     let wetList = components
       .filter((dgh) => dgh.componentType === "wet")
@@ -195,13 +196,23 @@ function BPBNBuckets({ loc }) {
         ct += 0.24;
       }
     }
-
-    let dryplusFilt = components.filter(
-      (dgh) =>
-        dgh.componentType === "dryplus" &&
-        dgh.componentName !== "Salt" &&
-        dgh.componentName !== "Yeast"
-    );
+    let dryplusFilt
+    console.log("dough",dough)
+    if (dough.saltInDry){
+      dryplusFilt = components.filter(
+        (dgh) =>
+          dgh.componentType === "dryplus" &&
+          dgh.componentName !== "Yeast"
+      );
+    } else {
+      dryplusFilt = components.filter(
+        (dgh) =>
+          dgh.componentType === "dryplus" &&
+          dgh.componentName !== "Salt" &&
+          dgh.componentName !== "Yeast"
+      );
+    }
+    
     if (dryplusFilt.length > 0) {
       for (let item of dryplusFilt) {
         doc.text(`${item.componentName}`, 1.2, ct);
@@ -306,12 +317,27 @@ function BPBNBuckets({ loc }) {
         ct += 0.24;
       }
     }
+    let saltyeastFilt
 
-    let saltyeastFilt = components.filter(
-      (dgh) =>
-        dgh.componentType === "dryplus" &&
-        (dgh.componentName === "Salt" || dgh.componentName === "Yeast")
-    );
+
+    if (dough.saltInDry){
+      saltyeastFilt = components.filter(
+        (dgh) =>
+          dgh.componentType === "dryplus" &&
+          (dgh.componentName === "Yeast")
+      );
+    } else {
+      saltyeastFilt = components.filter(
+        (dgh) =>
+          dgh.componentType === "dryplus" &&
+          (dgh.componentName === "Salt" || dgh.componentName === "Yeast")
+      );
+    }
+
+
+
+
+    
     if (saltyeastFilt.length > 0) {
       doc.addPage({
         format: [2, 4],

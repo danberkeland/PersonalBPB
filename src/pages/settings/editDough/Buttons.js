@@ -162,6 +162,7 @@ const Buttons = ({
       hydration: selectedDough.hydration,
       buffer: selectedDough.buffer,
       isBakeReady: selectedDough.isBakeReady,
+      saltInDry: selectedDough.saltInDry,
       mixedWhere: selectedDough.mixedWhere,
 
       _version: selectedDough["_version"],

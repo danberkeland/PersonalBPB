@@ -755,6 +755,7 @@ export const createDough = /* GraphQL */ `
       bucketSets
       preBucketSets
       updatePreBucket
+      saltInDry
       createdAt
       updatedAt
     }
@@ -779,6 +780,7 @@ export const updateDough = /* GraphQL */ `
       bucketSets
       preBucketSets
       updatePreBucket
+      saltInDry
       createdAt
       updatedAt
     }
@@ -803,6 +805,7 @@ export const deleteDough = /* GraphQL */ `
       bucketSets
       preBucketSets
       updatePreBucket
+      saltInDry
       createdAt
       updatedAt
     }

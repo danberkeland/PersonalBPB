@@ -191,6 +191,7 @@ export default class ComposeDough {
       dgh.mixedWhere = doughInd.mixedWhere;
       dgh.preBucketSets = doughInd.preBucketSets
       dgh.updatePreBucket = doughInd.updatePreBucket
+      dgh.saltInDry = doughInd.saltInDry
       dgh.hydration = doughInd.hydration;
       dgh.oldDough = doughInd.oldDough;
       dgh.buffer = doughInd.buffer;

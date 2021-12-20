@@ -178,6 +178,7 @@ type Dough @model @auth(rules: [{allow: public}]) {
   bucketSets: Int
   preBucketSets: Int
   updatePreBucket: String
+  saltInDry: Boolean
  
 }
 

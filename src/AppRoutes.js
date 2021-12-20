@@ -79,7 +79,7 @@ function AppRoutes({ authType, userNum }) {
           <Route path="/BPBNProd/BPBNBaker1Backup" component={BPBNBaker1Backup} />
           <Route path="/BPBNProd/BPBNBaker2" component={BPBNBaker2} />
           <Route path="/BPBNProd/BPBNBaker2Backup" component={BPBNBaker2Backup} />
-          <Route path="/BPBNProd/Buckets" component={BPBNBuckets} />
+          <Route path="/BPBNProd/Buckets" render={(props)=><BPBNBuckets {...props} loc={'Carlton'}/>} />
           <Route path="/BPBNProd/WhoBake" component={WhoBake} />
           <Route path="/BPBNProd/WhoShape" component={WhoShape} />
           <Route path="/doughCalc/doughCalc" component={DoughCalc} />
@@ -88,6 +88,7 @@ function AppRoutes({ authType, userNum }) {
           <Route path="/BPBSProd/BPBSWhatToMake" component={BPBSWhatToMake} />
           <Route path="/BPBSProd/BPBSWhatToMakeBackup" component={BPBSWhatToMakeBackup} />
           <Route path="/BPBSProd/BPBSMixPocket" component={BPBSMixPocket} />
+          <Route path="/BPBSProd/Buckets" render={(props)=><BPBNBuckets {...props} loc={'Prado'}/>} />
           <Route path="/BPBSProd/CroixToMake" component={CroixToMake} />
           <Route path="/BPBSProd/CroixCount" component={CroixCount} />
           <Route path="/BPBSProd/BPBSSetOut" render={(props)=><BPBNSetOut {...props} loc={'Prado'} />} />

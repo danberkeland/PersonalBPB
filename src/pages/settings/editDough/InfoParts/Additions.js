@@ -34,6 +34,7 @@ const addIngs = [
   { addIng: "Gluten Powder" },
   { addIng: "Malt Syrup" },
   { addIng: "Barley Malt Flour" },
+  { addIng: "Croix Scraps"}
 ];
 
 const Additions = ({

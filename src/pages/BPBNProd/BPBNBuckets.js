@@ -66,7 +66,7 @@ const addUp = (acc, val) => {
 const clonedeep = require("lodash.clonedeep");
 const compose = new ComposeDough();
 
-function BPBNBuckets() {
+function BPBNBuckets({ loc }) {
   const { setIsLoading } = useContext(ToggleContext);
   const [delivDate, setDelivDate] = useState(todayPlus()[0]);
   const [doughs, setDoughs] = useState([]);
@@ -77,8 +77,11 @@ function BPBNBuckets() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const gatherDoughInfo = (database) => {
-    let doughData = compose.returnDoughBreakDown(database, "Carlton",delivDate);
-    setDoughs(doughData.doughs);
+    let doughData = compose.returnDoughBreakDown(database, loc ,delivDate);
+    console.log("doughs",doughData.doughs)
+    console.log("loc",loc)
+    let finalDoughs = doughData.doughs.filter(dou => dou.mixedWhere===loc)
+    setDoughs(finalDoughs);
     setDoughComponents(doughData.doughComponents);
   };
 
@@ -338,7 +341,7 @@ function BPBNBuckets() {
   return (
     <React.Fragment>
       <WholeBox>
-        <h1>BPBN Dough Stickers</h1>
+        <h1>{loc} Dough Stickers</h1>
         {doughs.map((dough) => (
           <React.Fragment key={dough.id + "_firstFrag"}>
             <h3>
@@ -389,7 +392,22 @@ function BPBNBuckets() {
                 className="p-button-rounded p-button-lg"
                 icon="pi pi-print"
               >
-                Print Sticker Set
+                Print Today Set
+              </ButtonStyle>
+              <ButtonStyle
+                key={dough.id + "_print"}
+                id={dough.doughName + "_print"}
+                onClick={(e) =>
+                  handleClick(
+                    e,
+                    dough.batchSize, 0
+                  )
+                }
+                label="Print Sticker Set"
+                className="p-button-rounded p-button-lg"
+                icon="pi pi-print"
+              >
+                Print Default Set
               </ButtonStyle>
               
             </ThreeColumnGrid>

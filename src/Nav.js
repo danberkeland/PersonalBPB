@@ -93,6 +93,12 @@ function Nav() {
               },
             },
             {
+              label: "BPBS Buckets",
+              command: () => {
+                window.location = "/BPBSProd/Buckets";
+              },
+            },
+            {
               label: "Croix To Make",
               command: () => {
                 window.location = "/BPBSProd/CroixToMake";

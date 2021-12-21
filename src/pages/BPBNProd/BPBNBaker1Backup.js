@@ -55,7 +55,7 @@ const ButtonWrapper = styled.div`
 
 const doobieStuff = [
   { Prod: "Doobie Buns", Bucket: "DONE", Mix: "NO", Bake: "NO" },
-  { Prod: "Siciliano", Bucket: "DONE", Mix: "NO", Bake: "YES" },
+  { Prod: "Siciliano", Bucket: "DONE", Mix: "NO", Bake: "NO" },
 ];
 
 const compose = new ComposeWhatToBakeBackup();
@@ -80,6 +80,15 @@ function BPBNBaker1Backup() {
   useEffect(() => {
     window.addEventListener("resize", () => setWidth(window.innerWidth));
   });
+
+  useEffect(() => {
+    console.log("todayPlus",todayPlus()[1])
+    if (todayPlus()[1] === '2021-12-24'){
+      setDelivDate('2021-12-25')
+    } else {
+      setDelivDate(todayPlus()[1])
+    }
+  },[])
 
   useEffect(() => {
     setInfoWrap({

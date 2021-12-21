@@ -80,7 +80,16 @@ function BPBSMixPocket() {
   const [ doughComponents, setDoughComponents ] = useState([]);
   const [ shortWeight, setShortWeight ] = useState(0);
 
-  let twoDay = todayPlus()[2];
+  let twoDay  = todayPlus()[2];
+
+  useEffect(() => {
+    console.log("todayPlus",todayPlus()[0])
+    if (todayPlus()[0] === '2021-12-24'){
+      setDelivDate('2021-12-25')
+    } else {
+      setDelivDate(todayPlus()[0])
+    }
+  },[])
 
   useEffect(() => {
     try{

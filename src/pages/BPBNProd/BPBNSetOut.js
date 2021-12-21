@@ -58,6 +58,17 @@ function BPBNSetOut({ loc }) {
   const [delivDate, setDelivDate] = useState(todayPlus()[0]);
   const [pastryPrep, setPastryPrep] = useState([]);
   const [almondPrep, setAlmondPrep] = useState([]);
+
+
+  useEffect(() => {
+    console.log("todayPlus",todayPlus()[0])
+    if (todayPlus()[0] === '2021-12-24'){
+      setDelivDate('2021-12-25')
+    } else {
+      setDelivDate(todayPlus()[0])
+    }
+  },[])
+
   
   useEffect(() => {
     confirmDialog({

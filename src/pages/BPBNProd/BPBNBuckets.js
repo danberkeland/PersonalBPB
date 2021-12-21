@@ -76,6 +76,16 @@ function BPBNBuckets({ loc }) {
     promisedData(setIsLoading).then((database) => gatherDoughInfo(database));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+
+  useEffect(() => {
+    console.log("todayPlus",todayPlus()[0])
+    if (todayPlus()[0] === '2021-12-23'){
+      setDelivDate('2021-12-24')
+    } else {
+      setDelivDate(todayPlus()[0])
+    }
+  },[])
+
   const gatherDoughInfo = (database) => {
     let doughData = compose.returnDoughBreakDown(database, loc ,delivDate);
     console.log("doughs",doughData.doughs)

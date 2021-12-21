@@ -57,7 +57,7 @@ const compose = new ComposeWhatToBake();
 
 const doobieStuff = [
   { Prod: "Doobie Buns", Bucket: "DONE", Mix: "NO", Bake: "NO" },
-  { Prod: "Siciliano", Bucket: "DONE", Mix: "NO", Bake: "YES" },
+  { Prod: "Siciliano", Bucket: "DONE", Mix: "NO", Bake: "NO" },
 ];
 
 function BPBNBaker1() {
@@ -80,6 +80,15 @@ function BPBNBaker1() {
   useEffect(() => {
     window.addEventListener("resize", () => setWidth(window.innerWidth));
   });
+
+  useEffect(() => {
+    console.log("todayPlus",todayPlus()[0])
+    if (todayPlus()[0] === '2021-12-24'){
+      setDelivDate('2021-12-25')
+    } else {
+      setDelivDate(todayPlus()[0])
+    }
+  },[])
 
   useEffect(() => {
     setInfoWrap({

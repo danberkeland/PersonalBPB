@@ -68,14 +68,6 @@ function BPBSWhatToMake() {
   const [freezerProds, setFreezerProds] = useState();
   const [pocketsNorth, setPocketsNorth] = useState();
 
-  useEffect(() => {
-    console.log("todayPlus",todayPlus()[0])
-    if (todayPlus()[0] === '2021-12-24'){
-      setDelivDate('2021-12-25')
-    } else {
-      setDelivDate(todayPlus()[0])
-    }
-  },[])
 
   useEffect(() => {
     promisedData(setIsLoading).then((database) => gatherMakeInfo(database));

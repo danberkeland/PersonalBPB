@@ -1,4 +1,4 @@
-import { todayPlus,tomBasedOnDelivDate } from "../../../helpers/dateTimeHelpers";
+import { todayPlus,tomBasedOnDelivDate,TwodayBasedOnDelivDate } from "../../../helpers/dateTimeHelpers";
 import { getFullOrders } from "../../../helpers/CartBuildingHelpers";
 import { getFullProdOrders } from "../../../helpers/CartBuildingHelpers";
 import {
@@ -91,8 +91,12 @@ export default class ComposeWhatToMake {
 
   getFreshProds = (database, delivDate) => {
     const [products, customers, routes, standing, orders] = database;
+    console.log("delivDate",delivDate)
     let makeFreshProds = makeProds(products, this.freshProdFilter);
     let tom = tomBasedOnDelivDate(delivDate)
+    if (delivDate === "2021-12-24"){
+      tom = TwodayBasedOnDelivDate(delivDate)
+    }
     let fullOrdersToday = getFullMakeOrders(delivDate, database);
     let fullOrdersTomorrow = getFullMakeOrders(tom, database);
     for (let make of makeFreshProds) {
@@ -114,6 +118,9 @@ export default class ComposeWhatToMake {
     const [products, customers, routes, standing, orders] = database;
     let makeShelfProds = makeProds(products, this.shelfProdsFilter);
     let tom = tomBasedOnDelivDate(delivDate)
+    if (delivDate === "2021-12-24"){
+      tom = TwodayBasedOnDelivDate(delivDate)
+    }
     let fullOrdersToday = getFullMakeOrders(delivDate, database);
     let fullOrdersTomorrow = getFullProdMakeOrders(tom, database);
   
@@ -142,6 +149,9 @@ export default class ComposeWhatToMake {
     const [products, customers, routes, standing, orders] = database;
     let makeFreezerProds = makeProds(products, this.freezerProdsFilter);
     let tom = tomBasedOnDelivDate(delivDate)
+    if (delivDate === "2021-12-24"){
+      tom = TwodayBasedOnDelivDate(delivDate)
+    }
     let fullOrdersToday = getFullMakeOrders(delivDate, database);
     let fullOrdersTomorrow = getFullProdMakeOrders(tom, database);
     for (let make of makeFreezerProds) {

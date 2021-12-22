@@ -457,6 +457,9 @@ export default class ComposeCroixInfo {
         "2day": 0,
         "3day": 0,
         "4day": 0,
+        "2daybase": 0,
+        "3daybase": 0,
+        "4daybase": 0,
       };
       prodArray.push(newItem);
     }

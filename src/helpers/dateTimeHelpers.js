@@ -84,6 +84,11 @@ export const todayPlus = () => {
   let net15 = DateTime.now().setZone("America/Los_Angeles").plus({ days: 15 });
   let net15Send = net15.toString().split("T")[0];
 
+  let fourDay = DateTime.now()
+    .setZone("America/Los_Angeles")
+    .plus({ days: 4 });
+  let fourDaySend = fourDay.toString().split("T")[0];
+
   return [
     todaySend,
     tomorrowSend,
@@ -96,7 +101,8 @@ export const todayPlus = () => {
     minus4Send,
     minus5Send,
     minus6Send,
-    net15Send
+    net15Send,
+    fourDaySend
   ];
 };
 

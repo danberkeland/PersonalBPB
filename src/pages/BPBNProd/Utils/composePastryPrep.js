@@ -43,8 +43,7 @@ export default class ComposePastryPrep {
     let threeDayList = getOrdersList(threeday, database, true);
 
     let setOutToday = setOutList.filter((set) => setOutFilter(set, loc));
-    console.log("setouttoday", setOutToday);
-
+   
     let almondSetOut = setOutForAlmonds.filter((set) =>
       setOutPlainsForAlmondsFilter(set, loc)
     );
@@ -97,13 +96,7 @@ export default class ComposePastryPrep {
     } catch {
       almondSet = 0;
     }
-    console.log(
-      setOutToday[setOutToday.findIndex((set) => set.prodNick === "pl")].qty
-    );
-    console.log("almonds", almondSet);
-    console.log("twoDay", twoDayFreeze);
-    console.log("threeDay", threeDayFreeze);
-
+  
     if (loc === "Prado") {
       setOutToday[setOutToday.findIndex((set) => set.prodNick === "pl")].qty +=
         twoDayFreeze + threeDayFreeze + almondSet;
@@ -143,9 +136,9 @@ export default class ComposePastryPrep {
 
     const products = database[0];
     let setOutList = getOrdersList(tom, database, true);
-    console.log("bakedNorthTwo", getOrdersList(twoday, database, true));
+   
     let bakedNorthTwoDayList = getOrdersList(twoday, database, true);
-    console.log("bakedNorth", bakedNorthTwoDayList);
+  
 
     let deliveredFrozenTomorrow = setOutList.filter((set) =>
       frozenAlmondFilter(set, loc)
@@ -167,13 +160,13 @@ export default class ComposePastryPrep {
       deliveredFrozenTomorrow,
       products
     );
-    console.log("preSplit", bakedNorthTwoDayList);
+   
     for (let baked of bakedNorthTwoDayList) {
       if (baked.custName === "Back Porch Bakery") {
         baked.qty /= 2;
       }
     }
-    console.log("bakedNorth2Day", bakedNorthTwoDayList);
+    
     bakedNorthTwoDayList = this.makeAddQty(bakedNorthTwoDayList, products);
 
     let bakedNorth2Day;
@@ -190,9 +183,7 @@ export default class ComposePastryPrep {
     } catch {
       delFrozenTom = 0;
     }
-    console.log("delFrozenTomorrow", delFrozenTom);
-    console.log("bakedNorth2Day", bakedNorth2Day);
-
+  
     let freezerAmt = delFrozenTom + bakedNorth2Day;
 
     let newAlmondList = [
@@ -207,11 +198,11 @@ export default class ComposePastryPrep {
 
   makeAddQty = (bakedTomorrow, products) => {
     let makeList2 = Array.from(
-      new Set(bakedTomorrow.map((prod) => prod.prodNick))
-    ).map((mk) => ({
-      prodNick: mk,
+      new Set(bakedTomorrow.map((mk) => ({
+      prodNick: mk.prodNick,
+      forBake: mk.forBake,
       qty: 0,
-    }));
+    }))));
 
     for (let make of makeList2) {
       make.qty = 1;

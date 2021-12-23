@@ -9,6 +9,8 @@ import {
   ThreedayBasedOnDelivDate,
 } from "../../../helpers/dateTimeHelpers";
 
+import { getFullProdOrders } from "../../../helpers/CartBuildingHelpers";
+
 import {
   setOutFilter,
   twoDayFrozenFilter,
@@ -16,10 +18,17 @@ import {
   setOutPlainsForAlmondsFilter,
 } from "../../BPBNProd/Utils/filters";
 
+import ComposePastryPrep from "../../BPBNProd/Utils/composePastryPrep";
+
 import { ceil } from "lodash";
 const { DateTime } = require("luxon");
 
+const compose = new ComposePastryPrep();
 
+let tom = todayPlus()[1];
+let twoDay = todayPlus()[2];
+let threeDay = todayPlus()[3];
+let fourDay = todayPlus()[12];
 
 const makeAddQty = (bakedTomorrow, products) => {
   let makeList2 = Array.from(
@@ -61,7 +70,6 @@ const returnSetOut = (database, loc, delivDate) => {
   let threeDayList = getOrdersList(threeday, database, true);
 
   let setOutToday = setOutList.filter((set) => setOutFilter(set, loc));
-  
 
   let almondSetOut = setOutForAlmonds.filter((set) =>
     setOutPlainsForAlmondsFilter(set, loc)
@@ -113,8 +121,6 @@ const returnSetOut = (database, loc, delivDate) => {
   } catch {
     almondSet = 0;
   }
-  
- 
 
   if (loc === "Prado") {
     setOutToday[setOutToday.findIndex((set) => set.prodNick === "pl")].qty +=
@@ -157,11 +163,9 @@ const returnFreezerDelivs = (database, delivDate) => {
     let newItem = { prodNick: pr, qty: acc };
     frozens.push(newItem);
   }
-  console.log("frozens",frozens)
+  
   return frozens;
 };
-
-
 
 export default class ComposeCroixInfo {
   returnCroixBreakDown = (database, delivDate) => {
@@ -208,8 +212,7 @@ export default class ComposeCroixInfo {
       };
       prodArray.push(newItem);
     }
-    let frozenDelivs = 
-    prodArray = sortAtoZDataByIndex(prodArray, "prod");
+    let frozenDelivs = (prodArray = sortAtoZDataByIndex(prodArray, "prod"));
     return prodArray;
   }
 
@@ -243,16 +246,15 @@ export default class ComposeCroixInfo {
       (prod) =>
         prod.doughType === "Croissant" && prod.packGroup === "baked pastries"
     );
-  
+
     let prods = Array.from(new Set(count.map((co) => co.forBake))).filter(
       (item) => item !== "Almond"
     );
 
     let prodArray = [];
     for (let prod of prods) {
-     
       let ind = products.findIndex((pro) => pro.forBake === prod);
-     
+
       let sheetCount = 0;
       if (products[ind].sheetMake > 0) {
         sheetCount = products[ind].sheetMake;
@@ -270,10 +272,9 @@ export default class ComposeCroixInfo {
   }
 
   getClosingCount = (database, delivDate, setOut, setOutNorthTom) => {
-
     const [products, customers, routes, standing, orders] = database;
-    let freezerDelivs = returnFreezerDelivs(database,todayPlus()[0])
-    
+    let freezerDelivs = returnFreezerDelivs(database, todayPlus()[0]);
+
     let count = products.filter(
       (prod) =>
         prod.doughType === "Croissant" && prod.packGroup === "baked pastries"
@@ -289,21 +290,18 @@ export default class ComposeCroixInfo {
       // calcGoing out
       let setOut = returnSetOut(database, "Prado", todayPlus()[0]);
       let setOutNorthTom = returnSetOut(database, "Carlton", todayPlus()[1]);
-      
-     
 
       //     total frozen deliveries today
 
       let setOutInd;
       let setOutNorthInd;
-     
+
       let ind = products.findIndex((pro) => pro.forBake === prod);
       if (setOut) {
         setOutInd = setOut.findIndex(
           (set) => set.prodNick === products[ind].nickName
         );
         goingOut = setOut[setOutInd].qty;
-        
       }
 
       if (setOutNorthTom) {
@@ -312,18 +310,16 @@ export default class ComposeCroixInfo {
             (set) => set.prodNick === products[ind].nickName
           );
           goingOut = goingOut + setOutNorthTom[setOutNorthInd].qty;
-         
         } catch {}
       }
-
 
       let newItem = {
         prod: prod,
         fixed: products[ind].freezerCount
-        ? products[ind].freezerCount -
-          goingOut +
-          products[ind].sheetMake * products[ind].batchSize
-        : 0,
+          ? products[ind].freezerCount -
+            goingOut +
+            products[ind].sheetMake * products[ind].batchSize
+          : 0,
         qty: products[ind].freezerCount
           ? products[ind].freezerCount -
             goingOut +
@@ -332,28 +328,24 @@ export default class ComposeCroixInfo {
       };
       prodArray.push(newItem);
     }
-    
+
     prodArray = sortAtoZDataByIndex(prodArray, "prod");
-    
-    console.log("prodArray",prodArray)
-    console.log("freezerDelivs",freezerDelivs)
-    for (let fr of freezerDelivs){
-      fr.prodNick = fr.prodNick.substring(2)
+
+    for (let fr of freezerDelivs) {
+      fr.prodNick = fr.prodNick.substring(2);
     }
 
-    for (let prod of prodArray){
-      for (let fr of freezerDelivs){
-        if (fr.prodNick === prod.prod){
-          prod.qty = prod.qty - fr.qty
-          prod.fixed = prod.fixed - fr.qty
+    for (let prod of prodArray) {
+      for (let fr of freezerDelivs) {
+        if (fr.prodNick === prod.prod) {
+          prod.qty = prod.qty - fr.qty;
+          prod.fixed = prod.fixed - fr.qty;
         }
       }
     }
-   
-    console.log("final",prodArray)
+
     return prodArray;
-  
-  }
+  };
 
   NorthCroixBakeFilter = (ord) => {
     return (
@@ -379,16 +371,18 @@ export default class ComposeCroixInfo {
       let ind = products.findIndex((pro) => pro.forBake === prod);
       let newItem = {
         prod: prod,
-        fixed: products[ind].freezerNorthClosing ? products[ind].freezerNorthClosing : 0,
-        qty: products[ind].freezerNorthClosing ? products[ind].freezerNorthClosing : 0,
+        fixed: products[ind].freezerNorthClosing
+          ? products[ind].freezerNorthClosing
+          : 0,
+        qty: products[ind].freezerNorthClosing
+          ? products[ind].freezerNorthClosing
+          : 0,
       };
       prodArray.push(newItem);
     }
     prodArray = sortAtoZDataByIndex(prodArray, "prod");
-    console.log("prodArray",prodArray)
+   
     return prodArray;
-
-
 
     /*
     const [products, customers, routes, standing, orders] = database;
@@ -436,7 +430,7 @@ export default class ComposeCroixInfo {
     // apply to prodArray
     return prodArray;
     */
-  }
+  };
 
   getProjectionCount(database, delivDate) {
     const [products, customers, routes, standing, orders] = database;
@@ -450,13 +444,13 @@ export default class ComposeCroixInfo {
 
     let prodArray = [];
     for (let prod of prods) {
-      let ind = products.findIndex((pro) => pro.forBake === prod);
       let newItem = {
         prod: prod,
         tom: 0,
         "2day": 0,
         "3day": 0,
         "4day": 0,
+        tombase: 0,
         "2daybase": 0,
         "3daybase": 0,
         "4daybase": 0,
@@ -464,8 +458,79 @@ export default class ComposeCroixInfo {
       prodArray.push(newItem);
     }
     prodArray = sortAtoZDataByIndex(prodArray, "prod");
+
+    prodArray = addToCroix(prodArray, database, tom, "tom");
+    prodArray = addToCroix(prodArray, database, twoDay, "2day");
+    prodArray = addToCroix(prodArray, database, threeDay, "3day");
+    prodArray = addToCroix(prodArray, database, fourDay, "4day");
+
     return prodArray;
-    
   }
-  
 }
+
+const addToCroix = (prodArray, database, delivDate,col) => {
+  const [products, customers, routes, standing, orders] = database;
+  let pastryPrepData = compose.returnPastryPrepBreakDown(
+    delivDate,
+    database,
+    "Prado"
+  );
+  let pastryPrepDataSouth = compose.returnPastryPrepBreakDown(
+    delivDate,
+    database,
+    "Carlton"
+  );
+  let ords = getFullProdOrders(delivDate, database);
+  
+  for (let ord of ords){
+    let ind = products.findIndex(pro => pro.prodName === ord.prodName)
+    ord.forBake = products[ind].forBake
+    try{
+      ord.forBake = ord.forBake.substring(2)
+    }catch{}
+    ord.packGroup = products[ind].packGroup
+   
+  }
+
+  ords = ords.filter(or => or.packGroup === "frozen pastries")
+  
+
+  for (let prod of prodArray) {
+    let ind, setOut;
+    try {
+      ind = pastryPrepData.setOut.findIndex(
+        (past) => past.forBake === prod.prod
+      );
+      setOut = pastryPrepData.setOut[ind].qty;
+    } catch {}
+
+    prod[col+"base"] = Number(setOut);
+  }
+
+  for (let prod of prodArray) {
+    let ind2, goingNorth;
+    try {
+      ind2 = pastryPrepDataSouth.setOut.findIndex(
+        (past) => past.forBake === prod.prod
+      );
+      goingNorth = ind2>-1 ? Number(pastryPrepDataSouth.setOut[ind2].qty) : 0
+    } catch {}
+
+    prod[col+"base"] = prod[col+"base"] + goingNorth;
+    prod[col] = prod[col+"base"]
+  }
+
+  for (let prod of prodArray){
+    let count = 0
+    for (let ord of ords){
+      if (prod.prod === ord.forBake){
+        count += Number(ord.qty)
+      }
+    }
+   
+    prod[col+"base"] = prod[col+"base"] + count;
+    prod[col] = prod[col+"base"]
+  }
+
+  return prodArray;
+};

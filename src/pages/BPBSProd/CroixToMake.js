@@ -88,25 +88,24 @@ function CroixToMake() {
   const projectionHeader = <div>EOD Projections</div>;
 
   const Toggle = (e, which) => {
-    console.log(which);
+   
     let newMod = clonedeep(mod);
     if (newMod === true) {
       submitNewNumbers(which);
     }
-    console.log("mod", newMod);
+    
     setMod(!newMod);
     setModType(which);
   };
 
   const submitNewNumbers = async (which) => {
-    console.log("Submitting " + which);
+  
     let prodToMod = clonedeep(products);
     if (which === "opening") {
       setIsLoading(true);
       for (let op of openingCount) {
         for (let prod of prodToMod) {
-          console.log("op", op);
-          console.log("prod", prod);
+         
           let itemUpdate;
           if (op.prod === prod.forBake) {
             itemUpdate = {
@@ -130,8 +129,7 @@ function CroixToMake() {
       setIsLoading(true);
       for (let op of makeCount) {
         for (let prod of prodToMod) {
-          console.log("op", op);
-          console.log("prod", prod);
+         
           let itemUpdate;
           if (op.prod === prod.forBake) {
             itemUpdate = {
@@ -207,8 +205,7 @@ function CroixToMake() {
   );
 
   const handleInput = (e, which) => {
-    console.log("e", e);
-
+  
     return (
       <InputText
         className="p-inputtext-sm"
@@ -227,7 +224,7 @@ function CroixToMake() {
   };
 
   const numHolder = (e, which, day) => {
-    console.log("e", e);
+   
     let num = e.qty;
     if (which === "proj") {
       num = day;
@@ -250,7 +247,7 @@ function CroixToMake() {
 
   const setInfo = (e, which, prod) => {
     if (which === "opening") {
-      console.log(e.target.value, which, prod);
+      
       let cloneOpeningCount = clonedeep(openingCount);
       let cloneClosingCount = clonedeep(closingCount);
       for (let op of cloneOpeningCount) {
@@ -265,7 +262,7 @@ function CroixToMake() {
       setOpeningCount(cloneOpeningCount);
     }
     if (which === "sheets") {
-      console.log(e.target.value, which, prod);
+     
       let ind2 = products.findIndex((pro) => pro.forBake === prod);
       let cloneMakeCount = clonedeep(makeCount);
       let cloneClosingCount = clonedeep(closingCount);
@@ -284,11 +281,10 @@ function CroixToMake() {
       setMakeCount(cloneMakeCount);
     }
     if (which === "closing") {
-      console.log(e.target.value, which, prod);
+     
       let cloneOpeningCount = clonedeep(openingCount);
       let cloneClosingCount = clonedeep(closingCount);
-      console.log("open", cloneOpeningCount);
-      console.log("close", cloneClosingCount);
+     
       for (let op of cloneOpeningCount) {
         if (op.prod === prod) {
           let ind = cloneClosingCount.findIndex((cl) => cl.prod === op.prod);
@@ -427,19 +423,19 @@ function CroixToMake() {
               ></Column>
               <Column
                 header="TOM"
-                body={(e) => numHolder(e, "proj", e.tom)}
+                body={(e) => numHolder(e, "proj", e.tombase)}
               ></Column>
               <Column
                 header="2DAY"
-                body={(e) => numHolder(e, "proj", e["2day"])}
+                body={(e) => numHolder(e, "proj", e.tombase+ e["2daybase"])}
               ></Column>
               <Column
                 header="3DAY"
-                body={(e) => numHolder(e, "proj", e["3day"])}
+                body={(e) => numHolder(e, "proj", e.tombase+ e["2daybase"]+e["3daybase"])}
               ></Column>
               <Column
                 header="4DAY"
-                body={(e) => numHolder(e, "proj", e["4day"])}
+                body={(e) => numHolder(e, "proj", e.tombase+ e["2daybase"]+e["3daybase"]+e["4daybase"])}
               ></Column>
             </DataTable>
           </BorderBox>

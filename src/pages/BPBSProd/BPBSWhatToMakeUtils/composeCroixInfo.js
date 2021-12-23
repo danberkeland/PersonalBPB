@@ -25,6 +25,7 @@ const { DateTime } = require("luxon");
 
 const compose = new ComposePastryPrep();
 
+let today = todayPlus()[0];
 let tom = todayPlus()[1];
 let twoDay = todayPlus()[2];
 let threeDay = todayPlus()[3];
@@ -446,10 +447,12 @@ export default class ComposeCroixInfo {
     for (let prod of prods) {
       let newItem = {
         prod: prod,
+        today: 0,
         tom: 0,
         "2day": 0,
         "3day": 0,
         "4day": 0,
+        todaybase: 0,
         tombase: 0,
         "2daybase": 0,
         "3daybase": 0,
@@ -459,6 +462,7 @@ export default class ComposeCroixInfo {
     }
     prodArray = sortAtoZDataByIndex(prodArray, "prod");
 
+    prodArray = addToCroix(prodArray, database, today, "today")
     prodArray = addToCroix(prodArray, database, tom, "tom");
     prodArray = addToCroix(prodArray, database, twoDay, "2day");
     prodArray = addToCroix(prodArray, database, threeDay, "3day");

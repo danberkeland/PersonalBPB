@@ -227,7 +227,7 @@ function CroixToMake() {
    
     let num = e.qty;
     if (which === "proj") {
-      num = day;
+      num = 0 - day;
     }
     return (
       <InputText
@@ -378,7 +378,7 @@ function CroixToMake() {
             <BorderBox>
               <DataTable
                 id="closingCount"
-                value={closingCount}
+                value={projectionCount}
                 header={closeHeader}
                 footer={modifyClosing}
               >
@@ -404,7 +404,7 @@ function CroixToMake() {
                   <Column
                     header="Qty"
                     id="closing"
-                    body={(e) => numHolder(e, "closing")}
+                    body={(e) => numHolder(e, "proj", e.todaybase)}
                   ></Column>
                 )}
               </DataTable>
@@ -423,19 +423,19 @@ function CroixToMake() {
               ></Column>
               <Column
                 header="TOM"
-                body={(e) => numHolder(e, "proj", e.tombase)}
+                body={(e) => numHolder(e, "proj", e.todaybase + e.tombase)}
               ></Column>
               <Column
                 header="2DAY"
-                body={(e) => numHolder(e, "proj", e.tombase+ e["2daybase"])}
+                body={(e) => numHolder(e, "proj", e.todaybase + e.tombase+ e["2daybase"])}
               ></Column>
               <Column
                 header="3DAY"
-                body={(e) => numHolder(e, "proj", e.tombase+ e["2daybase"]+e["3daybase"])}
+                body={(e) => numHolder(e, "proj", e.todaybase + e.tombase+ e["2daybase"]+e["3daybase"])}
               ></Column>
               <Column
                 header="4DAY"
-                body={(e) => numHolder(e, "proj", e.tombase+ e["2daybase"]+e["3daybase"]+e["4daybase"])}
+                body={(e) => numHolder(e, "proj", e.todaybase + e.tombase+ e["2daybase"]+e["3daybase"]+e["4daybase"])}
               ></Column>
             </DataTable>
           </BorderBox>

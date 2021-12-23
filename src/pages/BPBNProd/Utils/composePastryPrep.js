@@ -203,8 +203,17 @@ export default class ComposePastryPrep {
       forBake: mk.forBake,
       qty: 0,
     }))));
+    let hold = ''
+    let newMakeArray = []
+    for (let make of makeList2){
+      let check = make.prodNick
+      if (check !== hold){
+        newMakeArray.push(make)
+        hold = check
+      }
+    }
 
-    for (let make of makeList2) {
+    for (let make of newMakeArray) {
       make.qty = 1;
 
       let qtyAccToday = 0;
@@ -222,6 +231,6 @@ export default class ComposePastryPrep {
           products.findIndex((prod) => prod.nickName === make.prodNick)
         ].id;
     }
-    return makeList2;
+    return newMakeArray;
   };
 }

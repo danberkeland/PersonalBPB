@@ -61,7 +61,7 @@ const doobieStuff = [
 ];
 
 function BPBNBaker1() {
-  const [delivDate, setDelivDate] = useState(todayPlus()[0]);
+  const [delivDate, setDelivDate] = useState('2021-12-25');
   const { setIsLoading } = useContext(ToggleContext);
   const [whatToMake, setWhatToMake] = useState();
   const [whatToPrep, setWhatToPrep] = useState();

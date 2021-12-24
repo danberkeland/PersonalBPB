@@ -115,7 +115,7 @@ function BPBNBaker1() {
   }, [delivDate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const gatherWhatToMakeInfo = (database) => {
-    let whatToMakeData = compose.returnWhatToMakeBreakDown(delivDate, database);
+    let whatToMakeData = compose.returnWhatToMakeBreakDown("2021-12-24", database);
     setWhatToMake(whatToMakeData.whatToMake);
   };
 

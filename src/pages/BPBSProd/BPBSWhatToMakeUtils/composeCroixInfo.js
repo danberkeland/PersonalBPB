@@ -340,7 +340,13 @@ export default class ComposeCroixInfo {
 
     for (let prod of prodArray) {
       for (let fr of freezerDelivs) {
-        if (fr.prodNick === prod.prod) {
+        console.log("prodNick",fr.prodNick)
+        console.log("prod",prod.prod)
+        let pro = prod.prod
+        if(pro==="choc"){
+          pro="ch"
+        }
+        if (fr.prodNick === pro) {
           prod.qty = prod.qty - fr.qty;
           prod.fixed = prod.fixed - fr.qty;
         }

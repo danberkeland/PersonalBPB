@@ -75,6 +75,7 @@ function CroixToMake() {
     setOpeningCount(makeData.openingCount);
     setMakeCount(makeData.makeCount);
     setClosingCount(makeData.closingCount);
+    console.log("prj",makeData.projectionCount)
     setProjectionCount(makeData.projectionCount);
     setProducts(makeData.products);
   };

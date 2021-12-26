@@ -25,6 +25,7 @@ import { confirmDialog } from "primereact/confirmdialog";
 import { Toast } from 'primereact/toast';
 
 import ComposeNorthList from "../logistics/utils/composeNorthList";
+import ComposeCroixInfo from "../BPBSProd/BPBSWhatToMakeUtils/composeCroixInfo";
 
 import { getOrdersList } from "../BPBNProd/Utils/utils";
 import { tomBasedOnDelivDate } from "../../helpers/dateTimeHelpers";
@@ -83,6 +84,8 @@ const DateStyle = styled.div`
   color: grey;
   margin: 5px 10px;
 `;
+
+const composer = new ComposeCroixInfo();
 
 function Ordering({ authType }) {
   const [database, setDatabase] = useState([]);
@@ -230,6 +233,19 @@ function Ordering({ authType }) {
           }
           
           if (prod.freezerNorthFlag === today) {
+            try{
+              let projectionCount = composer.getProjectionCount(database, delivDate);
+             
+              for (let proj of projectionCount){
+                if (prod.forBake === proj.prod){
+                  prod.freezerCount = proj.today
+                }
+              }
+            }catch{}
+            
+            
+
+
             prod.freezerNorth = prod.freezerNorthClosing;
             
             let frozenDelivsArray = compose.getFrozensLeavingCarlton(
@@ -253,11 +269,6 @@ function Ordering({ authType }) {
               setOut = 0
             }
            
-            console.log("freezerNorth",prod.freezerNorth)
-            console.log("setOut",setOut)
-            console.log("frozen",frozenDeliv)
-            console.log("frozenDelivsArray",frozenDelivsArray)
-            console.log("setOUtArray",setOutArray)
             prod.freezerNorthClosing = 
             prod.freezerNorthClosing + 
                     (Math.ceil((setOut + frozenDeliv - prod.freezerNorthClosing)/12)*12) - 
@@ -271,7 +282,7 @@ function Ordering({ authType }) {
               freezerNorthClosing: prod.freezerNorthClosing,
               freezerNorthFlag: prod.freezerNorthFlag,
             };
-            console.log("prodToUpdate",prodToUpdate)
+           
             try {
               await API.graphql(
                 graphqlOperation(updateProduct, { input: { ...prodToUpdate } })
@@ -418,6 +429,8 @@ function Ordering({ authType }) {
     setIsLoading(false);
     setOrdersHasBeenChanged(false);
   };
+
+
 
   const fetchSq = async () => {
     try {

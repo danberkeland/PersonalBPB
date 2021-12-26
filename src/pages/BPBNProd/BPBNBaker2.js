@@ -77,7 +77,7 @@ const buildTable = (title, doc, body, col) => {
 function BPBNBaker2() {
   const { setIsLoading } = useContext(ToggleContext);
   const [setOut, setSetOut] = useState([]);
-  const [delivDate, setDelivDate] = useState('2021-12-25');
+  const [delivDate, setDelivDate] = useState(todayPlus()[0]);
   const [whatToMake, setWhatToMake] = useState([]);
   const [pastryPrep, setPastryPrep] = useState([]);
   const [infoWrap, setInfoWrap] = useState({});

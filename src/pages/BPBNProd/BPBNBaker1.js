@@ -61,7 +61,7 @@ const doobieStuff = [
 ];
 
 function BPBNBaker1() {
-  const [delivDate, setDelivDate] = useState('2021-12-25');
+  const [delivDate, setDelivDate] = useState(todayPlus()[0]);
   const { setIsLoading } = useContext(ToggleContext);
   const [whatToMake, setWhatToMake] = useState();
   const [whatToPrep, setWhatToPrep] = useState();
@@ -115,7 +115,7 @@ function BPBNBaker1() {
   }, [delivDate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const gatherWhatToMakeInfo = (database) => {
-    let whatToMakeData = compose.returnWhatToMakeBreakDown("2021-12-24", database);
+    let whatToMakeData = compose.returnWhatToMakeBreakDown(delivDate, database);
     setWhatToMake(whatToMakeData.whatToMake);
   };
 

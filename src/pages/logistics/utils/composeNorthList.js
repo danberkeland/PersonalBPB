@@ -230,7 +230,7 @@ export default class ComposeNorthList {
   };
 
   returnCroixNorth = (delivDate, database) => {
-    delivDate = "2021-12-25"
+    
     // Create Frozens needed North { prod, qty }
     let currentFreezerNumbers = this.getCurrentFreezerNumbers(
       delivDate,

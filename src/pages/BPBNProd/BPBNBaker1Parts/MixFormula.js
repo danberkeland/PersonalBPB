@@ -1,7 +1,7 @@
 import { todayPlus } from '../../../helpers/dateTimeHelpers';
 import { getMixInfo } from './GetMixInfo'
 
-let tomorrow = todayPlus()[2]
+let tomorrow = todayPlus()[1]
 
 export const mixFormula = (doughs, infoWrap, multi, deliv) => {
     //  Set up Mix 1

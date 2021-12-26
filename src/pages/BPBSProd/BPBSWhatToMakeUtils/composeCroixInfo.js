@@ -214,6 +214,7 @@ export default class ComposeCroixInfo {
       prodArray.push(newItem);
     }
     let frozenDelivs = (prodArray = sortAtoZDataByIndex(prodArray, "prod"));
+    console.log("openingCount",prodArray)
     return prodArray;
   }
 
@@ -238,6 +239,7 @@ export default class ComposeCroixInfo {
       prodArray.push(newItem);
     }
     prodArray = sortAtoZDataByIndex(prodArray, "prod");
+   
     return prodArray;
   }
 
@@ -435,6 +437,9 @@ export default class ComposeCroixInfo {
 
   getProjectionCount(database, delivDate) {
     const [products, customers, routes, standing, orders] = database;
+    let openingCount = this.getOpeningCount(database,delivDate)
+    let makeCount = this.getMakeCount(database,delivDate)
+    console.log("makeCount",makeCount)
     let count = products.filter(
       (prod) =>
         prod.doughType === "Croissant" && prod.packGroup === "baked pastries"
@@ -467,6 +472,45 @@ export default class ComposeCroixInfo {
     prodArray = addToCroix(prodArray, database, twoDay, "2day");
     prodArray = addToCroix(prodArray, database, threeDay, "3day");
     prodArray = addToCroix(prodArray, database, fourDay, "4day");
+
+    console.log("prodArray",prodArray)
+    for (let prod of prodArray){
+      prod.todaybase = prod.today
+      prod.tom = prod.tom+prod.today
+      prod.tombase = prod.tom
+      prod["2day"] = prod["2day"]+prod.tom
+      prod["2daybase"] = prod["2day"]
+      prod["3day"] = prod["3day"]+prod["2day"]
+      prod["3daybase"] = prod["3day"]
+      prod["4day"] = prod["4day"]+prod["3day"]
+      prod["4daybase"] = prod["4day"]
+      
+    }
+
+    for (let prod of prodArray){
+      for (let open of openingCount){
+        if (prod.prod === open.prod){
+          prod.today = open.qty-prod.today
+          prod.tom = open.qty-prod.tom
+          prod["2day"] = open.qty-prod["2day"]
+          prod["3day"] = open.qty-prod["3day"]
+          prod["4day"] = open.qty-prod["4day"]
+
+        }
+      }
+    }
+
+    for (let prod of prodArray){
+      for (let make of makeCount){
+        if (prod.prod === make.prod){
+          prod.today = prod.today+Number(make.total)
+          prod.tom = prod.tom+Number(make.total)
+          prod["2day"] = prod["2day"]+Number(make.total)
+          prod["3day"] = prod["3day"]+Number(make.total)
+          prod["4day"] = prod["4day"]+Number(make.total)
+        }
+      }
+    }
 
     return prodArray;
   }

@@ -227,7 +227,11 @@ function CroixToMake() {
    
     let num = e.qty;
     if (which === "proj") {
-      num = 0 - day;
+      num = day;
+    }
+    let col = "#E3F2FD"
+    if (num<0){
+      col = "#FFC0CB"
     }
     return (
       <InputText
@@ -235,8 +239,9 @@ function CroixToMake() {
         disabled
         placeholder={num}
         style={{
-          width: "60px",
-          backgroundColor: "#E3F2FD",
+          width: "80px",
+          backgroundColor: col,
+          color: "#000000",
           fontWeight: "bold",
           fontSize: "1.2em"
 
@@ -404,7 +409,7 @@ function CroixToMake() {
                   <Column
                     header="Qty"
                     id="closing"
-                    body={(e) => numHolder(e, "proj", e.todaybase)}
+                    body={(e) => numHolder(e, "proj", e.today)}
                   ></Column>
                 )}
               </DataTable>
@@ -423,19 +428,19 @@ function CroixToMake() {
               ></Column>
               <Column
                 header="TOM"
-                body={(e) => numHolder(e, "proj", e.todaybase + e.tombase)}
+                body={(e) => numHolder(e, "proj", e.tom)}
               ></Column>
               <Column
                 header="2DAY"
-                body={(e) => numHolder(e, "proj", e.todaybase + e.tombase+ e["2daybase"])}
+                body={(e) => numHolder(e, "proj", e["2day"])}
               ></Column>
               <Column
                 header="3DAY"
-                body={(e) => numHolder(e, "proj", e.todaybase + e.tombase+ e["2daybase"]+e["3daybase"])}
+                body={(e) => numHolder(e, "proj", e["3day"])}
               ></Column>
               <Column
                 header="4DAY"
-                body={(e) => numHolder(e, "proj", e.todaybase + e.tombase+ e["2daybase"]+e["3daybase"]+e["4daybase"])}
+                body={(e) => numHolder(e, "proj", e["4day"])}
               ></Column>
             </DataTable>
           </BorderBox>

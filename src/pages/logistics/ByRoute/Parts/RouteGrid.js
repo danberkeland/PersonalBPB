@@ -150,7 +150,7 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
   
   const exportInvPdf = async (driver) => {
     const [products, customers, routes, standing, orders] = database;
-    let fileName = delivDate.replaceAll('-','')+driver+".pdf"
+    let fileName = delivDate.replaceAll('-','')+"Invoices.pdf"
     let alreadyPrinted = []
     setIsLoading(true);
     let access = await checkQBValidation()
@@ -158,7 +158,7 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
 
     let init = true;
     let routeList = Array.from(new Set(orderList.map((ord) => ord.route)));
-    if (driver !== "all"){
+    if (driver !== "allRoutes"){
 
       routeList=routeList.filter(rou => routes[routes.findIndex(ro => ro.routeName === rou)].driver === driver)
 
@@ -255,7 +255,7 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
     let fileName = delivDate.replaceAll('-','')+driver+".pdf"
     let init = true;
     let routeList = Array.from(new Set(orderList.map((ord) => ord.route)));
-    if (driver !== "all"){
+    if (driver !== "allRoutes"){
 
       routeList=routeList.filter(rou => routes[routes.findIndex(ro => ro.routeName === rou)].driver === driver)
 
@@ -363,7 +363,7 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
         </Button>
         <Button
           type="button"
-          onClick={e => checkDateAlert("all",delivDate)}
+          onClick={e => checkDateAlert("allRoutes",delivDate)}
           className="p-button-success"
           data-pr-tooltip="PDF"
         >

@@ -279,6 +279,7 @@ function Ordering({ authType }) {
             let prodToUpdate = {
               id: prod.prodID,
               freezerNorth: prod.freezerNorth,
+              freezerCount: prod.freezerCount,
               freezerNorthClosing: prod.freezerNorthClosing,
               freezerNorthFlag: prod.freezerNorthFlag,
             };

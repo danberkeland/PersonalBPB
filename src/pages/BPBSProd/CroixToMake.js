@@ -225,10 +225,15 @@ function CroixToMake() {
   };
 
   const numHolder = (e, which, day) => {
-   
+
+    console.log("makeCount",makeCount)
+    
     let num = e.qty;
     if (which === "proj") {
-      num = day;
+      let indToMake = makeCount.findIndex(pro => pro.prod === e.prod)
+      let toMake = makeCount[indToMake].total
+      num = day+toMake;
+
     }
     let col = "#E3F2FD"
     if (num<0){
@@ -317,7 +322,7 @@ function CroixToMake() {
                 id="openingCount"
                 value={openingCount}
                 header={openingHeader}
-                footer={modifyOpening}
+                //footer={modifyOpening}
               >
                 <Column
                   style={{
@@ -386,7 +391,7 @@ function CroixToMake() {
                 id="closingCount"
                 value={projectionCount}
                 header={closeHeader}
-                footer={modifyClosing}
+                //footer={modifyClosing}
               >
                 {mod && modType === "closing" && (
                   <Column

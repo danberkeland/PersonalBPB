@@ -9,6 +9,7 @@ import { Column } from "primereact/column";
 
 import { promisedData } from "../../helpers/databaseFetchers";
 import ComposeCroixInfo from "./BPBSWhatToMakeUtils/composeCroixInfo";
+import ComposeNorthList from "../logistics/utils/composeNorthList";
 
 import { convertDatetoBPBDate, todayPlus } from "../../helpers/dateTimeHelpers";
 
@@ -21,7 +22,7 @@ import "jspdf-autotable";
 
 import styled from "styled-components";
 import { set } from "lodash";
-import ComposeNorthList from "../logistics/utils/composeNorthList";
+
 
 const WholeBox = styled.div`
   display: flex;
@@ -121,6 +122,9 @@ function CroixToMake() {
     console.log("Submitting " + which);
     let prodToMod = clonedeep(products);
     if (which === "opening") {
+
+      let cloneOpeningCount = clonedeep(openingCount);
+      let cloneClosingCount = clonedeep(closingCount);
       setIsLoading(true);
       for (let op of openingCount) {
         for (let prod of prodToMod) {
@@ -128,6 +132,16 @@ function CroixToMake() {
           console.log("prod", prod);
           let itemUpdate;
           if (op.prod === prod.forBake) {
+
+            let openId = cloneOpeningCount.findIndex(open => op.prod === open.prod)
+            cloneOpeningCount[openId].fixed = cloneOpeningCount[openId].qty
+
+            let closeId = cloneClosingCount.findIndex(close => op.prod === close.prod)
+            cloneClosingCount[closeId].fixed = cloneClosingCount[closeId].qty
+
+            setOpeningCount(cloneOpeningCount)
+            setClosingCount(cloneClosingCount)
+
             itemUpdate = {
               id: prod.id,
               freezerCount: op.qty,
@@ -146,11 +160,24 @@ function CroixToMake() {
       setIsLoading(false);
     }
     if (which === "closing") {
+     
+      let cloneOpeningCount = clonedeep(openingCount);
+      let cloneClosingCount = clonedeep(closingCount);
       setIsLoading(true);
       for (let op of openingCount) {
         for (let prod of prodToMod) {
           let itemUpdate;
           if (op.prod === prod.forBake) {
+
+            let openId = cloneOpeningCount.findIndex(open => op.prod === open.prod)
+            cloneOpeningCount[openId].fixed = cloneOpeningCount[openId].qty
+
+            let closeId = cloneClosingCount.findIndex(close => op.prod === close.prod)
+            cloneClosingCount[closeId].fixed = cloneClosingCount[closeId].qty
+
+            setOpeningCount(cloneOpeningCount)
+            setClosingCount(cloneClosingCount)
+
             itemUpdate = {
               id: prod.id,
               freezerCount: op.qty,

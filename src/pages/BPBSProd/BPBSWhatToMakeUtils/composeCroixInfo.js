@@ -505,7 +505,7 @@ export default class ComposeCroixInfo {
         }
       }
     }
-
+    /*
     for (let prod of prodArray){
       for (let make of makeCount){
         if (prod.prod === make.prod){
@@ -517,7 +517,7 @@ export default class ComposeCroixInfo {
         }
       }
     }
-
+    */
     return prodArray;
   }
 }

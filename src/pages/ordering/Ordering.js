@@ -282,6 +282,7 @@ function Ordering({ authType }) {
               freezerCount: prod.freezerCount,
               freezerNorthClosing: prod.freezerNorthClosing,
               freezerNorthFlag: prod.freezerNorthFlag,
+              sheetMake: 0
             };
            
             try {
@@ -316,7 +317,8 @@ function Ordering({ authType }) {
             id: prod.id,
             preshaped: prod.preshaped,
             prepreshaped: prod.prepreshaped,
-            updatePreDate: prod.updatePreDate,
+            updatePreDate: prod.updatePreDate
+          
           };
           try {
             await API.graphql(

@@ -36,7 +36,7 @@ const TwoColumnGrid = styled.div`
 
 const ThreeColumnGrid = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1.2fr 1.4fr 1fr;
   column-gap: 5px;
   row-gap: 10px;
   padding: 0px;
@@ -63,6 +63,15 @@ function CroixToMake() {
   const [closingCount, setClosingCount] = useState();
   const [projectionCount, setProjectionCount] = useState();
   const [products, setProducts] = useState();
+  const [sheetTotal, setSheetTotal] = useState(0);
+
+  useEffect(() => {
+    let ct = 0
+    for (let make of makeCount){
+      ct += make.qty
+    }
+    setSheetTotal(ct)
+  },[makeCount])
 
   useEffect(() => {
     promisedData(setIsLoading).then((database) => {
@@ -185,13 +194,20 @@ function CroixToMake() {
   };
 
   const modifySheets = (
-    <Button onClick={(e) => Toggle(e, "sheets")}>
+    <React.Fragment>
+      <TwoColumnGrid>
+      <div>{sheetTotal}</div>
+      <Button onClick={(e) => Toggle(e, "sheets")}>
       {mod && modType === "sheets" ? (
         <React.Fragment>SUBMIT</React.Fragment>
       ) : (
         <React.Fragment>MODIFY</React.Fragment>
       )}
     </Button>
+      </TwoColumnGrid>
+      
+    </React.Fragment>
+    
   );
   const modifyOpening = (
     <Button onClick={(e) => Toggle(e, "opening")}>

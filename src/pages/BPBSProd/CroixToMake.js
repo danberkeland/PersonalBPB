@@ -12,6 +12,11 @@ import ComposeCroixInfo from "./BPBSWhatToMakeUtils/composeCroixInfo";
 
 import { convertDatetoBPBDate, todayPlus } from "../../helpers/dateTimeHelpers";
 
+
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+
+
 import { updateProduct } from "../../graphql/mutations";
 
 import { API, graphqlOperation } from "aws-amplify";
@@ -47,6 +52,27 @@ const BorderBox = styled.div`
   border-width: 1px;
   border-color: grey;
 `;
+
+
+const ButtonContainer = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-content: flex-start;
+`;
+
+const ButtonWrapper = styled.div`
+  font-family: "Montserrat", sans-serif;
+  display: flex;
+  width: 40%;
+  flex-direction: row;
+  justify-content: space-between;
+  align-content: center;
+
+  background: #ffffff;
+`;
+
 
 const compose = new ComposeCroixInfo();
 
@@ -333,10 +359,64 @@ function CroixToMake() {
     }
   };
 
+  
+  const exportListPdf = () => {
+    let finalY;
+    let pageMargin = 40;
+    let tableFont = 11;
+    let titleFont = 14;
+
+    const doc = new jsPDF("l", "mm", "a4");
+    doc.setFontSize(20);
+    doc.text(pageMargin, 20, `What to Shape ${convertDatetoBPBDate(delivDate)}`);
+
+    finalY = 10;
+
+    doc.setFontSize(titleFont);
+
+    doc.autoTable({
+      body: makeCount,
+      margin: pageMargin,
+      columns: [
+        { header: "Croix", dataKey: "prod" },
+        { header: "Sheets", dataKey: "qty" },
+        { header: "Total", dataKey: "total" },
+        { header: "Shaper 1"},
+        { header: "Shaper 2"},
+        { header: "Shaper 3"},
+
+      ],
+      startY: finalY + 20,
+      styles: { fontSize: tableFont },
+      theme: "grid",
+      headStyles: { fillColor: "#dddddd", textColor: "#111111" },
+    });
+
+    doc.save(`WhatToMake${delivDate}.pdf`);
+  };
+
+
+  const header = (
+    <ButtonContainer>
+      <ButtonWrapper>
+        <Button
+          type="button"
+          onClick={(e) => exportListPdf()}
+          className="p-button-success"
+          data-pr-tooltip="PDF"
+        >
+          Print Croix Shape List
+        </Button>
+      </ButtonWrapper>
+    </ButtonContainer>
+  );
+
+
   return (
     <React.Fragment>
       <WholeBox>
         <h1>Croissant Production {convertDatetoBPBDate(delivDate)}</h1>
+        <div>{header}</div>
         <TwoColumnGrid>
           <ThreeColumnGrid>
             <BorderBox>

@@ -54,6 +54,25 @@ const BorderBox = styled.div`
   border-color: grey;
 `;
 
+const ButtonContainer = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-content: flex-start;
+`;
+
+const ButtonWrapper = styled.div`
+  font-family: "Montserrat", sans-serif;
+  display: flex;
+  width: 40%;
+  flex-direction: row;
+  justify-content: space-between;
+  align-content: center;
+
+  background: #ffffff;
+`;
+
 const ButtonStyle = styled.button`
   border: 0;
   background-color: #4caf50;
@@ -248,6 +267,8 @@ function CroixToMake() {
       setIsLoading(false);
     }
   };
+
+
 
   const modifyOpening = (
     <Button

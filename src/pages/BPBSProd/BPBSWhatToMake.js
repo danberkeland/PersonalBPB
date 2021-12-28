@@ -189,6 +189,7 @@ function BPBSWhatToMake() {
 
     doc.autoTable({
       body: freezerProds,
+      pageBreak: 'avoid',
       margin: pageMargin,
       columns: [
         { header: "Freezer Product", dataKey: "forBake" },

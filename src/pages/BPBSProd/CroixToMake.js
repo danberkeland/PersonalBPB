@@ -59,7 +59,7 @@ function CroixToMake() {
   const [mod, setMod] = useState(false);
   const [modType, setModType] = useState();
   const [openingCount, setOpeningCount] = useState();
-  const [makeCount, setMakeCount] = useState();
+  const [makeCount, setMakeCount] = useState([]);
   const [closingCount, setClosingCount] = useState();
   const [projectionCount, setProjectionCount] = useState();
   const [products, setProducts] = useState();

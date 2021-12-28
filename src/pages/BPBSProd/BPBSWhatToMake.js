@@ -65,6 +65,7 @@ function BPBSWhatToMake() {
   const [freshProds, setFreshProds] = useState();
   const [delivDate, setDelivDate] = useState(todayPlus()[0]);
   const [shelfProds, setShelfProds] = useState();
+  const [pretzels, setPretzels] = useState()
   const [freezerProds, setFreezerProds] = useState();
   const [pocketsNorth, setPocketsNorth] = useState();
 
@@ -79,6 +80,7 @@ function BPBSWhatToMake() {
     setPocketsNorth(makeData.pocketsNorth);
     setFreshProds(makeData.freshProds);
     setShelfProds(makeData.shelfProds);
+    setPretzels(makeData.pretzels)
     setFreezerProds(makeData.freezerProds);
     setProducts(database[0])
   };
@@ -171,11 +173,32 @@ function BPBSWhatToMake() {
     doc.autoTable({
       body: shelfProds,
       margin: pageMargin,
+      pageBreak: 'avoid',
       columns: [
         { header: "Shelf Product", dataKey: "forBake" },
         { header: "Total Deliv", dataKey: "qty" },
         { header: "Need Early", dataKey: "needEarly" },
         { header: "Make Total", dataKey: "makeTotal" },
+      ],
+      startY: finalY + titleToNextTable,
+      styles: { fontSize: tableFont },
+      theme: "grid",
+      headStyles: { fillColor: "#dddddd", textColor: "#111111" },
+    });
+
+    finalY = doc.previousAutoTable.finalY;
+
+
+    doc.setFontSize(titleFont);
+
+    doc.autoTable({
+      body: pretzels,
+      margin: pageMargin,
+      pageBreak: 'avoid',
+      columns: [
+        { header: "Shelf Product", dataKey: "forBake" },
+        { header: "Bake Today", dataKey: "qty" },
+        { header: "Shape Today", dataKey: "makeTotal" },
       ],
       startY: finalY + titleToNextTable,
       styles: { fontSize: tableFont },
@@ -315,6 +338,12 @@ function BPBSWhatToMake() {
           <Column field="qty" header="Total Deliv"></Column>
           <Column field="needEarly" header="Need Early"></Column>
           <Column field="makeTotal" header="MakeTotal"></Column>
+        </DataTable>
+        <h2>Pretzels</h2>
+        <DataTable value={pretzels} className="p-datatable-sm">
+          <Column field="forBake" header="Product"></Column>
+          <Column field="qty" header="Bake Today"></Column>
+          <Column field="makeTotal" header="Shape for Tomorrow"></Column>
         </DataTable>
         <h2>Make For Freezer</h2>
         <DataTable value={freezerProds} className="p-datatable-sm">

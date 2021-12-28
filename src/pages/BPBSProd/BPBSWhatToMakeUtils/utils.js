@@ -139,6 +139,47 @@ export const addShelf = (
   make.makeTotal = qtyAccTomorrow + qtyAccToday + qtyMakeExtra;
 };
 
+
+export const addPretzel = (
+  make,
+  fullOrders,
+  fullOrdersTomorrow,
+  products,
+  routes
+) => {
+ 
+  make.qty = 0;
+  make.needEarly = 0;
+
+  let qtyAccToday = 0;
+  let qtyAccTomorrow = 0;
+  
+  let filt = products.filter(prod => prod.forBake === make.forBake)
+  let qtyMakeExtra = 0
+  for (let fi of filt) {
+    qtyMakeExtra = qtyMakeExtra + fi.bakeExtra
+  }
+  
+
+  let qtyToday = fullOrders
+    .filter((full) => make.forBake === full.forBake)
+    .map((ord) => ord.qty * ord.packSize);
+  if (qtyToday.length > 0) {
+    qtyAccToday = qtyToday.reduce(addUp);
+  }
+  let qtyTomorrow = fullOrdersTomorrow
+    .filter((full) => make.forBake === full.forBake)
+    .map((ord) => ord.qty * ord.packSize);
+
+  if (qtyTomorrow.length > 0) {
+    qtyAccTomorrow = qtyTomorrow.reduce(addUp);
+  }
+
+  make.qty = qtyAccToday;
+  make.needEarly = qtyAccToday;
+  make.makeTotal = qtyAccTomorrow;
+};
+
 const update = (order, products, customers) => {
   let atownPick = "atownpick";
   let ind =

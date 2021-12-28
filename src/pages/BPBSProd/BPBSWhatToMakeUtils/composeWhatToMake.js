@@ -6,6 +6,7 @@ import {
   addFresh,
   addNeedEarly,
   addShelf,
+  addPretzel,
   addPocketsQty,
 } from "./utils";
 import { handleFrenchConundrum } from "./conundrums";
@@ -54,6 +55,7 @@ export default class ComposeWhatToMake {
     let pocketsNorth = this.getPocketsNorth(database,delivDate);
     let freshProds = this.getFreshProds(database,delivDate);
     let shelfProds = this.getShelfProds(database,delivDate);
+    let pretzels = this.getPretzels(database,delivDate)
     let freezerProds = this.getFreezerProds(database,delivDate);
     let youllBeShort = this.getYoullBeShort(database,delivDate);
 
@@ -63,6 +65,7 @@ export default class ComposeWhatToMake {
       pocketsNorth: pocketsNorth,
       freshProds: freshProds,
       shelfProds: shelfProds,
+      pretzels: pretzels,
       freezerProds: freezerProds,
       youllBeShort: youllBeShort,
     };
@@ -141,6 +144,39 @@ export default class ComposeWhatToMake {
       Number(prod.readyTime) >= 15 &&
       prod.packGroup !== "frozen pastries" &&
       prod.packGroup !== "baked pastries" &&
+      prod.doughType !=="Pretzel Bun" &&
+      prod.freezerThaw !== true;
+    return fil;
+  };
+
+  getPretzels(database,delivDate) {
+    const [products, customers, routes, standing, orders] = database;
+    let makeShelfProds = makeProds(products, this.pretzelsFilter);
+    let tom = tomBasedOnDelivDate(delivDate)
+    if (delivDate === "2021-12-24"){
+      tom = TwodayBasedOnDelivDate(delivDate)
+    }
+    let fullOrdersToday = getFullMakeOrders(delivDate, database);
+    let fullOrdersTomorrow = getFullProdMakeOrders(tom, database);
+  
+    for (let make of makeShelfProds) {
+      addPretzel(make, fullOrdersToday, fullOrdersTomorrow, products, routes);
+      addNeedEarly(make, products);
+    }
+
+    console.log("makeShelfProds",makeShelfProds)
+    makeShelfProds = makeShelfProds.filter(make => (make.makeTotal + make.needEarly + make.qty)>0)
+
+    return makeShelfProds;
+  }
+
+  pretzelsFilter = (prod) => {
+    let fil =
+      !prod.bakedWhere.includes("Carlton") &&
+      Number(prod.readyTime) >= 15 &&
+      prod.packGroup !== "frozen pastries" &&
+      prod.packGroup !== "baked pastries" &&
+      prod.doughType === "Pretzel Bun" &&
       prod.freezerThaw !== true;
     return fil;
   };

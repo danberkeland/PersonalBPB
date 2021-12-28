@@ -133,9 +133,16 @@ function CroixToMake() {
          
           let itemUpdate;
           if (op.prod === prod.forBake) {
+            console.log("projection",projectionCount)
+            // find product in projectionCount
+            let projInd = projectionCount.findIndex(proj => proj.prod === op.prod)
+            let freezerClosing = projectionCount[projInd].today
+            // set freezerClosing to proj.today
+
             itemUpdate = {
               id: prod.id,
               sheetMake: op.qty,
+              freezerClosing: freezerClosing
             };
 
             try {
@@ -226,7 +233,6 @@ function CroixToMake() {
 
   const numHolder = (e, which, day) => {
 
-    console.log("makeCount",makeCount)
     
     let num = e.qty;
     if (which === "proj") {

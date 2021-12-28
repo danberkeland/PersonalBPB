@@ -125,6 +125,7 @@ export const getProduct = /* GraphQL */ `
       leadTime
       qbID
       freezerCount
+      freezerClosing
       sheetMake
       freezerNorth
       freezerNorthClosing
@@ -180,6 +181,7 @@ export const listProducts = /* GraphQL */ `
         leadTime
         qbID
         freezerCount
+        freezerClosing
         sheetMake
         freezerNorth
         freezerNorthClosing

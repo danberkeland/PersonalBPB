@@ -168,6 +168,7 @@ export const createProduct = /* GraphQL */ `
       leadTime
       qbID
       freezerCount
+      freezerClosing
       sheetMake
       freezerNorth
       freezerNorthClosing
@@ -221,6 +222,7 @@ export const updateProduct = /* GraphQL */ `
       leadTime
       qbID
       freezerCount
+      freezerClosing
       sheetMake
       freezerNorth
       freezerNorthClosing
@@ -274,6 +276,7 @@ export const deleteProduct = /* GraphQL */ `
       leadTime
       qbID
       freezerCount
+      freezerClosing
       sheetMake
       freezerNorth
       freezerNorthClosing

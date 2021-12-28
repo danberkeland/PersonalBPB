@@ -70,6 +70,7 @@ type Product @model @auth(rules: [{allow: public}]) {
   leadTime: Int
   qbID: String
   freezerCount: Int
+  freezerClosing: Int
   sheetMake: Int
   freezerNorth: Int
   freezerNorthClosing: Int

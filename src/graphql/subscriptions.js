@@ -156,6 +156,7 @@ export const onCreateProduct = /* GraphQL */ `
       leadTime
       qbID
       freezerCount
+      freezerClosing
       sheetMake
       freezerNorth
       freezerNorthClosing
@@ -206,6 +207,7 @@ export const onUpdateProduct = /* GraphQL */ `
       leadTime
       qbID
       freezerCount
+      freezerClosing
       sheetMake
       freezerNorth
       freezerNorthClosing
@@ -256,6 +258,7 @@ export const onDeleteProduct = /* GraphQL */ `
       leadTime
       qbID
       freezerCount
+      freezerClosing
       sheetMake
       freezerNorth
       freezerNorthClosing

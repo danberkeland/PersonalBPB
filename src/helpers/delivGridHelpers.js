@@ -164,6 +164,11 @@ export const buildGridOrderArray = (filterServe, database) => {
       products[
         products.findIndex((prod) => prod["prodName"] === ord["prodName"])
       ].freezerCount,
+      freezerClosing:
+      products[
+        products.findIndex((prod) => prod["prodName"] === ord["prodName"])
+      ].freezerClosing,
+      
   }));
   
   return gridOrderArray;

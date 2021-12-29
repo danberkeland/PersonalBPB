@@ -35,7 +35,7 @@ const TwoColumnGrid = styled.div`
 
 const ThreeColumnGrid = styled.div`
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr 1fr .75fr;
   column-gap: 10px;
   row-gap: 10px;
   padding: 5px;
@@ -444,6 +444,23 @@ function BPBNBuckets({ loc }) {
                 icon="pi pi-print"
               >
                 Print Default Set
+              </ButtonStyle>
+              <ButtonStyle
+                key={dough.id + "_print"}
+                id={dough.doughName + "_print"}
+                onClick={(e) =>
+                  handleClick(
+                    e,
+                    ((Number(dough.buffer) +
+                      Number(dough.needed) -
+                      Number(dough.oldDough))/2).toFixed(2), (Number(dough.oldDough)/2).toFixed(2)
+                  )
+                }
+                label="Print Sticker Set"
+                className="p-button-rounded p-button-lg"
+                icon="pi pi-print"
+              >
+                Half Batch
               </ButtonStyle>
               
             </ThreeColumnGrid>

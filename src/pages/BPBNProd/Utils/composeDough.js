@@ -182,6 +182,8 @@ export default class ComposeDough {
     let oneDayOrderList = getOrdersList(tomorrow, database, true);
 
     let doughList = doughListComp(doughs, filt, loc);
+    let dglist = clonedeep(doughList)
+    console.log("doughList",dglist)
 
     for (let dgh of doughList) {
       let doughInd =
@@ -197,10 +199,12 @@ export default class ComposeDough {
       dgh.buffer = doughInd.buffer;
       dgh.batchSize = doughInd.batchSize;
       if (dgh.isBakeReady === true) {
+        console.log(dgh.doughName+"using one Day")
         dgh.needed = this.getDoughAmt(dgh.doughName, oneDayOrderList).toFixed(
           2
         );
       } else {
+        console.log(dgh.doughName+"using 2 day")
         dgh.needed = this.getDoughAmt(dgh.doughName, twoDayOrderList).toFixed(
           2
         );
@@ -235,6 +239,7 @@ export default class ComposeDough {
   };
 
   getDoughAmt = (doughName, orders) => {
+    console.log(doughName+"orders1",orders)
     let qtyAccToday = 0;
     let qtyArray = orders
       .filter((ord) => ord.doughType === doughName)

@@ -18,6 +18,7 @@ import "jspdf-autotable";
 
 
 import { updateProduct } from "../../graphql/mutations";
+import { confirmDialog } from 'primereact/confirmdialog'
 
 import { API, graphqlOperation } from "aws-amplify";
 
@@ -98,6 +99,17 @@ function CroixToMake() {
     }
     setSheetTotal(ct)
   },[makeCount])
+
+  
+  useEffect(() => {
+    confirmDialog({
+      message:
+        "Please make sure that MAKE TODAY numbers at the end of the day reflect what actually got made to today so tomorrow's count will be accurate.  Muchas Gracis!.",
+      header: "Confirmation",
+      icon: "pi pi-exclamation-triangle",
+      
+    });
+  },[])
 
   useEffect(() => {
     promisedData(setIsLoading).then((database) => {

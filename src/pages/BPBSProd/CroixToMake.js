@@ -180,10 +180,11 @@ function CroixToMake() {
          
           let itemUpdate;
           if (op.prod === prod.forBake) {
+            console.log("makeCount",makeCount)
             console.log("projection",projectionCount)
             // find product in projectionCount
             let projInd = projectionCount.findIndex(proj => proj.prod === op.prod)
-            let freezerClosing = projectionCount[projInd].today
+            let freezerClosing = projectionCount[projInd].today+Number(op.total)
             // set freezerClosing to proj.today
 
             itemUpdate = {

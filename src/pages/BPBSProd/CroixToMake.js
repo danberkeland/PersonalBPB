@@ -95,7 +95,7 @@ function CroixToMake() {
   useEffect(() => {
     let ct = 0
     for (let make of makeCount){
-      ct += make.qty
+      ct += Number(make.qty)
     }
     setSheetTotal(ct)
   },[makeCount])

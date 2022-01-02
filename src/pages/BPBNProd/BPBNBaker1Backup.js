@@ -54,7 +54,7 @@ const ButtonWrapper = styled.div`
 `;
 
 const doobieStuff = [
-  { Prod: "Doobie Buns", Bucket: "YES", Mix: "NO", Bake: "YES" },
+  { Prod: "Doobie Buns", Bucket: "YES", Mix: "NO", Bake: "NO" },
   { Prod: "Siciliano", Bucket: "YES", Mix: "NO", Bake: "NO" },
 ];
 

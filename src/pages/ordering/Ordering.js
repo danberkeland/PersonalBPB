@@ -174,14 +174,14 @@ function Ordering({ authType }) {
     const [products, customers, routes, standing, orders, doughs, altPricing] =
       database;
     console.log("Checking if Orders Have been changed");
-    showUpdate("updating Orders")
+    //showUpdate("updating Orders")
     if (ordersHasBeenChanged) {
       let prodsToUpdate = clonedeep(products);
       let doughsToUpdate = clonedeep(doughs);
       let ordersToUpdate = clonedeep(orders);
 
       console.log("Yes they have! deleting old orders");
-      showUpdate("cleaning up database")
+      //showUpdate("cleaning up database")
       let newYest = convertDatetoBPBDate(yesterday);
       let newWeekAgo = convertDatetoBPBDate(weekAgo);
 
@@ -211,7 +211,7 @@ function Ordering({ authType }) {
       }
 
       console.log("Yes they have!  Updating freezerNorth numbers");
-      showUpdate("updating preshaped numbers")
+      //showUpdate("updating preshaped numbers")
       try{
         //prods should only be for bake prods
         let bakedOrdersList = getOrdersList(
@@ -305,7 +305,7 @@ function Ordering({ authType }) {
 
 
       console.log("Yes they have!  Updating preshaped numbers");
-      showUpdate("updating preshaped numbers")
+      //showUpdate("updating preshaped numbers")
       for (let prod of prodsToUpdate) {
         if (prod.updatePreDate !== tomorrow) {
           prod.updatePreDate = today;
@@ -332,7 +332,7 @@ function Ordering({ authType }) {
       }
 
       console.log("Yes they have!  Updating prepped bucket numbers");
-      showUpdate("Updating Prepped Bucket Numbers")
+      //showUpdate("Updating Prepped Bucket Numbers")
       for (let dgh of doughsToUpdate) {
         if (dgh.updatePreBucket !== tomorrow) {
           dgh.updatePreBucket = today;
@@ -359,7 +359,7 @@ function Ordering({ authType }) {
       }
 
       console.log("Yes they have!  Loading new Square Orders in DB");
-      showUpdate("Loading new orders from Square")
+      //showUpdate("Loading new orders from Square")
       let ordsToUpdate = clonedeep(orders);
       setDatabase(database);
       let ord = await fetchSq(database);
@@ -507,6 +507,11 @@ function Ordering({ authType }) {
         <Calendar database={database} />
       </inlineContainer>
       <BasicContainer>
+      {authType === "bpbadmin" ? (
+          <OrderCommandLine database={database} setDatabase={setDatabase} />
+        ) : (
+          ""
+        )}
         <CurrentOrderInfo
           database={database}
           setDatabase={setDatabase}

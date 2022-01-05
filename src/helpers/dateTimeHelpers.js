@@ -235,3 +235,22 @@ export const tomorrow = () => {
   tomorrow = tomorrow.toString().split("T")[0];
   return tomorrow;
 };
+
+export const checkDeadlineStatus = (deliv) => {
+  let today = DateTime.now().setZone("America/Los_Angeles");
+  let hour = today.c.hour;
+  let minutes = today.c.minute / 60;
+  let totalHour = hour + minutes;
+
+  if (
+    ((totalHour > 18.5 &&
+      deliv.toString() === todayPlus()[1].toString()) ||
+      deliv.toString() === todayPlus()[0].toString())
+  ) {
+    console.log("Today's deadline has passed")
+    return true
+  } else {
+    console.log("Today's deadline has NOT YET passed")
+    return false
+  }
+}

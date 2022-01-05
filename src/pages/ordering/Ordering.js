@@ -6,6 +6,10 @@ import CurrentOrderList from "./Parts/CurrentOrderList";
 import OrderCommandLine from "./Parts/OrderCommandLine";
 import OrderEntryButtons from "./Parts/OrderEntryButtons";
 import CustomerGroup from "./Parts/CurrentOrderInfoParts/CustomerGroup";
+
+import { confirmDialog } from "primereact/confirmdialog";
+import { Toast } from "primereact/toast";
+
 import {
   createOrder,
   updateDough,
@@ -14,21 +18,25 @@ import {
 } from "../../graphql/mutations";
 
 import { API, graphqlOperation } from "aws-amplify";
-import { convertDatetoBPBDate, todayPlus } from "../../helpers/dateTimeHelpers";
+
+import {
+  convertDatetoBPBDate,
+  todayPlus,
+  checkDeadlineStatus,
+  tomBasedOnDelivDate
+} from "../../helpers/dateTimeHelpers";
 
 import { promisedData } from "../../helpers/databaseFetchers";
 
-import styled from "styled-components";
 import { ToggleContext } from "../../dataContexts/ToggleContext";
 import { CurrentDataContext } from "../../dataContexts/CurrentDataContext";
-import { confirmDialog } from "primereact/confirmdialog";
-import { Toast } from 'primereact/toast';
 
 import ComposeNorthList from "../logistics/utils/composeNorthList";
 import ComposeCroixInfo from "../BPBSProd/BPBSWhatToMakeUtils/composeCroixInfo";
 
 import { getOrdersList } from "../BPBNProd/Utils/utils";
-import { tomBasedOnDelivDate } from "../../helpers/dateTimeHelpers";
+
+import styled from "styled-components";
 
 const compose = new ComposeNorthList();
 
@@ -69,10 +77,6 @@ const BasicContainer = styled.div`
   box-sizing: border-box;
 `;
 
-const inlineContainer = styled.div`
-  display: inline;
-`;
-
 const Title = styled.h2`
   padding: 0;
   margin: 5px 10px;
@@ -110,55 +114,44 @@ function Ordering({ authType }) {
   const toast = useRef(null);
 
   const showUpdate = (message) => {
-    toast.current.show({severity:'success', summary: 'INITIALIZING', detail:message, life: 3000});
-  }
+    toast.current.show({
+      severity: "success",
+      summary: "INITIALIZING",
+      detail: message,
+      life: 3000,
+    });
+  };
 
   useEffect(() => {
     window.addEventListener("resize", () => setWidth(window.innerWidth));
   });
 
   useEffect(() => {
-    let today = DateTime.now().setZone("America/Los_Angeles");
-    let hour = today.c.hour;
-    let minutes = today.c.minute / 60;
-    let totalHour = hour + minutes;
-   
-    if (
-      ((totalHour > 18.5 &&
-        delivDate.toString() === todayPlus()[1].toString()) ||
-        delivDate.toString() === todayPlus()[0].toString()) &&
-      authType !== "bpbadmin"
-    ) {
-      setDeadlinePassed(true);
-    } else {
-      console.log("false");
-      setDeadlinePassed(false);
+    let deadlineStatus = false;
+    if (authType !== "bpbadmin") {
+      deadlineStatus = checkDeadlineStatus(delivDate);
     }
-  }, [delivDate]);
+    setDeadlinePassed(deadlineStatus);
 
+    if (deadlineStatus) {
+      confirmDialog({
+        message:
+          "6:00 PM order deadline for tomorrow has passed.  Next available order date is " +
+          todayPlus()[2] +
+          ". Continue?",
+        header: "Confirmation",
+        icon: "pi pi-exclamation-triangle",
+        accept: () => setDelivDate(todayPlus()[2]),
+      });
+    }
+  }, [delivDate, authType]);
+
+  
   useEffect(() => {
-    let today = DateTime.now().setZone("America/Los_Angeles");
-    let hour = today.c.hour;
-    let minutes = today.c.minute / 60;
-    let totalHour = hour + minutes;
+    promisedData(setIsLoading).then((database) => loadDatabase(database));
+    setModifications(false);
+  }, [reload]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    try {
-      if (Number(totalHour) > 18.5 && authType !== "bpbadmin" && authType) {
-        confirmDialog({
-          message:
-            "6:00 PM order deadline for tomorrow has passed.  Next available order date is " +
-            todayPlus()[2] +
-            ". Continue?",
-          header: "Confirmation",
-          icon: "pi pi-exclamation-triangle",
-          accept: () => setDelivDate(todayPlus()[2]),
-        });
-        setDelivDate(todayPlus()[2]);
-      } else {
-        setDelivDate(todayPlus()[1]);
-      }
-    } catch (error) {}
-  }, [authType]);
 
   const NorthCroixBakeFilter = (ord) => {
     return (
@@ -211,70 +204,74 @@ function Ordering({ authType }) {
       }
 
       console.log("Yes they have!  Updating freezerNorth numbers");
-      //showUpdate("updating preshaped numbers")
-      try{
-        //prods should only be for bake prods
+      
+      try {
         let bakedOrdersList = getOrdersList(
           tomBasedOnDelivDate(today),
           database
         );
-        bakedOrdersList = 
-            bakedOrdersList
-              .filter((frz) => NorthCroixBakeFilter(frz))
-              
-          
-        
-        console.log("bakedOrdersList",bakedOrdersList)
+        bakedOrdersList = bakedOrdersList.filter((frz) =>
+          NorthCroixBakeFilter(frz)
+        );
 
         for (let prod of bakedOrdersList) {
-          console.log("prod",prod)
           if (prod.freezerNorthFlag !== tomorrow) {
             prod.freezerNorthFlag = today;
           }
-          
+
           if (prod.freezerNorthFlag === today) {
-            try{
-              let projectionCount = composer.getProjectionCount(database, delivDate);
-             
-              for (let proj of projectionCount){
-                if (prod.forBake === proj.prod){
-                  prod.freezerCount = proj.today
+            try {
+              let projectionCount = composer.getProjectionCount(
+                database,
+                delivDate
+              );
+
+              for (let proj of projectionCount) {
+                if (prod.forBake === proj.prod) {
+                  prod.freezerCount = proj.today;
                 }
               }
-            }catch{}
-            
-            
-
+            } catch {}
 
             prod.freezerNorth = prod.freezerNorthClosing;
-            
+
             let frozenDelivsArray = compose.getFrozensLeavingCarlton(
               today,
               database
             );
-            console.log("frozenDelivsArray",frozenDelivsArray)
-            let frozenDeliv
-            try{
-              frozenDeliv = frozenDelivsArray[frozenDelivsArray.findIndex(fr => fr.prod === prod.prodNick)].qty
-            } catch{
-              frozenDeliv = 0
+            let frozenDeliv;
+            try {
+              frozenDeliv =
+                frozenDelivsArray[
+                  frozenDelivsArray.findIndex((fr) => fr.prod === prod.prodNick)
+                ].qty;
+            } catch {
+              frozenDeliv = 0;
             }
-            let setOutArray = compose.getBakedTomorrowAtCarlton(today, database);
-            let setOut
-            console.log("setOUtArray",setOutArray)
-            try{
-              setOut = setOutArray[setOutArray.findIndex(set => set.prod === prod.prodNick)].qty
-  
-            } catch{
-              setOut = 0
+            let setOutArray = compose.getBakedTomorrowAtCarlton(
+              today,
+              database
+            );
+            let setOut;
+            try {
+              setOut =
+                setOutArray[
+                  setOutArray.findIndex((set) => set.prod === prod.prodNick)
+                ].qty;
+            } catch {
+              setOut = 0;
             }
-           
-            prod.freezerNorthClosing = 
-            prod.freezerNorthClosing + 
-                    (Math.ceil((setOut + frozenDeliv - prod.freezerNorthClosing)/12)*12) - 
-                    setOut - frozenDeliv +12
-  
-  
+
+            prod.freezerNorthClosing =
+              prod.freezerNorthClosing +
+              Math.ceil(
+                (setOut + frozenDeliv - prod.freezerNorthClosing) / 12
+              ) *
+                12 -
+              setOut -
+              frozenDeliv +
+              12;
+
             prod.freezerNorthFlag = tomorrow;
             let prodToUpdate = {
               id: prod.prodID,
@@ -282,9 +279,9 @@ function Ordering({ authType }) {
               freezerCount: prod.freezerClosing,
               freezerNorthClosing: prod.freezerNorthClosing,
               freezerNorthFlag: prod.freezerNorthFlag,
-              sheetMake: 0
+              sheetMake: 0,
             };
-           
+
             try {
               await API.graphql(
                 graphqlOperation(updateProduct, { input: { ...prodToUpdate } })
@@ -295,14 +292,7 @@ function Ordering({ authType }) {
             }
           }
         }
-  
-      }catch{}
-        
-      
-        
-      
-
-
+      } catch {}
 
       console.log("Yes they have!  Updating preshaped numbers");
       //showUpdate("updating preshaped numbers")
@@ -317,8 +307,7 @@ function Ordering({ authType }) {
             id: prod.id,
             preshaped: prod.preshaped,
             prepreshaped: prod.prepreshaped,
-            updatePreDate: prod.updatePreDate
-          
+            updatePreDate: prod.updatePreDate,
           };
           try {
             await API.graphql(
@@ -375,18 +364,18 @@ function Ordering({ authType }) {
 
           let rt = "slopick";
           let custName = newOrd["custName"];
-          let prodName
-          try{
+          let prodName;
+          try {
             prodName =
-            products[
-              products.findIndex((prod) =>
-                newOrd["item"].includes(prod.squareID)
-              )
-            ]["prodName"];
+              products[
+                products.findIndex((prod) =>
+                  newOrd["item"].includes(prod.squareID)
+                )
+              ]["prodName"];
           } catch {
-            prodName = "Brownie"
+            prodName = "Brownie";
           }
-          
+
           if (newOrd.location === locIDBPBN) {
             rt = "atownpick";
           }
@@ -413,7 +402,7 @@ function Ordering({ authType }) {
               await API.graphql(
                 graphqlOperation(createOrder, { input: { ...itemToAdd } })
               );
-              showUpdate("New Square Order added")
+              showUpdate("New Square Order added");
               ordsToUpdate.push(itemToAdd);
             } catch (error) {
               console.log("error on creating Orders", error);
@@ -433,8 +422,6 @@ function Ordering({ authType }) {
     setOrdersHasBeenChanged(false);
   };
 
-
-
   const fetchSq = async () => {
     try {
       let response = await fetch(
@@ -448,11 +435,6 @@ function Ordering({ authType }) {
       console.log("Error on Square load");
     }
   };
-
-  useEffect(() => {
-    promisedData(setIsLoading).then((database) => loadDatabase(database));
-    setModifications(false)
-  }, [reload]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const innards1 = (
     <React.Fragment>
@@ -478,7 +460,7 @@ function Ordering({ authType }) {
           setDatabase={setDatabase}
           authType={authType}
         />
-        {!deadlinePassed || authType ==="bpbadmin"? (
+        {!deadlinePassed || authType === "bpbadmin" ? (
           <OrderEntryButtons
             database={database}
             setDatabase={setDatabase}
@@ -507,7 +489,7 @@ function Ordering({ authType }) {
         <Calendar database={database} />
       </inlineContainer>
       <BasicContainer>
-      {authType === "bpbadmin" ? (
+        {authType === "bpbadmin" ? (
           <OrderCommandLine database={database} setDatabase={setDatabase} />
         ) : (
           ""
@@ -525,10 +507,10 @@ function Ordering({ authType }) {
           authType={authType}
         />
         <OrderEntryButtons
-            database={database}
-            setDatabase={setDatabase}
-            authType={authType}
-          />
+          database={database}
+          setDatabase={setDatabase}
+          authType={authType}
+        />
       </BasicContainer>
     </React.Fragment>
   );

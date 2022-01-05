@@ -6,7 +6,7 @@ import { ToggleContext } from "../../../dataContexts/ToggleContext";
 import { Calendar } from "primereact/calendar";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
-import { confirmDialog } from 'primereact/confirmdialog'
+import { confirmDialog } from "primereact/confirmdialog";
 
 import styled from "styled-components";
 
@@ -118,8 +118,6 @@ const SelectDate = ({ database, dailyInvoices }) => {
     };
   };
 
-  
-
   const exportCSV = async (dailyInv, email) => {
     setIsLoading(true);
     let access = await checkQBValidation();
@@ -140,7 +138,6 @@ const SelectDate = ({ database, dailyInvoices }) => {
     */
 
     for (let inv of dailyInv) {
-
       /* begin export csv module */
 
       try {
@@ -173,7 +170,7 @@ const SelectDate = ({ database, dailyInvoices }) => {
           ];
         let custInvoicing = custo.invoicing;
         let custNick = custo.nickName;
-        
+
         let ponote;
         try {
           ponote =
@@ -244,7 +241,6 @@ const SelectDate = ({ database, dailyInvoices }) => {
           },
           DueDate: dueDate,
           ShipDate: TxnDate,
-          //TotalAmt: total,
 
           BillEmail: {
             Address: custEmail,
@@ -254,9 +250,8 @@ const SelectDate = ({ database, dailyInvoices }) => {
           let invID;
 
           invID = await getQBInvIDandSyncToken(access, DocNum);
-          console.log("invID", invID);
+
           if (Number(invID.data.Id) > 0) {
-            console.log("yes");
             custSetup.Id = invID.data.Id;
             custSetup.SyncToken = invID.data.SyncToken;
 
@@ -264,9 +259,8 @@ const SelectDate = ({ database, dailyInvoices }) => {
               custSetup.sparse = false;
             }
           } else {
-            console.log("no");
           }
-          console.log("custSetup", custSetup);
+
           createQBInvoice(access, custSetup);
           showSuccess(DocNum);
         }
@@ -274,48 +268,42 @@ const SelectDate = ({ database, dailyInvoices }) => {
 
       /* end csv module */
 
-
-
       if (email) {
         /* Begin email module */
 
-      let DocNum = inv.invNum;
-      let invID = await getQBInvIDandSyncToken(access, DocNum);
-      console.log(DocNum,invID.data)
-      if (Number(invID.data.Id) > 0) {
-        invID = invID.data.Id;
-        let custo =
-          customers[
-            customers.findIndex((cust) => cust.custName === inv.custName)
-          ];
-        if (custo.toBeEmailed) {
-          let didItEmail = await emailQBInvoice(access, invID);
-          showSuccessEmail(inv.custName, didItEmail.status);
-          console.log(didItEmail.status);
-        } else {
-          console.log("No Invoice to email for " + inv.custName);
-          showDoNotMail(inv.custName)}
-      } else {
-        console.log("No Invoice to email for " + inv.custName);
-        showNoEmail(inv.custName);
-      }
+        let DocNum = inv.invNum;
+        let invID = await getQBInvIDandSyncToken(access, DocNum);
 
-      /* end email module */
+        if (Number(invID.data.Id) > 0) {
+          invID = invID.data.Id;
+          let custo =
+            customers[
+              customers.findIndex((cust) => cust.custName === inv.custName)
+            ];
+          if (custo.toBeEmailed) {
+            let didItEmail = await emailQBInvoice(access, invID);
+            showSuccessEmail(inv.custName, didItEmail.status);
+          } else {
+            showDoNotMail(inv.custName);
+          }
+        } else {
+          showNoEmail(inv.custName);
+        }
+
+        /* end email module */
       }
-      
     }
     setIsLoading(false);
   };
 
   const confirm = (e) => {
     confirmDialog({
-        message: 'Are all invoices accurate and ready for publishing?',
-        header: 'Confirmation',
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => exportCSV(dailyInvoices, true),
-       
+      message: "Are all invoices accurate and ready for publishing?",
+      header: "Confirmation",
+      icon: "pi pi-exclamation-triangle",
+      accept: () => exportCSV(dailyInvoices, true),
     });
-}
+  };
 
   return (
     <React.Fragment>
@@ -331,12 +319,18 @@ const SelectDate = ({ database, dailyInvoices }) => {
           />
         </div>
 
-        <Button className="p-button-success" onClick={() => exportCSV(dailyInvoices, false)}>
+        <Button
+          className="p-button-success"
+          onClick={() => exportCSV(dailyInvoices, false)}
+        >
           EXPORT CSV
         </Button>
-        <Button className="p-button-success" onClick={(e) => {
-        confirm();
-      }}>
+        <Button
+          className="p-button-success"
+          onClick={(e) => {
+            confirm();
+          }}
+        >
           Email Invoices
         </Button>
       </BasicContainer>

@@ -30,7 +30,6 @@ const BasicContainer = styled.div`
   flex-direction: row;
   width: 100%;
   justify-content: space-around;
-
   box-sizing: border-box;
 `;
 
@@ -85,10 +84,6 @@ const SelectDate = ({ database, dailyInvoices }) => {
     setDelivDate(today);
   }, []);
 
-  useEffect(() => {
-    console.log("dailyInvoices", dailyInvoices);
-  }, [dailyInvoices]);
-
   const setDate = (date) => {
     const dt2 = DateTime.fromJSDate(date);
     setDelivDate(dt2.toFormat("yyyy-MM-dd"));
@@ -123,11 +118,31 @@ const SelectDate = ({ database, dailyInvoices }) => {
     };
   };
 
-  const exportCSV = async () => {
+  
+
+  const exportCSV = async (dailyInv, email) => {
     setIsLoading(true);
     let access = await checkQBValidation();
 
-    for (let inv of dailyInvoices) {
+    /*  
+
+      Format for dailyInv:
+
+        custName: "15 degrees",
+        invNum: "0104202215c",
+        orders:
+          0:
+            prodName: "Blueberry Muffin",
+            qty: 1,
+            rate: 1.56
+        qbID: "596"
+
+    */
+
+    for (let inv of dailyInv) {
+
+      /* begin export csv module */
+
       try {
         let count = 0;
         let total = 0;
@@ -158,20 +173,7 @@ const SelectDate = ({ database, dailyInvoices }) => {
           ];
         let custInvoicing = custo.invoicing;
         let custNick = custo.nickName;
-        /*
-        if (custInvoicing === "weekly") {
-          TxnDate = Sunday;
-          DocNum =
-            TxnDate.split("-")[1] +
-            TxnDate.split("-")[2] +
-            TxnDate.split("-")[0] +
-            custNick;
-          dueDate = Sunday15due;
-          console.log("TaxDate", TxnDate);
-          console.log("DocNum", DocNum);
-          console.log("dueDate", dueDate);
-        }
-        */
+        
         let ponote;
         try {
           ponote =
@@ -269,14 +271,14 @@ const SelectDate = ({ database, dailyInvoices }) => {
           showSuccess(DocNum);
         }
       } catch {}
-    }
-    setIsLoading(false);
-  };
 
-  const emailInvoices = async () => {
-    setIsLoading(true);
-    let access = await checkQBValidation();
-    for (let inv of dailyInvoices) {
+      /* end csv module */
+
+
+
+      if (email) {
+        /* Begin email module */
+
       let DocNum = inv.invNum;
       let invID = await getQBInvIDandSyncToken(access, DocNum);
       console.log(DocNum,invID.data)
@@ -297,6 +299,10 @@ const SelectDate = ({ database, dailyInvoices }) => {
         console.log("No Invoice to email for " + inv.custName);
         showNoEmail(inv.custName);
       }
+
+      /* end email module */
+      }
+      
     }
     setIsLoading(false);
   };
@@ -306,7 +312,7 @@ const SelectDate = ({ database, dailyInvoices }) => {
         message: 'Are all invoices accurate and ready for publishing?',
         header: 'Confirmation',
         icon: 'pi pi-exclamation-triangle',
-        accept: () => emailInvoices(),
+        accept: () => exportCSV(dailyInvoices, true),
        
     });
 }
@@ -325,7 +331,7 @@ const SelectDate = ({ database, dailyInvoices }) => {
           />
         </div>
 
-        <Button className="p-button-success" onClick={exportCSV}>
+        <Button className="p-button-success" onClick={() => exportCSV(dailyInvoices, false)}>
           EXPORT CSV
         </Button>
         <Button className="p-button-success" onClick={(e) => {

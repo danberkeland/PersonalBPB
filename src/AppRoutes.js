@@ -17,7 +17,7 @@ import ByProduct from './pages/logistics/ByProduct/ByProduct'
 import Billing from './pages/billing/Billing'
 
 import Loader from './Loader'
-import BPBNBaker1 from './pages/BPBNProd/BPBNBaker1';
+import BPBNBaker1 from './pages/BPBNProd/BPBNBaker1_2';
 import BPBNBaker1Backup from './pages/BPBNProd/BPBNBaker1Backup';
 import BPBNBaker2 from './pages/BPBNProd/BPBNBaker2';
 import BPBNBaker2Backup from './pages/BPBNProd/BPBNBaker2Backup';

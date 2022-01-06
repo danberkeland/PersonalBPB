@@ -110,7 +110,7 @@ function BPBNBaker1() {
 
   useEffect(() => {
     promisedData(setIsLoading).then((database) => checkForUpdates(database,ordersHasBeenChanged,
-        setOrdersHasBeenChanged, delivDate)).then((database) =>
+        setOrdersHasBeenChanged, delivDate, setIsLoading)).then((database) =>
       gatherWhatToMakeInfo(database)
     );
   }, [delivDate]); // eslint-disable-line react-hooks/exhaustive-deps

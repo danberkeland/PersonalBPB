@@ -26,7 +26,7 @@ import {
   tomBasedOnDelivDate
 } from "../../helpers/dateTimeHelpers";
 
-import { promisedData } from "../../helpers/databaseFetchers";
+import { promisedData, checkForUpdates } from "../../helpers/databaseFetchers";
 
 import { ToggleContext } from "../../dataContexts/ToggleContext";
 import { CurrentDataContext } from "../../dataContexts/CurrentDataContext";
@@ -148,11 +148,12 @@ function Ordering({ authType }) {
 
   
   useEffect(() => {
-    promisedData(setIsLoading).then((database) => loadDatabase(database));
+    promisedData(setIsLoading).then((database) => checkForUpdates(database,ordersHasBeenChanged,
+      setOrdersHasBeenChanged, delivDate, setIsLoading)).then((database) => setDatabase(database));
     setModifications(false);
   }, [reload]); // eslint-disable-line react-hooks/exhaustive-deps
 
-
+  /*
   const NorthCroixBakeFilter = (ord) => {
     return (
       ord.where.includes("Mixed") &&
@@ -435,6 +436,7 @@ function Ordering({ authType }) {
       console.log("Error on Square load");
     }
   };
+  */
 
   const innards1 = (
     <React.Fragment>

@@ -243,8 +243,10 @@ export const checkForUpdates = async (
   db,
   ordersHasBeenChanged,
   setOrdersHasBeenChanged,
-  delivDate
+  delivDate,
+  setIsLoading
 ) => {
+  setIsLoading(true)
   const [products, customers, routes, standing, orders, doughs, altPricing] =
     db;
   console.log("Checking if Orders Have been changed");
@@ -476,6 +478,7 @@ export const checkForUpdates = async (
   DBToMod[5] = doughsToUpdate;
   DBToMod[0] = prodsToUpdate;
   setOrdersHasBeenChanged(false);
+  setIsLoading(false)
   return DBToMod;
 };
 

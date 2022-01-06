@@ -8,8 +8,8 @@ import ToolBar from "../logistics/ByRoute/Parts/ToolBar"
 import { ToggleContext } from "../../dataContexts/ToggleContext";
 
 import { convertDatetoBPBDate, todayPlus } from "../../helpers/dateTimeHelpers";
-import { promisedData } from "../../helpers/databaseFetchers";
-import ComposeWhatToBakeBackup from "./Utils/composeWhatToBakeBackup";
+import { promisedData, checkForUpdates } from "../../helpers/databaseFetchers";
+import ComposeWhatToBake from "./Utils/composeWhatToBake";
 
 import BPBNBaker1Dough from "./BPBNBaker1Dough";
 import BPBNBaker1WhatToPrep from "./BPBNBaker1WhatToPrep.js";
@@ -53,16 +53,17 @@ const ButtonWrapper = styled.div`
   background: #ffffff;
 `;
 
+const compose = new ComposeWhatToBake();
+
 const doobieStuff = [
-  { Prod: "Doobie Buns", Bucket: "YES", Mix: "YES", Bake: "NO" },
-  { Prod: "Siciliano", Bucket: "YES", Mix: "NO", Bake: "YES" },
+  { Prod: "Doobie Buns", Bucket: "YES", Mix: "NO", Bake: "YES" },
+  { Prod: "Siciliano", Bucket: "YES", Mix: "YES", Bake: "NO" },
 ];
 
-const compose = new ComposeWhatToBakeBackup();
-
-function BPBNBaker1Backup() {
-  const [delivDate, setDelivDate] = useState(todayPlus()[1]);
-  const { setIsLoading } = useContext(ToggleContext);
+function BPBNBaker1() {
+  const [delivDate, setDelivDate] = useState(todayPlus()[0]);
+  const { setIsLoading, ordersHasBeenChanged,
+    setOrdersHasBeenChanged, } = useContext(ToggleContext);
   const [whatToMake, setWhatToMake] = useState();
   const [whatToPrep, setWhatToPrep] = useState();
   const [doughs, setDoughs] = useState([]);
@@ -82,11 +83,11 @@ function BPBNBaker1Backup() {
   });
 
   useEffect(() => {
-    console.log("todayPlus",todayPlus()[1])
-    if (todayPlus()[1] === '2021-12-24'){
+    console.log("todayPlus",todayPlus()[0])
+    if (todayPlus()[0] === '2021-12-24'){
       setDelivDate('2021-12-25')
     } else {
-      setDelivDate(todayPlus()[1])
+      setDelivDate(todayPlus()[0])
     }
   },[])
 
@@ -109,18 +110,20 @@ function BPBNBaker1Backup() {
   ]);
 
   useEffect(() => {
-    promisedData(setIsLoading).then((database) =>
+    promisedData(setIsLoading).then((database) => checkForUpdates(database,ordersHasBeenChanged,
+        setOrdersHasBeenChanged, delivDate)).then((database) =>
       gatherWhatToMakeInfo(database)
     );
   }, [delivDate]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  
   const gatherWhatToMakeInfo = (database) => {
     let whatToMakeData = compose.returnWhatToMakeBreakDown(delivDate, database);
     setWhatToMake(whatToMakeData.whatToMake);
   };
 
   const handlePrint = () => {
-    ExportPastryPrepPdf(delivDate, doughs, infoWrap,doobieStuff);
+    ExportPastryPrepPdf(delivDate, doughs, infoWrap, doobieStuff);
   };
 
   const header = (
@@ -165,7 +168,7 @@ function BPBNBaker1Backup() {
       <BPBNBaker1WhatToPrep
         whatToPrep={whatToPrep}
         setWhatToPrep={setWhatToPrep}
-        deliv={delivDate}
+        deliv = {delivDate}
         doobieStuff = {doobieStuff}
       />
       <BPBNBaker1Dough
@@ -184,4 +187,4 @@ function BPBNBaker1Backup() {
   );
 }
 
-export default BPBNBaker1Backup;
+export default BPBNBaker1;

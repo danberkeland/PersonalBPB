@@ -1,44 +1,77 @@
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import React, { useState, useEffect, useContext, useRef } from "react";
 
-import Calendar from "./Parts/Calendar";
-import CurrentOrderInfo from "./Parts/CurrentOrderInfo";
-import CurrentOrderList from "./Parts/CurrentOrderList";
-import OrderCommandLine from "./Parts/OrderCommandLine";
-import OrderEntryButtons from "./Parts/OrderEntryButtons";
-import CustomerGroup from "./Parts/CurrentOrderInfoParts/CustomerGroup";
+import Ordering from "./pages/ordering/Ordering";
 
-import { confirmDialog } from "primereact/confirmdialog";
-import { Toast } from "primereact/toast";
+import EditRoutes from "./pages/settings/editRoutes/editRoutes";
+import EditZones from "./pages/settings/editZones/editZones";
+import Notes from "./pages/settings/notes/Notes";
+
+import Customers from "./pages/customers/Customers";
+import Products from "./pages/products/Products";
+import ByRoute from "./pages/logistics/ByRoute/ByRoute";
+import ByProduct from "./pages/logistics/ByProduct/ByProduct";
+import Billing from "./pages/billing/Billing";
+
+import Loader from "./Loader";
+import BPBNBaker1 from "./pages/BPBNProd/BPBNBaker1";
+import BPBNBaker1Backup from "./pages/BPBNProd/BPBNBaker1Backup";
+import BPBNBaker2 from "./pages/BPBNProd/BPBNBaker2";
+import BPBNBaker2Backup from "./pages/BPBNProd/BPBNBaker2Backup";
+import BPBNBuckets from "./pages/BPBNProd/BPBNBuckets";
+import BPBNSetOut from "./pages/BPBNProd/BPBNSetOut";
+import WhoBake from "./pages/BPBNProd/WhoBake";
+import WhoShape from "./pages/BPBNProd/WhoShape";
+import EODCounts from "./pages/EODCounts/EODCounts";
+import DoughCalc from "./pages/doughCalc/doughCalc";
+import BPBSWhatToMake from "./pages/BPBSProd/BPBSWhatToMake";
+import BPBSWhatToMakeBackup from "./pages/BPBSProd/BPBSWhatToMakeBackup";
+import BPBSMixPocket from "./pages/BPBSProd/BPBSMixPocket";
+import CroixToMake from "./pages/BPBSProd/CroixToMake";
+import CroixCount from "./pages/BPBSProd/CroixCount";
+import AMPastry from "./pages/logistics/AMPastry";
+import NorthLists from "./pages/logistics/NorthLists";
+import RetailBags from "./pages/logistics/RetailBags";
+import SpecialOrders from "./pages/logistics/SpecialOrders";
+import FreezerThaw from "./pages/logistics/FreezerThaw";
+import EditDough from "./pages/settings/editDough/editDough";
+import DelivOrder from "./pages/settings/delivOrder/delivOrder";
+import CustProd from "./pages/settings/custProd/custProd";
+import ManageUsers from "./pages/settings/manageUsers/manageUsers";
+import Voice from "./pages/settings/voice/voice";
+import TestComponent from "./pages/testComponent/testComponent";
 
 import {
   createOrder,
   updateDough,
   updateProduct,
   deleteOrder,
-} from "../../graphql/mutations";
+} from "./graphql/mutations";
 
 import { API, graphqlOperation } from "aws-amplify";
+
+import { confirmDialog } from "primereact/confirmdialog";
+import { Toast } from "primereact/toast";
 
 import {
   convertDatetoBPBDate,
   todayPlus,
   checkDeadlineStatus,
-  tomBasedOnDelivDate
-} from "../../helpers/dateTimeHelpers";
+  tomBasedOnDelivDate,
+} from "./helpers/dateTimeHelpers";
 
-import { promisedData } from "../../helpers/databaseFetchers";
+import { promisedData } from "./helpers/databaseFetchers";
 
-import { ToggleContext } from "../../dataContexts/ToggleContext";
-import { CurrentDataContext } from "../../dataContexts/CurrentDataContext";
+import { ToggleContext } from "./dataContexts/ToggleContext";
+import { CurrentDataContext } from "./dataContexts/CurrentDataContext";
 
-import ComposeNorthList from "../logistics/utils/composeNorthList";
-import ComposeCroixInfo from "../BPBSProd/BPBSWhatToMakeUtils/composeCroixInfo";
+import ComposeNorthList from "./pages/logistics/utils/composeNorthList";
+import ComposeCroixInfo from "./pages/BPBSProd/BPBSWhatToMakeUtils/composeCroixInfo";
 
-import { getOrdersList } from "../BPBNProd/Utils/utils";
-
-import styled from "styled-components";
+import { getOrdersList } from "./pages/BPBNProd/Utils/utils";
 
 const compose = new ComposeNorthList();
+const composer = new ComposeCroixInfo();
 
 const { DateTime } = require("luxon");
 
@@ -49,50 +82,9 @@ let today = todayPlus()[0];
 let yesterday = todayPlus()[4];
 let weekAgo = todayPlus()[5];
 
-const MainWindow = styled.div`
-  font-family: "Montserrat", sans-serif;
-  width: 100%;
-  height: 100%;
-  margin: auto;
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-`;
-
-const MainWindowPhone = styled.div`
-  font-family: "Montserrat", sans-serif;
-  width: 100%;
-  height: 100%;
-  margin: auto;
-  display: grid;
-  grid-template-columns: 1fr;
-`;
-
-const BasicContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 95%;
-  border: 1px solid lightgray;
-  padding: 10px 10px;
-  margin: 5px 10px;
-  box-sizing: border-box;
-`;
-
-const Title = styled.h2`
-  padding: 0;
-  margin: 5px 10px;
-  color: rgb(66, 97, 201);
-`;
-
-const DateStyle = styled.div`
-  padding: 0;
-  color: grey;
-  margin: 5px 10px;
-`;
-
-const composer = new ComposeCroixInfo();
-
-function Ordering({ authType }) {
+function AppRoutes({ authType, userNum }) {
   const [database, setDatabase] = useState([]);
+  const [ updated, setUpdated ] = useState(1)
   const [products, customers, routes, standing, orders] = database;
 
   const [customerGroup, setCustomerGroup] = useState(customers);
@@ -108,9 +100,6 @@ function Ordering({ authType }) {
 
   const { chosen, delivDate, setDelivDate } = useContext(CurrentDataContext);
 
-  const [width, setWidth] = useState(window.innerWidth);
-  const breakpoint = 620;
-
   const toast = useRef(null);
 
   const showUpdate = (message) => {
@@ -123,35 +112,16 @@ function Ordering({ authType }) {
   };
 
   useEffect(() => {
-    window.addEventListener("resize", () => setWidth(window.innerWidth));
-  });
-
-  useEffect(() => {
-    let deadlineStatus = false;
-    if (authType !== "bpbadmin") {
-      deadlineStatus = checkDeadlineStatus(delivDate);
+    if (updated === 2){
+      updated && window.location.reload(false);
+      setUpdated(3)
     }
-    setDeadlinePassed(deadlineStatus);
+  },[updated])
 
-    if (deadlineStatus) {
-      confirmDialog({
-        message:
-          "6:00 PM order deadline for tomorrow has passed.  Next available order date is " +
-          todayPlus()[2] +
-          ". Continue?",
-        header: "Confirmation",
-        icon: "pi pi-exclamation-triangle",
-        accept: () => setDelivDate(todayPlus()[2]),
-      });
-    }
-  }, [delivDate, authType]);
-
-  
   useEffect(() => {
     promisedData(setIsLoading).then((database) => loadDatabase(database));
     setModifications(false);
-  }, [reload]); // eslint-disable-line react-hooks/exhaustive-deps
-
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const NorthCroixBakeFilter = (ord) => {
     return (
@@ -163,6 +133,7 @@ function Ordering({ authType }) {
   };
 
   const loadDatabase = async (database) => {
+    console.log("Just the once")
     setIsLoading(true);
     const [products, customers, routes, standing, orders, doughs, altPricing] =
       database;
@@ -204,7 +175,7 @@ function Ordering({ authType }) {
       }
 
       console.log("Yes they have!  Updating freezerNorth numbers");
-      
+
       try {
         let bakedOrdersList = getOrdersList(
           tomBasedOnDelivDate(today),
@@ -420,6 +391,7 @@ function Ordering({ authType }) {
     setDatabase(database);
     setIsLoading(false);
     setOrdersHasBeenChanged(false);
+    setUpdated(2)
   };
 
   const fetchSq = async () => {
@@ -436,95 +408,96 @@ function Ordering({ authType }) {
     }
   };
 
-  const innards1 = (
-    <React.Fragment>
-      <BasicContainer>
-        <Calendar database={database} />
-      </BasicContainer>
-      <Toast ref={toast} />
-      <BasicContainer>
-        {authType === "bpbadmin" ? (
-          <OrderCommandLine database={database} setDatabase={setDatabase} />
-        ) : (
-          ""
-        )}
-        <CurrentOrderInfo
-          database={database}
-          setDatabase={setDatabase}
-          customerGroup={customerGroup}
-          setCustomerGroup={setCustomerGroup}
-          authType={authType}
-        />
-        <CurrentOrderList
-          database={database}
-          setDatabase={setDatabase}
-          authType={authType}
-        />
-        {!deadlinePassed || authType === "bpbadmin" ? (
-          <OrderEntryButtons
-            database={database}
-            setDatabase={setDatabase}
-            authType={authType}
-          />
-        ) : (
-          ""
-        )}
-      </BasicContainer>
-    </React.Fragment>
-  );
-
-  const innards2 = (
-    <React.Fragment>
-      <Title>Back Porch Bakery</Title>
-      <inlineContainer>
-        <DateStyle>
-          <CustomerGroup
-            database={database}
-            customerGroup={customerGroup}
-            setCustomerGroup={setCustomerGroup}
-            authType={authType}
-          />{" "}
-          order for:
-        </DateStyle>
-        <Calendar database={database} />
-      </inlineContainer>
-      <BasicContainer>
-      <Toast ref={toast} />
-        {authType === "bpbadmin" ? (
-          <OrderCommandLine database={database} setDatabase={setDatabase} />
-        ) : (
-          ""
-        )}
-        <CurrentOrderInfo
-          database={database}
-          setDatabase={setDatabase}
-          customerGroup={customerGroup}
-          setCustomerGroup={setCustomerGroup}
-          authType={authType}
-        />
-        <CurrentOrderList
-          database={database}
-          setDatabase={setDatabase}
-          authType={authType}
-        />
-        <OrderEntryButtons
-          database={database}
-          setDatabase={setDatabase}
-          authType={authType}
-        />
-      </BasicContainer>
-    </React.Fragment>
-  );
-
   return (
-    <React.Fragment>
-      {width > breakpoint ? (
-        <MainWindow>{innards1}</MainWindow>
-      ) : (
-        <MainWindowPhone>{innards2}</MainWindowPhone>
-      )}
-    </React.Fragment>
+    <Router>
+      <Loader />
+      <Toast ref={toast} />
+      <div className="bigPicture">
+        <Switch>
+          <Route
+            path="/ordering"
+            render={(props) => (
+              <Ordering {...props} userNum={userNum} authType={authType} />
+            )}
+          />
+          <Route path="/logistics/byRoute" component={ByRoute} />
+          <Route path="/logistics/byProduct" component={ByProduct} />
+          <Route path="/logistics/AMPastry" component={AMPastry} />
+          <Route path="/logistics/NorthLists" component={NorthLists} />
+          <Route path="/logistics/RetailBags" component={RetailBags} />
+          <Route path="/logistics/SpecialOrders" component={SpecialOrders} />
+          <Route path="/logistics/FreezerThaw" component={FreezerThaw} />
+
+          <Route path="/settings/editRoutes" component={EditRoutes} />
+          <Route path="/settings/editZones" component={EditZones} />
+          <Route path="/settings/editDough" component={EditDough} />
+          <Route path="/settings/notes" component={Notes} />
+          <Route path="/settings/delivOrder" component={DelivOrder} />
+          <Route path="/settings/custProd" component={CustProd} />
+          <Route path="/settings/manageUsers" component={ManageUsers} />
+          <Route path="/settings/voice" component={Voice} />
+
+          <Route path="/BPBNProd/BPBNBaker1" component={BPBNBaker1} />
+          <Route
+            path="/BPBNProd/BPBNBaker1Backup"
+            component={BPBNBaker1Backup}
+          />
+          <Route path="/BPBNProd/BPBNBaker2" component={BPBNBaker2} />
+          <Route
+            path="/BPBNProd/BPBNBaker2Backup"
+            component={BPBNBaker2Backup}
+          />
+          <Route
+            path="/BPBNProd/Buckets"
+            render={(props) => <BPBNBuckets {...props} loc={"Carlton"} />}
+          />
+          <Route path="/BPBNProd/WhoBake" component={WhoBake} />
+          <Route path="/BPBNProd/WhoShape" component={WhoShape} />
+          <Route path="/doughCalc/doughCalc" component={DoughCalc} />
+          <Route
+            path="/BPBNProd/BPBNSetOut"
+            render={(props) => <BPBNSetOut {...props} loc={"Carlton"} />}
+          />
+
+          <Route path="/BPBSProd/BPBSWhatToMake" component={BPBSWhatToMake} />
+          <Route
+            path="/BPBSProd/BPBSWhatToMakeBackup"
+            component={BPBSWhatToMakeBackup}
+          />
+          <Route path="/BPBSProd/BPBSMixPocket" component={BPBSMixPocket} />
+          <Route
+            path="/BPBSProd/Buckets"
+            render={(props) => <BPBNBuckets {...props} loc={"Prado"} />}
+          />
+          <Route path="/BPBSProd/CroixToMake" component={CroixToMake} />
+          <Route path="/BPBSProd/CroixCount" component={CroixCount} />
+          <Route
+            path="/BPBSProd/BPBSSetOut"
+            render={(props) => <BPBNSetOut {...props} loc={"Prado"} />}
+          />
+          <Route
+            path="/EODCounts/BPBSCounts"
+            render={(props) => <EODCounts {...props} loc={"Prado"} />}
+          />
+          <Route path="/doughCalc/doughCalc" component={DoughCalc} />
+
+          <Route path="/products" component={Products} />
+          <Route path="/customers" component={Customers} />
+          <Route path="/billing" render={(props) => <Billing {...props} />} />
+          <Route path="/billing/:code" component={Billing} />
+
+          <Route
+            path="/"
+            render={(props) => (
+              <Ordering {...props} userNum={userNum} authType={authType} />
+            )}
+          />
+
+          <Route path="/test" exact component={TestComponent} />
+        </Switch>
+      </div>
+    </Router>
   );
 }
 
-export default Ordering;
+export default AppRoutes;

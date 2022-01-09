@@ -15,7 +15,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 
 import { convertDatetoBPBDate, todayPlus } from "../../helpers/dateTimeHelpers";
-import { promisedData } from "../../helpers/databaseFetchers";
+import { promisedData, checkForUpdates } from "../../helpers/databaseFetchers";
 import ComposeWhatToMake from "./BPBSWhatToMakeUtils/composeWhatToMake";
 
 import styled from "styled-components";
@@ -59,7 +59,7 @@ const { DateTime } = require("luxon");
 const compose = new ComposeWhatToMake();
 
 function BPBSWhatToMake() {
-  const { setIsLoading } = useContext(ToggleContext);
+  const { setIsLoading, ordersHasBeenChanged, setOrdersHasBeenChanged } = useContext(ToggleContext);
   const { products, setProducts } = useContext(ProductsContext);
   const [youllBeShort, setYoullBeShort] = useState();
   const [freshProds, setFreshProds] = useState();
@@ -71,7 +71,8 @@ function BPBSWhatToMake() {
 
 
   useEffect(() => {
-    promisedData(setIsLoading).then((database) => gatherMakeInfo(database));
+    promisedData(setIsLoading).then((database) => checkForUpdates(database,ordersHasBeenChanged,
+      setOrdersHasBeenChanged, delivDate, setIsLoading)).then((database) => gatherMakeInfo(database));
   }, [delivDate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const gatherMakeInfo = (database) => {

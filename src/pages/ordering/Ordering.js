@@ -70,19 +70,12 @@ function Ordering({ authType }) {
     setDeadlinePassed
   } = useContext(ToggleContext);
 
-  const { database, setDatabase, delivDate, setDelivDate } = useContext(CurrentDataContext);
+  const { largeScreen, database, setDatabase, delivDate, setDelivDate } = useContext(CurrentDataContext);
 
   const [products, customers, routes, standing, orders] = database;
   const [customerGroup, setCustomerGroup] = useState(customers);
 
-  const [width, setWidth] = useState(window.innerWidth);
-  const breakpoint = 620;
-
   const toast = useRef(null);
-
-  useEffect(() => {
-    window.addEventListener("resize", () => setWidth(window.innerWidth));
-  });
 
   useEffect(() => {
     let deadlineStatus = false;
@@ -191,7 +184,7 @@ function Ordering({ authType }) {
 
   return (
     <React.Fragment>
-      {width > breakpoint ? (
+      {largeScreen ? (
         <MainWindow>{fullScreen}</MainWindow>
       ) : (
         <MainWindowPhone>{smallScreen}</MainWindowPhone>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useContext } from 'react';
 
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
@@ -43,10 +43,16 @@ import CustProd from './pages/settings/custProd/custProd';
 import ManageUsers from './pages/settings/manageUsers/manageUsers';
 import Voice from './pages/settings/voice/voice';
 import TestComponent from './pages/testComponent/testComponent'
+import { CurrentDataContext } from './dataContexts/CurrentDataContext';
 
 
 function AppRoutes({ authType, userNum }) {
 
+  const { setLargeScreen } = useContext(CurrentDataContext)
+  
+  useEffect(() => {
+    window.addEventListener("resize", () => setLargeScreen(window.innerWidth>620 ? true : false));
+  });
 
   return (
     <Router>

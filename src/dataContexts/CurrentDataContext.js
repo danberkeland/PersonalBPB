@@ -18,6 +18,7 @@ export const CurrentDataProvider = (props) => {
   const [calendarEvents, setCalendarEvents] = useState({});
   const [standArray, setStandArray] = useState([]);
   const [database, setDatabase] = useState([]);
+  const [largeScreen, setLargeScreen] = useState(true);
 
   return (
     <CurrentDataContext.Provider
@@ -37,7 +38,8 @@ export const CurrentDataProvider = (props) => {
         standArray,
         setStandArray,
         database,
-        setDatabase
+        setDatabase,
+        largeScreen, setLargeScreen
       }}
     >
       {props.children}

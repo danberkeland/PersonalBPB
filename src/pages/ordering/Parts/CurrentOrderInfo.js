@@ -48,14 +48,9 @@ const FulfillOptionsPhone = styled.div`
   justify-items: left;
 `;
 
-const CurrentOrderInfo = ({
+const CurrentOrderInfo = () => {
   
-  
-  customerGroup,
-  setCustomerGroup,
-}) => {
-  
-  const { authType, database, setDatabase, chosen, delivDate, route, currentCartList } =
+  const { customerGroup, setCustomerGroup, authType, database, setDatabase, chosen, delivDate, route, currentCartList } =
     useContext(CurrentDataContext);
 
   const { setModifications, cartList } = useContext(ToggleContext);

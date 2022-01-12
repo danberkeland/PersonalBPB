@@ -48,8 +48,10 @@ import { CurrentDataContext } from './dataContexts/CurrentDataContext';
 
 function AppRoutes({ authType, userNum }) {
 
-  const { setAuthType,
+  const { setCustomerGroup, database, setAuthType,
     setLargeScreen } = useContext(CurrentDataContext)
+  
+  const [products, customers, routes, standing, orders] = database;
 
   useEffect(() => {
     setAuthType(authType)
@@ -58,6 +60,10 @@ function AppRoutes({ authType, userNum }) {
   useEffect(() => {
     window.addEventListener("resize", () => setLargeScreen(window.innerWidth>620 ? true : false));
   });
+
+  useEffect(() => {
+    setCustomerGroup(customers)
+  },[])
 
   return (
     <Router>

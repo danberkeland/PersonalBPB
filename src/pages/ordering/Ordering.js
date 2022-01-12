@@ -76,11 +76,12 @@ function Ordering() {
     setDatabase,
     delivDate,
     setDelivDate,
+    customerGroup
+    
   } = useContext(CurrentDataContext);
 
   const [products, customers, routes, standing, orders] = database;
-  const [customerGroup, setCustomerGroup] = useState(customers);
-
+ 
   const toast = useRef(null);
 
   useEffect(() => {
@@ -127,8 +128,7 @@ function Ordering() {
       <BasicContainer>
         {authType === "bpbadmin" ? <OrderCommandLine /> : ""}
         <CurrentOrderInfo
-          customerGroup={customerGroup}
-          setCustomerGroup={setCustomerGroup}
+         
         />
         <CurrentOrderList />
         {!deadlinePassed || authType === "bpbadmin" ? (
@@ -146,8 +146,7 @@ function Ordering() {
       <inlineContainer>
         <DateStyle>
           <CustomerGroup
-            customerGroup={customerGroup}
-            setCustomerGroup={setCustomerGroup}
+            
           />{" "}
           order for:
         </DateStyle>
@@ -157,8 +156,7 @@ function Ordering() {
         <Toast ref={toast} />
         {authType === "bpbadmin" ? <OrderCommandLine /> : ""}
         <CurrentOrderInfo
-          customerGroup={customerGroup}
-          setCustomerGroup={setCustomerGroup}
+          
         />
         <CurrentOrderList />
         <OrderEntryButtons />

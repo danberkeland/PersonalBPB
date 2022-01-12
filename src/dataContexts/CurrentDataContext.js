@@ -20,6 +20,7 @@ export const CurrentDataProvider = (props) => {
   const [database, setDatabase] = useState([]);
   const [largeScreen, setLargeScreen] = useState(true);
   const [authType, setAuthType] = useState(true);
+  const [customerGroup, setCustomerGroup] = useState([]);
 
   return (
     <CurrentDataContext.Provider
@@ -41,7 +42,8 @@ export const CurrentDataProvider = (props) => {
         database,
         setDatabase,
         largeScreen, setLargeScreen,
-        authType, setAuthType
+        authType, setAuthType,
+        customerGroup, setCustomerGroup
       }}
     >
       {props.children}

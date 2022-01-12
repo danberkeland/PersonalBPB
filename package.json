@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@aws-amplify/pubsub": "^4.1.11",
+    "@aws-amplify/pubsub": "^4.2.6",
     "@aws-amplify/ui-react": "^1.0.3",
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
@@ -15,7 +15,7 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
-    "aws-amplify": "^3.3.21",
+    "aws-amplify": "^4.3.12",
     "axios": "^0.21.4",
     "calendarpickerjs": "^1.4.0",
     "dotenv": "^8.2.0",
@@ -70,14 +70,14 @@
     ]
   },
   "devDependencies": {
-    "@babel/core": "^7.12.10",
-    "@babel/preset-env": "^7.12.11",
-    "@babel/preset-react": "^7.12.10",
+    "@babel/core": "^7.16.7",
+    "@babel/preset-env": "^7.16.8",
+    "@babel/preset-react": "^7.16.7",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.4.1",
     "babel-jest": "^26.6.3",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.6",
-    "enzyme-to-json": "^3.6.1",
+    "enzyme-to-json": "^3.6.2",
     "react": "^17.0.2"
   }
 }

@@ -50,12 +50,12 @@ const FulfillOptionsPhone = styled.div`
 
 const CurrentOrderInfo = ({
   
-  authType,
+  
   customerGroup,
   setCustomerGroup,
 }) => {
   
-  const { database, setDatabase, chosen, delivDate, route, currentCartList } =
+  const { authType, database, setDatabase, chosen, delivDate, route, currentCartList } =
     useContext(CurrentDataContext);
 
   const { setModifications, cartList } = useContext(ToggleContext);

@@ -48,7 +48,12 @@ import { CurrentDataContext } from './dataContexts/CurrentDataContext';
 
 function AppRoutes({ authType, userNum }) {
 
-  const { setLargeScreen } = useContext(CurrentDataContext)
+  const { setAuthType,
+    setLargeScreen } = useContext(CurrentDataContext)
+
+  useEffect(() => {
+    setAuthType(authType)
+  })
   
   useEffect(() => {
     window.addEventListener("resize", () => setLargeScreen(window.innerWidth>620 ? true : false));

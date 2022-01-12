@@ -8,9 +8,9 @@ import AddStandingOrderEntry from "../e_CurrentOrderList/StandingOrder/AddStandi
 import { ToggleContext } from "../../../dataContexts/ToggleContext";
 import { CurrentDataContext } from "../../../dataContexts/CurrentDataContext";
 
-const CurrentOrderList = ({ authType }) => {
+const CurrentOrderList = () => {
   const { cartList } = useContext(ToggleContext);
-  const { database, setDatabase } = useContext(CurrentDataContext)
+  const { authType, database, setDatabase } = useContext(CurrentDataContext)
 
   return (
     <React.Fragment>

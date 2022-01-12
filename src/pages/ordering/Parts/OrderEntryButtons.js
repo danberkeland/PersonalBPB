@@ -28,14 +28,15 @@ const OrderButtonsFloat = styled.div`
 
 const clonedeep = require("lodash.clonedeep");
 
-function OrderEntryButtons({ authType }) {
+function OrderEntryButtons() {
 
   const {
     setChosen,
     currentCartList,
     setCurrentCartList,
     database,
-    setDatabase
+    setDatabase,
+    authType
   } = useContext(CurrentDataContext);
   
   const {

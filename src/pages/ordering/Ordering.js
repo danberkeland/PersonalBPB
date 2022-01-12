@@ -58,8 +58,7 @@ const DateStyle = styled.div`
   margin: 5px 10px;
 `;
 
-function Ordering({ authType }) {
-  
+function Ordering() {
   const {
     reload,
     setIsLoading,
@@ -67,10 +66,17 @@ function Ordering({ authType }) {
     ordersHasBeenChanged,
     setOrdersHasBeenChanged,
     deadlinePassed,
-    setDeadlinePassed
+    setDeadlinePassed,
   } = useContext(ToggleContext);
 
-  const { largeScreen, database, setDatabase, delivDate, setDelivDate } = useContext(CurrentDataContext);
+  const {
+    authType,
+    largeScreen,
+    database,
+    setDatabase,
+    delivDate,
+    setDelivDate,
+  } = useContext(CurrentDataContext);
 
   const [products, customers, routes, standing, orders] = database;
   const [customerGroup, setCustomerGroup] = useState(customers);
@@ -119,25 +125,14 @@ function Ordering({ authType }) {
       </BasicContainer>
       <Toast ref={toast} />
       <BasicContainer>
-        {authType === "bpbadmin" ? (
-          <OrderCommandLine />
-        ) : (
-          ""
-        )}
+        {authType === "bpbadmin" ? <OrderCommandLine /> : ""}
         <CurrentOrderInfo
           customerGroup={customerGroup}
           setCustomerGroup={setCustomerGroup}
-          authType={authType}
         />
-        <CurrentOrderList
-          
-          authType={authType}
-        />
+        <CurrentOrderList />
         {!deadlinePassed || authType === "bpbadmin" ? (
-          <OrderEntryButtons
-            
-            authType={authType}
-          />
+          <OrderEntryButtons />
         ) : (
           ""
         )}
@@ -151,10 +146,8 @@ function Ordering({ authType }) {
       <inlineContainer>
         <DateStyle>
           <CustomerGroup
-            
             customerGroup={customerGroup}
             setCustomerGroup={setCustomerGroup}
-            authType={authType}
           />{" "}
           order for:
         </DateStyle>
@@ -162,22 +155,13 @@ function Ordering({ authType }) {
       </inlineContainer>
       <BasicContainer>
         <Toast ref={toast} />
-        {authType === "bpbadmin" ? (
-          <OrderCommandLine />
-        ) : (
-          ""
-        )}
+        {authType === "bpbadmin" ? <OrderCommandLine /> : ""}
         <CurrentOrderInfo
           customerGroup={customerGroup}
           setCustomerGroup={setCustomerGroup}
-          authType={authType}
         />
-        <CurrentOrderList
-          authType={authType}
-        />
-        <OrderEntryButtons
-          authType={authType}
-        />
+        <CurrentOrderList />
+        <OrderEntryButtons />
       </BasicContainer>
     </React.Fragment>
   );

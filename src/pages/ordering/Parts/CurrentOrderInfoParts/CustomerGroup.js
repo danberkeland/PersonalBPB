@@ -14,7 +14,7 @@ const clonedeep = require("lodash.clonedeep");
 
 const { DateTime } = require("luxon");
 
-const CustomerGroup = ({ customerGroup, setCustomerGroup, authType }) => {
+const CustomerGroup = ({ customerGroup, setCustomerGroup }) => {
   const { orderTypeWhole, setModifications } = useContext(ToggleContext);
   const [userNum, setUserNum] = useState();
  
@@ -23,7 +23,8 @@ const CustomerGroup = ({ customerGroup, setCustomerGroup, authType }) => {
 
     setChosen,
     setDelivDate,
-    database
+    database,
+    authType
   } = useContext(CurrentDataContext);
 
   const [products, customers, routes, standing, orders] = database;

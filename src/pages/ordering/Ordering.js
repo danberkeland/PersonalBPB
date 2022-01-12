@@ -11,7 +11,6 @@ import { confirmDialog } from "primereact/confirmdialog";
 import { Toast } from "primereact/toast";
 
 import { todayPlus, checkDeadlineStatus } from "../../helpers/dateTimeHelpers";
-
 import { promisedData, checkForUpdates } from "../../helpers/databaseFetchers";
 
 import { ToggleContext } from "../../dataContexts/ToggleContext";
@@ -71,7 +70,7 @@ function Ordering({ authType }) {
     setDeadlinePassed
   } = useContext(ToggleContext);
 
-  const { database, setDatabase, chosen, delivDate, setDelivDate } = useContext(CurrentDataContext);
+  const { database, setDatabase, delivDate, setDelivDate } = useContext(CurrentDataContext);
 
   const [products, customers, routes, standing, orders] = database;
   const [customerGroup, setCustomerGroup] = useState(customers);
@@ -120,7 +119,7 @@ function Ordering({ authType }) {
     setModifications(false);
   }, [reload]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const innards1 = (
+  const fullScreen = (
     <React.Fragment>
       <BasicContainer>
         <Calendar />
@@ -153,7 +152,7 @@ function Ordering({ authType }) {
     </React.Fragment>
   );
 
-  const innards2 = (
+  const smallScreen = (
     <React.Fragment>
       <Title>Back Porch Bakery</Title>
       <inlineContainer>
@@ -193,9 +192,9 @@ function Ordering({ authType }) {
   return (
     <React.Fragment>
       {width > breakpoint ? (
-        <MainWindow>{innards1}</MainWindow>
+        <MainWindow>{fullScreen}</MainWindow>
       ) : (
-        <MainWindowPhone>{innards2}</MainWindowPhone>
+        <MainWindowPhone>{smallScreen}</MainWindowPhone>
       )}
     </React.Fragment>
   );

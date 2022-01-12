@@ -49,14 +49,13 @@ const FulfillOptionsPhone = styled.div`
 `;
 
 const CurrentOrderInfo = ({
-  database,
-  setDatabase,
+  
   authType,
   customerGroup,
   setCustomerGroup,
 }) => {
   
-  const { chosen, delivDate, route, currentCartList } =
+  const { database, setDatabase, chosen, delivDate, route, currentCartList } =
     useContext(CurrentDataContext);
 
   const { setModifications, cartList } = useContext(ToggleContext);

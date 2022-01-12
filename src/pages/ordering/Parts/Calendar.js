@@ -16,8 +16,8 @@ import { convertDatetoBPBDate } from "../../../helpers/dateTimeHelpers";
 
 const { DateTime } = require("luxon");
 
-const Cal = ({ database }) => {
-  const { chosen, delivDate, setDelivDate, calendarEvents, setCalendarEvents } =
+const Cal = () => {
+  const { database, chosen, delivDate, setDelivDate, calendarEvents, setCalendarEvents } =
     useContext(CurrentDataContext);
   const [products, customers, routes, standing, orders] = database;
   const { setModifications } = useContext(ToggleContext);

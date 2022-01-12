@@ -31,9 +31,9 @@ const CommandLine = styled.span`
 
 const clonedeep = require("lodash.clonedeep");
 
-const OrderCommandLine = ({ database, setDatabase }) => {
+const OrderCommandLine = () => {
 
-  const [products, customers, routes, standing, orders] = database;
+  
 
   const {
     chosen,
@@ -43,7 +43,9 @@ const OrderCommandLine = ({ database, setDatabase }) => {
     route,
     ponote,
     currentCartList,
-    setCurrentCartList
+    setCurrentCartList,
+    database,
+    setDatabase
   } = useContext(CurrentDataContext);
 
   const {
@@ -53,6 +55,8 @@ const OrderCommandLine = ({ database, setDatabase }) => {
     setRouteIsOn,
     setModifications,
   } = useContext(ToggleContext);
+
+  const [products, customers, routes, standing, orders] = database;
 
   let tomorrow = todayPlus()[1];
 

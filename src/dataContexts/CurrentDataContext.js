@@ -17,6 +17,7 @@ export const CurrentDataProvider = (props) => {
   const [currentCartList, setCurrentCartList] = useState([]);
   const [calendarEvents, setCalendarEvents] = useState({});
   const [standArray, setStandArray] = useState([]);
+  const [database, setDatabase] = useState([]);
 
   return (
     <CurrentDataContext.Provider
@@ -35,6 +36,8 @@ export const CurrentDataProvider = (props) => {
         setCalendarEvents,
         standArray,
         setStandArray,
+        database,
+        setDatabase
       }}
     >
       {props.children}

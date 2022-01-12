@@ -60,10 +60,7 @@ const DateStyle = styled.div`
 `;
 
 function Ordering({ authType }) {
-  const [database, setDatabase] = useState([]);
-  const [products, customers, routes, standing, orders] = database;
-
-  const [customerGroup, setCustomerGroup] = useState(customers);
+  
   const {
     reload,
     setIsLoading,
@@ -71,10 +68,13 @@ function Ordering({ authType }) {
     ordersHasBeenChanged,
     setOrdersHasBeenChanged,
     deadlinePassed,
-    setDeadlinePassed,
+    setDeadlinePassed
   } = useContext(ToggleContext);
 
-  const { chosen, delivDate, setDelivDate } = useContext(CurrentDataContext);
+  const { database, setDatabase, chosen, delivDate, setDelivDate } = useContext(CurrentDataContext);
+
+  const [products, customers, routes, standing, orders] = database;
+  const [customerGroup, setCustomerGroup] = useState(customers);
 
   const [width, setWidth] = useState(window.innerWidth);
   const breakpoint = 620;
@@ -123,31 +123,27 @@ function Ordering({ authType }) {
   const innards1 = (
     <React.Fragment>
       <BasicContainer>
-        <Calendar database={database} />
+        <Calendar />
       </BasicContainer>
       <Toast ref={toast} />
       <BasicContainer>
         {authType === "bpbadmin" ? (
-          <OrderCommandLine database={database} setDatabase={setDatabase} />
+          <OrderCommandLine />
         ) : (
           ""
         )}
         <CurrentOrderInfo
-          database={database}
-          setDatabase={setDatabase}
           customerGroup={customerGroup}
           setCustomerGroup={setCustomerGroup}
           authType={authType}
         />
         <CurrentOrderList
-          database={database}
-          setDatabase={setDatabase}
+          
           authType={authType}
         />
         {!deadlinePassed || authType === "bpbadmin" ? (
           <OrderEntryButtons
-            database={database}
-            setDatabase={setDatabase}
+            
             authType={authType}
           />
         ) : (
@@ -163,37 +159,31 @@ function Ordering({ authType }) {
       <inlineContainer>
         <DateStyle>
           <CustomerGroup
-            database={database}
+            
             customerGroup={customerGroup}
             setCustomerGroup={setCustomerGroup}
             authType={authType}
           />{" "}
           order for:
         </DateStyle>
-        <Calendar database={database} />
+        <Calendar />
       </inlineContainer>
       <BasicContainer>
         <Toast ref={toast} />
         {authType === "bpbadmin" ? (
-          <OrderCommandLine database={database} setDatabase={setDatabase} />
+          <OrderCommandLine />
         ) : (
           ""
         )}
         <CurrentOrderInfo
-          database={database}
-          setDatabase={setDatabase}
           customerGroup={customerGroup}
           setCustomerGroup={setCustomerGroup}
           authType={authType}
         />
         <CurrentOrderList
-          database={database}
-          setDatabase={setDatabase}
           authType={authType}
         />
         <OrderEntryButtons
-          database={database}
-          setDatabase={setDatabase}
           authType={authType}
         />
       </BasicContainer>

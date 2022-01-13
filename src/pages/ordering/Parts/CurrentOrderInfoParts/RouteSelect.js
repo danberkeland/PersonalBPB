@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 
 import { CurrentDataContext } from "../../../../dataContexts/CurrentDataContext";
 import { ToggleContext } from "../../../../dataContexts/ToggleContext";
@@ -9,9 +9,7 @@ import { convertDatetoBPBDate } from "../../../../helpers/dateTimeHelpers";
 
 const clonedeep = require("lodash.clonedeep");
 
-const RouteSelect = ({ database, setDatabase, customerGroup }) => {
-  const [products, customers, routes, standing, orders] = database;
-
+const RouteSelect = () => {
   const { setModifications, cartList, orderTypeWhole } =
     useContext(ToggleContext);
 
@@ -21,18 +19,15 @@ const RouteSelect = ({ database, setDatabase, customerGroup }) => {
     setRoute,
     delivDate,
     currentCartList,
-    setCurrentCartList,
+    database,
+    setDatabase,
+    customerGroup,
   } = useContext(CurrentDataContext);
 
-  const [width, setWidth] = useState(window.innerWidth);
-  const breakpoint = 620;
+  const [products, customers, routes, standing, orders] = database;
 
   useEffect(() => {
-    window.addEventListener("resize", () => setWidth(window.innerWidth));
-  });
-
-  useEffect(() => {
-    setRoute("atownpick")
+    setRoute("atownpick");
     if (customerGroup) {
       for (let cust of customerGroup) {
         if (cust["custName"] === chosen) {
@@ -122,7 +117,6 @@ const RouteSelect = ({ database, setDatabase, customerGroup }) => {
         ""
       )}
 
-      
       <RadioButton
         value="slopick"
         name="delivery"

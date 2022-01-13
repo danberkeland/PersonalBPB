@@ -50,7 +50,7 @@ const FulfillOptionsPhone = styled.div`
 
 const CurrentOrderInfo = () => {
   
-  const { customerGroup, setCustomerGroup, authType, database, setDatabase, chosen, delivDate, route, currentCartList } =
+  const { largeScreen, customerGroup, setCustomerGroup, authType, database, setDatabase, chosen, delivDate, route, currentCartList } =
     useContext(CurrentDataContext);
 
   const { setModifications, cartList } = useContext(ToggleContext);
@@ -156,16 +156,13 @@ const CurrentOrderInfo = () => {
   
   return (
     <React.Fragment>
-      {width > breakpoint ? <TitleBox /> : ""}
+      {largeScreen ? <TitleBox /> : ""}
 
       <CurrentInfo>
-        {width > breakpoint ? (
+        {largeScreen ? (
           <FulfillOptions>
             <CustomerGroup
-              database={database}
-              customerGroup={customerGroup}
-              setCustomerGroup={setCustomerGroup}
-              authType={authType}
+              
             />
             {cartList ? (
               <RouteSelect

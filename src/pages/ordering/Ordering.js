@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useEffect, useContext, useRef } from "react";
 
 import Calendar from "./Parts/Calendar";
 import CurrentOrderInfo from "./Parts/CurrentOrderInfo";
@@ -75,8 +75,7 @@ function Ordering() {
     database,
     setDatabase,
     delivDate,
-    setDelivDate,
-    customerGroup
+    setDelivDate
     
   } = useContext(CurrentDataContext);
 

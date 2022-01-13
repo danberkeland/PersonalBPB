@@ -5,30 +5,21 @@ import { Calendar } from "primereact/calendar";
 import interactionPlugin from "@fullcalendar/interaction";
 
 import { CurrentDataContext } from "../../../dataContexts/CurrentDataContext";
-import { ToggleContext } from "../../../dataContexts/ToggleContext";
 
 import {
   CreateStandingArray,
   CreateCartDateArray,
   CreateBlankCartDateArray,
 } from "../../../helpers/calendarBuildHelper";
-import { convertDatetoBPBDate } from "../../../helpers/dateTimeHelpers";
 
 const { DateTime } = require("luxon");
 
 const Cal = () => {
-  const { database, chosen, delivDate, setDelivDate, calendarEvents, setCalendarEvents } =
+  const { largeScreen, database, chosen, delivDate, setDelivDate, calendarEvents, setCalendarEvents } =
     useContext(CurrentDataContext);
   const [products, customers, routes, standing, orders] = database;
-  const { setModifications } = useContext(ToggleContext);
   const [calDate, setCalDate] = useState(new Date(delivDate.replace("-", "/")));
 
-  const [width, setWidth] = useState(window.innerWidth);
-  const breakpoint = 620;
-
-  useEffect(() => {
-    window.addEventListener("resize", () => setWidth(window.innerWidth));
-  });
 
   useEffect(() => {
     setCalDate(new Date(delivDate.replace("-", "/")));
@@ -81,7 +72,7 @@ const Cal = () => {
     setDelivDate(selectInfo.dateStr);
   };
 
-  const innards1 = (
+  const bigScreen = (
     <div className="calendarApp" id="test">
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]}
@@ -100,21 +91,11 @@ const Cal = () => {
     </div>
   );
 
-  const dayOfTheWeek = (date) => {
-    let dayDate = DateTime.local(date.year, date.month, date.day).weekday;
-
-    return dayDate;
-  };
 
   const dateTemplate = (date) => {
-    let dateDaySup = "";
-
-    let dateDay = dayOfTheWeek(date);
-
     let delivDay = Number(delivDate.split("-")[2]);
     let delivMonth = Number(delivDate.split("-")[1]) - 1;
     let delivYear = Number(delivDate.split("-")[0]);
-    let dateStyle;
     try {
       for (let cal of calendarEvents) {
         try {
@@ -184,59 +165,12 @@ const Cal = () => {
                 {date.day}
               </div>
             );
-            //}
-            // if date = date(year-day-month) and groupID = cart => cartStyle
-            // if date = date(year-day-month) and groupID = blanks => blanks
+            
           }
         } catch (error) {}
       }
     } catch (error) {}
-    /*
-    try {
-      for (let cal of calendarEvents) {
-        
-        if (cal.groupID === "standing") {
-          console.log("cal",cal)
-         
-         
-
-          console.log("date",date)
-              
-            try {
-              
-              let dateDayNum = dayOfTheWeek(date) 
-              if (
-                cal.daysOfWeek.includes(dateDayNum) && date.month === 9
-              ) {
-                return (
-                  <div
-                    style={{
-                      backgroundColor: "#b6fac8",
-                      color: "#000000",
-                      fontWeight: "bold",
-                      borderRadius: "50%",
-                      width: "3em",
-                      height: "3em",
-                      lineHeight: "3em",
-                      padding: "0em 1em",
-                    }}
-                  >
-                    {date.day}
-                  </div>
-                );
-                //}
-                // if date = date(year-day-month) and groupID = cart => cartStyle
-                // if date = date(year-day-month) and groupID = blanks => blanks
-              }
-            } catch (error) {
-            
-            } 
-          
-        }
-      }
-    } catch (error) {
-      
-    }*/
+   
     return date.day;
   };
 
@@ -249,7 +183,7 @@ const Cal = () => {
     setDelivDate(formatted);
   };
 
-  const innards2 = (
+  const smallScreen = (
     <div className="p-field p-col-12 p-md-4">
       <Calendar
         id="mask"
@@ -262,7 +196,7 @@ const Cal = () => {
   );
 
   return (
-    <React.Fragment>{width > breakpoint ? innards1 : innards2}</React.Fragment>
+    <React.Fragment>{largeScreen ? bigScreen : smallScreen}</React.Fragment>
   );
 };
 

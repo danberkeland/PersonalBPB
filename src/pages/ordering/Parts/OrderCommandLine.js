@@ -86,7 +86,7 @@ const OrderCommandLine = () => {
     for (let cust of customers) {
       if (
         entry.includes(cust["custName"]) ||
-        entry.includes(cust["nickName"])
+        entry === (cust["nickName"])
       ) {
         nextCustomer = cust["custName"];
         if (nextCustomer !== "  ") {

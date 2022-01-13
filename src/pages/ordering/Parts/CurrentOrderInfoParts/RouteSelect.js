@@ -25,55 +25,15 @@ const RouteSelect = () => {
   } = useContext(CurrentDataContext);
 
   const [products, customers, routes, standing, orders] = database;
-  /*
-  useEffect(() => {
-    setRoute("atownpick");
-    if (customerGroup) {
-      for (let cust of customerGroup) {
-        if (cust["custName"] === chosen) {
-          switch (cust["zoneName"]) {
-            case "slopick":
-              setRoute("slopick");
-              break;
-            case "atownpick":
-              setRoute("atownpick");
-              break;
-            default:
-              setRoute("deliv");
-          }
-        }
-      }
-      if (currentCartList) {
-        let orderCheck = currentCartList.filter(
-          (ord) =>
-            ord.custName === chosen &&
-            ord.delivDate === convertDatetoBPBDate(delivDate) &&
-            Number(ord.qty > 0)
-        );
-
-        if (orderCheck.length > 0) {
-          switch (orderCheck[0].route) {
-            case "slopick":
-              setRoute("slopick");
-              break;
-            case "atownpick":
-              setRoute("atownpick");
-              break;
-            default:
-              console.log("neither");
-          }
-        }
-      }
-    }
-  }, [chosen, delivDate, customerGroup, currentCartList]);
-  */
 
   useEffect(() => {
     setRoute("atownpick");
+
     try {
-      for (let cust of customerGroup) {
-        if (cust["custName"] === chosen) {
-          switch (cust["zoneName"]) {
+      let ind = customerGroup.findIndex(cust => cust.custName === chosen)
+     
+        
+          switch (customerGroup[ind].zoneName) {
             case "slopick":
               setRoute("slopick");
               break;
@@ -83,8 +43,8 @@ const RouteSelect = () => {
             default:
               setRoute("deliv");
           }
-        }
-      }
+        
+      
 
       let orderCheck = currentCartList.filter(
         (ord) =>

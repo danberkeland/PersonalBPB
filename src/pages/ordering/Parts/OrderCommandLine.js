@@ -31,6 +31,36 @@ const CommandLine = styled.span`
 
 const clonedeep = require("lodash.clonedeep");
 
+export const checkForDelivDate = (entry) => {
+  let delivDate = null
+  let [today, tomorrow, twoDay] = todayPlus();
+  let [Sun, Mon, Tues, Wed, Thurs, Fri, Sat] = daysOfTheWeek();
+  let dateWords = [
+    ["today", today],
+    ["tomorrow", tomorrow],
+    ["2day", twoDay],
+    ["twoday", twoDay],
+    ["twoDay", twoDay],
+    ["sun", Sun],
+    ["mon", Mon],
+    ["tue", Tues],
+    ["tues", Tues],
+    ["wed", Wed],
+    ["thu", Thurs],
+    ["thur", Thurs],
+    ["thurs", Thurs],
+    ["fri", Fri],
+    ["sat", Sat],
+  ];
+  for (let wordSet of dateWords) {
+    if (entry.includes(wordSet[0])) {
+      delivDate = wordSet[1];
+    }
+  }
+  return delivDate
+};
+
+
 const OrderCommandLine = () => {
 
   
@@ -113,32 +143,6 @@ const OrderCommandLine = () => {
     return false;
   };
 
-  const checkForDelivDate = (entry) => {
-    let [today, tomorrow, twoDay] = todayPlus();
-    let [Sun, Mon, Tues, Wed, Thurs, Fri, Sat] = daysOfTheWeek();
-    let dateWords = [
-      ["today", today],
-      ["tomorrow", tomorrow],
-      ["2day", twoDay],
-      ["twoday", twoDay],
-      ["twoDay", twoDay],
-      ["sun", Sun],
-      ["mon", Mon],
-      ["tue", Tues],
-      ["tues", Tues],
-      ["wed", Wed],
-      ["thu", Thurs],
-      ["thur", Thurs],
-      ["thurs", Thurs],
-      ["fri", Fri],
-      ["sat", Sat],
-    ];
-    for (let wordSet of dateWords) {
-      if (entry.includes(wordSet[0])) {
-        setDelivDate(wordSet[1]);
-      }
-    }
-  };
 
   const checkForProducts = (entry) => {
     if (testEntryForProduct(entry)) {
@@ -190,7 +194,8 @@ const OrderCommandLine = () => {
   const interpretEntry = async (entry) => {
     checkForCustomer(entry, customers);
     if (cartList){
-      checkForDelivDate(entry);
+      let deliv = checkForDelivDate(entry);
+      deliv && setDelivDate(deliv)
     checkForProducts(entry);
     }
   };

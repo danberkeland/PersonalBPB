@@ -9,8 +9,7 @@ import { convertDatetoBPBDate } from "../../../../helpers/dateTimeHelpers";
 
 const clonedeep = require("lodash.clonedeep");
 
-const PONote = ({ database, setDatabase }) => {
-  const [products, customers, routes, standing, orders] = database;
+const PONote = () => {
 
   const { cartList, setModifications, deadlinePassed } = useContext(ToggleContext);
 
@@ -22,7 +21,11 @@ const PONote = ({ database, setDatabase }) => {
     setPonote,
     delivDate,
     currentCartList,
+    database,
+    setDatabase
   } = useContext(CurrentDataContext);
+
+  const [products, customers, routes, standing, orders] = database;
 
   const orderCheck = () => {
     let orderCheck = orders.filter(

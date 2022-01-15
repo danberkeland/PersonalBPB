@@ -12,7 +12,7 @@ import { ProductsProvider } from "./dataContexts/ProductsContext";
 import { StandingProvider } from "./dataContexts/StandingContext";
 import { HoldingProvider } from "./dataContexts/HoldingContext";
 import { CurrentDataProvider } from "./dataContexts/CurrentDataContext";
-import { ToggleContext, ToggleProvider } from "./dataContexts/ToggleContext";
+import { ToggleProvider } from "./dataContexts/ToggleContext";
 import { RoutesProvider } from "./dataContexts/RoutesContext";
 
 import AppRoutes from "./AppRoutes";

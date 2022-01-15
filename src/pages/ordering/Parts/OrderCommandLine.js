@@ -192,12 +192,14 @@ const OrderCommandLine = () => {
   };
 
   const interpretEntry = async (entry) => {
+    let deliv = checkForDelivDate(entry);
     checkForCustomer(entry, customers);
     if (cartList){
-      let deliv = checkForDelivDate(entry);
       deliv && setDelivDate(deliv)
     checkForProducts(entry);
     }
+
+    return deliv
   };
 
   const handleInput = (entry) => {

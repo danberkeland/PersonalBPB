@@ -253,6 +253,12 @@ export const checkForUpdates = async (
   let prodsToUpdate = clonedeep(products);
   let doughsToUpdate = clonedeep(doughs);
   let ordersToUpdate = clonedeep(orders);
+
+  let bakedOrdersListTest = getOrdersList(tomBasedOnDelivDate(today), db);
+      bakedOrdersListTest = bakedOrdersListTest.filter((frz) =>
+        NorthCroixBakeFilter(frz)
+      );
+  console.log("bake test",bakedOrdersListTest)
   if (ordersHasBeenChanged) {
     console.log("Yes they have! deleting old orders");
 
@@ -336,7 +342,7 @@ export const checkForUpdates = async (
               12 -
             setOut -
             frozenDeliv +
-            12;
+            Number(prod.bakeExtra);
 
           prod.freezerNorthFlag = tomorrow;
           let prodToUpdate = {
@@ -498,9 +504,8 @@ const fetchSq = async () => {
 
 const NorthCroixBakeFilter = (ord) => {
   return (
-    ord.where.includes("Mixed") &&
+   
     ord.packGroup === "baked pastries" &&
-    ord.doughType === "Croissant" &&
-    (ord.route === "Pick up Carlton" || ord.routeDepart === "Carlton")
+    ord.doughType === "Croissant"
   );
 };

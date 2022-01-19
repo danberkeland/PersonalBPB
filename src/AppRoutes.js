@@ -59,7 +59,7 @@ function AppRoutes({ authType, userNum }) {
   
   useEffect(() => {
     window.addEventListener("resize", () => setLargeScreen(window.innerWidth>620 ? true : false));
-  });
+  },[]);
 
   useEffect(() => {
     setCustomerGroup(customers)

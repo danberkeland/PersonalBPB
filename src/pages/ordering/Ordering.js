@@ -142,6 +142,7 @@ function Ordering() {
   const smallScreen = (
     <React.Fragment>
       <Title>Back Porch Bakery</Title>
+      {/*  Gonna work here on optimizing small screen ordering
       <inlineContainer>
         <DateStyle>
           <CustomerGroup
@@ -159,7 +160,7 @@ function Ordering() {
         />
         <CurrentOrderList />
         <OrderEntryButtons />
-      </BasicContainer>
+      </BasicContainer>*/}
     </React.Fragment>
   );
 

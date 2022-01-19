@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
@@ -52,14 +52,32 @@ function AppRoutes({ authType, userNum }) {
     setLargeScreen } = useContext(CurrentDataContext)
   
   const [products, customers, routes, standing, orders] = database;
+  const [ width, setWindowWidth ] = useState(window.innerWidth)
 
   useEffect(() => {
     setAuthType(authType)
   })
   
+  const handleResize = () => {
+    const width = window.innerWidth   
+    setWindowWidth(width)   
+  }
+
+  
   useEffect(() => {
-    window.addEventListener("resize", () => setLargeScreen(window.innerWidth>620 ? true : false));
-  },[]);
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize)
+    }
+  });
+
+  useEffect(() => {
+    if (width>620){
+      setLargeScreen(true)
+    } else {
+      setLargeScreen(false)
+    }
+  },[width])
 
   useEffect(() => {
     setCustomerGroup(customers)

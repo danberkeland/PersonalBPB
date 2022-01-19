@@ -72,6 +72,7 @@ function Ordering() {
   const {
     authType,
     largeScreen,
+    setLargeScreen,
     database,
     setDatabase,
     delivDate,
@@ -82,6 +83,7 @@ function Ordering() {
   const [products, customers, routes, standing, orders] = database;
  
   const toast = useRef(null);
+
 
   useEffect(() => {
     let deadlineStatus = false;

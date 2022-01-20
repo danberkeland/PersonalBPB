@@ -107,7 +107,7 @@ export const pastryPrepFilter = (ord, loc) => {
       ord.packGroup === "baked pastries" &&
       ord.doughType !== "Croissant") ||
     (ord.where.includes("Mixed") &&
-      ord.routeDepart === loc &&
+    (ord.routeDepart === loc || ord.route === "Pick up SLO") &&
       ord.packGroup === "baked pastries" &&
       ord.doughType !== "Croissant")
   );

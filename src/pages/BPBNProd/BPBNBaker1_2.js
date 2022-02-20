@@ -59,11 +59,11 @@ const { DateTime } = require("luxon");
 let yes = DateTime.now().setZone("America/Los_Angeles").ordinal%2 === 0 ? true : false
 
 
-
 const doobieStuff = [
   { Prod: "Doobie Buns", Bucket: "YES", Mix: yes ? "NO" : "NO", Bake: yes ? "NO" : "NO" },
   { Prod: "Siciliano", Bucket: "YES", Mix: yes ? "YES" : "YES", Bake: yes ? "NO" : "NO" },
 ];
+
 
 function BPBNBaker1() {
   const [delivDate, setDelivDate] = useState(todayPlus()[0]);

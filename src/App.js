@@ -75,7 +75,8 @@ function App() {
       tempUsername: null,
     };
     setAuthType(authT)
-    console.log(authT)
+    console.log("AuthType:",authT)
+    console.log("User:",user)
     updateTemps(updateDetails);
   }, [users, user]);
 
@@ -84,6 +85,7 @@ function App() {
       const userData = await API.graphql(
         graphqlOperation(updateAuthSettings, { input: { ...details } })
       );
+      console.log("This worked, whatever it does")
     } catch (error) {
       console.log("error on fetching User List", error);
     }

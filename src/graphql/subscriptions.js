@@ -282,6 +282,7 @@ export const onCreateOrder = /* GraphQL */ `
       delivDate
       timeStamp
       rate
+      isLate
       createdAt
       updatedAt
     }
@@ -301,6 +302,7 @@ export const onUpdateOrder = /* GraphQL */ `
       delivDate
       timeStamp
       rate
+      isLate
       createdAt
       updatedAt
     }
@@ -320,6 +322,7 @@ export const onDeleteOrder = /* GraphQL */ `
       delivDate
       timeStamp
       rate
+      isLate
       createdAt
       updatedAt
     }

@@ -89,6 +89,7 @@ type Order @model @auth(rules: [{allow: public}]) {
   delivDate: String
   timeStamp: String
   rate: Float
+  isLate: Int
 }
 
 type Standing @model @auth(rules: [{allow: public}]) {

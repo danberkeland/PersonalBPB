@@ -96,7 +96,7 @@ export const findAvailableProducts = (
   cartList
 ) => {
   let availableProducts = cloneDeep(products);
-
+ 
   try {
     let customProds =
       customers[customers.findIndex((custo) => chosen === custo.custName)]

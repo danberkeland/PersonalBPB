@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "paths": {
+    "/test": {
+      "permissions": {
+        "setting": "open"
+      },
+      "lambdaFunction": "testsend"
+    }
+  }
+}

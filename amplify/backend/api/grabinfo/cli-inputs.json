@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "paths": {
+    "/textalert": {
+      "permissions": {
+        "setting": "open"
+      },
+      "lambdaFunction": "orderUpdateAlert"
+    }
+  }
+}

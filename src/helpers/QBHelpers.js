@@ -10,6 +10,8 @@ export const checkQBValidation = async () => {
     "https://28ue1wrzng.execute-api.us-east-2.amazonaws.com/done"
   );
 
+  console.log("val",val)
+
   if (val.data) {
     let authData = await API.graphql(
       graphqlOperation(listInfoQBAuths, { limit: "50" })
@@ -17,8 +19,9 @@ export const checkQBValidation = async () => {
 
     let ind = authData.data.listInfoQBAuths.items.findIndex(auth => auth.id === "accessToken")
     access = authData.data.listInfoQBAuths.items[ind].infoContent;
-
-    console.log(access);
+    console.log("access",access)
+    console.log("authData",authData)
+    
   } else {
     console.log("not valid QB Auth");
   }

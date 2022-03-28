@@ -57,6 +57,7 @@ function App() {
 
   useEffect(() => {
     let copyOfUsers = clonedeep(users);
+    console.log("copyOfUsers",copyOfUsers)
     let id;
     let authT
     console.log(copyOfUsers);
@@ -75,7 +76,7 @@ function App() {
       tempUsername: null,
     };
     setAuthType(authT)
-    console.log("AuthType:",authT)
+    console.log("AuthType:",authType)
     console.log("User:",user)
     updateTemps(updateDetails);
   }, [users, user]);
@@ -99,7 +100,8 @@ function App() {
         })
       );
       const userList = userData.data.listAuthSettingss.items;
-      sortAtoZDataByIndex(userList, "businessName");
+      
+      //sortAtoZDataByIndex(userList, "businessName");
       let noDelete = userList.filter((user) => user["_deleted"] !== true);
 
       setUsers(noDelete);
@@ -110,7 +112,7 @@ function App() {
   return (
     <React.Fragment>
       <NavLock>
-      {authType === "bpbadmin" ? <Nav /> : <NavCustomers />}
+      <Nav />
       </NavLock>
 
       <RoutesProvider>
@@ -137,4 +139,4 @@ function App() {
   );
 }
 
-export default withAuthenticator(App);
+export default App;

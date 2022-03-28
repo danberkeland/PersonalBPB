@@ -52,7 +52,7 @@ const CustomerGroup = () => {
       let customerSelect = newCustList.filter(
         (cust) =>
           cust.userSubs.includes(userNum) ||
-          userNum === "64205737-fcdc-44a2-bd87-e951873d2366"
+          userNum === "263fd8de-c722-4b08-a9d7-e3b7197b13b7"
       );
       orderTypeWhole
         ? setCustomerGroup(customerSelect)

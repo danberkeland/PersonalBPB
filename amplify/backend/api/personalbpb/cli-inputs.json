@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "serviceConfiguration": {
+    "serviceName": "AppSync",
+    "defaultAuthType": {
+      "mode": "API_KEY",
+      "expirationTime": 7,
+      "apiKeyExpirationDate": "2022-04-04T14:15:47.656Z",
+      "keyDescription": "key"
+    },
+    "additionalAuthTypes": [
+      {
+        "mode": "AWS_IAM"
+      }
+    ],
+    "conflictResolution": {},
+    "apiName": "personalbpb",
+    "gqlSchemaPath": "C:\\Users\\danbe\\Desktop\\AnAppaDay\\Jan20bpbwholeguiReact\\amplify\\backend\\api\\personalbpb\\schema.graphql"
+  }
+}

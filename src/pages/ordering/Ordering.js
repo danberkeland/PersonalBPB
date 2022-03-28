@@ -125,16 +125,14 @@ function Ordering() {
       </BasicContainer>
       <Toast ref={toast} />
       <BasicContainer>
-        {authType === "bpbadmin" ? <OrderCommandLine /> : ""}
+        <OrderCommandLine />
         <CurrentOrderInfo
          
         />
         <CurrentOrderList />
-        {!deadlinePassed || authType === "bpbadmin" ? (
+        
           <OrderEntryButtons />
-        ) : (
-          ""
-        )}
+       
       </BasicContainer>
     </React.Fragment>
   );

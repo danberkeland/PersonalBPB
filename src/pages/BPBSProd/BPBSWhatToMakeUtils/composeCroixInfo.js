@@ -285,7 +285,7 @@ export default class ComposeCroixInfo {
     let prods = Array.from(new Set(count.map((co) => co.forBake))).filter(
       (item) => item !== "Almond"
     );
-
+    console.log("prods",prods)
     let prodArray = [];
 
     for (let prod of prods) {
@@ -298,13 +298,17 @@ export default class ComposeCroixInfo {
 
       let setOutInd;
       let setOutNorthInd;
-
+      
       let ind = products.findIndex((pro) => pro.forBake === prod);
       if (setOut) {
         setOutInd = setOut.findIndex(
           (set) => set.prodNick === products[ind].nickName
         );
-        goingOut = setOut[setOutInd].qty;
+        
+        try{
+          goingOut = setOut[setOutInd].qty
+        }catch{}
+        
       }
 
       if (setOutNorthTom) {

@@ -33,6 +33,7 @@ export default class ComposePastryPrep {
   };
 
   returnSetOut = (database, loc, delivDate) => {
+   
     let tom = tomBasedOnDelivDate(delivDate);
     let twoday = TwodayBasedOnDelivDate(delivDate);
     let threeday = ThreedayBasedOnDelivDate(delivDate);
@@ -41,7 +42,7 @@ export default class ComposePastryPrep {
     let setOutForAlmonds = getOrdersList(twoday, database, true);
     let twoDayList = getOrdersList(twoday, database, true);
     let threeDayList = getOrdersList(threeday, database, true);
-
+   
     let setOutToday = setOutList.filter((set) => setOutFilter(set, loc));
    
     let almondSetOut = setOutForAlmonds.filter((set) =>

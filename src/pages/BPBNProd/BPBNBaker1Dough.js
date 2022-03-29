@@ -149,6 +149,7 @@ function BPBNBaker1Dough({
   };
 
   const doughMixList = (dough) => {
+    console.log("myDough",dough)
     let doughTotal = (
       Number(dough.needed) +
       Number(dough.buffer) +

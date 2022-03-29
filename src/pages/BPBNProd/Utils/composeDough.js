@@ -239,11 +239,13 @@ export default class ComposeDough {
   };
 
   getDoughAmt = (doughName, orders) => {
+    console.log("bagOrders",orders)
     console.log(doughName+"orders1",orders)
     let qtyAccToday = 0;
     let qtyArray = orders
       .filter((ord) => ord.doughType === doughName)
       .map((ord) => ord.qty * ord.weight * ord.packSize);
+    console.log("qtyArray",qtyArray)
     if (qtyArray.length > 0) {
       qtyAccToday = qtyArray.reduce(addUp);
     }

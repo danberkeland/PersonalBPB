@@ -27,6 +27,7 @@ const AddButtons = styled.div`
 const clonedeep = require("lodash.clonedeep");
 
 const preIngs = [
+  { preIng: "Starter"},
   { preIng: "Levain" },
   { preIng: "Poolish" },
   { preIng: "Rye Levain" },

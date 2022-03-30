@@ -27,6 +27,7 @@ const dryIngs = [
   { dryIng: "Rye Flour" },
   { dryIng: "Hi Gluten Flour" },
   { dryIng: "All Purpose Flour" },
+  { dryIng: "Gluten Powder"}
 ];
 
 const Drys = ({

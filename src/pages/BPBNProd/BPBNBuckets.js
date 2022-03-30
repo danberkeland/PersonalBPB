@@ -143,6 +143,7 @@ function BPBNBuckets({ loc }) {
     
     let doughName = e.target.id.split("_")[0];
     let components = doughComponents.filter((dgh) => dgh.dough === doughName);
+    console.log("components",components)
     let dough = doughs[doughs.findIndex((dgh) => dgh.doughName === doughName)]
     let wetWeight = Number(
       dough.hydration
@@ -160,6 +161,7 @@ function BPBNBuckets({ loc }) {
     let levList = components
       .filter((dgh) => dgh.componentType === "lev")
       .map((it) => it.amount);
+    console.log("levList",levList)
     let levTotals;
     levList.length > 0 ? (levTotals = levList.reduce(addUp)) : (levTotals = 0);
     let dryplusList = components

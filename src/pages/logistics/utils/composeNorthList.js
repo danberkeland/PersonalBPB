@@ -270,10 +270,10 @@ export default class ComposeNorthList {
     try {
       let almondInd = currentFrozenNeed.findIndex((cu) => cu.prod === "al");
       currentFrozenNeed[almondInd].qty = almondQty;
-      console.log("currentFrozenClone", clone);
+     
     } catch {}
 
-    console.log("currentFrozenNeed", clone);
+   
 
     // Create Baked needed North { prod, qty }
     let ordersPlacedAfterDeadline = this.getOrdersPlacedAfterDeadline(
@@ -291,6 +291,8 @@ export default class ComposeNorthList {
       bpbExtraOrders,
       ordersPlacedAfterDeadline
     );
+
+    console.log("bakedGoingNorth",bakedGoingNorth)
 
     // Combine Frozens and Baked { prod, bakedQty, frozenQty }
     let combo = combineTwoGrids(
@@ -335,6 +337,8 @@ export default class ComposeNorthList {
     // combine product lists
     frozenToday = frozenToday.concat(bakedOrdersList);
 
+    console.log("forzenToday",frozenToday)
+
     // create array { prod, qty }
     let frozenArray = [];
     for (let fr of frozenToday) {
@@ -347,6 +351,8 @@ export default class ComposeNorthList {
       };
       frozenArray.push(item);
     }
+
+    console.log("frozenArray",frozenArray)
 
     return frozenArray;
   };

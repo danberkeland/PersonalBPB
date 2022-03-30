@@ -74,7 +74,6 @@ export const buildGridOrderArray = (filterServe, database) => {
 
   const [products, customers, routes, standing, orders] = database;
   let gridOrderArray;
-  console.log("filterServe",filterServe)
   gridOrderArray = filterServe.map((ord) => ({
     prodName: ord["prodName"],
     delivOrder:

@@ -258,7 +258,7 @@ export const checkForUpdates = async (
       bakedOrdersListTest = bakedOrdersListTest.filter((frz) =>
         NorthCroixBakeFilter(frz)
       );
-  console.log("bake test",bakedOrdersListTest)
+ 
   if (ordersHasBeenChanged) {
     console.log("Yes they have! deleting old orders");
 

@@ -14,7 +14,7 @@ export const CreateStandingArray = (standing, chosen) => {
   let standingArray = standing
     ? standing.filter((order) => order["custName"] === chosen)
     : [];
-  console.log("Standing Array",standingArray)
+ 
   let standSetUp =[]
   for (let stand of standingArray){
     if (stand.isStand && Number(stand.Sun) > 0){
@@ -68,21 +68,21 @@ export const CreateBlankCartDateArray = (orders, chosen) => {
     ddate: order["delivDate"],
     qqty: Number(order["qty"]),
   }));
-  console.log("cartBlankArray",cartDateBlankArray)
+  
   let holder = {};
   cartDateBlankArray.forEach((d) =>
     holder.hasOwnProperty(d.ddate)
       ? (holder[d.ddate] = holder[d.ddate] + d.qqty)
       : (holder[d.ddate] = d.qqty)
   );
-  console.log("holder",holder)
+ 
   let BlankDateArray = [];
   for (var prop in holder) {
     let i = prop.split("/");
     let prop2 = i["custName"] + "-" + i["qty"] + "-" + i["prodName"];
     BlankDateArray.push([prop2, holder[prop]]);
   }
-  console.log("blankDateArray",BlankDateArray)
+  
   BlankDateArray = BlankDateArray.filter((ob3) => ob3[1] === 0);
   BlankDateArray = BlankDateArray.map((ob4) => ob4[0]);
 

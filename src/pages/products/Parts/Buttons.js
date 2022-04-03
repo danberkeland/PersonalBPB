@@ -129,7 +129,7 @@ const Buttons = ({ selectedProduct, setSelectedProduct }) => {
     } catch {}
     console.log("QBDetails",QBDetails)
     let res;
-
+    
     try {
       await axios
         .post("https://brzqs4z7y3.execute-api.us-east-2.amazonaws.com/done", {
@@ -145,6 +145,7 @@ const Buttons = ({ selectedProduct, setSelectedProduct }) => {
     }
 
     return res;
+    
   };
 
   const createProd = async (addDetails) => {
@@ -205,6 +206,8 @@ const Buttons = ({ selectedProduct, setSelectedProduct }) => {
 
     console.log("updateQBID",updateDetails.qbID)
     console.log(access)
+
+    
     try {
       await axios
         .post("https://sntijvwmv6.execute-api.us-east-2.amazonaws.com/done", {
@@ -219,6 +222,10 @@ const Buttons = ({ selectedProduct, setSelectedProduct }) => {
     } catch {
       console.log("Error creating Item " + updateDetails.prodName);
     }
+
+    console.log("updateDetails",updateDetails)
+    console.log("syncToken",SyncToken)
+    
     
 
     await createQBProd(updateDetails, SyncToken).then((data) => {

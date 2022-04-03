@@ -64,6 +64,10 @@ function Products() {
     setStandLoaded(true);
   }, []);
 
+  useEffect(() => {
+    console.log("selected",selectedProduct)
+  },[selectedProduct])
+
   return (
     <React.Fragment>
       {!prodLoaded ? <ProductsLoad /> : ""}

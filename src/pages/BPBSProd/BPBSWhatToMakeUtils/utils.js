@@ -184,6 +184,7 @@ const update = (order, products, customers) => {
   let atownPick = "atownpick";
   let ind =
     products[products.findIndex((prod) => prod.prodName === order.prodName)];
+  console.log("ind",order)
   try {
     let custInd =
       customers[

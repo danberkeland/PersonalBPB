@@ -144,6 +144,7 @@ const BuildCurrentCartList = ({ database, setDatabase, authType }) => {
          
         }
         sortAtoZDataByIndex(currentOrderList, "prodName");
+        currentOrderList = currentOrderList.filter(ord => ord.prodName !=='')
         setCurrentCartList(currentOrderList);
       }
     }
@@ -173,7 +174,7 @@ const BuildCurrentCartList = ({ database, setDatabase, authType }) => {
         <label>RATE</label>
         <label>TOTAL</label>
         {currentCartList
-          .filter((curr) => curr.qty !== 0 || curr.temp === true)
+          .filter((curr) => (curr.qty !== 0 && curr.prodName !== '') || curr.temp === true)
           .map((order) => (
             <React.Fragment key={uuidv4() + "b"}>
               <TrashCanContainer>
@@ -210,7 +211,7 @@ const BuildCurrentCartList = ({ database, setDatabase, authType }) => {
     <React.Fragment>
         
         {currentCartList
-          .filter((curr) => curr.qty !== 0 || curr.temp === true)
+          .filter((curr) => (curr.qty !== 0 && curr.prodName !== '') || curr.temp === true)
           .map((order) => (
             <React.Fragment key={uuidv4() + "b"}>
               <PhoneWrap>

@@ -38,7 +38,7 @@ export const buildCartList = (chosen, delivDate, orders) => {
         order["custName"].match(wildcardRegExp(`${chosen}`))
     );
   }
-
+  builtCartList = builtCartList.filter(ord => ord.prodName !== '')
   return builtCartList;
 };
 
@@ -111,6 +111,8 @@ const convertStandListtoStandArray = (
 
 export const compileOrderList = (cartList, standList) => {
   let orderList = cartList.concat(standList);
+  let clone = clonedeep(orderList)
+  console.log("orderList",clone)
 
   // Remove old cart order from orders if it exists
   for (let i = 0; i < orderList.length; ++i) {
@@ -124,8 +126,16 @@ export const compileOrderList = (cartList, standList) => {
       }
     }
   }
-
+  orderList = orderList.filter(ord => ord.prodName !== '')
+  let clone2 = clonedeep(orderList)
+ 
+  console.log("orderList2",clone2)
   sortAtoZDataByIndex(orderList, "prodName");
+  orderList = orderList.filter(ord => ord.prodName !== '')
+  let clone3 = clonedeep(orderList)
+ 
+  console.log("orderList3",clone3)
+  
   return orderList;
 };
 
@@ -145,6 +155,7 @@ export const compileFullOrderList = (cartList, standList) => {
   }
 
   sortAtoZDataByIndex(orderList, "prodName");
+  orderList = orderList.filter(ord => ord.prodName !== '')
   return orderList;
 };
 
@@ -157,9 +168,12 @@ export const buildCurrentOrder = (
   ponote
 ) => {
   let cartList = buildCartList(chosen, delivDate, orders);
+  console.log("cartList",cartList)
   let standList = buildStandList(chosen, delivDate, standing, route, ponote);
+  console.log("standList",standList)
   let currentOrderList = compileOrderList(cartList, standList);
   console.log("currentOrderList", currentOrderList);
+  currentOrderList = currentOrderList.filter(ord => ord.prodName !== '')
   return currentOrderList;
 };
 

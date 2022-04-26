@@ -11,12 +11,12 @@ const { DateTime, Interval } = require("luxon");
 
 export const sortAtoZDataByIndex = (data, index) => {
   let dataIn = cloneDeep(data)
-  console.log("dataIn",dataIn)
+ 
   data.sort(function (a, b) {
     return a[index] > b[index] ? 1 : -1;
   });
   let dataOut = cloneDeep(data)
-  console.log("dataOut",dataOut)
+  
   return data;
 };
 

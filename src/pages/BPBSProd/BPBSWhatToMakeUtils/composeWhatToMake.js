@@ -10,6 +10,7 @@ import {
   addPocketsQty,
 } from "./utils";
 import { handleFrenchConundrum } from "./conundrums";
+import { cloneDeep } from "lodash";
 const { DateTime } = require("luxon");
 
 let tomorrow = todayPlus()[1];
@@ -96,15 +97,18 @@ export default class ComposeWhatToMake {
     const [products, customers, routes, standing, orders] = database;
     console.log("delivDate",delivDate)
     let makeFreshProds = makeProds(products, this.freshProdFilter);
+    
     let tom = tomBasedOnDelivDate(delivDate)
     if (delivDate === "2021-12-24"){
       tom = TwodayBasedOnDelivDate(delivDate)
     }
     let fullOrdersToday = getFullMakeOrders(delivDate, database);
     let fullOrdersTomorrow = getFullMakeOrders(tom, database);
+    console.log("fullOrdersTomorrow",fullOrdersTomorrow)
     for (let make of makeFreshProds) {
       addFresh(make, fullOrdersToday, fullOrdersTomorrow, products, routes);
     }
+    console.log("makeFreshProds",makeFreshProds)
     return makeFreshProds;
   };
 

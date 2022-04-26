@@ -54,12 +54,13 @@ export const addFresh = (
   if (qtyToday.length > 0) {
     qtyAccToday = qtyToday.reduce(addUp);
   }
-
+  let clone1 = clonedeep(fullOrdersTomorrow)
+  console.log("clone1",clone1)
   let qtyTomorrow = fullOrdersTomorrow
     .filter(
       (full) =>
         make.forBake === full.forBake &&
-        full.atownPick !== true &&
+        (full.atownPick !== true || full.prodName === "Dutch Stick") &&
         checkZone(full, availableRoutesTomorrow) === true
     )
     .map((ord) => ord.qty * ord.packSize);
@@ -184,7 +185,7 @@ const update = (order, products, customers) => {
   let atownPick = "atownpick";
   let ind =
     products[products.findIndex((prod) => prod.prodName === order.prodName)];
-  console.log("ind",order)
+  
   try {
     let custInd =
       customers[

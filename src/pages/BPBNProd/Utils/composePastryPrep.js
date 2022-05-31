@@ -116,7 +116,19 @@ export default class ComposePastryPrep {
       // Remove 'unmb'
       setOutToday = setOutToday.filter((ind) => ind.prodNick !== "unmb");
     } catch {}
-
+    
+    for (let setOut of setOutToday){
+      let pans = 12
+      if (setOut.prodNick==="mini"){
+        pans = 15
+      }
+      if (setOut.prodNick==="mb"){
+        pans = 6
+      }
+      setOut.pans = Math.floor(setOut.qty/pans)
+      setOut.pansextra = (setOut.qty%pans)
+      console.log(setOut)
+    }
     return setOutToday;
   };
 

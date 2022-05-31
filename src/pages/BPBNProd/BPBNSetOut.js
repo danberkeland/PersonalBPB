@@ -177,6 +177,8 @@ function BPBNSetOut({ loc }) {
       columns: [
         { header: "Frozen Croissants", dataKey: "prodNick" },
         { header: "Qty", dataKey: "qty" },
+        { header: "Pans", dataKey: "pans" },
+        { header: "+", dataKey: "pansextra" },
       ],
       startY: finalY + titleToNextTable,
       styles: { fontSize: tableFont },
@@ -248,6 +250,8 @@ function BPBNSetOut({ loc }) {
         <DataTable value={setOut} className="p-datatable-sm">
           <Column field="prodNick" header="Product"></Column>
           <Column field="qty" header="Qty"></Column>
+          <Column field="pans" header="Pans"></Column>
+          <Column field="pansextra" header="+"></Column>
         </DataTable>
 
         <h3>Pastry Prep</h3>

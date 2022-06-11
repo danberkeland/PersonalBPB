@@ -132,21 +132,20 @@ function AMPastry() {
       doc.text(`${binSize}`, 3.7, 1.8);
 
       doc.setFontSize(12);
-      past.pl && doc.text(`Pl: ${past.pl}`, 0.2, 0.72);
-      past.ch && doc.text(`Ch: ${past.ch}`, 0.2, 0.98);
-      past.pg && doc.text(`Pg: ${past.pg}`, 0.2, 1.24);
-      past.sf && doc.text(`Sf: ${past.sf}`, 0.2, 1.5);
+      past.bb ? doc.text(`BB: ${past.bb}`, 0.2, 0.72) : doc.text(`BB: ----`, 0.2, 0.72);
+      past.al ? doc.text(`Al: ${past.al}`, 0.2, 0.98) : doc.text(`Al: ----`, 0.2, 0.98);
+      past.bd ? doc.text(`Bd: ${past.bd}`, 0.2, 1.24) : doc.text(`Bd: ----`, 0.2, 1.24);
+      past.sco ? doc.text(`Sco: ${past.sco}`, 0.2, 1.5) : doc.text(`Sco: ----`, 0.2, 1.5);
 
-      past.al && doc.text(`Al: ${past.al}`, 1.46, 0.72);
-      past.mb && doc.text(`Mb: ${past.mb}`, 1.46, 0.98);
-      past.unmb && doc.text(`UnMb: ${past.unmb}`, 1.46, 1.24);
-      past.mini && doc.text(`mini: ${past.mini}`, 1.46, 1.5);
-      past.sand && doc.text(`sand: ${past.sand}`, 1.46, 1.76);
-
-      past.bb && doc.text(`BB: ${past.bb}`, 2.72, 0.72);
-      past.sco && doc.text(`Sco: ${past.sco}`, 2.72, 0.98);
-      past.bd && doc.text(`Bd: ${past.bd}`, 2.72, 1.24);
-      past.brn && doc.text(`Brn: ${past.brn}`, 2.72, 1.5);
+      past.brn ? doc.text(`Brn: ${past.brn}`, 1.46, 0.72) : doc.text(`Brn: ----`, 1.46, 0.72);
+      past.pg ? doc.text(`PG: ${past.pg}`, 1.46, 0.98) : doc.text(`PG: ----`, 1.46, 0.98);
+      past.sf ? doc.text(`SF: ${past.sf}`, 1.46, 1.24) : doc.text(`SF: ----`, 1.46, 1.24);
+      past.unmb ? doc.text(`unmb: ${past.unmb}`, 1.46, 1.5) : doc.text(`unmb: ----`, 1.46, 1.5);
+      
+      past.mb ? doc.text(`Mb: ${past.mb}`, 2.72, 0.72) : doc.text(`Mb: ----`, 2.72, 0.72);
+      past.ch ? doc.text(`Ch: ${past.ch}`, 2.72, 0.98) : doc.text(`Ch: ----`, 2.72, 0.98);
+      past.pl ? doc.text(`Pl: ${past.pl}`, 2.72, 1.24) : doc.text(`Pl: ----`, 2.72, 1.24);
+      past.mini ? doc.text(`Mini: ${past.mini}`, 2.72, 1.5) : doc.text(`Mini: ----`, 2.72, 1.5);
       if (ind < AMPastry.length) {
         doc.addPage({
           format: [2, 4],

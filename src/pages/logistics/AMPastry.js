@@ -44,6 +44,33 @@ const ButtonWrapper = styled.div`
 
 const compose = new ComposeAMPastry();
 
+const getBinSize = (past) => {
+  let binSize = "M"
+  let num =
+    Number(past.pl ? past.pl : 0) +
+    Number(past.ch ? past.ch : 0) +
+    Number(past.pg ? past.pg : 0) +
+    Number(past.sf ? past.sf : 0) +
+    Number(past.al ? past.al : 0) +
+    Number(past.mb ? past.mb : 0) +
+    Number(past.unmb ? past.unmb : 0) +
+    Number(past.mini ? past.mini : 0) +
+    Number(past.bb ? past.bb : 0) +
+    Number(past.sco ? past.sco : 0) +
+    Number(past.bd ? past.bd : 0) +
+    Number(past.brn ? past.brn : 0);
+
+  if (num < 9){
+    binSize = "S"
+  }
+
+  if (num > 36){
+    binSize = "L"
+  }
+
+  return binSize;
+};
+
 function AMPastry() {
   const { setIsLoading } = useContext(ToggleContext);
   const [AMPastry, setAMPastry] = useState([]);
@@ -51,7 +78,6 @@ function AMPastry() {
 
   const [columnsAMPastry, setColumnsAMPastry] = useState([]);
   const [columnsAMOthers, setColumnsAMOthers] = useState([]);
-
 
   let delivDate = todayPlus()[0];
 
@@ -71,7 +97,7 @@ function AMPastry() {
   };
 
   const dynamicColumnsAMPastry = createDynamic(columnsAMPastry);
-  const dynamicColumnsAMOthers = createDynamic(columnsAMOthers)
+  const dynamicColumnsAMOthers = createDynamic(columnsAMOthers);
 
   useEffect(() => {
     promisedData(setIsLoading).then((database) => gatherMakeInfo(database));
@@ -82,7 +108,7 @@ function AMPastry() {
     setAMPastry(AMPastryData.AMPastry);
     setColumnsAMPastry(AMPastryData.columnsAMPastry);
     setAMOthers(AMPastryData.AMOthers);
-    setColumnsAMOthers(AMPastryData.columnsAMOthers)
+    setColumnsAMOthers(AMPastryData.columnsAMOthers);
   };
 
   const exportAMPastryStickers = () => {
@@ -93,10 +119,17 @@ function AMPastry() {
     });
 
     let ind = 0;
-    for (let past of AMPastry) {
+    let AMPastryData = AMPastry.filter(cust => cust.customer !=="BPB Extras")
+    for (let past of AMPastryData) {
       ind += 1;
+      let binSize = getBinSize(past);
       doc.setFontSize(14);
-      doc.text(`${past.customer} ${convertDatetoBPBDate(delivDate)}`, 0.1, 0.36);
+      doc.text(
+        `${past.customer} ${convertDatetoBPBDate(delivDate)}`,
+        0.1,
+        0.36
+      );
+      doc.text(`${binSize}`, 3.7, 1.8);
 
       doc.setFontSize(12);
       past.pl && doc.text(`Pl: ${past.pl}`, 0.2, 0.72);
@@ -114,12 +147,12 @@ function AMPastry() {
       past.sco && doc.text(`Sco: ${past.sco}`, 2.72, 0.98);
       past.bd && doc.text(`Bd: ${past.bd}`, 2.72, 1.24);
       past.brn && doc.text(`Brn: ${past.brn}`, 2.72, 1.5);
-      if (ind<AMPastry.length){
-      doc.addPage({
-        format: [2, 4],
-        orientation: "l",
-      });
-    }
+      if (ind < AMPastry.length) {
+        doc.addPage({
+          format: [2, 4],
+          orientation: "l",
+        });
+      }
     }
 
     doc.save(`TestSticker.pdf`);
@@ -168,7 +201,6 @@ function AMPastry() {
         >
           Print AM Pastry List
         </Button>
-
       </ButtonWrapper>
     </ButtonContainer>
   );

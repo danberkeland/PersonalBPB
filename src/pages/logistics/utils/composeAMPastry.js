@@ -9,7 +9,7 @@ import {
   
   import { getFullOrders } from "../../../helpers/CartBuildingHelpers";
   
-  import { sortZtoADataByIndex } from "../../../helpers/sortDataHelpers";
+  import { sortAtoZDataByIndex, sortZtoADataByIndex } from "../../../helpers/sortDataHelpers";
   import {
     calcDayNum,
     routeRunsThatDay,
@@ -110,9 +110,22 @@ import {
     fullOrder = zerosDelivFilter(fullOrder, delivDate, database);
     fullOrder = buildGridOrderArray(fullOrder, database);
     fullOrder = addRoutes(delivDate, fullOrder, database);
-  
+    console.log("fullOrder",fullOrder)
+    let custOrder = sortZtoADataByIndex(fullOrder,"delivOrder")
+    custOrder = sortAtoZDataByIndex(custOrder,"route")
+    custOrder = custOrder.map(cust => cust.custName)
+    custOrder = Array.from(new Set(custOrder))
+    let newCustOrder = []
+    console.log("custNames",custNames)
+    for (let cust of custOrder){
+      if (custNames.includes(cust)){
+        newCustOrder.push(cust)
+      }
+    }
+    console.log("newCustOrder",newCustOrder)
+   
     let orderArray = [];
-    for (let cust of custNames) {
+    for (let cust of newCustOrder) {
       let custItem = {};
       custItem = {
         customer: cust,
@@ -133,6 +146,7 @@ import {
       }
       orderArray.push(custItem);
     }
+    console.log("orderArray",orderArray)
     return orderArray;
   };
   

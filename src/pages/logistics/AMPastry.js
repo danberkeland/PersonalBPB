@@ -45,7 +45,8 @@ const ButtonWrapper = styled.div`
 const compose = new ComposeAMPastry();
 
 const getBinSize = (past) => {
-  let binSize = "M"
+
+  
   let num =
     Number(past.pl ? past.pl : 0) +
     Number(past.ch ? past.ch : 0) +
@@ -60,13 +61,18 @@ const getBinSize = (past) => {
     Number(past.bd ? past.bd : 0) +
     Number(past.brn ? past.brn : 0);
 
-  if (num < 9){
-    binSize = "S"
+
+  let binSize = "1 x S"
+
+  if (num > 12){
+    let numBin = Math.ceil(num/24)
+    binSize = numBin+" x M"
+    if (numBin>4){
+      numBin = Math.ceil(num/45)
+      binSize = numBin+" x L"
+    }
   }
 
-  if (num > 36){
-    binSize = "L"
-  }
 
   return binSize;
 };
@@ -129,13 +135,13 @@ function AMPastry() {
         0.1,
         0.36
       );
-      doc.text(`${binSize}`, 3.7, 1.8);
+      doc.text(`${binSize}`, 3.4, 1.8);
 
       doc.setFontSize(12);
       past.bb ? doc.text(`BB: ${past.bb}`, 0.2, 0.72) : doc.text(`BB: ----`, 0.2, 0.72);
-      past.al ? doc.text(`Al: ${past.al}`, 0.2, 0.98) : doc.text(`Al: ----`, 0.2, 0.98);
-      past.bd ? doc.text(`Bd: ${past.bd}`, 0.2, 1.24) : doc.text(`Bd: ----`, 0.2, 1.24);
-      past.sco ? doc.text(`Sco: ${past.sco}`, 0.2, 1.5) : doc.text(`Sco: ----`, 0.2, 1.5);
+      past.bd ? doc.text(`Bd: ${past.bd}`, 0.2, 0.98) : doc.text(`Bd: ----`, 0.2, 0.98);
+      past.sco ? doc.text(`Sco: ${past.sco}`, 0.2, 1.24) : doc.text(`Sco: ----`, 0.2, 1.24);
+      past.al ? doc.text(`Al: ${past.al}`, 0.2, 1.5) : doc.text(`Al: ----`, 0.2, 1.5);
 
       past.brn ? doc.text(`Brn: ${past.brn}`, 1.46, 0.72) : doc.text(`Brn: ----`, 1.46, 0.72);
       past.pg ? doc.text(`PG: ${past.pg}`, 1.46, 0.98) : doc.text(`PG: ----`, 1.46, 0.98);

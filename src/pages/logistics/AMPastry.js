@@ -64,7 +64,7 @@ const getBinSize = (past) => {
 
   let binSize = "1 x S"
 
-  if (num > 12){
+  if (num > 10){
     let numBin = Math.ceil(num/24)
     binSize = numBin+" x M"
     if (numBin>4){

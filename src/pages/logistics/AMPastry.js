@@ -139,18 +139,18 @@ function AMPastry() {
 
       doc.setFontSize(12);
       past.bb ? doc.text(`BB: ${past.bb}`, 0.2, 0.72) : doc.text(`BB: ----`, 0.2, 0.72);
-      past.bd ? doc.text(`Bd: ${past.bd}`, 0.2, 0.98) : doc.text(`Bd: ----`, 0.2, 0.98);
-      past.sco ? doc.text(`Sco: ${past.sco}`, 0.2, 1.24) : doc.text(`Sco: ----`, 0.2, 1.24);
-      past.al ? doc.text(`Al: ${past.al}`, 0.2, 1.5) : doc.text(`Al: ----`, 0.2, 1.5);
+      past.brn ? doc.text(`Brn: ${past.brn}`, 0.2, 0.98) : doc.text(`Brn: ----`, 0.2, 0.98);
+      past.bd ? doc.text(`Bd: ${past.bd}`, 0.2, 1.24) : doc.text(`Bd: ----`, 0.2, 1.24);
+      past.sco ? doc.text(`Sco: ${past.sco}`, 0.2, 1.5) : doc.text(`Sco: ----`, 0.2, 1.5);
 
-      past.brn ? doc.text(`Brn: ${past.brn}`, 1.46, 0.72) : doc.text(`Brn: ----`, 1.46, 0.72);
-      past.pg ? doc.text(`PG: ${past.pg}`, 1.46, 0.98) : doc.text(`PG: ----`, 1.46, 0.98);
-      past.sf ? doc.text(`SF: ${past.sf}`, 1.46, 1.24) : doc.text(`SF: ----`, 1.46, 1.24);
-      past.unmb ? doc.text(`unmb: ${past.unmb}`, 1.46, 1.5) : doc.text(`unmb: ----`, 1.46, 1.5);
+      past.pg ? doc.text(`PG: ${past.pg}`, 1.46, 0.72) : doc.text(`PG: ----`, 1.46, 0.72);
+      past.sf ? doc.text(`SF: ${past.sf}`, 1.46, 0.98) : doc.text(`SF: ----`, 1.46, 0.98);
+      past.pl ? doc.text(`Pl: ${past.pl}`, 1.46, 1.24) : doc.text(`Pl: ----`, 1.46, 1.24);
+      past.ch ? doc.text(`ch: ${past.ch}`, 1.46, 1.5) : doc.text(`ch: ----`, 1.46, 1.5);
       
-      past.mb ? doc.text(`Mb: ${past.mb}`, 2.72, 0.72) : doc.text(`Mb: ----`, 2.72, 0.72);
-      past.ch ? doc.text(`Ch: ${past.ch}`, 2.72, 0.98) : doc.text(`Ch: ----`, 2.72, 0.98);
-      past.pl ? doc.text(`Pl: ${past.pl}`, 2.72, 1.24) : doc.text(`Pl: ----`, 2.72, 1.24);
+      past.al ? doc.text(`Al: ${past.al}`, 2.72, 0.72) : doc.text(`Al: ----`, 2.72, 0.72);
+      past.unmb ? doc.text(`unmb: ${past.unmb}`, 2.72, 0.98) : doc.text(`unmb: ----`, 2.72, 0.98);
+      past.mb ? doc.text(`mb: ${past.mb}`, 2.72, 1.24) : doc.text(`mb: ----`, 2.72, 1.24);
       past.mini ? doc.text(`Mini: ${past.mini}`, 2.72, 1.5) : doc.text(`Mini: ----`, 2.72, 1.5);
       if (ind < AMPastry.length) {
         doc.addPage({

@@ -14,7 +14,7 @@ export const checkQBValidation = async () => {
 
   if (val.data) {
     let authData = await API.graphql(
-      graphqlOperation(listInfoQBAuths, { limit: "50" })
+      graphqlOperation(listInfoQBAuths, { limit: "200" })
     );
 
     let ind = authData.data.listInfoQBAuths.items.findIndex(auth => auth.id === "accessToken")

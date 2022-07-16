@@ -3,7 +3,7 @@ import { API, graphqlOperation } from "aws-amplify";
 
 import { ToggleContext } from "../dataContexts/ToggleContext";
 
-import * as queries from "../graphql/queries";
+import {listProducts} from "../helpers/customQueries";
 
 import { Dropdown } from "primereact/dropdown";
 import { Button } from "primereact/button";
@@ -46,7 +46,7 @@ function Remap() {
 
     try {
       products = await API.graphql({
-        query: queries.listProducts,
+        query: listProducts,
         variables: {
           limit: 500,
         },
@@ -62,9 +62,9 @@ function Remap() {
     await setTimeout(() => {
       console.log("Timeout");
     }, 1500);
-
+    /*
     let product2s;
-
+    
     try {
       product2s = await API.graphql({
         query: queries.listProduct2s,
@@ -77,8 +77,9 @@ function Remap() {
     }
 
     console.log(product2s.data.listProduct2s.items);
+    */
   };
-
+  
   return (
     <React.Fragment>
       <Toast ref={toast} />

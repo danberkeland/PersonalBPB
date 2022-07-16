@@ -42,3 +42,46 @@ export const listProduct2s = /* GraphQL */ `
     }
   }
 `;
+
+export const updateProduct2 = /* GraphQL */ `
+  mutation UpdateProduct2(
+    $input: UpdateProduct2Input!
+    $condition: ModelProduct2ConditionInput
+  ) {
+    updateProduct2(input: $input, condition: $condition) {
+      prodName
+      prodNick
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const createProduct2 = /* GraphQL */ `
+  mutation CreateProduct2(
+    $input: CreateProduct2Input!
+    $condition: ModelProduct2ConditionInput
+  ) {
+    createProduct2(input: $input, condition: $condition) {
+      prodName
+      prodNick
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+
+export const deleteProduct2 = /* GraphQL */ `
+  mutation DeleteProduct2(
+    $input: DeleteProduct2Input!
+    $condition: ModelProduct2ConditionInput
+  ) {
+    deleteProduct2(input: $input, condition: $condition) {
+      prodName
+      prodNick
+      createdAt
+      updatedAt
+    }
+  }
+`;

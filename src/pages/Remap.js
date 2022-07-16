@@ -1,9 +1,9 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
-import { API, graphqlOperation } from "aws-amplify";
+import { API } from "aws-amplify";
 
 import { ToggleContext } from "../dataContexts/ToggleContext";
 
-import {listProducts} from "../helpers/customQueries";
+import { listProducts, listProduct2s } from "../helpers/customQueries";
 
 import { Dropdown } from "primereact/dropdown";
 import { Button } from "primereact/button";
@@ -15,6 +15,23 @@ const dbSelectItems = [
   { label: "Order", value: "Order" },
   { label: "Standing", value: "Standing" },
 ];
+
+const fetchDB = async (func,funcname) => {
+  
+  let products;
+  try {
+    products = await API.graphql({
+      query: func,
+      variables: {
+        limit: 500,
+      },
+    });
+  } catch (err) {
+    console.log(err);
+  }
+
+  return products.data[funcname].items;
+};
 
 function Remap() {
   const toast = useRef(null);
@@ -38,48 +55,16 @@ function Remap() {
   const handleClick = async () => {
     // Grab sending database (i.e. - Product)
     showUpdate("Grabbing origin database " + db);
-    await setTimeout(() => {
-      console.log("Timeout");
-    }, 1500);
-
-    let products;
-
-    try {
-      products = await API.graphql({
-        query: listProducts,
-        variables: {
-          limit: 500,
-        },
-      });
-    } catch (err) {
-      console.log(err);
-    }
-
-    console.log(products.data.listProducts.items);
+    let products = await fetchDB(listProducts,"listProducts");
 
     // Grab receiving database (i.e. - Product2)
     showUpdate("Grabbing receiving database " + db + "2");
-    await setTimeout(() => {
-      console.log("Timeout");
-    }, 1500);
-    /*
-    let product2s;
-    
-    try {
-      product2s = await API.graphql({
-        query: queries.listProduct2s,
-        variables: {
-          limit: 500,
-        },
-      });
-    } catch (err) {
-      console.log(err);
-    }
+    let product2s = await fetchDB(listProduct2s,"listProduct2s");
 
-    console.log(product2s.data.listProduct2s.items);
-    */
+    console.log(products);
+    console.log(product2s);
   };
-  
+
   return (
     <React.Fragment>
       <Toast ref={toast} />

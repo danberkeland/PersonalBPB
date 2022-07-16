@@ -43,6 +43,7 @@ import CustProd from './pages/settings/custProd/custProd';
 import ManageUsers from './pages/settings/manageUsers/manageUsers';
 import Voice from './pages/settings/voice/voice';
 import TestComponent from './pages/testComponent/testComponent'
+import Remap from './pages/Remap';
 import { CurrentDataContext } from './dataContexts/CurrentDataContext';
 
 
@@ -90,6 +91,7 @@ function AppRoutes({ authType, userNum }) {
           <Route path="/settings/custProd" component={CustProd} />
           <Route path="/settings/manageUsers" component={ManageUsers} />
           <Route path="/settings/voice" component={Voice} />
+          <Route path="/settings/RemapDatabase" component={Remap} />
         
 
           <Route path="/BPBNProd/BPBNBaker1" component={BPBNBaker1} />

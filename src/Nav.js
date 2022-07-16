@@ -318,6 +318,12 @@ function Nav() {
             
             
           ],
+        },
+        {
+          label: "Remap Database",
+          command: () => {
+            window.location = "/settings/RemapDatabase";
+          },
         }
       ],
     },

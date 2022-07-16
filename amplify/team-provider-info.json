@@ -1,5 +1,4 @@
 {
-  
   "newone": {
     "awscloudformation": {
       "AuthRoleName": "amplify-personalbpb-newone-90130-authRole",

@@ -84,6 +84,76 @@ export const listCustomers = /* GraphQL */ `
     }
   }
 `;
+export const getProduct2 = /* GraphQL */ `
+  query GetProduct2($prodNick: String!) {
+    getProduct2(prodNick: $prodNick) {
+      prodName
+      prodNick
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listProduct2s = /* GraphQL */ `
+  query ListProduct2s(
+    $prodNick: String
+    $filter: ModelProduct2FilterInput
+    $limit: Int
+    $nextToken: String
+    $sortDirection: ModelSortDirection
+  ) {
+    listProduct2s(
+      prodNick: $prodNick
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      sortDirection: $sortDirection
+    ) {
+      items {
+        prodName
+        prodNick
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getCustomer2 = /* GraphQL */ `
+  query GetCustomer2($custNick: String!) {
+    getCustomer2(custNick: $custNick) {
+      custName
+      custNick
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listCustomer2s = /* GraphQL */ `
+  query ListCustomer2s(
+    $custNick: String
+    $filter: ModelCustomer2FilterInput
+    $limit: Int
+    $nextToken: String
+    $sortDirection: ModelSortDirection
+  ) {
+    listCustomer2s(
+      custNick: $custNick
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      sortDirection: $sortDirection
+    ) {
+      items {
+        custName
+        custNick
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
 export const getProduct = /* GraphQL */ `
   query GetProduct($id: ID!) {
     getProduct(id: $id) {

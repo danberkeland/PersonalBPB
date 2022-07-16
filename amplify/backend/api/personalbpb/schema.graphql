@@ -31,6 +31,16 @@ type Customer @model @auth(rules: [{allow: public}]) {
   currentBalance: String
 }
 
+type Product2 @model @key(fields: ["prodNick"]) @auth(rules: [{allow: public}]) {
+  prodName: String!
+  prodNick: String!
+}
+
+type Customer2 @model @key(fields: ["custNick"]) @auth(rules: [{allow: public}]) {
+  custName: String!
+  custNick: String!
+}
+
 type Product @model @auth(rules: [{allow: public}]) {
   id: ID!
   prodName: String!

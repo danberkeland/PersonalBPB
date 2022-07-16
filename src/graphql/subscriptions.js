@@ -115,6 +115,66 @@ export const onDeleteCustomer = /* GraphQL */ `
     }
   }
 `;
+export const onCreateProduct2 = /* GraphQL */ `
+  subscription OnCreateProduct2 {
+    onCreateProduct2 {
+      prodName
+      prodNick
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateProduct2 = /* GraphQL */ `
+  subscription OnUpdateProduct2 {
+    onUpdateProduct2 {
+      prodName
+      prodNick
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteProduct2 = /* GraphQL */ `
+  subscription OnDeleteProduct2 {
+    onDeleteProduct2 {
+      prodName
+      prodNick
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateCustomer2 = /* GraphQL */ `
+  subscription OnCreateCustomer2 {
+    onCreateCustomer2 {
+      custName
+      custNick
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateCustomer2 = /* GraphQL */ `
+  subscription OnUpdateCustomer2 {
+    onUpdateCustomer2 {
+      custName
+      custNick
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteCustomer2 = /* GraphQL */ `
+  subscription OnDeleteCustomer2 {
+    onDeleteCustomer2 {
+      custName
+      custNick
+      createdAt
+      updatedAt
+    }
+  }
+`;
 export const onCreateProduct = /* GraphQL */ `
   subscription OnCreateProduct {
     onCreateProduct {

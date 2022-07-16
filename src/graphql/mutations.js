@@ -124,6 +124,84 @@ export const deleteCustomer = /* GraphQL */ `
     }
   }
 `;
+export const createProduct2 = /* GraphQL */ `
+  mutation CreateProduct2(
+    $input: CreateProduct2Input!
+    $condition: ModelProduct2ConditionInput
+  ) {
+    createProduct2(input: $input, condition: $condition) {
+      prodName
+      prodNick
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateProduct2 = /* GraphQL */ `
+  mutation UpdateProduct2(
+    $input: UpdateProduct2Input!
+    $condition: ModelProduct2ConditionInput
+  ) {
+    updateProduct2(input: $input, condition: $condition) {
+      prodName
+      prodNick
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteProduct2 = /* GraphQL */ `
+  mutation DeleteProduct2(
+    $input: DeleteProduct2Input!
+    $condition: ModelProduct2ConditionInput
+  ) {
+    deleteProduct2(input: $input, condition: $condition) {
+      prodName
+      prodNick
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createCustomer2 = /* GraphQL */ `
+  mutation CreateCustomer2(
+    $input: CreateCustomer2Input!
+    $condition: ModelCustomer2ConditionInput
+  ) {
+    createCustomer2(input: $input, condition: $condition) {
+      custName
+      custNick
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateCustomer2 = /* GraphQL */ `
+  mutation UpdateCustomer2(
+    $input: UpdateCustomer2Input!
+    $condition: ModelCustomer2ConditionInput
+  ) {
+    updateCustomer2(input: $input, condition: $condition) {
+      custName
+      custNick
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteCustomer2 = /* GraphQL */ `
+  mutation DeleteCustomer2(
+    $input: DeleteCustomer2Input!
+    $condition: ModelCustomer2ConditionInput
+  ) {
+    deleteCustomer2(input: $input, condition: $condition) {
+      custName
+      custNick
+      createdAt
+      updatedAt
+    }
+  }
+`;
 export const createProduct = /* GraphQL */ `
   mutation CreateProduct(
     $input: CreateProductInput!

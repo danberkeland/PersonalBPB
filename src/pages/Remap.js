@@ -85,7 +85,7 @@ function Remap() {
    
     for (let item of product2s){
       if (prodNicksOld.includes(item.prodNick)){
-        //showUpdate(item.prodNick + " already exists");
+       
       } else {
         let toDel = {
           prodNick: item.prodNick

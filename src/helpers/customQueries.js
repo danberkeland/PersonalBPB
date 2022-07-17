@@ -1,3 +1,6 @@
+
+// Product
+
 export const listProducts = /* GraphQL */ `
   query ListProducts(
     $filter: ModelProductFilterInput
@@ -43,45 +46,51 @@ export const listProduct2s = /* GraphQL */ `
   }
 `;
 
-export const updateProduct2 = /* GraphQL */ `
-  mutation UpdateProduct2(
-    $input: UpdateProduct2Input!
-    $condition: ModelProduct2ConditionInput
+
+
+
+// Customer
+
+export const listCustomers = /* GraphQL */ `
+  query ListCustomers(
+    $filter: ModelCustomerFilterInput
+    $limit: Int
+    $nextToken: String
   ) {
-    updateProduct2(input: $input, condition: $condition) {
-      prodName
-      prodNick
-      createdAt
-      updatedAt
+    listCustomers(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        nickName
+        custName
+        
+      }
+      nextToken
     }
   }
 `;
 
-export const createProduct2 = /* GraphQL */ `
-  mutation CreateProduct2(
-    $input: CreateProduct2Input!
-    $condition: ModelProduct2ConditionInput
+export const listCustomer2s = /* GraphQL */ `
+  query ListCustomer2s(
+    $custNick: String
+    $filter: ModelCustomer2FilterInput
+    $limit: Int
+    $nextToken: String
+    $sortDirection: ModelSortDirection
   ) {
-    createProduct2(input: $input, condition: $condition) {
-      prodName
-      prodNick
-      createdAt
-      updatedAt
-    }
-  }
-`;
-
-
-export const deleteProduct2 = /* GraphQL */ `
-  mutation DeleteProduct2(
-    $input: DeleteProduct2Input!
-    $condition: ModelProduct2ConditionInput
-  ) {
-    deleteProduct2(input: $input, condition: $condition) {
-      prodName
-      prodNick
-      createdAt
-      updatedAt
+    listCustomer2s(
+      custNick: $custNick
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      sortDirection: $sortDirection
+    ) {
+      items {
+        custName
+        custNick
+        createdAt
+        updatedAt
+      }
+      nextToken
     }
   }
 `;

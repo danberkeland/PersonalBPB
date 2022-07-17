@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import Amplify, { Auth, API, graphqlOperation } from "aws-amplify";
 import awsconfig from "./aws-exports";
 import { withAuthenticator } from "@aws-amplify/ui-react";
@@ -16,9 +16,10 @@ import { ToggleProvider } from "./dataContexts/ToggleContext";
 import { RoutesProvider } from "./dataContexts/RoutesContext";
 
 import AppRoutes from "./AppRoutes";
-import NavCustomers from "./NavCustomers";
-import Nav from "./Nav";
+import AppRoutes2 from "./AppRoutes2";
 
+import Nav from "./Nav";
+import Nav2 from "./Nav2"
 import styled from "styled-components";
 import { sortAtoZDataByIndex } from "./helpers/sortDataHelpers";
 
@@ -112,7 +113,8 @@ function App() {
   return (
     <React.Fragment>
       <NavLock>
-      <Nav />
+      {authType==="bpbadmin" && <Nav />}
+      {authType==="dev" && <Nav2 />}
       </NavLock>
 
       <RoutesProvider>
@@ -125,7 +127,8 @@ function App() {
                     <CurrentDataProvider>
                       <BodyLock>
                        
-                       <AppRoutes authType={authType} userNum={user}/>
+                       {authType==="bpbadmin" && <AppRoutes authType={authType} userNum={user}/>}
+                       {authType==="dev" && <AppRoutes2 authType={authType} userNum={user}/>}
                       </BodyLock>
                     </CurrentDataProvider>
                   </HoldingProvider>

@@ -31,6 +31,19 @@ function Nav() {
       icon: "pi pi-fw pi-chart-bar",
       
     },
+    {
+      label: "Settings",
+      icon: "pi pi-fw pi-cog",
+      items: [
+       
+        {
+          label: "Remap Database",
+          command: () => {
+            window.location = "/settings/RemapDatabase";
+          },
+        }
+      ],
+    },
   ];
 
   return (

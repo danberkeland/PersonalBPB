@@ -32,6 +32,14 @@ function Nav() {
       
     },
     {
+      label: "Customers",
+      icon: "pi pi-fw pi-chart-bar",
+      command: () => {
+        window.location = "/CustomerTestPage";
+      },
+      
+    },
+    {
       label: "Settings",
       icon: "pi pi-fw pi-cog",
       items: [

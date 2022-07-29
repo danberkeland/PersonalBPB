@@ -10,17 +10,17 @@ const awsmobile = {
     "aws_cloud_logic_custom": [
         {
             "name": "grabinfo",
-            "endpoint": "https://v4bxn12lib.execute-api.us-east-2.amazonaws.com/newone",
+            "endpoint": "https://1qm4mynn85.execute-api.us-east-2.amazonaws.com/newone",
             "region": "us-east-2"
         },
         {
             "name": "testsend",
-            "endpoint": "https://yxpmdxd6qi.execute-api.us-east-2.amazonaws.com/newone",
+            "endpoint": "https://36br1cfhdd.execute-api.us-east-2.amazonaws.com/newone",
             "region": "us-east-2"
         },
         {
             "name": "grabqbcust",
-            "endpoint": "https://0u4wtscwrk.execute-api.us-east-2.amazonaws.com/newone",
+            "endpoint": "https://qqpebigmmi.execute-api.us-east-2.amazonaws.com/newone",
             "region": "us-east-2"
         }
     ],

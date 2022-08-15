@@ -2,12 +2,11 @@ import React, { useEffect, useState, useRef, useContext } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
-import { Toast } from 'primereact/toast';
-import { confirmDialog } from 'primereact/confirmdialog'
+import { Toast } from "primereact/toast";
+import { confirmDialog } from "primereact/confirmdialog";
 
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-
 
 import {
   buildProductArray,
@@ -21,10 +20,16 @@ import { fetchZones } from "../../../../helpers/databaseFetchers";
 import { ToggleContext } from "../../../../dataContexts/ToggleContext";
 
 import styled from "styled-components";
-import { checkQBValidation, grabQBInvoicePDF } from "../../../../helpers/QBHelpers";
+import {
+  checkQBValidation,
+  grabQBInvoicePDF,
+} from "../../../../helpers/QBHelpers";
 import { downloadPDF } from "../../../../helpers/PDFHelpers";
 import { sortAtoZDataByIndex } from "../../../../helpers/sortDataHelpers";
-import { convertDatetoBPBDate, todayPlus } from "../../../../helpers/dateTimeHelpers";
+import {
+  convertDatetoBPBDate,
+  todayPlus,
+} from "../../../../helpers/dateTimeHelpers";
 
 const axios = require("axios").default;
 
@@ -61,15 +66,18 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
   const toast = useRef(null);
 
   const showSuccess = (invNum) => {
-    toast.current.show({severity:'success', summary: 'Invoice created', detail:invNum+' PDF created', life: 3000});
-}
+    toast.current.show({
+      severity: "success",
+      summary: "Invoice created",
+      detail: invNum + " PDF created",
+      life: 3000,
+    });
+  };
 
-  
   useEffect(() => {
     setIsLoading(true);
     fetchZones().then((getZones) => setZones(getZones));
   }, []);
-  
 
   const constructColumns = () => {
     const [products, customers, routes, standing, orders] = database;
@@ -93,7 +101,7 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
         (order) => order["route"] === route
       );
       let listOfCustomers = createListOfCustomers(gridToEdit, route);
-      console.log("listofCustomers",listOfCustomers)
+      console.log("listofCustomers", listOfCustomers);
 
       qtyGrid = createQtyGrid(listOfCustomers, gridToEdit);
     }
@@ -101,7 +109,6 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
   };
 
   useEffect(() => {
-   
     let col = constructColumns();
     let dat = constructData();
 
@@ -126,18 +133,18 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
   }));
 
   const exportListPdf = (driver) => {
+    console.log(driver);
 
-    console.log(driver)
-   
-    let fileName = route.replace(' ','')+delivDate.replaceAll('-','')+".pdf"
+    let fileName =
+      route.replace(" ", "") + delivDate.replaceAll("-", "") + ".pdf";
 
     const doc = new jsPDF("l", "mm", "a4");
-    console.log("doc",doc)
+    console.log("doc", doc);
     doc.setFontSize(20);
     doc.text(10, 20, "Delivery Sheet");
     doc.autoTable({
-      theme: 'grid',
-      headStyles: {fillColor: "#dddddd", textColor: "#111111"},
+      theme: "grid",
+      headStyles: { fillColor: "#dddddd", textColor: "#111111" },
       columns: exportColumns,
       body: data,
       margin: { top: 26 },
@@ -146,50 +153,50 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
     doc.save(fileName);
   };
 
-
-  
   const exportInvPdf = async (driver) => {
     const [products, customers, routes, standing, orders] = database;
-    let fileName = delivDate.replaceAll('-','')+"Invoices.pdf"
-    let alreadyPrinted = []
+    let fileName = delivDate.replaceAll("-", "") + "Invoices.pdf";
+    let alreadyPrinted = [];
     setIsLoading(true);
-    let access = await checkQBValidation()
-    
+    let access = await checkQBValidation();
 
     let init = true;
     let routeList = Array.from(new Set(orderList.map((ord) => ord.route)));
-    if (driver !== "allRoutes"){
-
-      routeList=routeList.filter(rou => routes[routes.findIndex(ro => ro.routeName === rou)].driver === driver)
-
-     
-    }
-   
-    if (driver === "current"){
-      routeList = route
-      console.log("routeList")
+    if (driver !== "allRoutes") {
+      routeList = routeList.filter(
+        (rou) =>
+          routes[routes.findIndex((ro) => ro.routeName === rou)].driver ===
+          driver
+      );
     }
 
-    console.log("rtList",routeList)
-    if (driver === "current"){
-      routeList = [{route: routeList}]
+    if (driver === "current") {
+      routeList = route;
+      console.log("routeList");
+    }
+
+    console.log("rtList", routeList);
+    if (driver === "current") {
+      routeList = [{ route: routeList }];
     } else {
       routeList = routeList.map((rt) => ({ route: rt }));
     }
-    
-      for (let rt of routeList){
-        let printOrder = routes[routes.findIndex(rou => rou.routeName === rt.route)].printOrder
-        rt.printOrder = printOrder
-      }
-      sortAtoZDataByIndex(routeList,"printOrder")
-      let routeArray = []
-      for (let rt of routeList){
-        routeArray.push(rt.route)
-      }
 
-    let pdfs =[]
+    for (let rt of routeList) {
+      let printOrder =
+        routes[routes.findIndex((rou) => rou.routeName === rt.route)]
+          .printOrder;
+      rt.printOrder = printOrder;
+    }
+    sortAtoZDataByIndex(routeList, "printOrder");
+    let routeArray = [];
+    for (let rt of routeList) {
+      routeArray.push(rt.route);
+    }
+
+    let pdfs = [];
     for (let rt of routeArray) {
-      console.log("rt",rt)
+      console.log("rt", rt);
       let invListFilt = orderList.filter((ord) => ord.route === rt);
       let custFil = invListFilt.map((inv) => inv.custName);
       custFil = new Set(custFil);
@@ -215,24 +222,24 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
       //
 
       for (let thin of ThinnedCustFil) {
-        console.log("cust", thin);
         let custo =
           customers[customers.findIndex((cust) => cust.custName === thin)];
+        console.log("custo", custo);
         let invCt = custo.printDuplicate ? 2 : 1;
         if (!alreadyPrinted.includes(thin))
-        for (let i = 0; i < invCt; i++) {
-          let invPDF;
-          try {
-            let custQBID = custo.qbID;
-            let txnDate = delivDate;
-            await grabQBInvoicePDF(access, invPDF, txnDate, custQBID, pdfs);
-            showSuccess(thin);
-          } catch {}
-        } alreadyPrinted.push(thin)
-        
+          for (let i = 0; i < invCt; i++) {
+            let invPDF;
+            try {
+              let custQBID = custo.qbID;
+              let txnDate = delivDate;
+              await grabQBInvoicePDF(access, invPDF, txnDate, custQBID, pdfs).then(pdf => pdfs.push(pdf))
+              showSuccess(thin);
+            } catch {}
+          }
+        alreadyPrinted.push(thin);
       }
     }
-    downloadPDF(pdfs, fileName)
+    downloadPDF(pdfs, fileName);
     setIsLoading(false);
   };
 
@@ -252,36 +259,38 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
 
   const exportFullPdf = (driver) => {
     const [products, customers, routes, standing, orders] = database;
-    let fileName = delivDate.replaceAll('-','')+driver+".pdf"
+    let fileName = delivDate.replaceAll("-", "") + driver + ".pdf";
     let init = true;
     let routeList = Array.from(new Set(orderList.map((ord) => ord.route)));
-    if (driver !== "allRoutes"){
-
-      routeList=routeList.filter(rou => routes[routes.findIndex(ro => ro.routeName === rou)].driver === driver)
-
-     
-    }
-    
-    if (driver === "current"){
-      routeList = route
-      console.log("routeList")
+    if (driver !== "allRoutes") {
+      routeList = routeList.filter(
+        (rou) =>
+          routes[routes.findIndex((ro) => ro.routeName === rou)].driver ===
+          driver
+      );
     }
 
-    
-    if (driver === "current"){
-      routeList = [{route: routeList}]
+    if (driver === "current") {
+      routeList = route;
+      console.log("routeList");
+    }
+
+    if (driver === "current") {
+      routeList = [{ route: routeList }];
     } else {
       routeList = routeList.map((rt) => ({ route: rt }));
     }
-      for (let rt of routeList){
-        let printOrder = routes[routes.findIndex(rou => rou.routeName === rt.route)].printOrder
-        rt.printOrder = printOrder
-      }
-      sortAtoZDataByIndex(routeList,"printOrder")
-      let routeArray = []
-      for (let rt of routeList){
-        routeArray.push(rt.route)
-      }
+    for (let rt of routeList) {
+      let printOrder =
+        routes[routes.findIndex((rou) => rou.routeName === rt.route)]
+          .printOrder;
+      rt.printOrder = printOrder;
+    }
+    sortAtoZDataByIndex(routeList, "printOrder");
+    let routeArray = [];
+    for (let rt of routeList) {
+      routeArray.push(rt.route);
+    }
     const doc = new jsPDF("l", "mm", "a4");
     for (let rt of routeArray) {
       let columns;
@@ -298,56 +307,51 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
         dataKey: col.field,
       }));
       let qtyGrid;
-     
+
       if (orderList) {
         let buildGridSetUp = orderList.filter((ord) => ord["route"] === rt);
-        
-        
+
         let listOfCustomers = createListOfCustomers(buildGridSetUp, rt);
         qtyGrid = createQtyGrid(listOfCustomers, buildGridSetUp);
-        
       }
 
-      !init && doc.addPage("a4",'l');
+      !init && doc.addPage("a4", "l");
       doc.setFontSize(20);
-      doc.text(10, 20, rt+" "+convertDatetoBPBDate(delivDate));
+      doc.text(10, 20, rt + " " + convertDatetoBPBDate(delivDate));
       doc.autoTable({
-        theme: 'grid',
-        headStyles: {fillColor: "#dddddd", textColor: "#111111"},
+        theme: "grid",
+        headStyles: { fillColor: "#dddddd", textColor: "#111111" },
         columns: columns,
         body: qtyGrid,
         margin: { top: 26 },
         styles: { fontSize: 12 },
       });
-  
+
       let invListFilt = orderList.filter((ord) => ord.route === rt);
-    let custFil = invListFilt.map((inv) => inv.custName);
-    custFil = new Set(custFil);
-    custFil = Array.from(custFil);
-    let customersCompare = customers.map((cust) => cust.custName);
-    let ordersToInv = orderList.filter(
-      (ord) =>
-        custFil.includes(ord.custName) &&
-        customersCompare.includes(ord.custName)
-    );
-    ordersToInv = ordersToInv.filter(
-      (ord) =>
-        customers[customers.findIndex((cust) => cust.custName === ord.custName)]
-          .toBePrinted === true
-    );
-    let ThinnedCustFil = ordersToInv.map((ord) => ord.custName);
-    ThinnedCustFil = new Set(ThinnedCustFil);
-    ThinnedCustFil = Array.from(ThinnedCustFil);
+      let custFil = invListFilt.map((inv) => inv.custName);
+      custFil = new Set(custFil);
+      custFil = Array.from(custFil);
+      let customersCompare = customers.map((cust) => cust.custName);
+      let ordersToInv = orderList.filter(
+        (ord) =>
+          custFil.includes(ord.custName) &&
+          customersCompare.includes(ord.custName)
+      );
+      ordersToInv = ordersToInv.filter(
+        (ord) =>
+          customers[
+            customers.findIndex((cust) => cust.custName === ord.custName)
+          ].toBePrinted === true
+      );
+      let ThinnedCustFil = ordersToInv.map((ord) => ord.custName);
+      ThinnedCustFil = new Set(ThinnedCustFil);
+      ThinnedCustFil = Array.from(ThinnedCustFil);
 
-    
-
-    init = false
+      init = false;
     }
     doc.save(fileName);
-    exportInvPdf(driver)
-    
+    exportInvPdf(driver);
   };
-  
 
   const header = (
     <ButtonContainer>
@@ -355,7 +359,7 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
       <ButtonWrapper>
         <Button
           type="button"
-          onClick={e => checkDateAlert("current",delivDate)}
+          onClick={(e) => checkDateAlert("current", delivDate)}
           className="p-button-success"
           data-pr-tooltip="PDF"
         >
@@ -363,7 +367,7 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
         </Button>
         <Button
           type="button"
-          onClick={e => checkDateAlert("allRoutes",delivDate)}
+          onClick={(e) => checkDateAlert("allRoutes", delivDate)}
           className="p-button-success"
           data-pr-tooltip="PDF"
         >
@@ -371,7 +375,7 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
         </Button>
         <Button
           type="button"
-          onClick={e => checkDateAlert("LongDriver",delivDate)}
+          onClick={(e) => checkDateAlert("LongDriver", delivDate)}
           className="p-button-success"
           data-pr-tooltip="PDF"
         >
@@ -379,7 +383,7 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
         </Button>
         <Button
           type="button"
-          onClick={e => checkDateAlert("AMPastry",delivDate)}
+          onClick={(e) => checkDateAlert("AMPastry", delivDate)}
           className="p-button-success"
           data-pr-tooltip="PDF"
         >
@@ -387,7 +391,7 @@ const RouteGrid = ({ route, orderList, altPricing, database, delivDate }) => {
         </Button>
         <Button
           type="button"
-          onClick={e => checkDateAlert("AMSouth",delivDate)}
+          onClick={(e) => checkDateAlert("AMSouth", delivDate)}
           className="p-button-success"
           data-pr-tooltip="PDF"
         >

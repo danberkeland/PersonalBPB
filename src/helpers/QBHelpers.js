@@ -162,7 +162,7 @@ export const createQBInvItem = (count, ord, qbID, delivDate) => {
 
 
 
-  export const grabQBInvoicePDF = async (access,invPDF,txnDate,custQBID,pdfs) => {
+  export const grabQBInvoicePDF = async (access,invPDF,txnDate,custQBID) => {
     try {
       invPDF = await axios.post(
         "https://47i7i665dd.execute-api.us-east-2.amazonaws.com/done",
@@ -172,8 +172,8 @@ export const createQBInvItem = (count, ord, qbID, delivDate) => {
           custID: custQBID,
         }
       );
-      console.log(invPDF.data)
-      pdfs.push(invPDF.data)
+     
+      return invPDF.data
       
     } catch {}
   }

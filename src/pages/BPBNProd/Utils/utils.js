@@ -138,6 +138,7 @@ export const addRoutes = (delivDate, prodGrid, database) => {
   const [products, customers, routes, standing, orders] = database;
   sortZtoADataByIndex(routes, "routeStart");
   for (let rte of routes) {
+    console.log("grd",rte)
     for (let grd of prodGrid) {
       let dayNum = calcDayNum(delivDate);
 

@@ -51,7 +51,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    let currentUser = Auth.currentAuthenticatedUser().then((use) =>
+    Auth.currentAuthenticatedUser().then((use) =>
       setUser(use.attributes.sub)
     );
     let cUser=Auth.currentAuthenticatedUser().then((use) => console.log("Use",use))

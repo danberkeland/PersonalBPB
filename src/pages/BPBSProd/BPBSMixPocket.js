@@ -11,7 +11,7 @@ import { promisedData } from "../../helpers/databaseFetchers";
 import ComposeDough from "../BPBNProd/Utils/composeDough";
 import ComposeWhatToMake from "./BPBSWhatToMakeUtils/composeWhatToMake"
 import { todayPlus } from "../../helpers/dateTimeHelpers";
-
+import { convertDatetoBPBDate } from "../../helpers/dateTimeHelpers";
 import { updateDough } from "../../graphql/mutations";
 
 import { API, graphqlOperation } from "aws-amplify";
@@ -234,7 +234,11 @@ function BPBSMixPocket() {
       doc.text(`${doughName} - Dry`, 0.2, 0.36);
       doc.setFontSize(10)
       doc.text(`${mixNumber} x ${amt.toFixed(2)} lb. Batch`,2.6,.36)
-
+      doc.text(
+        `${convertDatetoBPBDate(delivDate)}`,
+        2.6,
+        1.75
+      );
       doc.setFontSize(12);
       for (let item of dryFilt) {
 
@@ -288,7 +292,11 @@ function BPBSMixPocket() {
       doc.text(`${doughName} - Wet`, 0.2, 0.36);
       doc.setFontSize(10)
       doc.text(`${mixNumber} x ${amt.toFixed(2)} lb. Batch`,2.6,.36)
-
+      doc.text(
+        `${convertDatetoBPBDate(delivDate)}`,
+        2.6,
+        1.75
+      );
       doc.setFontSize(12);
       let ct = 0.7;
       for (let item of wetFilt) {
@@ -377,7 +385,11 @@ function BPBSMixPocket() {
       doc.text(`${doughName} - Add ins`, 0.2, 0.36);
       doc.setFontSize(10)
       doc.text(`${mixNumber} x ${amt.toFixed(2)} lb. Batch`,2.6,.36)
-
+      doc.text(
+        `${convertDatetoBPBDate(delivDate)}`,
+        2.6,
+        1.75
+      );
       doc.setFontSize(12);
       let ct = 0.7;
       for (let item of postFilt) {
@@ -406,7 +418,11 @@ function BPBSMixPocket() {
       doc.text(`${doughName} (Old Dough ${oldStuffDiv.toFixed(0)} lb.)`, 0.2, 0.36);
       doc.setFontSize(10)
       doc.text(`${mixNumber} x ${amt.toFixed(2)} lb. Batch`,2.6,.36)
-
+      doc.text(
+        `${convertDatetoBPBDate(delivDate)}`,
+        2.6,
+        1.75
+      );
       doc.setFontSize(12);
       let ct = 0.7;
       for (let item of saltyeastFilt) {
@@ -422,7 +438,11 @@ function BPBSMixPocket() {
       orientation: "l",
     });
     ct = 0.7;
-    
+    doc.text(
+      `${convertDatetoBPBDate(delivDate)}`,
+      2.6,
+      1.75
+    );
     for (let item of pockets){
 
       let pan

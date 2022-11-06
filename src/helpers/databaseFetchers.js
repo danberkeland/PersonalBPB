@@ -421,6 +421,7 @@ export const checkForUpdates = async (
     let ord = await fetchSq(db);
     if (ord) {
       for (let newOrd of ord) {
+        console.log("newSqOrd", newOrd)
         let qty = Number(newOrd["qty"]);
         let dt = new Date().toISOString();
         let delivDate = newOrd["delivDate"].split("T")[0];
@@ -430,7 +431,7 @@ export const checkForUpdates = async (
         let locIDBPBN = "16VS30T9E7CM9";
 
         let rt = "slopick";
-        let custName = newOrd["custName"];
+        let custName = newOrd["custName"]+"__"+newOrd["id"];
         let prodName;
         try {
           prodName =

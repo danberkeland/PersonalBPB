@@ -61,6 +61,7 @@ const makeSpecialOrders = (database, loc,delivDate) => {
     let custItem = {};
     custItem = {
       customer: cust,
+      customerShort: cust.length>10 ? cust.substring(0,13)+"..." : cust
     };
     for (let prod of prodNames) {
       let prodFullName =
@@ -83,6 +84,7 @@ const makeSpecialOrders = (database, loc,delivDate) => {
     }
     orderArray.push(custItem);
   }
+  console.log("specialOrders", orderArray)
   return orderArray;
 };
 

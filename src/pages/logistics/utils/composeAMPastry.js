@@ -129,6 +129,7 @@ import {
       let custItem = {};
       custItem = {
         customer: cust,
+        customerShort: cust.length>10 ? cust.substring(0,13)+"..." : cust
       };
       for (let prod of prodNames) {
         let prodFullName =

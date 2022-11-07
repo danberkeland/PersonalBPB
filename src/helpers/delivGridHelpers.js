@@ -231,9 +231,9 @@ export const createColumns = (listOfProducts) => {
   sortAtoZDataByIndex(listOfProducts, 2);
   let columns = [
     {
-      field: "customer",
+      field: "customerShort",
       header: "customer",
-      dataKey: "customer",
+      dataKey: "customerShort",
       width: { width: "70px" },
     },
   ];
@@ -253,9 +253,9 @@ export const createRouteGridColumns = (listOfProducts) => {
   sortAtoZDataByIndex(listOfProducts, 2);
   let columns = [
     {
-      field: "customer",
+      field: "customerShort",
       header: "customer",
-      dataKey: "customer",
+      dataKey: "customerShort",
       width: { width: "10%" },
     },
   ];
@@ -284,6 +284,7 @@ export const createQtyGrid = (listOfCustomers, orderList) => {
   for (let cust of listOfCustomers) {
     let newData = {
       customer: cust,
+      customerShort: cust.length>10 ? cust.substring(0,13)+"..." : cust
     };
     for (let order of orderList) {
       if (order["custName"] === cust) {

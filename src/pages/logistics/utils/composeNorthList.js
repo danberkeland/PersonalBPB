@@ -138,6 +138,7 @@ const makeOrders = (delivDate, database, filter) => {
     let custItem = {};
     custItem = {
       customer: cust,
+      customerShort: cust.length>10 ? cust.substring(0,15)+"..." : cust
     };
     for (let prod of prodNames) {
       let pro = products[products.findIndex((pr) => pr.nickName === prod)]

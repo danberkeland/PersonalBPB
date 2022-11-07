@@ -103,7 +103,7 @@ export const OrdersLoad = () => {
         let locIDBPBN = "16VS30T9E7CM9";
 
         let rt;
-        let custName = newOrd["custName"];
+        let custName = newOrd["custName"]+"__"+newOrd["id"];
 
         let prodName =
           products[

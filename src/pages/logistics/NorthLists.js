@@ -215,7 +215,7 @@ function NorthList() {
           }
           
         }
-      if (prod.field!=="customer"){
+      if (prod.field!=="customer" && prod.field!=="customerShort"){
         footStyle.push(tot)
       }
       

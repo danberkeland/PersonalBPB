@@ -59,7 +59,7 @@ export default class ComposeDough {
       (bag) => bag.forBake === "Baguette" || bag.forBake === "Epi"
     );
     let whatToMake = this.makeAddQty(whatToMakeToday);
-    return qtyCalc(whatToMake);
+    return qtyCalc(whatToMake)//-54;
   };
 
   returnoliveCount = (delivDate, database) => {
@@ -249,7 +249,7 @@ export default class ComposeDough {
     if (qtyArray.length > 0) {
       qtyAccToday = qtyArray.reduce(addUp);
     }
-    return qtyAccToday;
+    return qtyAccToday//-61;
   };
 
   getPreshapedDoughAmt = (doughName, orders) => {
@@ -268,7 +268,7 @@ export default class ComposeDough {
     let pocketsToday = pocketList.filter((set) => baker1PocketFilter(set, loc));
     pocketsToday = makePocketQty(pocketsToday);
 
-    return pocketsToday;
+    return pocketsToday//-54;
   };
 
   makeAddQty = (bakedTomorrow) => {

@@ -21,7 +21,7 @@ export const zerosDelivFilter = (orderList, delivDate, database) => {
   const [products, customers, routes, standing, orders] = database;
   let noZeroDelivDateOrderList = orderList.filter(
     (ord) =>
-      Number(ord["qty"]) > 0 &&
+      Number(ord["qty"]) !== 0 &&
       ord["delivDate"] === convertDatetoBPBDate(delivDate)
   );
   for (let ord of noZeroDelivDateOrderList) {

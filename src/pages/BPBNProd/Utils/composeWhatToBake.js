@@ -98,6 +98,8 @@ export default class ComposeWhatToMake {
 
       make.qty = qtyAccToday;
     }
+
+    //makeList2[0].qty -= 54
     return makeList2;
   };
 }

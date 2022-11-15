@@ -16,6 +16,7 @@ import "jspdf-autotable";
 
 import styled from "styled-components";
 import { todayPlus } from "../../helpers/dateTimeHelpers";
+import { bagStickerSet } from "./Utils/bagStickerSet";
 
 const WholeBox = styled.div`
   display: flex;
@@ -35,7 +36,7 @@ const TwoColumnGrid = styled.div`
 
 const ThreeColumnGrid = styled.div`
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr .75fr;
+  grid-template-columns: 2fr 1fr 1fr 0.75fr;
   column-gap: 10px;
   row-gap: 10px;
   padding: 5px;
@@ -43,21 +44,20 @@ const ThreeColumnGrid = styled.div`
 
 const ButtonStyle = styled.button`
   border: 0;
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   font-size: 20px;
   border-radius: 15px;
   box-shadow: 0 9px #999;
   &:hover {
-    background-color: #3E8E41;
+    background-color: #3e8e41;
   }
   &:active {
-    background-color: #3E8E41;
+    background-color: #3e8e41;
     box-shadow: 0 5px #666;
     transform: translateY(4px);
   }
-  `
-
+`;
 
 const addUp = (acc, val) => {
   return acc + val;
@@ -76,21 +76,20 @@ function BPBNBuckets({ loc }) {
     promisedData(setIsLoading).then((database) => gatherDoughInfo(database));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-
   useEffect(() => {
-    console.log("todayPlus",todayPlus()[0])
-    if (todayPlus()[0] === '2021-12-23'){
-      setDelivDate('2021-12-24')
+    console.log("todayPlus", todayPlus()[0]);
+    if (todayPlus()[0] === "2021-12-23") {
+      setDelivDate("2021-12-24");
     } else {
-      setDelivDate(todayPlus()[0])
+      setDelivDate(todayPlus()[0]);
     }
-  },[])
+  }, []);
 
   const gatherDoughInfo = (database) => {
-    let doughData = compose.returnDoughBreakDown(database, loc ,delivDate);
-    console.log("doughs",doughData.doughs)
-    console.log("loc",loc)
-    let finalDoughs = doughData.doughs.filter(dou => dou.mixedWhere===loc)
+    let doughData = compose.returnDoughBreakDown(database, loc, delivDate);
+    console.log("doughs", doughData.doughs);
+    console.log("loc", loc);
+    let finalDoughs = doughData.doughs.filter((dou) => dou.mixedWhere === loc);
     setDoughs(finalDoughs);
     setDoughComponents(doughData.doughComponents);
   };
@@ -104,6 +103,10 @@ function BPBNBuckets({ loc }) {
   const handleBlur = (e) => {
     updateDoughDB(e);
   };
+
+  const handleBagClick = () => {
+    bagStickerSet()
+  }
 
   const updateDoughDB = async (e) => {
     let id = e.target.id.split("_")[0];
@@ -129,25 +132,23 @@ function BPBNBuckets({ loc }) {
   };
 
   const handleClick = (e, amt, old) => {
-    let factor = 1
-    amt = Number(amt)
-    old = Number(old)
+    let factor = 1;
+    amt = Number(amt);
+    old = Number(old);
 
-    if ((amt+old)/3<old){
-      let oldAmt = amt+old
-      amt = amt + old -(oldAmt)/3;
-      factor = factor/(oldAmt)
-      old = (oldAmt)/3;
-      console.log(factor)
+    if ((amt + old) / 3 < old) {
+      let oldAmt = amt + old;
+      amt = amt + old - oldAmt / 3;
+      factor = factor / oldAmt;
+      old = oldAmt / 3;
+      console.log(factor);
     }
-    
+
     let doughName = e.target.id.split("_")[0];
     let components = doughComponents.filter((dgh) => dgh.dough === doughName);
-    console.log("components",components)
-    let dough = doughs[doughs.findIndex((dgh) => dgh.doughName === doughName)]
-    let wetWeight = Number(
-      dough.hydration
-    );
+    console.log("components", components);
+    let dough = doughs[doughs.findIndex((dgh) => dgh.doughName === doughName)];
+    let wetWeight = Number(dough.hydration);
     let wetList = components
       .filter((dgh) => dgh.componentType === "wet")
       .map((it) => it.amount);
@@ -161,7 +162,7 @@ function BPBNBuckets({ loc }) {
     let levList = components
       .filter((dgh) => dgh.componentType === "lev")
       .map((it) => it.amount);
-    console.log("levList",levList)
+    console.log("levList", levList);
     let levTotals;
     levList.length > 0 ? (levTotals = levList.reduce(addUp)) : (levTotals = 0);
     let dryplusList = components
@@ -180,7 +181,6 @@ function BPBNBuckets({ loc }) {
       : (postTotals = 0);
     let dryWeight =
       (100 / (100 + wetWeight + levTotals + dryplusTotals + postTotals)) * amt;
-   
 
     const doc = new jsPDF({
       orientation: "l",
@@ -194,7 +194,7 @@ function BPBNBuckets({ loc }) {
       doc.setFontSize(14);
       doc.text(`${doughName} - Dry`, 0.2, 0.36);
       doc.setFontSize(10);
-      doc.text(`${(amt+old).toFixed(2)} lb. Batch`, 2.9, 0.36);
+      doc.text(`${(amt + old).toFixed(2)} lb. Batch`, 2.9, 0.36);
 
       doc.setFontSize(12);
       for (let item of dryFilt) {
@@ -208,13 +208,12 @@ function BPBNBuckets({ loc }) {
         ct += 0.24;
       }
     }
-    let dryplusFilt
-    console.log("dough",dough)
-    if (dough.saltInDry){
+    let dryplusFilt;
+    console.log("dough", dough);
+    if (dough.saltInDry) {
       dryplusFilt = components.filter(
         (dgh) =>
-          dgh.componentType === "dryplus" &&
-          dgh.componentName !== "Yeast"
+          dgh.componentType === "dryplus" && dgh.componentName !== "Yeast"
       );
     } else {
       dryplusFilt = components.filter(
@@ -224,7 +223,7 @@ function BPBNBuckets({ loc }) {
           dgh.componentName !== "Yeast"
       );
     }
-    
+
     if (dryplusFilt.length > 0) {
       for (let item of dryplusFilt) {
         doc.text(`${item.componentName}`, 1.2, ct);
@@ -243,7 +242,7 @@ function BPBNBuckets({ loc }) {
       doc.setFontSize(14);
       doc.text(`${doughName} - Wet`, 0.2, 0.36);
       doc.setFontSize(10);
-      doc.text(`${(amt+old).toFixed(2)} lb. Batch`, 2.9, 0.36);
+      doc.text(`${(amt + old).toFixed(2)} lb. Batch`, 2.9, 0.36);
 
       doc.setFontSize(12);
       let ct = 0.7;
@@ -282,7 +281,7 @@ function BPBNBuckets({ loc }) {
       let levPercent =
         components[components.findIndex((comp) => comp.componentName === lev)]
           .amount * 0.01;
-    
+
       if (levFilt.length > 0) {
         doc.addPage({
           format: [2, 4],
@@ -291,7 +290,7 @@ function BPBNBuckets({ loc }) {
         doc.setFontSize(14);
         doc.text(`${doughName} - ${lev}`, 0.2, 0.36);
         doc.setFontSize(10);
-        doc.text(`${(amt+old).toFixed(2)} lb. Batch`, 2.9, 0.36);
+        doc.text(`${(amt + old).toFixed(2)} lb. Batch`, 2.9, 0.36);
 
         doc.setFontSize(12);
         let ct = 0.7;
@@ -318,7 +317,7 @@ function BPBNBuckets({ loc }) {
       doc.setFontSize(14);
       doc.text(`${doughName} - Add ins`, 0.2, 0.36);
       doc.setFontSize(10);
-      doc.text(`${(amt+old).toFixed(2)} lb. Batch`, 2.9, 0.36);
+      doc.text(`${(amt + old).toFixed(2)} lb. Batch`, 2.9, 0.36);
 
       doc.setFontSize(12);
       let ct = 0.7;
@@ -329,14 +328,12 @@ function BPBNBuckets({ loc }) {
         ct += 0.24;
       }
     }
-    let saltyeastFilt
+    let saltyeastFilt;
 
-
-    if (dough.saltInDry){
+    if (dough.saltInDry) {
       saltyeastFilt = components.filter(
         (dgh) =>
-          dgh.componentType === "dryplus" &&
-          (dgh.componentName === "Yeast")
+          dgh.componentType === "dryplus" && dgh.componentName === "Yeast"
       );
     } else {
       saltyeastFilt = components.filter(
@@ -346,10 +343,6 @@ function BPBNBuckets({ loc }) {
       );
     }
 
-
-
-
-    
     if (saltyeastFilt.length > 0) {
       doc.addPage({
         format: [2, 4],
@@ -358,7 +351,7 @@ function BPBNBuckets({ loc }) {
       doc.setFontSize(14);
       doc.text(`${doughName} - Salt & Yeast`, 0.2, 0.36);
       doc.setFontSize(10);
-      doc.text(`${(amt+old).toFixed(2)} lb. Batch`, 2.9, 0.36);
+      doc.text(`${(amt + old).toFixed(2)} lb. Batch`, 2.9, 0.36);
 
       doc.setFontSize(12);
       let ct = 0.7;
@@ -369,8 +362,8 @@ function BPBNBuckets({ loc }) {
         ct += 0.24;
       }
       doc.text(`Old Dough`, 1.2, ct);
-        doc.text(`${old.toFixed(2)}`, 0.3, ct);
-        doc.text(`lb.`, 0.8, ct);
+      doc.text(`${old.toFixed(2)}`, 0.3, ct);
+      doc.text(`lb.`, 0.8, ct);
     }
 
     doc.save(`${doughName}Stickers.pdf`);
@@ -421,9 +414,12 @@ function BPBNBuckets({ loc }) {
                 onClick={(e) =>
                   handleClick(
                     e,
-                    (Number(dough.buffer) +
+                    (
+                      Number(dough.buffer) +
                       Number(dough.needed) -
-                      Number(dough.oldDough)).toFixed(2), Number(dough.oldDough).toFixed(2)
+                      Number(dough.oldDough)
+                    ).toFixed(2),
+                    Number(dough.oldDough).toFixed(2)
                   )
                 }
                 label="Print Sticker Set"
@@ -435,12 +431,7 @@ function BPBNBuckets({ loc }) {
               <ButtonStyle
                 key={dough.id + "_print"}
                 id={dough.doughName + "_print"}
-                onClick={(e) =>
-                  handleClick(
-                    e,
-                    dough.batchSize, 0
-                  )
-                }
+                onClick={(e) => handleClick(e, dough.batchSize, 0)}
                 label="Print Sticker Set"
                 className="p-button-rounded p-button-lg"
                 icon="pi pi-print"
@@ -453,9 +444,13 @@ function BPBNBuckets({ loc }) {
                 onClick={(e) =>
                   handleClick(
                     e,
-                    ((Number(dough.buffer) +
-                      Number(dough.needed) -
-                      Number(dough.oldDough))/2).toFixed(2), (Number(dough.oldDough)/2).toFixed(2)
+                    (
+                      (Number(dough.buffer) +
+                        Number(dough.needed) -
+                        Number(dough.oldDough)) /
+                      2
+                    ).toFixed(2),
+                    (Number(dough.oldDough) / 2).toFixed(2)
                   )
                 }
                 label="Print Sticker Set"
@@ -464,10 +459,25 @@ function BPBNBuckets({ loc }) {
               >
                 Half Batch
               </ButtonStyle>
-              
             </ThreeColumnGrid>
           </React.Fragment>
         ))}
+        {loc==="Prado" && 
+        <React.Fragment>
+          <h3>Baguette (65 lb. - 54 baguettes)</h3>
+          <ThreeColumnGrid>
+            <ButtonStyle
+           
+              id="printBagStickers"
+              onClick={handleBagClick}
+              label="Print Bag Sticker Set"
+              className="p-button-rounded p-button-lg"
+              icon="pi pi-print"
+            >
+              Print 65 lb. Baguette Sticker Set
+            </ButtonStyle>
+          </ThreeColumnGrid>
+        </React.Fragment>}
       </WholeBox>
     </React.Fragment>
   );

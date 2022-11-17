@@ -59,20 +59,32 @@ const { DateTime } = require("luxon");
 const compose = new ComposeWhatToMake();
 
 function BPBSWhatToMake() {
-  const { setIsLoading, ordersHasBeenChanged, setOrdersHasBeenChanged } = useContext(ToggleContext);
+  const { setIsLoading, ordersHasBeenChanged, setOrdersHasBeenChanged } =
+    useContext(ToggleContext);
   const { products, setProducts } = useContext(ProductsContext);
   const [youllBeShort, setYoullBeShort] = useState();
   const [freshProds, setFreshProds] = useState();
   const [delivDate, setDelivDate] = useState(todayPlus()[0]);
   const [shelfProds, setShelfProds] = useState();
-  const [pretzels, setPretzels] = useState()
+  const [pretzels, setPretzels] = useState();
   const [freezerProds, setFreezerProds] = useState();
   const [pocketsNorth, setPocketsNorth] = useState();
+  const [baguetteStuff, setBaguetteStuff] = useState();
+
 
 
   useEffect(() => {
-    promisedData(setIsLoading).then((database) => checkForUpdates(database,ordersHasBeenChanged,
-      setOrdersHasBeenChanged, delivDate, setIsLoading)).then((database) => gatherMakeInfo(database));
+    promisedData(setIsLoading)
+      .then((database) =>
+        checkForUpdates(
+          database,
+          ordersHasBeenChanged,
+          setOrdersHasBeenChanged,
+          delivDate,
+          setIsLoading
+        )
+      )
+      .then((database) => gatherMakeInfo(database));
   }, [delivDate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const gatherMakeInfo = (database) => {
@@ -81,9 +93,10 @@ function BPBSWhatToMake() {
     setPocketsNorth(makeData.pocketsNorth);
     setFreshProds(makeData.freshProds);
     setShelfProds(makeData.shelfProds);
-    setPretzels(makeData.pretzels)
+    setPretzels(makeData.pretzels);
     setFreezerProds(makeData.freezerProds);
-    setProducts(database[0])
+    setProducts(database[0]);
+    setBaguetteStuff(makeData.baguetteStuff)
   };
 
   const checkDateAlert = (delivDate) => {
@@ -113,6 +126,25 @@ function BPBSWhatToMake() {
     doc.text(pageMargin, 20, `What to Make ${convertDatetoBPBDate(delivDate)}`);
 
     finalY = 10;
+
+    doc.setFontSize(titleFont);
+
+    doc.autoTable({
+      body: baguetteStuff,
+      margin: pageMargin,
+      columns: [
+        { header: "Product", dataKey: "Prod" },
+        { header: "Bucket", dataKey: "Bucket" },
+        { header: "Mix", dataKey: "Mix" },
+        { header: "Bake", dataKey: "Bake" },
+      ],
+      startY: finalY + 20,
+      styles: { fontSize: tableFont },
+      theme: "grid",
+      headStyles: { fillColor: "#dddddd", textColor: "#111111" },
+    });
+
+    finalY = doc.previousAutoTable.finalY;
 
     doc.setFontSize(titleFont);
 
@@ -174,7 +206,7 @@ function BPBSWhatToMake() {
     doc.autoTable({
       body: shelfProds,
       margin: pageMargin,
-      pageBreak: 'avoid',
+      pageBreak: "avoid",
       columns: [
         { header: "Shelf Product", dataKey: "forBake" },
         { header: "Total Deliv", dataKey: "qty" },
@@ -189,13 +221,12 @@ function BPBSWhatToMake() {
 
     finalY = doc.previousAutoTable.finalY;
 
-
     doc.setFontSize(titleFont);
 
     doc.autoTable({
       body: pretzels,
       margin: pageMargin,
-      pageBreak: 'avoid',
+      pageBreak: "avoid",
       columns: [
         { header: "Shelf Product", dataKey: "forBake" },
         { header: "Bake Today", dataKey: "qty" },
@@ -213,7 +244,7 @@ function BPBSWhatToMake() {
 
     doc.autoTable({
       body: freezerProds,
-      pageBreak: 'avoid',
+      pageBreak: "avoid",
       margin: pageMargin,
       columns: [
         { header: "Freezer Product", dataKey: "forBake" },
@@ -245,29 +276,28 @@ function BPBSWhatToMake() {
     </ButtonContainer>
   );
 
-  const handlePockChange = async (e2,e) => {
-   
+  const handlePockChange = async (e2, e) => {
     let prodsToMod = clonedeep(products);
-    let YoullBeCopy = clonedeep(youllBeShort)
-    
-    let ind = YoullBeCopy.findIndex(yo => yo.pocketWeight === e.pocketWeight)
-    YoullBeCopy[ind].makeTotal = Number(e2.target.value)
-    YoullBeCopy[ind].short = 0 - Number(e2.target.value) 
-    YoullBeCopy[ind].preshaped = YoullBeCopy[ind].need + Number(e2.target.value)
-    console.log(YoullBeCopy)
-    setYoullBeShort(YoullBeCopy)
+    let YoullBeCopy = clonedeep(youllBeShort);
+
+    let ind = YoullBeCopy.findIndex((yo) => yo.pocketWeight === e.pocketWeight);
+    YoullBeCopy[ind].makeTotal = Number(e2.target.value);
+    YoullBeCopy[ind].short = 0 - Number(e2.target.value);
+    YoullBeCopy[ind].preshaped =
+      YoullBeCopy[ind].need + Number(e2.target.value);
+    console.log(YoullBeCopy);
+    setYoullBeShort(YoullBeCopy);
 
     for (let prod of prodsToMod) {
-      let weight = e.pocketWeight
-     
+      let weight = e.pocketWeight;
+
       if (
         Number(prod.weight) === Number(weight) &&
         prod.doughType === "French"
       ) {
-        
         let itemUpdate = {
           id: prod.id,
-          preshaped: YoullBeCopy[ind].preshaped
+          preshaped: YoullBeCopy[ind].preshaped,
         };
 
         try {
@@ -283,7 +313,6 @@ function BPBSWhatToMake() {
   };
 
   const handlePocketInput = (e) => {
-    
     return (
       <InputText
         id={e.pocketWeight}
@@ -293,8 +322,8 @@ function BPBSWhatToMake() {
           fontWeight: "bold",
         }}
         placeholder={e.makeTotal}
-        onKeyUp={(e2) => (e2.code === "Enter" ? handlePockChange(e2,e) : "")}
-        onBlur={(e2) => handlePockChange(e2,e)}
+        onKeyUp={(e2) => (e2.code === "Enter" ? handlePockChange(e2, e) : "")}
+        onBlur={(e2) => handlePockChange(e2, e)}
       />
     );
   };
@@ -307,16 +336,25 @@ function BPBSWhatToMake() {
         <div>{header}</div>
 
         <React.Fragment>
+          <h1>What To Prep {convertDatetoBPBDate(delivDate)}</h1>
+          <h2>Baguette Production</h2>
+          <DataTable value={baguetteStuff} className="p-datatable-sm">
+            <Column field="Prod" header="Product"></Column>
+            <Column field="Bucket" header="Bucket"></Column>
+            <Column field="Mix" header="Mix"></Column>
+            <Column field="Bake" header="Bake"></Column>
+          </DataTable>
+          <br />
           <h2>Pocket Count</h2>
           <DataTable value={youllBeShort} className="p-datatable-sm">
             <Column field="pocketWeight" header="Pocket Size"></Column>
-            <Column
-              field="preshaped"
-              header="Available"
-              
-            ></Column>
+            <Column field="preshaped" header="Available"></Column>
             <Column field="need" header="Need Today"></Column>
-            <Column field="makeTotal" header="Surplus(+)/Short(-)" body={(e) => handlePocketInput(e)}></Column>
+            <Column
+              field="makeTotal"
+              header="Surplus(+)/Short(-)"
+              body={(e) => handlePocketInput(e)}
+            ></Column>
           </DataTable>
         </React.Fragment>
 

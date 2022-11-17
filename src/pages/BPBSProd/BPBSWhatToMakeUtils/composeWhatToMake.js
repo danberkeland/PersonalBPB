@@ -1,4 +1,9 @@
-import { todayPlus,tomBasedOnDelivDate,TwodayBasedOnDelivDate } from "../../../helpers/dateTimeHelpers";
+import {
+  convertDatetoBPBDate,
+  todayPlus,
+  tomBasedOnDelivDate,
+  TwodayBasedOnDelivDate,
+} from "../../../helpers/dateTimeHelpers";
 import { getFullOrders } from "../../../helpers/CartBuildingHelpers";
 import { getFullProdOrders } from "../../../helpers/CartBuildingHelpers";
 import {
@@ -38,7 +43,7 @@ const makeProds = (products, filt) => {
 };
 
 const getFullMakeOrders = (delivDate, database) => {
-  console.log("getFullMakeOrder",delivDate)
+  console.log("getFullMakeOrder", delivDate);
   let fullOrder = getFullOrders(delivDate, database);
   fullOrder = addProdAttr(fullOrder, database); // adds forBake, packSize, currentStock
   return fullOrder;
@@ -46,21 +51,27 @@ const getFullMakeOrders = (delivDate, database) => {
 
 const getFullProdMakeOrders = (delivDate, database) => {
   let fullOrder = getFullProdOrders(delivDate, database);
-  
+
   fullOrder = addProdAttr(fullOrder, database); // adds forBake, packSize, currentStock
   return fullOrder;
 };
 
 export default class ComposeWhatToMake {
-  returnMakeBreakDown = (database,delivDate) => {
-    let pocketsNorth = this.getPocketsNorth(database,delivDate);
-    let freshProds = this.getFreshProds(database,delivDate);
-    let shelfProds = this.getShelfProds(database,delivDate);
-    let pretzels = this.getPretzels(database,delivDate)
-    let freezerProds = this.getFreezerProds(database,delivDate);
-    let youllBeShort = this.getYoullBeShort(database,delivDate);
+  returnMakeBreakDown = (database, delivDate) => {
+    let pocketsNorth = this.getPocketsNorth(database, delivDate);
+    let freshProds = this.getFreshProds(database, delivDate);
+    let shelfProds = this.getShelfProds(database, delivDate);
+    let pretzels = this.getPretzels(database, delivDate);
+    let freezerProds = this.getFreezerProds(database, delivDate);
+    let youllBeShort = this.getYoullBeShort(database, delivDate);
+    let baguetteStuff = this.getBaguetteStuff(database[4], delivDate);
 
-    [freshProds, shelfProds] = handleFrenchConundrum(freshProds,shelfProds,database,delivDate);
+    [freshProds, shelfProds] = handleFrenchConundrum(
+      freshProds,
+      shelfProds,
+      database,
+      delivDate
+    );
 
     return {
       pocketsNorth: pocketsNorth,
@@ -69,13 +80,14 @@ export default class ComposeWhatToMake {
       pretzels: pretzels,
       freezerProds: freezerProds,
       youllBeShort: youllBeShort,
+      baguetteStuff: baguetteStuff,
     };
   };
 
-  getPocketsNorth(database,delivDate) {
+  getPocketsNorth(database, delivDate) {
     const [products, customers, routes, standing, orders] = database;
     let makePocketsNorth = makeProds(products, this.pocketsNorthFilter);
-    console.log("getPocketsNorth",delivDate)
+    console.log("getPocketsNorth", delivDate);
     let fullOrdersToday = getFullMakeOrders(delivDate, database);
     for (let make of makePocketsNorth) {
       addPocketsQty(make, fullOrdersToday);
@@ -95,20 +107,20 @@ export default class ComposeWhatToMake {
 
   getFreshProds = (database, delivDate) => {
     const [products, customers, routes, standing, orders] = database;
-    console.log("delivDate",delivDate)
+    console.log("delivDate", delivDate);
     let makeFreshProds = makeProds(products, this.freshProdFilter);
-    
-    let tom = tomBasedOnDelivDate(delivDate)
-    if (delivDate === "2021-12-24"){
-      tom = TwodayBasedOnDelivDate(delivDate)
+
+    let tom = tomBasedOnDelivDate(delivDate);
+    if (delivDate === "2021-12-24") {
+      tom = TwodayBasedOnDelivDate(delivDate);
     }
     let fullOrdersToday = getFullMakeOrders(delivDate, database);
     let fullOrdersTomorrow = getFullMakeOrders(tom, database);
-    console.log("fullOrdersTomorrow",fullOrdersTomorrow)
+    console.log("fullOrdersTomorrow", fullOrdersTomorrow);
     for (let make of makeFreshProds) {
       addFresh(make, fullOrdersToday, fullOrdersTomorrow, products, routes);
     }
-    console.log("makeFreshProds",makeFreshProds)
+    console.log("makeFreshProds", makeFreshProds);
     return makeFreshProds;
   };
 
@@ -121,25 +133,80 @@ export default class ComposeWhatToMake {
     return fil;
   };
 
-  getShelfProds(database,delivDate) {
+  getShelfProds(database, delivDate) {
     const [products, customers, routes, standing, orders] = database;
     let makeShelfProds = makeProds(products, this.shelfProdsFilter);
-    let tom = tomBasedOnDelivDate(delivDate)
-    if (delivDate === "2021-12-24"){
-      tom = TwodayBasedOnDelivDate(delivDate)
+    let tom = tomBasedOnDelivDate(delivDate);
+    if (delivDate === "2021-12-24") {
+      tom = TwodayBasedOnDelivDate(delivDate);
     }
     let fullOrdersToday = getFullMakeOrders(delivDate, database);
     let fullOrdersTomorrow = getFullProdMakeOrders(tom, database);
-  
+
     for (let make of makeShelfProds) {
       addShelf(make, fullOrdersToday, fullOrdersTomorrow, products, routes);
       addNeedEarly(make, products);
     }
 
-    console.log("makeShelfProds",makeShelfProds)
-    makeShelfProds = makeShelfProds.filter(make => (make.makeTotal + make.needEarly + make.qty)>0)
+    console.log("makeShelfProds", makeShelfProds);
+    makeShelfProds = makeShelfProds.filter(
+      (make) => make.makeTotal + make.needEarly + make.qty > 0
+    );
 
     return makeShelfProds;
+  }
+
+  getBaguetteStuff(orders, delivDate) {
+    console.log("Bagorders", orders);
+    console.log("BagdelivDate", delivDate);
+
+    let delivDate2Day = convertDatetoBPBDate(todayPlus()[2]);
+    let tomorrow = convertDatetoBPBDate(todayPlus()[1]);
+
+
+    let bagOrder2Day =
+      orders[
+        orders.findIndex(
+          (ord) =>
+            ord.delivDate === delivDate2Day &&
+            ord.custName === "BPB Extras" &&
+            ord.prodName === "Baguette"
+        )
+      ].qty;
+
+    let bagOrdertomorrow =
+      orders[
+        orders.findIndex(
+          (ord) =>
+            ord.delivDate === tomorrow &&
+            ord.custName === "BPB Extras" &&
+            ord.prodName === "Baguette"
+        )
+      ].qty;
+
+    let bagOrderToday =
+      orders[
+        orders.findIndex(
+          (ord) =>
+            ord.delivDate === convertDatetoBPBDate(delivDate) &&
+            ord.custName === "BPB Extras" &&
+            ord.prodName === "Baguette"
+        )
+      ].qty;
+
+    const bucket = bagOrder2Day < 0 ? true : false;
+    const mix = bagOrdertomorrow < 0 ? true : false;
+    const bake = bagOrderToday < 0 ? true : false;
+
+    const baguetteStuff = [
+      {
+        Prod: "Baguette (54 ea.)",
+        Bucket: bucket ? "YES" : "NO",
+        Mix: mix ? "YES" : "NO",
+        Bake: bake ? "YES" : "NO",
+      },
+    ];
+    return baguetteStuff;
   }
 
   shelfProdsFilter = (prod) => {
@@ -148,28 +215,30 @@ export default class ComposeWhatToMake {
       Number(prod.readyTime) >= 15 &&
       prod.packGroup !== "frozen pastries" &&
       prod.packGroup !== "baked pastries" &&
-      prod.doughType !=="Pretzel Bun" &&
+      prod.doughType !== "Pretzel Bun" &&
       prod.freezerThaw !== true;
     return fil;
   };
 
-  getPretzels(database,delivDate) {
+  getPretzels(database, delivDate) {
     const [products, customers, routes, standing, orders] = database;
     let makeShelfProds = makeProds(products, this.pretzelsFilter);
-    let tom = tomBasedOnDelivDate(delivDate)
-    if (delivDate === "2021-12-24"){
-      tom = TwodayBasedOnDelivDate(delivDate)
+    let tom = tomBasedOnDelivDate(delivDate);
+    if (delivDate === "2021-12-24") {
+      tom = TwodayBasedOnDelivDate(delivDate);
     }
     let fullOrdersToday = getFullMakeOrders(delivDate, database);
     let fullOrdersTomorrow = getFullProdMakeOrders(tom, database);
-  
+
     for (let make of makeShelfProds) {
       addPretzel(make, fullOrdersToday, fullOrdersTomorrow, products, routes);
       addNeedEarly(make, products);
     }
 
-    console.log("makeShelfProds",makeShelfProds)
-    makeShelfProds = makeShelfProds.filter(make => (make.makeTotal + make.needEarly + make.qty)>0)
+    console.log("makeShelfProds", makeShelfProds);
+    makeShelfProds = makeShelfProds.filter(
+      (make) => make.makeTotal + make.needEarly + make.qty > 0
+    );
 
     return makeShelfProds;
   }
@@ -185,12 +254,12 @@ export default class ComposeWhatToMake {
     return fil;
   };
 
-  getFreezerProds(database,delivDate) {
+  getFreezerProds(database, delivDate) {
     const [products, customers, routes, standing, orders] = database;
     let makeFreezerProds = makeProds(products, this.freezerProdsFilter);
-    let tom = tomBasedOnDelivDate(delivDate)
-    if (delivDate === "2021-12-24"){
-      tom = TwodayBasedOnDelivDate(delivDate)
+    let tom = tomBasedOnDelivDate(delivDate);
+    if (delivDate === "2021-12-24") {
+      tom = TwodayBasedOnDelivDate(delivDate);
     }
     let fullOrdersToday = getFullMakeOrders(delivDate, database);
     let fullOrdersTomorrow = getFullProdMakeOrders(tom, database);
@@ -211,28 +280,28 @@ export default class ComposeWhatToMake {
     return fil;
   };
 
-  getYoullBeShort = (database,delivDate) => {
-    console.log("youllBeShort",delivDate)
+  getYoullBeShort = (database, delivDate) => {
+    console.log("youllBeShort", delivDate);
     const [products, customers, routes, standing, orders] = database;
-    let pocketsNorth = this.getPocketsNorth(database,delivDate)
+    let pocketsNorth = this.getPocketsNorth(database, delivDate)
       .filter((item) => item.doughType === "French")
       .map((item) => ({
         pocketWeight: item.weight,
         makeTotal: item.makeTotal,
       }));
-    let shelfProds = this.getShelfProds(database,delivDate)
+    let shelfProds = this.getShelfProds(database, delivDate)
       .filter((item) => item.doughType === "French")
       .map((item) => ({
         pocketWeight: item.weight,
         makeTotal: item.makeTotal,
       }));
-    let freshProds = this.getFreshProds(database,delivDate)
+    let freshProds = this.getFreshProds(database, delivDate)
       .filter((item) => item.doughType === "French")
       .map((item) => ({
         pocketWeight: item.weight,
         makeTotal: item.makeTotal,
       }));
-    let freezerProds = this.getFreezerProds(database,delivDate)
+    let freezerProds = this.getFreezerProds(database, delivDate)
       .filter((item) => item.doughType === "French")
       .map((item) => ({
         pocketWeight: item.weight,
@@ -240,11 +309,11 @@ export default class ComposeWhatToMake {
       }));
 
     let weightStr = pocketsNorth.concat(shelfProds, freshProds, freezerProds);
-   
+
     let weightList = Array.from(
       new Set(weightStr.map((weight) => weight.pocketWeight))
     ).map((pock) => ({ pocketWeight: pock, makeTotal: 0 }));
-   
+
     for (let weight of weightList) {
       for (let pocket of weightStr) {
         if (pocket.pocketWeight === weight.pocketWeight) {
@@ -254,24 +323,31 @@ export default class ComposeWhatToMake {
     }
 
     for (let weight of weightList) {
-      let availablePockets = products[products.findIndex(
-        (prod) =>
-          prod.weight === weight.pocketWeight && prod.doughType === "French"
-      )].preshaped;
-      let preAvailablePockets = products[products.findIndex(
-        (prod) =>
-          prod.weight === weight.pocketWeight && prod.doughType === "French"
-      )].prepreshaped;
-      weight.need = weight.makeTotal
-      weight.preshaped = availablePockets
-      weight.prepreshaped = preAvailablePockets
-      weight.short = Number(weight.makeTotal)-Number(availablePockets)
-      weight.makeTotal = -(Number(weight.makeTotal)-Number(availablePockets))
-      weight.preMakeTotal = -(Number(weight.makeTotal)-Number(preAvailablePockets))
-     
+      let availablePockets =
+        products[
+          products.findIndex(
+            (prod) =>
+              prod.weight === weight.pocketWeight && prod.doughType === "French"
+          )
+        ].preshaped;
+      let preAvailablePockets =
+        products[
+          products.findIndex(
+            (prod) =>
+              prod.weight === weight.pocketWeight && prod.doughType === "French"
+          )
+        ].prepreshaped;
+      weight.need = weight.makeTotal;
+      weight.preshaped = availablePockets;
+      weight.prepreshaped = preAvailablePockets;
+      weight.short = Number(weight.makeTotal) - Number(availablePockets);
+      weight.makeTotal = -(Number(weight.makeTotal) - Number(availablePockets));
+      weight.preMakeTotal = -(
+        Number(weight.makeTotal) - Number(preAvailablePockets)
+      );
     }
 
-    weightList = weightList.filter(weight => weight.makeTotal !== '')
+    weightList = weightList.filter((weight) => weight.makeTotal !== "");
     return weightList;
-  }
+  };
 }

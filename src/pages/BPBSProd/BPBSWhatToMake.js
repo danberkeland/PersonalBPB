@@ -71,8 +71,6 @@ function BPBSWhatToMake() {
   const [pocketsNorth, setPocketsNorth] = useState();
   const [baguetteStuff, setBaguetteStuff] = useState();
 
-
-
   useEffect(() => {
     promisedData(setIsLoading)
       .then((database) =>
@@ -96,7 +94,7 @@ function BPBSWhatToMake() {
     setPretzels(makeData.pretzels);
     setFreezerProds(makeData.freezerProds);
     setProducts(database[0]);
-    setBaguetteStuff(makeData.baguetteStuff)
+    setBaguetteStuff(makeData.baguetteStuff);
   };
 
   const checkDateAlert = (delivDate) => {
@@ -127,24 +125,6 @@ function BPBSWhatToMake() {
 
     finalY = 10;
 
-    doc.setFontSize(titleFont);
-
-    doc.autoTable({
-      body: baguetteStuff,
-      margin: pageMargin,
-      columns: [
-        { header: "Product", dataKey: "Prod" },
-        { header: "Bucket", dataKey: "Bucket" },
-        { header: "Mix", dataKey: "Mix" },
-        { header: "Bake", dataKey: "Bake" },
-      ],
-      startY: finalY + 20,
-      styles: { fontSize: tableFont },
-      theme: "grid",
-      headStyles: { fillColor: "#dddddd", textColor: "#111111" },
-    });
-
-    finalY = doc.previousAutoTable.finalY;
 
     doc.setFontSize(titleFont);
 
@@ -158,6 +138,26 @@ function BPBSWhatToMake() {
         { header: "Surplus(+)/Short(-)", dataKey: "makeTotal" },
       ],
       startY: finalY + 20,
+      styles: { fontSize: tableFont },
+      theme: "grid",
+      headStyles: { fillColor: "#dddddd", textColor: "#111111" },
+    });
+
+    finalY = doc.previousAutoTable.finalY;
+
+    
+    doc.setFontSize(titleFont);
+
+    doc.autoTable({
+      body: baguetteStuff,
+      margin: pageMargin,
+      columns: [
+        { header: "Product", dataKey: "Prod" },
+        { header: "Bucket", dataKey: "Bucket" },
+        { header: "Mix", dataKey: "Mix" },
+        { header: "Bake", dataKey: "Bake" },
+      ],
+      startY: finalY + titleToNextTable,
       styles: { fontSize: tableFont },
       theme: "grid",
       headStyles: { fillColor: "#dddddd", textColor: "#111111" },
@@ -337,14 +337,7 @@ function BPBSWhatToMake() {
 
         <React.Fragment>
           <h1>What To Prep {convertDatetoBPBDate(delivDate)}</h1>
-          <h2>Baguette Production</h2>
-          <DataTable value={baguetteStuff} className="p-datatable-sm">
-            <Column field="Prod" header="Product"></Column>
-            <Column field="Bucket" header="Bucket"></Column>
-            <Column field="Mix" header="Mix"></Column>
-            <Column field="Bake" header="Bake"></Column>
-          </DataTable>
-          <br />
+
           <h2>Pocket Count</h2>
           <DataTable value={youllBeShort} className="p-datatable-sm">
             <Column field="pocketWeight" header="Pocket Size"></Column>
@@ -357,7 +350,14 @@ function BPBSWhatToMake() {
             ></Column>
           </DataTable>
         </React.Fragment>
-
+        <h2>Baguette Production</h2>
+        <DataTable value={baguetteStuff} className="p-datatable-sm">
+          <Column field="Prod" header="Product"></Column>
+          <Column field="Bucket" header="Bucket"></Column>
+          <Column field="Mix" header="Mix"></Column>
+          <Column field="Bake" header="Bake"></Column>
+        </DataTable>
+        <br />
         <h2>Send Pockets North</h2>
         <DataTable value={pocketsNorth} className="p-datatable-sm">
           <Column field="forBake" header="Product"></Column>

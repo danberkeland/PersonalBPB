@@ -162,7 +162,7 @@ export default class ComposeWhatToMake {
 
     let delivDate2Day = convertDatetoBPBDate(todayPlus()[2]);
     let tomorrow = convertDatetoBPBDate(todayPlus()[1]);
-
+    console.log('delivDate2Day', delivDate2Day)
 
     let bagOrder2Day =
       orders[

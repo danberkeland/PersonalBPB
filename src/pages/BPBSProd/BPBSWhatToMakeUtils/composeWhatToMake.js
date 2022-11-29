@@ -156,39 +156,41 @@ export default class ComposeWhatToMake {
     return makeShelfProds;
   }
 
-  getBaguetteStuff(database, delivDate) {
-    let delivDate2Day = convertDatetoBPBDate(todayPlus()[2]);
-    let tomorrow = convertDatetoBPBDate(todayPlus()[1]);
-    console.log("delivDate2Day", delivDate2Day);
+  getBaguetteStuff(database) {
+    let delivDate2Day = todayPlus()[2];
+    let tomorrow = todayPlus()[1];
+    let today = todayPlus()[0];
 
-    let ord2day = getFullOrders(database, delivDate2Day);
+    console.log('delivDate2Day', delivDate2Day)
+    
+    let ord2day = getFullOrders(delivDate2Day, database);
     let bagOrder2Day =
       ord2day[
         ord2day.findIndex(
           (ord) =>
-            ord.delivDate === delivDate2Day &&
+            ord.delivDate === convertDatetoBPBDate(delivDate2Day) &&
             ord.custName === "BPB Extras" &&
             ord.prodName === "Baguette"
         )
       ].qty;
 
-    let ordtom = getFullOrders(database, tomorrow);
+    let ordtom = getFullOrders(tomorrow, database);
     let bagOrdertomorrow =
       ordtom[
         ordtom.findIndex(
           (ord) =>
-            ord.delivDate === tomorrow &&
+            ord.delivDate === convertDatetoBPBDate(tomorrow) &&
             ord.custName === "BPB Extras" &&
             ord.prodName === "Baguette"
         )
       ].qty;
 
-    let ordtoday = getFullOrders(database, delivDate);
+    let ordtoday = getFullOrders(today, database);
     let bagOrderToday =
       ordtoday[
         ordtoday.findIndex(
           (ord) =>
-            ord.delivDate === convertDatetoBPBDate(delivDate) &&
+            ord.delivDate === convertDatetoBPBDate(today) &&
             ord.custName === "BPB Extras" &&
             ord.prodName === "Baguette"
         )

@@ -64,7 +64,7 @@ export default class ComposeWhatToMake {
     let pretzels = this.getPretzels(database, delivDate);
     let freezerProds = this.getFreezerProds(database, delivDate);
     let youllBeShort = this.getYoullBeShort(database, delivDate);
-    let baguetteStuff = this.getBaguetteStuff(database[4], delivDate);
+    let baguetteStuff = this.getBaguetteStuff(database, delivDate);
 
     [freshProds, shelfProds] = handleFrenchConundrum(
       freshProds,
@@ -156,17 +156,15 @@ export default class ComposeWhatToMake {
     return makeShelfProds;
   }
 
-  getBaguetteStuff(orders, delivDate) {
-    console.log("Bagorders", orders);
-    console.log("BagdelivDate", delivDate);
-
+  getBaguetteStuff(database, delivDate) {
     let delivDate2Day = convertDatetoBPBDate(todayPlus()[2]);
     let tomorrow = convertDatetoBPBDate(todayPlus()[1]);
-    console.log('delivDate2Day', delivDate2Day)
+    console.log("delivDate2Day", delivDate2Day);
 
+    let ord2day = getFullOrders(database, delivDate2Day);
     let bagOrder2Day =
-      orders[
-        orders.findIndex(
+      ord2day[
+        ord2day.findIndex(
           (ord) =>
             ord.delivDate === delivDate2Day &&
             ord.custName === "BPB Extras" &&
@@ -174,9 +172,10 @@ export default class ComposeWhatToMake {
         )
       ].qty;
 
+    let ordtom = getFullOrders(database, tomorrow);
     let bagOrdertomorrow =
-      orders[
-        orders.findIndex(
+      ordtom[
+        ordtom.findIndex(
           (ord) =>
             ord.delivDate === tomorrow &&
             ord.custName === "BPB Extras" &&
@@ -184,9 +183,10 @@ export default class ComposeWhatToMake {
         )
       ].qty;
 
+    let ordtoday = getFullOrders(database, delivDate);
     let bagOrderToday =
-      orders[
-        orders.findIndex(
+      ordtoday[
+        ordtoday.findIndex(
           (ord) =>
             ord.delivDate === convertDatetoBPBDate(delivDate) &&
             ord.custName === "BPB Extras" &&

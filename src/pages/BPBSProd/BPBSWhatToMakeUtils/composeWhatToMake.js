@@ -64,7 +64,7 @@ export default class ComposeWhatToMake {
     let pretzels = this.getPretzels(database, delivDate);
     let freezerProds = this.getFreezerProds(database, delivDate);
     let youllBeShort = this.getYoullBeShort(database, delivDate);
-    let baguetteStuff = this.getBaguetteStuff(database[4], delivDate);
+    let baguetteStuff = this.getBaguetteStuff(database, delivDate);
 
     [freshProds, shelfProds] = handleFrenchConundrum(
       freshProds,
@@ -156,39 +156,41 @@ export default class ComposeWhatToMake {
     return makeShelfProds;
   }
 
-  getBaguetteStuff(orders, delivDate) {
-    console.log("Bagorders", orders);
-    console.log("BagdelivDate", delivDate);
+  getBaguetteStuff(database) {
+    let delivDate2Day = todayPlus()[2];
+    let tomorrow = todayPlus()[1];
+    let today = todayPlus()[0];
 
-    let delivDate2Day = convertDatetoBPBDate(todayPlus()[2]);
-    let tomorrow = convertDatetoBPBDate(todayPlus()[1]);
     console.log('delivDate2Day', delivDate2Day)
-
+    
+    let ord2day = getFullOrders(delivDate2Day, database);
     let bagOrder2Day =
-      orders[
-        orders.findIndex(
+      ord2day[
+        ord2day.findIndex(
           (ord) =>
-            ord.delivDate === delivDate2Day &&
+            ord.delivDate === convertDatetoBPBDate(delivDate2Day) &&
             ord.custName === "BPB Extras" &&
             ord.prodName === "Baguette"
         )
       ].qty;
 
+    let ordtom = getFullOrders(tomorrow, database);
     let bagOrdertomorrow =
-      orders[
-        orders.findIndex(
+      ordtom[
+        ordtom.findIndex(
           (ord) =>
-            ord.delivDate === tomorrow &&
+            ord.delivDate === convertDatetoBPBDate(tomorrow) &&
             ord.custName === "BPB Extras" &&
             ord.prodName === "Baguette"
         )
       ].qty;
 
+    let ordtoday = getFullOrders(today, database);
     let bagOrderToday =
-      orders[
-        orders.findIndex(
+      ordtoday[
+        ordtoday.findIndex(
           (ord) =>
-            ord.delivDate === convertDatetoBPBDate(delivDate) &&
+            ord.delivDate === convertDatetoBPBDate(today) &&
             ord.custName === "BPB Extras" &&
             ord.prodName === "Baguette"
         )

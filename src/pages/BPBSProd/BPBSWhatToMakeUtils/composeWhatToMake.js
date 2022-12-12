@@ -111,7 +111,7 @@ export default class ComposeWhatToMake {
     let makeFreshProds = makeProds(products, this.freshProdFilter);
 
     let tom = tomBasedOnDelivDate(delivDate);
-    if (delivDate === "2021-12-24") {
+    if (delivDate === "2022-12-24") {
       tom = TwodayBasedOnDelivDate(delivDate);
     }
     let fullOrdersToday = getFullMakeOrders(delivDate, database);
@@ -137,7 +137,7 @@ export default class ComposeWhatToMake {
     const [products, customers, routes, standing, orders] = database;
     let makeShelfProds = makeProds(products, this.shelfProdsFilter);
     let tom = tomBasedOnDelivDate(delivDate);
-    if (delivDate === "2021-12-24") {
+    if (delivDate === "2022-12-24") {
       tom = TwodayBasedOnDelivDate(delivDate);
     }
     let fullOrdersToday = getFullMakeOrders(delivDate, database);
@@ -226,7 +226,7 @@ export default class ComposeWhatToMake {
     const [products, customers, routes, standing, orders] = database;
     let makeShelfProds = makeProds(products, this.pretzelsFilter);
     let tom = tomBasedOnDelivDate(delivDate);
-    if (delivDate === "2021-12-24") {
+    if (delivDate === "2022-12-24") {
       tom = TwodayBasedOnDelivDate(delivDate);
     }
     let fullOrdersToday = getFullMakeOrders(delivDate, database);
@@ -260,7 +260,7 @@ export default class ComposeWhatToMake {
     const [products, customers, routes, standing, orders] = database;
     let makeFreezerProds = makeProds(products, this.freezerProdsFilter);
     let tom = tomBasedOnDelivDate(delivDate);
-    if (delivDate === "2021-12-24") {
+    if (delivDate === "2022-12-24") {
       tom = TwodayBasedOnDelivDate(delivDate);
     }
     let fullOrdersToday = getFullMakeOrders(delivDate, database);

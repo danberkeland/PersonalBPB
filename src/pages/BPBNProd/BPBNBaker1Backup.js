@@ -88,8 +88,8 @@ function BPBNBaker1Backup() {
 
   useEffect(() => {
     console.log("todayPlus",todayPlus()[1])
-    if (todayPlus()[1] === '2021-12-24'){
-      setDelivDate('2021-12-25')
+    if (todayPlus()[1] === '2022-12-24'){
+      setDelivDate('2022-12-25')
     } else {
       setDelivDate(todayPlus()[1])
     }

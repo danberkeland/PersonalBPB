@@ -60,7 +60,7 @@ let yes = DateTime.now().setZone("America/Los_Angeles").ordinal%2 === 0 ? true :
 
 const doobieStuff = [
   { Prod: "Doobie Buns", Bucket: "YES", Mix: !yes ? "NO" : "NO", Bake: !yes ? "NO" : "NO" },
-  { Prod: "Siciliano", Bucket: "YES", Mix: !yes ? "NO" : "NO", Bake: !yes ? "NO" : "NO" },
+  { Prod: "Siciliano", Bucket: "YES", Mix: !yes ? "YES" : "NO", Bake: !yes ? "NO" : "NO" },
 ];
 
 const compose = new ComposeWhatToBakeBackup();

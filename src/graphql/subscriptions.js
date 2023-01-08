@@ -825,6 +825,7 @@ export const onCreateNotes = /* GraphQL */ `
       forWhom
       byWhom
       when
+      where
       createdAt
       updatedAt
     }
@@ -838,6 +839,7 @@ export const onUpdateNotes = /* GraphQL */ `
       forWhom
       byWhom
       when
+      where
       createdAt
       updatedAt
     }
@@ -851,6 +853,7 @@ export const onDeleteNotes = /* GraphQL */ `
       forWhom
       byWhom
       when
+      where
       createdAt
       updatedAt
     }

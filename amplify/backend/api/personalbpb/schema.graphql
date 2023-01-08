@@ -208,6 +208,7 @@ type Notes @model @auth(rules: [{allow: public}]) {
   forWhom: String
   byWhom: String
   when: String
+  where: String
 }
 
 type AuthSettings @model @auth(rules: [{allow: public}]) {

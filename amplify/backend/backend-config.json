@@ -1,78 +1,83 @@
 {
   "api": {
-    "personalbpb": {
-      "service": "AppSync",
+    "grabinfo": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "orderUpdateAlert"
+        }
+      ],
       "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "grabqbcust": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "grabQBNum"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "personalbpb": {
       "output": {
         "authConfig": {
-          "defaultAuthentication": {
-            "authenticationType": "API_KEY",
-            "apiKeyConfig": {
-              "apiKeyExpirationDays": 7,
-              "apiKeyExpirationDate": "2022-08-05T19:27:00.003Z",
-              "description": "key"
-            }
-          },
           "additionalAuthenticationProviders": [
             {
               "authenticationType": "AWS_IAM"
             }
-          ]
+          ],
+          "defaultAuthentication": {
+            "apiKeyConfig": {
+              "apiKeyExpirationDate": "2022-08-05T19:27:00.003Z",
+              "apiKeyExpirationDays": 7,
+              "description": "key"
+            },
+            "authenticationType": "API_KEY"
+          }
         }
-      }
-    },
-    "grabinfo": {
-      "service": "API Gateway",
+      },
       "providerPlugin": "awscloudformation",
-      "dependsOn": [
-        {
-          "category": "function",
-          "resourceName": "orderUpdateAlert",
-          "attributes": [
-            "Name",
-            "Arn"
-          ]
-        }
-      ]
+      "service": "AppSync"
     },
     "testsend": {
-      "service": "API Gateway",
-      "providerPlugin": "awscloudformation",
       "dependsOn": [
         {
-          "category": "function",
-          "resourceName": "testsend",
           "attributes": [
             "Name",
             "Arn"
-          ]
-        }
-      ]
-    },
-    "grabqbcust": {
-      "service": "API Gateway",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": [
-        {
+          ],
           "category": "function",
-          "resourceName": "grabQBNum",
-          "attributes": [
-            "Name",
-            "Arn"
-          ]
+          "resourceName": "testsend"
         }
-      ]
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
     }
   },
   "auth": {
     "personalbpb8b4838aa": {
-      "service": "Cognito",
-      "providerPlugin": "awscloudformation",
+      "customAuth": false,
       "dependsOn": [],
-      "customAuth": false
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito"
     }
   },
   "function": {
+    "grabQBNum": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "grabSquare": {
       "build": true,
       "providerPlugin": "awscloudformation",
@@ -85,14 +90,75 @@
     },
     "testsend": {
       "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda",
-      "dependsOn": []
-    },
-    "grabQBNum": {
-      "build": true,
+      "dependsOn": [],
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_grabQBNum_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "grabQBNum"
+        }
+      ]
+    },
+    "AMPLIFY_function_grabQBNum_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "grabQBNum"
+        }
+      ]
+    },
+    "AMPLIFY_function_grabSquare_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "grabSquare"
+        }
+      ]
+    },
+    "AMPLIFY_function_grabSquare_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "grabSquare"
+        }
+      ]
+    },
+    "AMPLIFY_function_orderUpdateAlert_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "orderUpdateAlert"
+        }
+      ]
+    },
+    "AMPLIFY_function_orderUpdateAlert_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "orderUpdateAlert"
+        }
+      ]
+    },
+    "AMPLIFY_function_testsend_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "testsend"
+        }
+      ]
+    },
+    "AMPLIFY_function_testsend_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "testsend"
+        }
+      ]
     }
   }
 }

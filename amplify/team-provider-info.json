@@ -18,20 +18,26 @@
       "function": {
         "grabSquare": {
           "deploymentBucketName": "amplify-personalbpb-newone-90130-deployment",
-          "s3Key": "amplify-builds/grabSquare-34454a3239536d4d5234-build.zip"
+          "s3Key": "amplify-builds/grabSquare-4b4d7a534e646535514c-build.zip"
         },
         "orderUpdateAlert": {
           "deploymentBucketName": "amplify-personalbpb-newone-90130-deployment",
-          "s3Key": "amplify-builds/orderUpdateAlert-7068417835685379614b-build.zip"
+          "s3Key": "amplify-builds/orderUpdateAlert-623278715a696a49354a-build.zip"
         },
         "testsend": {
           "deploymentBucketName": "amplify-personalbpb-newone-90130-deployment",
-          "s3Key": "amplify-builds/testsend-6856374b6f68746c4679-build.zip"
+          "s3Key": "amplify-builds/testsend-6a6f3447585745417854-build.zip"
         },
         "grabQBNum": {
           "deploymentBucketName": "amplify-personalbpb-newone-90130-deployment",
-          "s3Key": "amplify-builds/grabQBNum-51337270504c6e727177-build.zip"
+          "s3Key": "amplify-builds/grabQBNum-75434f2b426442454a73-build.zip"
         }
+      },
+      "api": {
+        "personalbpb": {},
+        "grabinfo": {},
+        "testsend": {},
+        "grabqbcust": {}
       }
     }
   }

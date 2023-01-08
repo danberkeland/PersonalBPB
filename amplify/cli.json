@@ -6,8 +6,8 @@
       "useexperimentalpipelinedtransformer": false,
       "enableiterativegsiupdates": false,
       "secondarykeyasgsi": true,
-      "securityEnhancementNotification": false,
-      "showfieldauthnotification": false
+      "securityEnhancementNotification": false
+      
     },
     "frontend-ios": {
       "enablexcodeintegration": true

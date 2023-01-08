@@ -58,7 +58,7 @@ const compose = new ComposeWhatToBake();
 const { DateTime } = require("luxon");
 let yes = DateTime.now().setZone("America/Los_Angeles").ordinal%2 === 0 ? true : false
 
-//for push6
+//for push7
 
 const doobieStuffNOT = [
   { Prod: "Doobie Buns", Bucket: "YES", Mix: yes ? "NO" : "NO", Bake: yes ? "YES" : "YES" },

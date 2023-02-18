@@ -681,6 +681,114 @@ function BPBSMixPocket() {
               >
                 3x Mix
               </ButtonStyle>
+              <ButtonStyle
+                key={dough.id + "_print"}
+                id={dough.doughName + "_print"}
+                onClick={(e) =>
+                  handleClick(
+                    e,
+                    Number(dough.buffer) +
+                      Number(dough.needed) + Number(shortWeight),
+                      4,
+                      Number(dough.oldDough)
+                  )
+                }
+                label="Print 4x Set"
+                className="p-button-rounded p-button-lg"
+                icon="pi pi-print"
+              >
+                4x Mix
+              </ButtonStyle>
+              <ButtonStyle
+                key={dough.id + "_print"}
+                id={dough.doughName + "_print"}
+                onClick={(e) =>
+                  handleClick(
+                    e,
+                    Number(dough.buffer) +
+                      Number(dough.needed) + Number(shortWeight),
+                      5,
+                      Number(dough.oldDough)
+                  )
+                }
+                label="Print 5x Set"
+                className="p-button-rounded p-button-lg"
+                icon="pi pi-print"
+              >
+                5x Mix
+              </ButtonStyle>
+              <ButtonStyle
+                key={dough.id + "_print"}
+                id={dough.doughName + "_print"}
+                onClick={(e) =>
+                  handleClick(
+                    e,
+                    Number(dough.buffer) +
+                      Number(dough.needed) + Number(shortWeight),
+                      6,
+                      Number(dough.oldDough)
+                  )
+                }
+                label="Print 6x Set"
+                className="p-button-rounded p-button-lg"
+                icon="pi pi-print"
+              >
+                6x Mix
+              </ButtonStyle>
+              <ButtonStyle
+                key={dough.id + "_print"}
+                id={dough.doughName + "_print"}
+                onClick={(e) =>
+                  handleClick(
+                    e,
+                    Number(dough.buffer) +
+                      Number(dough.needed) + Number(shortWeight),
+                      7,
+                      Number(dough.oldDough)
+                  )
+                }
+                label="Print 7x Set"
+                className="p-button-rounded p-button-lg"
+                icon="pi pi-print"
+              >
+                7x Mix
+              </ButtonStyle>
+              <ButtonStyle
+                key={dough.id + "_print"}
+                id={dough.doughName + "_print"}
+                onClick={(e) =>
+                  handleClick(
+                    e,
+                    Number(dough.buffer) +
+                      Number(dough.needed) + Number(shortWeight),
+                      8,
+                      Number(dough.oldDough)
+                  )
+                }
+                label="Print 8x Set"
+                className="p-button-rounded p-button-lg"
+                icon="pi pi-print"
+              >
+                8 Mix
+              </ButtonStyle>
+              <ButtonStyle
+                key={dough.id + "_print"}
+                id={dough.doughName + "_print"}
+                onClick={(e) =>
+                  handleClick(
+                    e,
+                    Number(dough.buffer) +
+                      Number(dough.needed) + Number(shortWeight),
+                      9,
+                      Number(dough.oldDough)
+                  )
+                }
+                label="Print 9x Set"
+                className="p-button-rounded p-button-lg"
+                icon="pi pi-print"
+              >
+                9x Mix
+              </ButtonStyle>
               
             </ThreeColumnGrid>
           </React.Fragment>

@@ -160,6 +160,42 @@ const makeOrders = (delivDate, database, filter) => {
   return orderArray;
 };
 
+const makeOrdersShelf = (delivDate, database, filter) => {
+  const [products, customers, routes, standing, orders] = database;
+  let prodNames = getProdNickNames(delivDate, database, filter);
+  let custNames = getCustNames(delivDate, database, filter);
+  let fullOrder = getFullOrders(delivDate, database);
+  fullOrder = zerosDelivFilter(fullOrder, delivDate, database);
+  fullOrder = buildGridOrderArray(fullOrder, database);
+  fullOrder = addRoutes(delivDate, fullOrder, database);
+  
+  let orderArray = [];
+  for (let cust of custNames) {
+    let custItem = {};
+    custItem = {
+      customer: cust,
+      customerShort: cust.length>10 ? cust.substring(0,15)+"..." : cust
+    };
+    for (let prod of prodNames) {
+      let pro = products[products.findIndex((pr) => pr.nickName === prod)]
+      let prodFullName =
+        pro.prodName;
+      try {
+        custItem[prod] =
+          fullOrder[
+            fullOrder.findIndex(
+              (ord) => ord.prodName === prodFullName && ord.custName === cust && (ord.prodNick === "fic" ? ord.route !== "Pick up Carlton" : true)
+            )
+          ].qty * pro.packSize;
+      } catch {
+        custItem[prod] = null;
+      }
+    }
+    orderArray.push(custItem);
+  }
+  return orderArray;
+};
+
 const addUp = (acc, val) => {
   return acc + val;
 };
@@ -618,13 +654,15 @@ export default class ComposeNorthList {
   };
 
   returnShelfProdsNorth = (database) => {
-    let shelfProds = makeOrders(today, database, this.shelfProdsFilter);
+    let shelfProds = makeOrdersShelf(today, database, this.shelfProdsFilter);
+    console.log('shelfProds', shelfProds)
     return shelfProds;
   };
 
   shelfProdsFilter = (ord) => {
     return (
-      ord.where.includes("Prado") &&
+      (ord.where.includes("Prado") || (ord.prodNick === "fic")) &&
+      
       ord.packGroup !== "frozen pastries" &&
       (ord.routeDepart === "Carlton" || ord.route === "Pick up Carlton")
     );

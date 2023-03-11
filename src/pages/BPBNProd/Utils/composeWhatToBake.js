@@ -24,12 +24,14 @@ export default class ComposeWhatToMake {
     );
    
     let MakeList = whatToMakeToday.concat(whatToMakeTomorrow);
+    console.log('MakeList', MakeList)
     let whatToMake = this.makeAddQty(MakeList);
 
     return whatToMake;
   };
 
   makeAddQty = (bakedTomorrow) => {
+   
     let makeList2 = Array.from(
       new Set(bakedTomorrow.map((prod) => prod.forBake))
     ).map((mk) => ({
@@ -98,6 +100,7 @@ export default class ComposeWhatToMake {
 
       make.qty = qtyAccToday;
     }
+
 
     //makeList2[0].qty -= 54
     return makeList2;

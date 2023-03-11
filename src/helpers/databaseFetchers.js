@@ -192,7 +192,7 @@ const fetchData = async (setIsLoading) => {
     QBInfo,
   ];
   setIsLoading(false);
-
+  
   return data;
 };
 

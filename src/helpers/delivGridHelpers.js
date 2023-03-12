@@ -71,7 +71,6 @@ const buildCustName = (ord, customers) => {
 };
 
 export const buildGridOrderArray = (filterServe, database) => {
-
   const [products, customers, routes, standing, orders] = database;
   let gridOrderArray;
   gridOrderArray = filterServe.map((ord) => ({
@@ -147,29 +146,28 @@ export const buildGridOrderArray = (filterServe, database) => {
       products[
         products.findIndex((prod) => prod["prodName"] === ord["prodName"])
       ].packGroup,
-      freezerNorth:
+    freezerNorth:
       products[
         products.findIndex((prod) => prod["prodName"] === ord["prodName"])
       ].freezerNorth,
-      freezerNorthClosing:
+    freezerNorthClosing:
       products[
         products.findIndex((prod) => prod["prodName"] === ord["prodName"])
       ].freezerNorthClosing,
-      freezerNorthFlag:
+    freezerNorthFlag:
       products[
         products.findIndex((prod) => prod["prodName"] === ord["prodName"])
       ].freezerNorthFlag,
-      freezerCount:
+    freezerCount:
       products[
         products.findIndex((prod) => prod["prodName"] === ord["prodName"])
       ].freezerCount,
-      freezerClosing:
+    freezerClosing:
       products[
         products.findIndex((prod) => prod["prodName"] === ord["prodName"])
       ].freezerClosing,
-      
   }));
-  
+
   return gridOrderArray;
 };
 
@@ -272,19 +270,19 @@ export const createRouteGridColumns = (listOfProducts) => {
 };
 
 export const createListOfCustomers = (orderList) => {
-
-  let listOfCustomers = orderList.filter(ord => ord.custNick).map((order) => order["custName"]);
+  let listOfCustomers = orderList
+    .filter((ord) => ord.custNick)
+    .map((order) => order["custName"]);
   listOfCustomers = Array.from(new Set(listOfCustomers));
   return listOfCustomers;
 };
 
 export const createQtyGrid = (listOfCustomers, orderList) => {
- 
   let data = [];
   for (let cust of listOfCustomers) {
     let newData = {
       customer: cust,
-      customerShort: cust.length>10 ? cust.substring(0,13)+"..." : cust
+      customerShort: cust.length > 10 ? cust.substring(0, 13) + "..." : cust,
     };
     for (let order of orderList) {
       if (order["custName"] === cust) {
@@ -294,7 +292,7 @@ export const createQtyGrid = (listOfCustomers, orderList) => {
     }
     data.push(newData);
   }
-  
+
   sortAtoZDataByIndex(data, "delivOrder");
   return data;
 };

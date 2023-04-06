@@ -25,12 +25,13 @@ export const addFresh = (
   routes
 ) => {
   make.qty = 0;
-  console.log('make', make)
+  console.log("make", make);
   let qtyAccToday = 0;
   let qtyAccTomorrow = 0;
-  let prodInd = products.findIndex((prod) => prod.forBake === make.forBake)
+  let dutchDelivToday = 0;
+  let prodInd = products.findIndex((prod) => prod.forBake === make.forBake);
   let guaranteeTimeToday = Number(products[prodInd].readyTime);
-  let prodForBake = products[prodInd].forBake
+  let prodForBake = products[prodInd].forBake;
   let availableRoutesToday = routes.filter(
     (rt) =>
       (rt.RouteDepart === "Prado") &
@@ -47,15 +48,31 @@ export const addFresh = (
         (make.forBake === full.forBake &&
           full.atownPick !== true &&
           checkZone(full, availableRoutesToday) === true) ||
-        (make.forBake === full.forBake && make.forBake==="Dutch")
+        (make.forBake === full.forBake &&
+          make.forBake === "Dutch" &&
+          (checkZone(full, availableRoutesToday) === true ||
+            full.custName.includes("__")))
     )
     .map((ord) => ord.qty * ord.packSize);
 
+  let dutchDeliv = fullOrders
+    .filter(
+      (full) =>
+        (make.forBake === full.forBake &&
+          full.atownPick !== true &&
+          checkZone(full, availableRoutesToday) === true) ||
+        (make.forBake === full.forBake && make.forBake === "Dutch")
+    )
+    .map((ord) => ord.qty * ord.packSize);
+
+  if (dutchDeliv.length > 0) {
+    dutchDelivToday = dutchDeliv.reduce(addUp);
+  }
   if (qtyToday.length > 0) {
     qtyAccToday = qtyToday.reduce(addUp);
   }
-  let clone1 = clonedeep(fullOrdersTomorrow)
-  console.log("clone1",clone1)
+  let clone1 = clonedeep(fullOrdersTomorrow);
+  console.log("clone1", clone1);
   let qtyTomorrow = fullOrdersTomorrow
     .filter(
       (full) =>
@@ -69,7 +86,7 @@ export const addFresh = (
     qtyAccTomorrow = qtyTomorrow.reduce(addUp);
   }
 
-  make.qty = qtyAccToday;
+  make.qty = make.forBake === "Dutch" ? dutchDelivToday : qtyAccToday;
   make.makeTotal = qtyAccToday + qtyAccTomorrow;
   make.bagEOD = qtyAccTomorrow;
 };
@@ -107,19 +124,17 @@ export const addShelf = (
   products,
   routes
 ) => {
- 
   make.qty = 0;
   make.needEarly = 0;
 
   let qtyAccToday = 0;
   let qtyAccTomorrow = 0;
-  
-  let filt = products.filter(prod => prod.forBake === make.forBake)
-  let qtyMakeExtra = 0
+
+  let filt = products.filter((prod) => prod.forBake === make.forBake);
+  let qtyMakeExtra = 0;
   for (let fi of filt) {
-    qtyMakeExtra = qtyMakeExtra + fi.bakeExtra
+    qtyMakeExtra = qtyMakeExtra + fi.bakeExtra;
   }
-  
 
   let qtyToday = fullOrders
     .filter((full) => make.forBake === full.forBake)
@@ -140,7 +155,6 @@ export const addShelf = (
   make.makeTotal = qtyAccTomorrow + qtyAccToday + qtyMakeExtra;
 };
 
-
 export const addPretzel = (
   make,
   fullOrders,
@@ -148,19 +162,17 @@ export const addPretzel = (
   products,
   routes
 ) => {
- 
   make.qty = 0;
   make.needEarly = 0;
 
   let qtyAccToday = 0;
   let qtyAccTomorrow = 0;
-  
-  let filt = products.filter(prod => prod.forBake === make.forBake)
-  let qtyMakeExtra = 0
+
+  let filt = products.filter((prod) => prod.forBake === make.forBake);
+  let qtyMakeExtra = 0;
   for (let fi of filt) {
-    qtyMakeExtra = qtyMakeExtra + fi.bakeExtra
+    qtyMakeExtra = qtyMakeExtra + fi.bakeExtra;
   }
-  
 
   let qtyToday = fullOrders
     .filter((full) => make.forBake === full.forBake)
@@ -185,7 +197,7 @@ const update = (order, products, customers) => {
   let atownPick = "atownpick";
   let ind =
     products[products.findIndex((prod) => prod.prodName === order.prodName)];
-  
+
   try {
     let custInd =
       customers[
@@ -271,8 +283,6 @@ const checkZone = (full, availableRoutes) => {
 };
 
 export const addPocketsQty = (make, fullOrders) => {
- 
-
   make.qty = 0;
   make.needEarly = 0;
   let qty = fullOrders

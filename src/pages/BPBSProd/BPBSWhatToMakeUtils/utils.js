@@ -25,13 +25,12 @@ export const addFresh = (
   routes
 ) => {
   make.qty = 0;
-
+  console.log('make', make)
   let qtyAccToday = 0;
   let qtyAccTomorrow = 0;
-  let guaranteeTimeToday = Number(
-    products[products.findIndex((prod) => prod.forBake === make.forBake)]
-      .readyTime
-  );
+  let prodInd = products.findIndex((prod) => prod.forBake === make.forBake)
+  let guaranteeTimeToday = Number(products[prodInd].readyTime);
+  let prodForBake = products[prodInd].forBake
   let availableRoutesToday = routes.filter(
     (rt) =>
       (rt.RouteDepart === "Prado") &
@@ -45,9 +44,10 @@ export const addFresh = (
   let qtyToday = fullOrders
     .filter(
       (full) =>
-        make.forBake === full.forBake &&
-        full.atownPick !== true &&
-        checkZone(full, availableRoutesToday) === true
+        (make.forBake === full.forBake &&
+          full.atownPick !== true &&
+          checkZone(full, availableRoutesToday) === true) ||
+        (make.forBake === full.forBake && make.forBake==="Dutch")
     )
     .map((ord) => ord.qty * ord.packSize);
 

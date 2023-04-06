@@ -121,6 +121,7 @@ export default class ComposeWhatToMake {
     console.log("fullOrdersTomorrow", fullOrdersTomorrow);
     for (let make of makeFreshProds) {
       
+      
       addFresh(make, fullOrdersToday, fullOrdersTomorrow, products, routes);
       addNeedEarly(make, products);
     }

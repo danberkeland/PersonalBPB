@@ -86,8 +86,13 @@ export const addFresh = (
     qtyAccTomorrow = qtyTomorrow.reduce(addUp);
   }
 
+  
+
   make.qty = make.forBake === "Dutch" ? dutchDelivToday : qtyAccToday;
-  make.makeTotal = qtyAccToday + qtyAccTomorrow;
+  make.makeTotal =
+    make.forBake === "Dutch"
+      ? make.qty + qtyAccTomorrow
+      : qtyAccToday + qtyAccTomorrow;
   make.bagEOD = qtyAccTomorrow;
 };
 

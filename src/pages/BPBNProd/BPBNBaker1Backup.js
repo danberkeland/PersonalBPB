@@ -65,8 +65,8 @@ const doobieStuffx = [
 
 
 const doobieStuff = [
-  { Prod: "Doobie Buns", Bucket: "YES", Mix: !yes ? "YES" : "YES", Bake: !yes ? "NO" : "NO" },
-  { Prod: "Siciliano", Bucket: "YES", Mix: !yes ? "NO" : "NO", Bake: !yes ? "YES" : "YES" },
+  { Prod: "Doobie Buns", Bucket: "YES", Mix: !yes ? "NO" : "YES", Bake: !yes ? "YES" : "NO" },
+  { Prod: "Siciliano", Bucket: "YES", Mix: !yes ? "YES" : "NO", Bake: !yes ? "NO" : "YES" },
 ];
 
 

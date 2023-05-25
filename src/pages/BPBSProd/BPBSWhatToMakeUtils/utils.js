@@ -8,6 +8,7 @@ export const addProdAttr = (fullOrder, database) => {
     custName: full.custName,
     delivDate: full.delivDate,
     prodName: full.prodName,
+    route: full.route,
     qty: full.qty,
   }));
   fullToFix.forEach((full) =>
@@ -31,7 +32,7 @@ export const addFresh = (
   let dutchDelivToday = 0;
   let prodInd = products.findIndex((prod) => prod.forBake === make.forBake);
   let guaranteeTimeToday = Number(products[prodInd].readyTime);
-  let prodForBake = products[prodInd].forBake;
+  //let prodForBake = products[prodInd].forBake;
   let availableRoutesToday = routes.filter(
     (rt) =>
       (rt.RouteDepart === "Prado") &
@@ -46,7 +47,7 @@ export const addFresh = (
     .filter(
       (full) =>
         (make.forBake === full.forBake &&
-          full.atownPick !== true &&
+          (full.atownPick !== true || full.route !== "atownpick") &&
           checkZone(full, availableRoutesToday) === true) ||
         (make.forBake === full.forBake &&
           make.forBake === "Dutch" &&
@@ -59,7 +60,7 @@ export const addFresh = (
     .filter(
       (full) =>
         (make.forBake === full.forBake &&
-          full.atownPick !== true &&
+          (full.atownPick !== true || full.route !== "atownpick") &&
           checkZone(full, availableRoutesToday) === true) ||
         (make.forBake === full.forBake && make.forBake === "Dutch")
     )
@@ -77,7 +78,10 @@ export const addFresh = (
     .filter(
       (full) =>
         make.forBake === full.forBake &&
-        (full.atownPick !== true || full.prodName === "Dutch Stick") &&
+        
+        (((full.atownPick !== true || full.route !== "atownpick") &&
+          full.prodName !== "Ficelle") ||
+          full.prodName === "Dutch Stick") &&
         checkZone(full, availableRoutesTomorrow) === true
     )
     .map((ord) => ord.qty * ord.packSize);
@@ -85,8 +89,6 @@ export const addFresh = (
   if (qtyTomorrow.length > 0) {
     qtyAccTomorrow = qtyTomorrow.reduce(addUp);
   }
-
-  
 
   make.qty = make.forBake === "Dutch" ? dutchDelivToday : qtyAccToday;
   make.makeTotal =
@@ -288,10 +290,16 @@ const checkZone = (full, availableRoutes) => {
 };
 
 export const addPocketsQty = (make, fullOrders) => {
+  console.log("fullOrders", fullOrders);
+
   make.qty = 0;
   make.needEarly = 0;
   let qty = fullOrders
-    .filter((full) => make.forBake === full.forBake && full.atownPick === true)
+    .filter(
+      (full) =>
+        make.forBake === full.forBake &&
+        (full.atownPick === true || full.route === "atownpick")
+    )
     .map((ord) => ord.qty * ord.packSize);
   if (qty.length > 0) {
     let qtyAcc = qty.reduce(addUp);

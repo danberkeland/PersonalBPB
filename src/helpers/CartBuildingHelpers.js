@@ -30,6 +30,7 @@ export const getFullProdOrders = (delivDate, database) => {
 export const buildCartList = (chosen, delivDate, orders) => {
   let BPBDate = convertDatetoBPBDate(delivDate);
   let filteredOrders = clonedeep(orders);
+  
   let builtCartList = [];
   if (filteredOrders) {
     builtCartList = filteredOrders.filter(
@@ -39,6 +40,7 @@ export const buildCartList = (chosen, delivDate, orders) => {
     );
   }
   builtCartList = builtCartList.filter(ord => ord.prodName !== '')
+  
   return builtCartList;
 };
 
@@ -112,7 +114,7 @@ const convertStandListtoStandArray = (
 export const compileOrderList = (cartList, standList) => {
   let orderList = cartList.concat(standList);
   let clone = clonedeep(orderList)
-  console.log("orderList",clone)
+  
 
   // Remove old cart order from orders if it exists
   for (let i = 0; i < orderList.length; ++i) {
@@ -129,17 +131,18 @@ export const compileOrderList = (cartList, standList) => {
   orderList = orderList.filter(ord => ord.prodName !== '')
   let clone2 = clonedeep(orderList)
  
-  console.log("orderList2",clone2)
+ 
   sortAtoZDataByIndex(orderList, "prodName");
   orderList = orderList.filter(ord => ord.prodName !== '')
   let clone3 = clonedeep(orderList)
  
-  console.log("orderList3",clone3)
+ 
   
   return orderList;
 };
 
 export const compileFullOrderList = (cartList, standList) => {
+ 
   let orderList = cartList.concat(standList);
 
   // Remove old cart order from orders if it exists

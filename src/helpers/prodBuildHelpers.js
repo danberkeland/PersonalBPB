@@ -229,7 +229,7 @@ export const addFresh = (
     .filter(
       (full) =>
         make.forBake === full.forBake &&
-        full.atownPick !== true &&
+        (full.atownPick !== true || full.route !=="atownpick") &&
         checkZone(full, availableRoutesToday) === true
     )
     .map((ord) => ord.qty * ord.packSize);
@@ -242,7 +242,7 @@ export const addFresh = (
     .filter(
       (full) =>
           make.forBake === full.forBake &&
-          full.atownPick !== true &&
+          (full.atownPick !== true || full.route !=="atownpick") &&
           checkZone(full, availableRoutesTomorrow) === true     
       )
       .map((ord) => ord.qty * ord.packSize);
@@ -306,7 +306,7 @@ export const addPocketsQty = (make, fullOrders) => {
   make.qty = 0;
   make.needEarly = 0;
   let qty = fullOrders
-    .filter((full) => make.forBake === full.forBake && full.atownPick === true)
+    .filter((full) => make.forBake === full.forBake && (full.atownPick === true || full.route ==="atownpick"))
     .map((ord) => ord.qty * ord.packSize);
   if (qty.length > 0) {
     let qtyAcc = qty.reduce(addUp);

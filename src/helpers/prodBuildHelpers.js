@@ -229,7 +229,7 @@ export const addFresh = (
     .filter(
       (full) =>
         make.forBake === full.forBake &&
-        (full.atownPick !== true || full.route !=="atownpick") &&
+        (full.atownPick !== true && full.route !=="atownpick") &&
         checkZone(full, availableRoutesToday) === true
     )
     .map((ord) => ord.qty * ord.packSize);
@@ -242,7 +242,7 @@ export const addFresh = (
     .filter(
       (full) =>
           make.forBake === full.forBake &&
-          (full.atownPick !== true || full.route !=="atownpick") &&
+          (full.atownPick !== true  && full.route !=="atownpick") &&
           checkZone(full, availableRoutesTomorrow) === true     
       )
       .map((ord) => ord.qty * ord.packSize);

@@ -47,7 +47,7 @@ export const addFresh = (
     .filter(
       (full) =>
         (make.forBake === full.forBake &&
-          (full.atownPick !== true || full.route !== "atownpick") &&
+          (full.atownPick !== true && full.route !== "atownpick") &&
           checkZone(full, availableRoutesToday) === true) ||
         (make.forBake === full.forBake &&
           make.forBake === "Dutch" &&
@@ -60,7 +60,7 @@ export const addFresh = (
     .filter(
       (full) =>
         (make.forBake === full.forBake &&
-          (full.atownPick !== true || full.route !== "atownpick") &&
+          (full.atownPick !== true && full.route !== "atownpick") &&
           checkZone(full, availableRoutesToday) === true) ||
         (make.forBake === full.forBake && make.forBake === "Dutch")
     )
@@ -79,7 +79,7 @@ export const addFresh = (
       (full) =>
         make.forBake === full.forBake &&
         
-        (((full.atownPick !== true || full.route !== "atownpick") &&
+        (((full.atownPick !== true && full.route !== "atownpick") &&
           full.prodName !== "Ficelle") ||
           full.prodName === "Dutch Stick") &&
         checkZone(full, availableRoutesTomorrow) === true

@@ -6,6 +6,8 @@ import { InputText } from "primereact/inputtext";
 
 import { promisedData } from "../../helpers/databaseFetchers";
 import ComposeDough from "./Utils/composeDough";
+import ComposeWhatToMake from "../BPBSProd/BPBSWhatToMakeUtils/composeWhatToMake";
+
 
 import { updateDough } from "../../graphql/mutations";
 
@@ -65,6 +67,7 @@ const addUp = (acc, val) => {
 
 const clonedeep = require("lodash.clonedeep");
 const compose = new ComposeDough();
+const composePretzel = new ComposeWhatToMake()
 
 function BPBNBuckets({ loc }) {
   const { setIsLoading } = useContext(ToggleContext);
@@ -87,12 +90,21 @@ function BPBNBuckets({ loc }) {
 
   const gatherDoughInfo = (database) => {
     let doughData = compose.returnDoughBreakDown(database, loc, delivDate);
-    console.log("doughs", doughData.doughs);
-    console.log("loc", loc);
+    let pretzelInfo = composePretzel.returnOnlyPretzel(database, delivDate)
+    const index = doughData.doughs.findIndex(item => item.doughName === "Pretzel Bun");
+    
+    const totalPretzelWeight = pretzelInfo.pretzels.reduce((sum, item) => {
+      const itemWeight = item.makeTotal * item.weight;
+      return sum + itemWeight;
+    }, 0);
+    
+    try {doughData.doughs[index].needed = totalPretzelWeight} catch {}
+    
     let finalDoughs = doughData.doughs.filter((dou) => dou.mixedWhere === loc);
     setDoughs(finalDoughs);
     setDoughComponents(doughData.doughComponents);
   };
+
 
   const handleChange = (e) => {
     if (e.code === "Enter") {

@@ -231,6 +231,7 @@ function BPBSWhatToMake() {
         { header: "Shelf Product", dataKey: "forBake" },
         { header: "Bake Today", dataKey: "qty" },
         { header: "Shape Today", dataKey: "makeTotal" },
+        { header: "Bag For Tomorrow", dataKey: "bagEOD" },
       ],
       startY: finalY + titleToNextTable,
       styles: { fontSize: tableFont },
@@ -383,6 +384,7 @@ function BPBSWhatToMake() {
           <Column field="forBake" header="Product"></Column>
           <Column field="qty" header="Bake Today"></Column>
           <Column field="makeTotal" header="Shape for Tomorrow"></Column>
+          <Column field="bagEOD" header="Bag for Tomorrow"></Column>
         </DataTable>
         <h2>Make For Freezer</h2>
         <DataTable value={freezerProds} className="p-datatable-sm">

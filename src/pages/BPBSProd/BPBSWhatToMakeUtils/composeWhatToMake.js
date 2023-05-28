@@ -14,7 +14,7 @@ import {
   addPretzel,
   addPocketsQty,
 } from "./utils";
-import { handleFrenchConundrum } from "./conundrums";
+import { handleFrenchConundrum } from "./conundrums.js";
 import { cloneDeep } from "lodash";
 const { DateTime } = require("luxon");
 
@@ -39,7 +39,7 @@ const makeProds = (products, filt) => {
     makeTotal: 0,
     bagEOD: 0,
   }));
-  console.log('make1', make)
+  console.log("make1", make);
   return make;
 };
 
@@ -85,6 +85,13 @@ export default class ComposeWhatToMake {
     };
   };
 
+  returnOnlyPretzel = (database, delivDate) => {
+    let pretzels = this.getPretzels(database, delivDate);
+    return {
+      pretzels: pretzels,
+    };
+  };
+
   getPocketsNorth(database, delivDate) {
     const [products, customers, routes, standing, orders] = database;
     let makePocketsNorth = makeProds(products, this.pocketsNorthFilter);
@@ -116,12 +123,10 @@ export default class ComposeWhatToMake {
       tom = TwodayBasedOnDelivDate(delivDate);
     }
     let fullOrdersToday = getFullMakeOrders(delivDate, database);
-    console.log('getFullOrdersTodayFresh', fullOrdersToday)
+    console.log("getFullOrdersTodayFresh", fullOrdersToday);
     let fullOrdersTomorrow = getFullMakeOrders(tom, database);
     console.log("fullOrdersTomorrow", fullOrdersTomorrow);
     for (let make of makeFreshProds) {
-      
-      
       addFresh(make, fullOrdersToday, fullOrdersTomorrow, products, routes);
       addNeedEarly(make, products);
     }
@@ -141,7 +146,7 @@ export default class ComposeWhatToMake {
   getShelfProds(database, delivDate) {
     const [products, customers, routes, standing, orders] = database;
     let makeShelfProds = makeProds(products, this.shelfProdsFilter);
-    console.log('makeShelfProds1', makeShelfProds)
+    console.log("makeShelfProds1", makeShelfProds);
     let tom = tomBasedOnDelivDate(delivDate);
     if (delivDate === "2022-12-24") {
       tom = TwodayBasedOnDelivDate(delivDate);
@@ -167,8 +172,6 @@ export default class ComposeWhatToMake {
     let tomorrow = todayPlus()[1];
     let today = todayPlus()[0];
 
-    console.log('delivDate2Day', delivDate2Day)
-    
     let ord2day = getFullOrders(delivDate2Day, database);
     let bagOrder2Day =
       ord2day[
@@ -230,6 +233,7 @@ export default class ComposeWhatToMake {
 
   getPretzels(database, delivDate) {
     const [products, customers, routes, standing, orders] = database;
+    console.log("delivDate", delivDate);
     let makeShelfProds = makeProds(products, this.pretzelsFilter);
     let tom = tomBasedOnDelivDate(delivDate);
     if (delivDate === "2022-12-24") {
@@ -237,13 +241,24 @@ export default class ComposeWhatToMake {
     }
     let fullOrdersToday = getFullMakeOrders(delivDate, database);
     let fullOrdersTomorrow = getFullProdMakeOrders(tom, database);
+    let fullOrders2Day = getFullProdMakeOrders(
+      TwodayBasedOnDelivDate(delivDate),
+      database
+    );
 
     for (let make of makeShelfProds) {
-      addPretzel(make, fullOrdersToday, fullOrdersTomorrow, products, routes);
+      addPretzel(
+        make,
+        fullOrdersToday,
+        fullOrdersTomorrow,
+        fullOrders2Day,
+        products,
+        routes,
+        delivDate
+      );
       addNeedEarly(make, products);
     }
 
-    console.log("makeShelfProds", makeShelfProds);
     makeShelfProds = makeShelfProds.filter(
       (make) => make.makeTotal + make.needEarly + make.qty > 0
     );
@@ -254,11 +269,8 @@ export default class ComposeWhatToMake {
   pretzelsFilter = (prod) => {
     let fil =
       !prod.bakedWhere.includes("Carlton") &&
-      Number(prod.readyTime) >= 15 &&
-      prod.packGroup !== "frozen pastries" &&
-      prod.packGroup !== "baked pastries" &&
-      prod.doughType === "Pretzel Bun" &&
-      prod.freezerThaw !== true;
+      //Number(prod.readyTime) >= 15 &&
+      prod.doughType === "Pretzel Bun";
     return fil;
   };
 

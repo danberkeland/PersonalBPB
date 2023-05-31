@@ -26,7 +26,7 @@ export const addFresh = (
   routes
 ) => {
   make.qty = 0;
-  console.log("make", make);
+ 
 
   let qtyAccToday = 0;
   let qtyAccTomorrow = 0;
@@ -56,7 +56,7 @@ export const addFresh = (
 
       const condition1 = isProductMatch && !isAtownPick && isAvailableRoute;
       const condition2 =
-        isProductMatch && isDutch && (isAvailableRoute || isRetailCustomer);
+        isProductMatch && isDutch// && (isAvailableRoute || isRetailCustomer);
 
       return condition1 || condition2;
     })
@@ -96,6 +96,9 @@ export const addFresh = (
     qtyToday.length > 0 ? qtyToday.reduce((acc, val) => acc + val) : 0;
   qtyAccTomorrow =
     qtyTomorrow.length > 0 ? qtyTomorrow.reduce((acc, val) => acc + val) : 0;
+
+  make.forBake === "Dutch" && console.log('Dutch qtyAccToday', qtyAccToday)
+  make.forBake === "Dutch" && console.log('Dutch qtyAccTomorrow', qtyAccTomorrow)
 
   make.qty = make.forBake === "Dutch" ? dutchDelivToday : qtyAccToday;
   make.makeTotal = qtyAccToday + qtyAccTomorrow;
@@ -332,7 +335,7 @@ const checkZone = (full, availableRoutes) => {
 };
 
 export const addPocketsQty = (make, fullOrders) => {
-  console.log("fullOrders", fullOrders);
+ 
 
   make.qty = 0;
   make.needEarly = 0;

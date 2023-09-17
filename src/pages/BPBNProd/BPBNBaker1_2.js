@@ -60,13 +60,13 @@ let yes = DateTime.now().setZone("America/Los_Angeles").ordinal%2 === 0 ? true :
 
 //for push7
 
-const doobieStuffx = [
-  { Prod: "Doobie Buns", Bucket: "YES", Mix: yes ? "YES" : "YES", Bake: yes ? "NO" : "NO" },
-  { Prod: "Siciliano", Bucket: "YES", Mix: yes ? "NO" : "NO", Bake: yes ? "YES" : "YES" },
+const doobieStuff = [
+  { Prod: "Doobie Buns", Bucket: "YES", Mix: yes ? "NO" : "NO", Bake: yes ? "NO" : "NO" },
+  { Prod: "Siciliano", Bucket: "YES", Mix: yes ? "YES" : "YES", Bake: yes ? "YES" : "YES" },
 ];
 
 
-const doobieStuff = [
+const doobieStuffx = [
   { Prod: "Doobie Buns", Bucket: "YES", Mix: yes ? "NO" : "NO", Bake: yes ? "YES" : "YES" },
   { Prod: "Siciliano", Bucket: "YES", Mix: yes ? "YES" : "YES", Bake: yes ? "NO" : "NO" },
 ];

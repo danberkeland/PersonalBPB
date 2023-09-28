@@ -78,13 +78,14 @@ const Buttons = ({ selectedProduct, setSelectedProduct }) => {
           defaultInclude: false,
           leadTime: 3,
         };
+        /*
         setIsLoading(true)
         await createQBProd(addDetails).then((data) => {
           newID = data;
         });
 
         addDetails.qbID = newID;
-
+        */
         createProd(addDetails);
         
       });
@@ -201,7 +202,7 @@ const Buttons = ({ selectedProduct, setSelectedProduct }) => {
     }
 
     console.log(updateDetails);
-
+    /*
     let access = await checkQBValidation()
 
     console.log("updateQBID",updateDetails.qbID)
@@ -234,7 +235,7 @@ const Buttons = ({ selectedProduct, setSelectedProduct }) => {
 
     updateDetails.qbID = newID;
     console.log("newID",newID)
-    
+    */
     try {
       await API.graphql(
         graphqlOperation(updateProduct, { input: { ...updateDetails } })

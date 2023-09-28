@@ -83,14 +83,15 @@ const Buttons = ({ selectedCustomer, setSelectedCustomer }) => {
           latestFirstDeliv: 10,
           latestFinalDeliv: 10,
         };
-
+        /*
         setIsLoading(true);
+        
         await createQBCust(addDetails).then((data) => {
           newID = data;
         });
 
         addDetails.qbID = newID;
-
+        */
         createCust(addDetails);
       });
     });
@@ -178,7 +179,7 @@ const Buttons = ({ selectedCustomer, setSelectedCustomer }) => {
       _version: selectedCustomer["_version"],
     };
     console.log(updateDetails);
-
+    /*
     let access = await checkQBValidation();
     let SyncToken = await getQBProdSyncToken(access, updateDetails);
     await createQBCust(updateDetails, SyncToken).then((data) => {
@@ -186,7 +187,7 @@ const Buttons = ({ selectedCustomer, setSelectedCustomer }) => {
     });
 
     updateDetails.qbID = newID;
-
+    */
     try {
       await API.graphql(
         graphqlOperation(updateCustomer, { input: { ...updateDetails } })
